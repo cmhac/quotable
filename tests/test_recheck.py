@@ -1,9 +1,13 @@
 import copy
 import json
 
+import pymupdf
+
 from pdf_table_extract import extract_table
 from pdf_table_extract.llm import Image
 from pdf_table_extract.models import CellRecheck, PageRecheck
+from pdf_table_extract.recheck import RECHECK_PROMPT
+from pdf_table_extract.text import load_layer
 from tests.conftest import DATA, FakeClient, replay
 
 PDF = DATA / "fy22_milcon_house_original.pdf"
@@ -57,6 +61,36 @@ def test_a_flagged_cell_is_sent_back_with_its_image_row_and_reason():
     assert "Zzyzx" in text  # the previous value
     assert "only a partial match" in text  # why it was flagged
     assert f"row {ROW}" in text and "Project" in text
+
+
+def test_the_whole_text_layer_of_the_page_is_sent_with_the_recheck():
+    client = _client(TRUE_VALUE)
+    extract_table(PDF, client)
+    request = client.requests[-1]
+    with pymupdf.open(PDF) as document:
+        lines = load_layer(document[0]).lines()
+    header = "Text layer of the whole page, one visual line per line:\n"
+    sent = [p for p in request.parts if isinstance(p, str) and p.startswith(header)]
+    assert len(sent) == 1
+    assert sent[0].removeprefix(header).split("\n") == lines
+    # words of rows that were not flagged are there too
+    other = TRUTH[1][0]["Project"].split()[0]
+    assert other in sent[0]
+    # the text part sits before the list of cells to re-check
+    texts = [p for p in request.parts if isinstance(p, str)]
+    assert texts[-1].startswith("Cells to re-check:")
+    assert texts.index(sent[0]) < len(texts) - 1
+    assert [s.stage for s in client.requests].count("recheck") == 1
+
+
+def test_the_prompt_makes_the_text_layer_the_reference():
+    assert "The text layer is the reference" in RECHECK_PROMPT
+    assert "copied character for character" in RECHECK_PROMPT
+    assert "NOT a reason to keep your own value" in RECHECK_PROMPT
+    assert "no text for that cell" in RECHECK_PROMPT
+    client = _client(TRUE_VALUE)
+    extract_table(PDF, client)
+    assert client.requests[-1].instructions == RECHECK_PROMPT
 
 
 def test_an_answer_that_grounds_better_is_accepted():

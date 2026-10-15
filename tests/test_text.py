@@ -1,6 +1,7 @@
 import pymupdf
 
-from pdf_table_extract.text import load_layer, tokenize
+from pdf_table_extract.text import Layer, load_layer, tokenize
+from tests.conftest import DATA
 
 
 def test_tokenize_normalises_the_way_pdf_text_and_model_values_need():
@@ -61,3 +62,39 @@ def test_layer_maps_tokens_back_to_boxes(make_pdf):
     assert layer.tokens == ["alpha", "beta", "gamma"]
     x0, y0, x1, y1 = layer.bbox(0, 2)  # Alpha .. Beta
     assert x0 < 80 and x1 > 200 and y1 < 110
+
+
+def test_lines_read_left_to_right_and_top_to_bottom_whatever_the_insertion_order():
+    layer = Layer()
+    layer.add("Beta", (200, 98, 230, 108))
+    layer.add("Gamma", (72, 138, 110, 148))
+    layer.add("Alpha", (72, 98, 100, 108))
+    layer.add("Delta", (72, 110, 105, 120))
+    assert layer.lines() == ["Alpha Beta", "Delta", "Gamma"]
+
+
+def test_lines_split_words_whose_centres_differ_by_more_than_the_tolerance():
+    layer = Layer()
+    layer.add("Left", (72, 100, 100, 110))
+    layer.add("Right", (200, 103, 230, 113))  # centre 3 pt lower
+    assert layer.lines() == ["Left", "Right"]
+    assert layer.lines(line_tol=4.0) == ["Left Right"]
+    assert Layer().lines() == []
+
+
+def test_lines_of_a_synthetic_page_match_what_was_drawn(make_pdf):
+    path = make_pdf([[(200, 100, "Beta"), (72, 100, "Alpha"), (72, 140, "Gamma")]])
+    with pymupdf.open(path) as document:
+        layer = load_layer(document[0])
+    assert layer.lines() == ["Alpha Beta", "Gamma"]
+
+
+def test_lines_of_a_rotated_page_read_upright():
+    with pymupdf.open(DATA / "fy24_milcon_house_original.pdf") as document:
+        assert document[0].rotation == 90
+        lines = load_layer(document[0]).lines()
+    assert lines[:3] == [
+        "MILITARY CONSTRUCTION, VETERANS AFFAIRS, AND RELATED AGENCIES",
+        "[Community Project Funding]",
+        "Agency State Project Location House Amount House Requestor(s)",
+    ]

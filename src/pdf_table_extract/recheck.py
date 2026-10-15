@@ -3,15 +3,18 @@ Recheck: a second look at the cells that grounding flagged.
 
 Grounding flags cells whose value is not (exactly) in the page's text layer, but does
 not correct them. Each page with such cells goes back to the model once: the page
-image, its previous rows, and the flagged cells with the reason for each flag. The
+image, its previous rows, the page's whole text layer (one visual line per line), and
+the flagged cells with the reason for each flag. The model is told that the text layer
+is the reference and to copy its reading, so text-layer errors can pass into the
+output; it keeps its own value only when the text layer has no text for the cell. The
 answers are applied, the whole document is grounded again, and an answer is kept
 only if grounding of that cell got strictly better (by ``SEVERITY``); the rest keep
 their original value, flagged as before. Blank answers and answers that tokenize
 like the original are never applied.
 
 Deliberately left out (see the original project): splitting pages with many flagged
-cells over several requests, sending the text-layer text of each flagged row, and
-undoing accepted changes that make some other cell worse.
+cells over several requests, capping the size of the text layer sent, and undoing
+accepted changes that make some other cell worse.
 """
 
 import asyncio
@@ -30,14 +33,19 @@ from pdf_table_extract.text import tokenize
 RECHECK_STATUSES = ("fuzzy", "misplaced", "incomplete", "ungrounded")
 RECHECK_PROMPT = (
     "You previously extracted the table on this page image. An automatic check "
-    "compared every value you returned with the PDF's machine-readable text "
-    "layer, and some cells did not match. Look at the page image again and, for "
-    "EACH listed cell, return the value exactly as printed in that row and "
-    "column. If your previous value was already right, return it unchanged - a "
-    "mismatch does not prove you were wrong. Transcribe verbatim: do not fix "
-    "typos in the document, do not reformat numbers. A cell that wraps over "
-    "several lines is one value joined with single spaces; rejoin words split "
-    "with a hyphen at a line end. Use an empty string if the cell is empty."
+    "compared every value you returned with the PDF's text layer, which is an OCR "
+    "of this same page, and some cells did not match. The whole text layer of the "
+    "page is given, one visual line per line; the columns of a table row appear on "
+    "the same line.\n"
+    "The text layer is the reference. For EACH listed cell, find that cell's text "
+    "in the text layer (same row, same column) and return it copied character for "
+    "character, with its spelling, digits and punctuation. A disagreement in "
+    "spelling or characters is NOT a reason to keep your own value: the text layer "
+    "is more reliable than your reading of the image, especially for unusual names. "
+    "Keep your own value only when the text layer has no text for that cell (it is "
+    "missing, or belongs to another cell). A cell that wraps over several lines is "
+    "one value joined with single spaces. Use an empty string if the cell is empty. "
+    "Do not explain."
 )
 RECHECK_REASONS = {
     "fuzzy": "only a partial match was found in the text layer",
@@ -62,7 +70,13 @@ def _request(table: Table, page: int, png: bytes) -> Request:
         for f in flagged
     )
     previous = json.dumps([{"row": i, **row} for i, row in enumerate(rows, 1)], ensure_ascii=False)
-    parts = [Image(png), f"Previous rows:\n{previous}", f"Cells to re-check:\n{listing}"]
+    text_layer = "\n".join(table.layers[page].lines())
+    parts = [
+        Image(png),
+        f"Previous rows:\n{previous}",
+        f"Text layer of the whole page, one visual line per line:\n{text_layer}",
+        f"Cells to re-check:\n{listing}",
+    ]
     return Request("recheck", RECHECK_PROMPT, PageRecheck, parts, page)
 
 

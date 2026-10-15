@@ -56,6 +56,24 @@ class SrcWord:
     bbox: Bbox
 
 
+def _visual_lines(words: list[SrcWord], line_tol: float) -> list[list[SrcWord]]:
+    """
+    Group words into visual lines: top to bottom, each line left to right.
+
+    A word joins the current line when its vertical centre is within ``line_tol`` of
+    the centre of the line's first word.
+    """
+    ordered = sorted(words, key=lambda w: (w.bbox[1] + w.bbox[3]) / 2)
+    lines: list[list[SrcWord]] = []
+    for w in ordered:
+        top = lines[-1][0] if lines else None
+        if top and (w.bbox[1] + w.bbox[3]) / 2 - (top.bbox[1] + top.bbox[3]) / 2 <= line_tol:
+            lines[-1].append(w)
+        else:
+            lines.append([w])
+    return [sorted(line, key=lambda w: w.bbox[0]) for line in lines]
+
+
 @dataclass
 class Layer:
     """Tokenised text layer of one page."""
@@ -79,19 +97,15 @@ class Layer:
             for w in self.words
             if y0 <= (w.bbox[1] + w.bbox[3]) / 2 <= y1 and x0 <= (w.bbox[0] + w.bbox[2]) / 2 <= x1
         ]
-        inside.sort(key=lambda w: (w.bbox[1] + w.bbox[3]) / 2)
-        lines: list[list[SrcWord]] = []
-        for w in inside:
-            top = lines[-1][0] if lines else None
-            if top and (w.bbox[1] + w.bbox[3]) / 2 - (top.bbox[1] + top.bbox[3]) / 2 <= line_tol:
-                lines[-1].append(w)
-            else:
-                lines.append([w])
         cropped = Layer()
-        for line in lines:
-            for w in sorted(line, key=lambda w: w.bbox[0]):
+        for line in _visual_lines(inside, line_tol):
+            for w in line:
                 cropped.add(w.text, w.bbox)
         return cropped
+
+    def lines(self, line_tol: float = 2.0) -> list[str]:
+        """Return the page text as one string per visual line, top to bottom, left to right."""
+        return [" ".join(w.text for w in line) for line in _visual_lines(self.words, line_tol)]
 
     def _words_of(self, start: int, end: int) -> list[SrcWord]:
         ids = sorted({self.tok_word[t] for t in range(start, end)})

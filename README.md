@@ -39,7 +39,7 @@ document with text but too few letters to score (only numbers) is accepted.
 | Extraction | `extract` | One request per page returns its rows. Rows with wrong keys are sent back once. |
 | Grounding | `grounding` | Each value is looked up in the page's text layer: exact token match, else a fuzzy longest-common-subsequence match. Statuses: `exact`, `fuzzy`, `ungrounded`, `untokenized`, `empty`, `not_on_page`. |
 | Position check | `position` | A value must sit in its own row and column (row windows from uniquely-occurring values, column bands pooled over the document). Values found elsewhere become `misplaced`. |
-| Recheck | `recheck` | Flagged cells go back to the model once with their reason; an answer is kept only if grounding of that cell strictly improves. |
+| Recheck | `recheck` | Flagged cells go back to the model once with their reason, the page image and the page's whole text layer; the model is told to copy the text layer's reading. An answer is kept only if grounding of that cell strictly improves. Because the text layer wins, OCR errors in it (for example thousands commas read as periods) can pass into the output. |
 
 Model requests are cached on disk by a hash of everything that decides the answer
 (`CachedClient`), and `max_requests` caps how many new requests one run may make.
@@ -84,8 +84,8 @@ Deliberately omitted from this first cut; the original code is the reference for
   header labels (the `Recipient` case).
 - **Position check:** the `incomplete` verdict, per-layout column bands, and sharing space
   between unbanded columns.
-- **Recheck:** splitting pages with many flagged cells over several requests, sending the
-  text-layer text of each flagged row, and undoing accepted changes that make another cell worse.
+- **Recheck:** splitting pages with many flagged cells over several requests, capping the size
+  of the text layer sent, and undoing accepted changes that make another cell worse.
 - **Cost:** dollar pricing and a dollar cap (only a request-count cap exists), usage ledger,
   and the run-metadata sidecar.
 - **Output:** no CSV/sidecar writer or CLI yet; `Table.records()` is the interface.
