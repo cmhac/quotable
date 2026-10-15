@@ -1,6 +1,6 @@
 # 002 - Recheck defers to the text layer
 
-Status: draft, awaiting review
+Status: open questions resolved
 
 ## Summary
 
@@ -144,10 +144,9 @@ All offline, no network.
 
 ## Open questions
 
-1. Size cap on the text sent. This spec sends the whole page with no cap, because truncating
-   brings back the omitted-text problem. A very dense page could be large. Say if you want a
-   cap (for example a character limit, with the page split over several requests when it is
-   exceeded), or if no cap is fine for now.
+1. Resolved (user): no size cap for now. The whole page's text layer is sent, because
+   truncating brings back the omitted-text problem. A very dense page makes each recheck
+   request larger (see Limits); revisit when a real page needs it.
 2. Resolved (user): all four flagged statuses use the strict prompt (requirement 5).
 3. Resolved (user): both versions of the Senate document are committed fixtures,
    `senate_expenditures_garbled.pdf` and `senate_expenditures_paddleocr.pdf`, for different
