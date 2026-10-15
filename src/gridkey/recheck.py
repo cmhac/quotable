@@ -24,11 +24,11 @@ from pathlib import Path
 
 import pymupdf
 
-from pdf_table_extract.grounding import SEVERITY
-from pdf_table_extract.llm import Image, LLMClient, Request
-from pdf_table_extract.models import PageRecheck
-from pdf_table_extract.table import PageResult, Proposal, Table, ground_document
-from pdf_table_extract.text import tokenize
+from gridkey.grounding import SEVERITY
+from gridkey.llm import Image, LLMClient, Request
+from gridkey.models import PageRecheck
+from gridkey.table import PageResult, Proposal, Table, ground_document
+from gridkey.text import tokenize
 
 RECHECK_STATUSES = ("fuzzy", "misplaced", "incomplete", "ungrounded")
 RECHECK_PROMPT = (

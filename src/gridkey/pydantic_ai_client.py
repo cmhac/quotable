@@ -1,5 +1,5 @@
 """
-A client backed by pydantic-ai (``pip install pdf-table-extract[openai]``).
+A client backed by pydantic-ai (``pip install gridkey[openai]``).
 
 ``model`` is anything pydantic-ai accepts: a ``"provider:model-name"`` string (the
 provider's API key is read from the environment as usual) or a model instance.
@@ -9,7 +9,7 @@ The import is deferred so the rest of the package does not need pydantic-ai.
 import json
 from typing import Any
 
-from pdf_table_extract.llm import Image, Request
+from gridkey.llm import Image, Request
 
 
 class PydanticAIClient:

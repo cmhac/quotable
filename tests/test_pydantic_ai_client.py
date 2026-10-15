@@ -12,8 +12,8 @@ from pydantic_ai import BinaryContent  # noqa: E402
 from pydantic_ai.messages import ModelMessage, ModelResponse, ToolCallPart  # noqa: E402
 from pydantic_ai.models.function import AgentInfo, FunctionModel  # noqa: E402
 
-from pdf_table_extract.llm import Image, Request  # noqa: E402
-from pdf_table_extract.pydantic_ai_client import PydanticAIClient  # noqa: E402
+from gridkey.llm import Image, Request  # noqa: E402
+from gridkey.pydantic_ai_client import PydanticAIClient  # noqa: E402
 
 
 class Answer(BaseModel):

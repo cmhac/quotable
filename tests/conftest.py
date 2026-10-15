@@ -7,8 +7,8 @@ from pathlib import Path
 import pymupdf
 import pytest
 
-from pdf_table_extract.llm import Request
-from pdf_table_extract.models import Column, PageRows, TableSchema
+from gridkey.llm import Request
+from gridkey.models import Column, PageRows, TableSchema
 
 DATA = Path(__file__).parent / "data"
 SAMPLES = ["fy22_milcon_house_original", "fy24_milcon_house_original", "fy22_ag_house_original"]

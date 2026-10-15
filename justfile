@@ -27,7 +27,7 @@ typecheck:
 test *args:
     uv run pytest {{ args }}
 
-# Run the live tests: calls a real model and costs money (needs OPENAI_API_KEY and PDF_TABLE_EXTRACT_LIVE_MODEL)
+# Run the live tests: calls a real model and costs money (needs OPENAI_API_KEY and GRIDKEY_LIVE_MODEL)
 test-live:
     uv run pytest -m live -rs
 

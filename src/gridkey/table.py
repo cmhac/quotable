@@ -2,10 +2,10 @@
 
 from dataclasses import dataclass, field
 
-from pdf_table_extract.grounding import SEVERITY, UNFLAGGED, FieldGrounding, ground_rows
-from pdf_table_extract.layout import PageLayout
-from pdf_table_extract.position import PageGrounding, check_positions
-from pdf_table_extract.text import Layer
+from gridkey.grounding import SEVERITY, UNFLAGGED, FieldGrounding, ground_rows
+from gridkey.layout import PageLayout
+from gridkey.position import PageGrounding, check_positions
+from gridkey.text import Layer
 
 GROUNDING_SUFFIX = "__grounding"
 COVERAGE_SUFFIX = "__coverage"

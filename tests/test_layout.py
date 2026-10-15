@@ -1,7 +1,7 @@
 import pymupdf
 
-from pdf_table_extract.layout import find_header, page_layouts
-from pdf_table_extract.text import load_layer
+from gridkey.layout import find_header, page_layouts
+from gridkey.text import load_layer
 
 COLUMNS = ["Account", "Location", "Project", "Amount"]
 

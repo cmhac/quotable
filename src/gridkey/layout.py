@@ -21,7 +21,7 @@ adding columns the schema lacks from header labels.
 
 from dataclasses import dataclass, replace
 
-from pdf_table_extract.text import Bbox, Layer, SrcWord, tokenize
+from gridkey.text import Bbox, Layer, SrcWord, tokenize
 
 HEADER_MIN_CHARS = 2  # header words of this many characters or fewer are ignored
 HEADER_MIN_COLUMNS = 3  # a header names at least this many columns ...

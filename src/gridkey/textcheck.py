@@ -14,8 +14,8 @@ from dataclasses import dataclass
 from functools import cache
 from typing import Literal
 
-from pdf_table_extract.ngrams import letter_runs, load_counts, trigrams
-from pdf_table_extract.text import Layer
+from gridkey.ngrams import letter_runs, load_counts, trigrams
+from gridkey.text import Layer
 
 # Calibrated on real pages (tests/test_textcheck_calibration.py): the legitimate House
 # appropriations tables score -2.60 or higher, the garbled Senate pages -4.77 or lower; the

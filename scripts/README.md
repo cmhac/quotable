@@ -2,7 +2,7 @@
 
 ## `build_trigrams.py`
 
-Builds `src/pdf_table_extract/data/trigram_counts.json`, the English character-trigram counts
+Builds `src/gridkey/data/trigram_counts.json`, the English character-trigram counts
 the text-layer check (spec 001) compares page text against. Maintainers run it; the library
 never touches the network.
 

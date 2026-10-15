@@ -4,7 +4,7 @@ deselected by default (``addopts = -m 'not live'``) and skip themselves unless b
 environment variables are set:
 
     OPENAI_API_KEY                   the provider's API key
-    PDF_TABLE_EXTRACT_LIVE_MODEL     a pydantic-ai model string, e.g. "openai:<model-name>"
+    GRIDKEY_LIVE_MODEL     a pydantic-ai model string, e.g. "openai:<model-name>"
 
 Run them with:  uv run pytest -m live
 
@@ -18,17 +18,17 @@ from pathlib import Path
 
 import pytest
 
-from pdf_table_extract import CachedClient, extract_table
-from pdf_table_extract.pydantic_ai_client import PydanticAIClient
+from gridkey import CachedClient, extract_table
+from gridkey.pydantic_ai_client import PydanticAIClient
 from tests.conftest import DATA
 
-MODEL = os.environ.get("PDF_TABLE_EXTRACT_LIVE_MODEL", "")
+MODEL = os.environ.get("GRIDKEY_LIVE_MODEL", "")
 
 pytestmark = [
     pytest.mark.live,
     pytest.mark.skipif(
         not (MODEL and os.environ.get("OPENAI_API_KEY")),
-        reason="set OPENAI_API_KEY and PDF_TABLE_EXTRACT_LIVE_MODEL to run live tests",
+        reason="set OPENAI_API_KEY and GRIDKEY_LIVE_MODEL to run live tests",
     ),
 ]
 

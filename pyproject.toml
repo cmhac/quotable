@@ -1,5 +1,5 @@
 [project]
-name = "pdf-table-extract"
+name = "gridkey"
 version = "0.1.0"
 description = "Extract tables from PDFs with a vision LLM, then check every value against the PDF's text layer."
 readme = "README.md"

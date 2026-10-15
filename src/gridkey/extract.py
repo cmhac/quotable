@@ -2,14 +2,14 @@
 The pipeline: text-layer check, schema discovery, per-page extraction, grounding, position check.
 
 0. Text-layer check: before anything is rendered or sent to a model, the PDF's text layer
-   must be readable (see :mod:`pdf_table_extract.textcheck`). A garbled or missing layer
+   must be readable (see :mod:`gridkey.textcheck`). A garbled or missing layer
    raises ``TextLayerError`` having made no request, because values could not be verified.
    There is no option to skip this.
 1. Schema discovery: the first ``schema_pages`` page images go to the model in one
    request, which returns only the column structure (multi-level headers are
    written ``<level1>.<level2>``).
 2. Page layouts: each page's columns come from its printed header (see
-   :mod:`pdf_table_extract.layout`), so a column printed on some pages only is asked
+   :mod:`gridkey.layout`), so a column printed on some pages only is asked
    for only on those.
 3. Page extraction: one request per page (page image + columns) returns one object
    per row. Rows whose keys do not match are sent back once with the problems found;
@@ -25,13 +25,13 @@ from pathlib import Path
 
 import pymupdf
 
-from pdf_table_extract.layout import page_layouts
-from pdf_table_extract.llm import Image, LLMClient, Request
-from pdf_table_extract.models import PageRows, TableSchema
-from pdf_table_extract.recheck import recheck_table
-from pdf_table_extract.table import PageResult, Table, ground_document
-from pdf_table_extract.text import Layer, load_layer
-from pdf_table_extract.textcheck import check_text_layers
+from gridkey.layout import page_layouts
+from gridkey.llm import Image, LLMClient, Request
+from gridkey.models import PageRows, TableSchema
+from gridkey.recheck import recheck_table
+from gridkey.table import PageResult, Table, ground_document
+from gridkey.text import Layer, load_layer
+from gridkey.textcheck import check_text_layers
 
 DPI = 150
 SCHEMA_PAGES = 5  # how many leading pages are shown to schema discovery

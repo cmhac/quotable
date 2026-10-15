@@ -3,11 +3,11 @@ import json
 
 import pymupdf
 
-from pdf_table_extract import extract_table
-from pdf_table_extract.llm import Image
-from pdf_table_extract.models import CellRecheck, PageRecheck
-from pdf_table_extract.recheck import RECHECK_PROMPT
-from pdf_table_extract.text import load_layer
+from gridkey import extract_table
+from gridkey.llm import Image
+from gridkey.models import CellRecheck, PageRecheck
+from gridkey.recheck import RECHECK_PROMPT
+from gridkey.text import load_layer
 from tests.conftest import DATA, FakeClient, replay
 
 PDF = DATA / "fy22_milcon_house_original.pdf"

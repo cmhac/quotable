@@ -4,14 +4,14 @@ import json
 
 import pytest
 
-from pdf_table_extract import (
+from gridkey import (
     ExtractionError,
     TextLayerError,
     extract_table,
     extract_table_async,
 )
-from pdf_table_extract.llm import Image
-from pdf_table_extract.models import Column, PageRows, TableSchema
+from gridkey.llm import Image
+from gridkey.models import Column, PageRows, TableSchema
 from tests.conftest import DATA, FakeClient, load_sample, replay
 
 

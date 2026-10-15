@@ -1,5 +1,5 @@
 """
-Build the English trigram reference counts shipped in ``src/pdf_table_extract/data``.
+Build the English trigram reference counts shipped in ``src/gridkey/data``.
 
 Run once by a maintainer (``uv run python scripts/build_trigrams.py``); the library never
 touches the network. The corpus is a fixed list of public-domain Project Gutenberg books
@@ -14,9 +14,9 @@ import urllib.request
 from collections import Counter
 from pathlib import Path
 
-from pdf_table_extract.ngrams import letter_runs, trigrams
+from gridkey.ngrams import letter_runs, trigrams
 
-OUTPUT = Path(__file__).resolve().parent.parent / "src/pdf_table_extract/data/trigram_counts.json"
+OUTPUT = Path(__file__).resolve().parent.parent / "src/gridkey/data/trigram_counts.json"
 URL = "https://www.gutenberg.org/cache/epub/{id}/pg{id}.txt"
 # (Gutenberg ebook id, title). Mixed prose plus founding-era government text.
 BOOKS = [

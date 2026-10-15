@@ -4,11 +4,11 @@
 
 ## Project introduction
 
-`pdf-table-extract` is a small Python library that extracts tables from PDFs with a vision LLM and then checks every extracted value against the PDF's own text layer. The pipeline is: schema discovery, per-page layout discovery, per-page extraction, grounding (each value is looked up in the text layer), a position check (a value must sit in its own row and column), and a recheck of flagged cells. It is generic (not specific to any one document set) and was distilled from `scripts/extraction/extract_included_projects.py` in the VRA community-projects repository, which remains the reference for anything not yet ported.
+`gridkey` is a small Python library that extracts tables from PDFs with a vision LLM and then checks every extracted value against the PDF's own text layer. The pipeline is: schema discovery, per-page layout discovery, per-page extraction, grounding (each value is looked up in the text layer), a position check (a value must sit in its own row and column), and a recheck of flagged cells. It is generic (not specific to any one document set) and was distilled from `scripts/extraction/extract_included_projects.py` in the VRA community-projects repository, which remains the reference for anything not yet ported.
 
 ## Project state
 
-An initial, barebones port. The pipeline works end to end and the offline test suite passes (101 tests, no network or API key needed). Spec 001 (reject documents whose text layer is garbled or missing, before any model request) is implemented; OCR is required and grounding cannot be disabled. Spec 002 (the recheck sends the page's whole text layer and tells the model to copy it, so the text layer wins over the model) is implemented. The live test in `tests/live/` is opt-in (see Commands). Not yet ported from the original: page orientation, histogram-based layout matching, adding schema-missing columns from header labels, the `incomplete` verdict and per-layout bands in the position check, splitting large rechecks, dollar-based cost caps, and a CSV/CLI writer. `README.md` lists these in "Not carried over yet".
+An initial, barebones port. The pipeline works end to end and the offline test suite passes (101 tests, no network or API key needed). Spec 001 (reject documents whose text layer is garbled or missing, before any model request) is implemented; OCR is required and grounding cannot be disabled. Spec 002 (the recheck sends the page's whole text layer and tells the model to copy it, so the text layer wins over the model) is implemented. Spec 003 renamed the project to `gridkey` (package, distribution and the `GRIDKEY_LIVE_MODEL` variable); behaviour is unchanged. The live test in `tests/live/` is opt-in (see Commands). Not yet ported from the original: page orientation, histogram-based layout matching, adding schema-missing columns from header labels, the `incomplete` verdict and per-layout bands in the position check, splitting large rechecks, dollar-based cost caps, and a CSV/CLI writer. `README.md` lists these in "Not carried over yet".
 
 ## File structure
 
@@ -24,7 +24,7 @@ An initial, barebones port. The pipeline works end to end and the offline test s
 ├── pyproject.toml - Dependencies (pinned), ruff/ty/pytest config
 ├── justfile - Commands for lint, format, type check, tests and hooks (run `just`)
 ├── .pre-commit-config.yaml - Pre-commit hooks: ruff check --fix, ruff format, ty check
-├── src/pdf_table_extract/
+├── src/gridkey/
 │   ├── extract.py - The pipeline: extract_table(pdf, client)
 │   ├── text.py - Text layer: tokenize, load_layer, Layer.lines
 │   ├── textcheck.py - Garbled/missing text-layer check (English trigram score); TextLayerError
@@ -55,7 +55,7 @@ Commands live in the `justfile` ([just](https://github.com/casey/just) is the co
 | `just format`             | `ruff format .`                                                                                                                                                                                                                                |
 | `just typecheck`          | `ty check`                                                                                                                                                                                                                                     |
 | `just test [pytest args]` | Offline tests: no network, no API key. Pass pytest args, e.g. `just test -k grounding`                                                                                                                                                         |
-| `just test-live`          | Live tests (`-m live`): calls a real model and costs money. Needs `OPENAI_API_KEY` and `PDF_TABLE_EXTRACT_LIVE_MODEL`, read from `.env` (see `.env.example`); without both the test is skipped. Never run without the user's explicit go-ahead |
+| `just test-live`          | Live tests (`-m live`): calls a real model and costs money. Needs `OPENAI_API_KEY` and `GRIDKEY_LIVE_MODEL`, read from `.env` (see `.env.example`); without both the test is skipped. Never run without the user's explicit go-ahead |
 | `just hooks`              | Run every pre-commit hook on all tracked files                                                                                                                                                                                                 |
 | `just check`              | `just hooks`, then `just test`                                                                                                                                                                                                                 |
 
@@ -81,3 +81,4 @@ This project follows a spec-driven development approach, meaning that the specif
 - Within the folder for each spec, the main specification file should be named `spec.md`.
 - Tasks related to a spec should be placed in a `tasks/` subfolder within the spec's folder, numbered serially using the format `nnn-task-name.md`, where `nnn` is a three-digit number representing the order of the task and `task-name` is a brief, descriptive name for the task.
 - After initial task implementation, if the user requests any changes or modifications to the written code, spec deltas may be created in a `deltas/` subfolder within the spec's folder, numbered serially using the format `nnn-delta-description.md`, where `nnn` is a three-digit number representing the order of the delta and `delta-description` is a brief, descriptive name for the delta.
+- Specs 001 and 002 keep the project's former name, `pdf-table-extract` (import `pdf_table_extract`), because they record decisions made under it. They are history and are not rewritten.

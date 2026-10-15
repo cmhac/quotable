@@ -3,8 +3,8 @@ import string
 
 import pytest
 
-from pdf_table_extract.text import Layer
-from pdf_table_extract.textcheck import (
+from gridkey.text import Layer
+from gridkey.textcheck import (
     MAX_GARBLED_PAGE_SHARE,
     MIN_LETTERS,
     TextLayerError,

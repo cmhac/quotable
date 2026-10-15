@@ -1,6 +1,6 @@
 import pymupdf
 
-from pdf_table_extract.text import Layer, load_layer, tokenize
+from gridkey.text import Layer, load_layer, tokenize
 from tests.conftest import DATA
 
 

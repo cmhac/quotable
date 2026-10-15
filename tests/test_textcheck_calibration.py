@@ -18,8 +18,8 @@ from pathlib import Path
 import pymupdf
 import pytest
 
-from pdf_table_extract.text import load_layer
-from pdf_table_extract.textcheck import (
+from gridkey.text import load_layer
+from gridkey.textcheck import (
     GARBLED_SCORE_THRESHOLD,
     TextLayerError,
     check_text_layers,

@@ -2,9 +2,9 @@ import copy
 
 import pymupdf
 
-from pdf_table_extract.grounding import ground_rows
-from pdf_table_extract.position import PageGrounding, check_positions
-from pdf_table_extract.text import load_layer
+from gridkey.grounding import ground_rows
+from gridkey.position import PageGrounding, check_positions
+from gridkey.text import load_layer
 
 
 def _ground_document(pdf, columns, pages):

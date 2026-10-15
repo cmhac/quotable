@@ -1,4 +1,4 @@
-from pdf_table_extract.ngrams import letter_runs, load_counts, trigrams
+from gridkey.ngrams import letter_runs, load_counts, trigrams
 
 
 def test_letter_runs_keep_two_or_more_letters_and_fold_accents():

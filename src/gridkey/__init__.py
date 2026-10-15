@@ -1,9 +1,9 @@
 """Extract tables from PDFs with a vision LLM and check every value against the text layer."""
 
-from pdf_table_extract.extract import ExtractionError, extract_table, extract_table_async
-from pdf_table_extract.llm import BudgetExceededError, CachedClient, Image, LLMClient, Request
-from pdf_table_extract.table import Flag, Row, Table
-from pdf_table_extract.textcheck import TextLayerError
+from gridkey.extract import ExtractionError, extract_table, extract_table_async
+from gridkey.llm import BudgetExceededError, CachedClient, Image, LLMClient, Request
+from gridkey.table import Flag, Row, Table
+from gridkey.textcheck import TextLayerError
 
 __all__ = [
     "BudgetExceededError",

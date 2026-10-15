@@ -3,7 +3,7 @@ import asyncio
 import pytest
 from pydantic import BaseModel
 
-from pdf_table_extract.llm import (
+from gridkey.llm import (
     BudgetExceededError,
     CachedClient,
     Image,

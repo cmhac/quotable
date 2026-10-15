@@ -1,13 +1,16 @@
-# pdf-table-extract
+# gridkey
 
 Extract tables from PDFs with a vision LLM, then check every value against the PDF's
 own text layer. A barebones starting point, distilled from the extraction pipeline of
 the VRA community-projects analysis.
 
+The name is a play on words: tables in PDFs are grids that are locked on the page, and
+this is the key that unlocks them.
+
 ```python
 from pathlib import Path
-from pdf_table_extract import CachedClient, extract_table
-from pdf_table_extract.pydantic_ai_client import PydanticAIClient  # needs the [openai] extra
+from gridkey import CachedClient, extract_table
+from gridkey.pydantic_ai_client import PydanticAIClient  # needs the [openai] extra
 
 client = CachedClient(PydanticAIClient("openai:<model-name>"), Path(".cache"), max_requests=100)
 table = extract_table(Path("tables.pdf"), client)
@@ -65,10 +68,10 @@ just check       # hooks, then tests
   any API call. Several tests corrupt the recorded rows (a swapped value, a typo) to
   check that the position check and the recheck catch it.
 - `tests/live/` calls a real model. These tests are deselected by default and skip
-  themselves unless `OPENAI_API_KEY` and `PDF_TABLE_EXTRACT_LIVE_MODEL` are set:
+  themselves unless `OPENAI_API_KEY` and `GRIDKEY_LIVE_MODEL` are set:
 
   ```bash
-  PDF_TABLE_EXTRACT_LIVE_MODEL="openai:<model-name>" uv run pytest -m live
+  GRIDKEY_LIVE_MODEL="openai:<model-name>" uv run pytest -m live
   ```
 
   Their answers are cached in `tests/live/.cache`, and each run is capped at a few requests.
