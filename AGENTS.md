@@ -40,8 +40,6 @@ An initial, barebones port. The pipeline works end to end and the offline test s
     └── test_*.py - Offline tests, driven by a fake model
 ```
 
-Note: `specs/` and `CLAUDE.md` do not exist yet; they are created with the first spec.
-
 ## Commands and quality gates
 
 Commands live in the `justfile` ([just](https://github.com/casey/just) is the command runner; run `just` to list them). Use these rather than typing the underlying `uv run ...` commands, and add a recipe there when a new command is something a person will need to run.
