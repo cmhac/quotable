@@ -14,3 +14,6 @@ tests/live/.cache/
 
 # Environment variables
 .env
+
+# coding agent harnesses we don't want tracked in git
+.kiro
