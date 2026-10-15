@@ -1,0 +1,74 @@
+# pdf-table-extract
+
+Extract tables from PDFs with a vision LLM, then check every value against the PDF's
+own text layer. A barebones starting point, distilled from the extraction pipeline of
+the VRA community-projects analysis.
+
+```python
+from pathlib import Path
+from pdf_table_extract import CachedClient, extract_table
+from pdf_table_extract.pydantic_ai_client import PydanticAIClient  # needs the [openai] extra
+
+client = CachedClient(PydanticAIClient("openai:<model-name>"), Path(".cache"), max_requests=100)
+table = extract_table(Path("tables.pdf"), client)
+
+table.records()   # one flat dict per row: values, <column>__grounding, <column>__coverage, ...
+table.flagged()   # every cell that is not an exact match, with its status
+```
+
+Any object with an `identity` string and an `async ask(request)` method is a client, so
+other providers (or a fake) plug in without touching the pipeline.
+
+## What it does
+
+| Stage | Module | What happens |
+|---|---|---|
+| Schema discovery | `extract` | The first pages go to the model, which returns only the column structure. |
+| Layout discovery | `layout` | Each page's printed header (found in the text layer) says which columns that page prints; pages without a header inherit the previous layout. |
+| Extraction | `extract` | One request per page returns its rows. Rows with wrong keys are sent back once. |
+| Grounding | `grounding` | Each value is looked up in the page's text layer: exact token match, else a fuzzy longest-common-subsequence match. Statuses: `exact`, `fuzzy`, `ungrounded`, `untokenized`, `empty`, `not_on_page`. |
+| Position check | `position` | A value must sit in its own row and column (row windows from uniquely-occurring values, column bands pooled over the document). Values found elsewhere become `misplaced`. |
+| Recheck | `recheck` | Flagged cells go back to the model once with their reason; an answer is kept only if grounding of that cell strictly improves. |
+
+Model requests are cached on disk by a hash of everything that decides the answer
+(`CachedClient`), and `max_requests` caps how many new requests one run may make.
+
+## Development
+
+```bash
+uv sync --extra openai          # --extra openai is only needed for the adapter test
+uv run pytest                   # offline: no network, no API key, ~5 s
+uv run ruff check . && uv run ruff format --check . && uv run ty check
+```
+
+### Tests
+
+- `tests/` runs offline. A fake model replays rows recorded from the original project
+  against real sample PDFs (`tests/data/`), so the whole pipeline is exercised without
+  any API call. Several tests corrupt the recorded rows (a swapped value, a typo) to
+  check that the position check and the recheck catch it.
+- `tests/live/` calls a real model. These tests are deselected by default and skip
+  themselves unless `OPENAI_API_KEY` and `PDF_TABLE_EXTRACT_LIVE_MODEL` are set:
+
+  ```bash
+  PDF_TABLE_EXTRACT_LIVE_MODEL="openai:<model-name>" uv run pytest -m live
+  ```
+
+  Their answers are cached in `tests/live/.cache`, and each run is capped at a few requests.
+
+## Not carried over yet
+
+Deliberately omitted from this first cut; the original code is the reference for each:
+
+- **Page orientation:** the original rotated sideways pages upright in a separate step. The
+  samples already carry a correct `/Rotate` flag, and `get_text` / rendering honour it.
+- **Layout discovery:** grouping header pages by column x-position, choosing a layout for
+  headerless pages by word-position histograms, and adding columns the schema lacks from
+  header labels (the `Recipient` case).
+- **Position check:** the `incomplete` verdict, per-layout column bands, and sharing space
+  between unbanded columns.
+- **Recheck:** splitting pages with many flagged cells over several requests, sending the
+  text-layer text of each flagged row, and undoing accepted changes that make another cell worse.
+- **Cost:** dollar pricing and a dollar cap (only a request-count cap exists), usage ledger,
+  and the run-metadata sidecar.
+- **Output:** no CSV/sidecar writer or CLI yet; `Table.records()` is the interface.

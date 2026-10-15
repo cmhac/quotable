@@ -1,0 +1,90 @@
+{
+ "columns": [
+  "Account",
+  "Location",
+  "Project",
+  "Amount",
+  "Requestor(s)"
+ ],
+ "pages": {
+  "1": [
+   {
+    "Account": "Air National Guard",
+    "Location": "Delaware: New Castle County Airport",
+    "Project": "Fuel Cell and Corrosion Control Hangar",
+    "Amount": "$17,500,000",
+    "Requestor(s)": "Blunt Rochester"
+   },
+   {
+    "Account": "Army",
+    "Location": "Texas: Joint Base San Antonio Camp Bullis",
+    "Project": "Vehicle Maintenance Shop",
+    "Amount": "$10,000,000",
+    "Requestor(s)": "Gonzales, Tony"
+   },
+   {
+    "Account": "Air Force",
+    "Location": "Texas: Joint Base San Antonio Lackland Air Force Base",
+    "Project": "Child Development Center",
+    "Amount": "$22,000,000",
+    "Requestor(s)": "Gonzales, Tony"
+   },
+   {
+    "Account": "Air Force",
+    "Location": "Louisiana: Barksdale Air Force Base",
+    "Project": "New Entrance Road and Gate Complex",
+    "Amount": "$36,000,000",
+    "Requestor(s)": "Johnson (LA)"
+   },
+   {
+    "Account": "Army National Guard",
+    "Location": "Mississippi: Camp Shelby Joint Forces Training Center",
+    "Project": "Mobilization and Annual Training Equipment Site (MATES) Project",
+    "Amount": "$15,500,000",
+    "Requestor(s)": "Palazzo"
+   },
+   {
+    "Account": "Army",
+    "Location": "Alabama: Anniston Army Depot",
+    "Project": "Welding Facility",
+    "Amount": "$25,010,000",
+    "Requestor(s)": "Rogers (AL)"
+   },
+   {
+    "Account": "Navy and Marine Corps",
+    "Location": "Florida: Marine Corps Support Facility Blount Island",
+    "Project": "Lighterage and Small Craft Facility",
+    "Amount": "$7,000,000",
+    "Requestor(s)": "Rutherford"
+   },
+   {
+    "Account": "Air Force Reserve",
+    "Location": "Ohio: Youngstown Air Reserve Station",
+    "Project": "Assault Strip Widening",
+    "Amount": "$8,700,000",
+    "Requestor(s)": "Ryan"
+   },
+   {
+    "Account": "Air National Guard",
+    "Location": "Idaho: Boise Air Terminal (Gowen Field)",
+    "Project": "Medical Training Facility",
+    "Amount": "$6,500,000",
+    "Requestor(s)": "Simpson"
+   },
+   {
+    "Account": "Army",
+    "Location": "New York: Fort Drum",
+    "Project": "Wellfield Expansion Resilience Project",
+    "Amount": "$27,000,000",
+    "Requestor(s)": "Stefanik"
+   },
+   {
+    "Account": "Air Force",
+    "Location": "Ohio: Wright Patterson Air Force Base",
+    "Project": "Child Development Center",
+    "Amount": "$24,000,000",
+    "Requestor(s)": "Turner"
+   }
+  ]
+ }
+}

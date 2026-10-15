@@ -1,0 +1,15 @@
+# Test data
+
+Sample PDFs from the House Appropriations Committee's community project funding
+"included projects" tables (public documents):
+
+| File | Pages | Notes |
+|---|---|---|
+| `fy22_milcon_house_original.pdf` | 1 | Rotated page (`/Rotate 90`); every recorded cell is printed verbatim. |
+| `fy24_milcon_house_original.pdf` | 2 | Rotated; a different column set. |
+| `fy22_ag_house_original.pdf` | 4 | Upright; shared (merged) cells repeated down rows, some real model misses. |
+
+`<name>.rows.json` holds the rows a vision model returned for each PDF in the original
+project (final values after its recheck), keyed by page: `{"columns": [...], "pages": {"1": [row, ...]}}`.
+The offline tests replay these as the "model" answers. They are recorded outputs, not a
+ground truth: a few cells in the ag sample are known to be wrong, which the tests allow for.

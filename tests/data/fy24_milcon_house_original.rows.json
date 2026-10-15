@@ -1,0 +1,208 @@
+{
+ "columns": [
+  "Agency",
+  "State",
+  "Project",
+  "Location",
+  "House Amount",
+  "House Requestor(s)"
+ ],
+ "pages": {
+  "1": [
+   {
+    "Agency": "Army",
+    "State": "AL",
+    "Project": "Access Control Point",
+    "Location": "Anniston Army Depot",
+    "House Amount": "$5,500,000",
+    "House Requestor(s)": "Rogers (AL)"
+   },
+   {
+    "Agency": "Army",
+    "State": "AL",
+    "Project": "Component Rebuild Shop",
+    "Location": "Anniston Army Depot",
+    "House Amount": "8,100,000",
+    "House Requestor(s)": "Rogers (AL)"
+   },
+   {
+    "Agency": "Army",
+    "State": "AL",
+    "Project": "Vehicle Paint Shop",
+    "Location": "Anniston Army Depot",
+    "House Amount": "2,900,000",
+    "House Requestor(s)": "Rogers (AL)"
+   },
+   {
+    "Agency": "Navy",
+    "State": "CA",
+    "Project": "Fire/Emergency Response Station (53 Area) Replacement",
+    "Location": "Marine Corps Base Camp Pendleton",
+    "House Amount": "2,683,000",
+    "House Requestor(s)": "Levin"
+   },
+   {
+    "Agency": "Army",
+    "State": "FL",
+    "Project": "7th Special Forces Group Child Development Center",
+    "Location": "Camp Bull Simons",
+    "House Amount": "17,000,000",
+    "House Requestor(s)": "Waltz"
+   },
+   {
+    "Agency": "Navy",
+    "State": "FL",
+    "Project": "Advanced Helicopter Training System Hangar",
+    "Location": "Naval Air Station Whiting Field",
+    "House Amount": "50,000,000",
+    "House Requestor(s)": "Gaetz"
+   },
+   {
+    "Agency": "Air Force",
+    "State": "FL",
+    "Project": "LRSO Hardware Software Development & Test Facility",
+    "Location": "Eglin Air Force Base",
+    "House Amount": "14,600,000",
+    "House Requestor(s)": "Waltz"
+   },
+   {
+    "Agency": "Army National Guard",
+    "State": "FL",
+    "Project": "Automated Multipurpose Machine Gun Range",
+    "Location": "Camp Blanding",
+    "House Amount": "11,000,000",
+    "House Requestor(s)": "Waltz"
+   },
+   {
+    "Agency": "Army National Guard",
+    "State": "FL",
+    "Project": "Training Aids Center",
+    "Location": "Camp Blanding",
+    "House Amount": "1,200,000",
+    "House Requestor(s)": "Waltz"
+   },
+   {
+    "Agency": "Army National Guard",
+    "State": "FL",
+    "Project": "Infantry Squad Battle Course",
+    "Location": "Camp Blanding",
+    "House Amount": "840,000",
+    "House Requestor(s)": "Waltz"
+   },
+   {
+    "Agency": "Air National Guard",
+    "State": "FL",
+    "Project": "F–35 Munitions Storage Area Admin",
+    "Location": "Jacksonville International Airport",
+    "House Amount": "600,000",
+    "House Requestor(s)": "Waltz"
+   },
+   {
+    "Agency": "Air Force Reserve",
+    "State": "GA",
+    "Project": "Security Forces Facility",
+    "Location": "Dobbins Air Reserve Base",
+    "House Amount": "22,000,000",
+    "House Requestor(s)": "Loudermilk"
+   },
+   {
+    "Agency": "Army",
+    "State": "HI",
+    "Project": "Air Traffic Control Tower",
+    "Location": "Wheeler Army Airfield",
+    "House Amount": "5,400,000",
+    "House Requestor(s)": "Case"
+   },
+   {
+    "Agency": "Air Force Reserve",
+    "State": "LA",
+    "Project": "307 Bomb Wing Medical Facility Expansion",
+    "Location": "Barksdale Air Force Base",
+    "House Amount": "7,000,000",
+    "House Requestor(s)": "Johnson (LA)"
+   },
+   {
+    "Agency": "Army",
+    "State": "NC",
+    "Project": "Aircraft Maintenance Hangar",
+    "Location": "Fort Bragg",
+    "House Amount": "61,000,000",
+    "House Requestor(s)": "Hudson"
+   },
+   {
+    "Agency": "Army",
+    "State": "NC",
+    "Project": "Child Development Center",
+    "Location": "Fort Bragg",
+    "House Amount": "36,000,000",
+    "House Requestor(s)": "Hudson"
+   },
+   {
+    "Agency": "Air Force",
+    "State": "OH",
+    "Project": "Acquisition Management Complex",
+    "Location": "Wright-Patterson Air Force Base",
+    "House Amount": "9,900,000",
+    "House Requestor(s)": "Turner"
+   }
+  ],
+  "2": [
+   {
+    "Agency": "Air Force",
+    "State": "OK",
+    "Project": "F–35 Aircraft Oxygen Shop",
+    "Location": "Tinker Air Force Base",
+    "House Amount": "5,800,000",
+    "House Requestor(s)": "Bice, Cole"
+   },
+   {
+    "Agency": "Army National Guard",
+    "State": "OK",
+    "Project": "National Guard Readiness Center",
+    "Location": "Shawnee",
+    "House Amount": "1,800,000",
+    "House Requestor(s)": "Bice"
+   },
+   {
+    "Agency": "Army National Guard",
+    "State": "PA",
+    "Project": "Automated Multipurpose Machine Gun Range",
+    "Location": "Fort Indiantown Gap",
+    "House Amount": "1,550,000",
+    "House Requestor(s)": "Meuser"
+   },
+   {
+    "Agency": "Army",
+    "State": "TX",
+    "Project": "Collective Training Barracks",
+    "Location": "Fort Bliss",
+    "House Amount": "7,200,000",
+    "House Requestor(s)": "Escobar"
+   },
+   {
+    "Agency": "Army",
+    "State": "TX",
+    "Project": "Barracks (PN 100948)",
+    "Location": "Fort Hood",
+    "House Amount": "9,900,000",
+    "House Requestor(s)": "Carter (TX)"
+   },
+   {
+    "Agency": "Army",
+    "State": "TX",
+    "Project": "Barracks (PN 94937)",
+    "Location": "Fort Hood",
+    "House Amount": "9,900,000",
+    "House Requestor(s)": "Carter (TX)"
+   },
+   {
+    "Agency": "Army National Guard",
+    "State": "TX",
+    "Project": "General Purpose Instruction Building",
+    "Location": "Fort Hood",
+    "House Amount": "2,685,000",
+    "House Requestor(s)": "Carter (TX)"
+   }
+  ]
+ }
+}

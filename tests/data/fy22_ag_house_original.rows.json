@@ -1,0 +1,1020 @@
+{
+ "columns": [
+  "Agency",
+  "Account",
+  "Recipient",
+  "Project",
+  "Location",
+  "Amount",
+  "Requestor(s)"
+ ],
+ "pages": {
+  "1": [
+   {
+    "Agency": "Agricultural Research Service.",
+    "Account": "Buildings and Facilities",
+    "Recipient": "University of Nebraska, Lincoln",
+    "Project": "National Center for Resilient and Regenerative Precision Agriculture.",
+    "Location": "NE",
+    "Amount": "$20,000,000",
+    "Requestor(s)": "Fortenberry"
+   },
+   {
+    "Agency": "Agricultural Research Service.",
+    "Account": "Buildings and Facilities",
+    "Recipient": "Sugarcane Research Unit",
+    "Project": "Sugarcane Research Unit Improvements",
+    "Location": "LA",
+    "Amount": "$10,000,000",
+    "Requestor(s)": "Graves (LA)"
+   },
+   {
+    "Agency": "Agricultural Research Service.",
+    "Account": "Buildings and Facilities",
+    "Recipient": "National Center for Agricultural Utilization Research.",
+    "Project": "National Center for Agricultural Utilization Research Expansion.",
+    "Location": "IL",
+    "Amount": "$4,500,000",
+    "Requestor(s)": "LaHood; Bustos"
+   },
+   {
+    "Agency": "Agricultural Research Service.",
+    "Account": "Buildings and Facilities",
+    "Recipient": "University of Missouri",
+    "Project": "Center for Agricultural Animal Genetic Engineering and Health.",
+    "Location": "MO",
+    "Amount": "$4,000,000",
+    "Requestor(s)": "Luetkemeyer"
+   },
+   {
+    "Agency": "Agricultural Research Service.",
+    "Account": "Buildings and Facilities",
+    "Recipient": "University of Wisconsin, Madison",
+    "Project": "Plant Germplasm Research Facility",
+    "Location": "WI",
+    "Amount": "$4,000,000",
+    "Requestor(s)": "Pocan"
+   },
+   {
+    "Agency": "Agricultural Research Service.",
+    "Account": "Buildings and Facilities",
+    "Recipient": "US Sheep Experiment Station",
+    "Project": "US Sheep Experiment Station Infrastructure Improvements.",
+    "Location": "ID",
+    "Amount": "$4,200,000",
+    "Requestor(s)": "Simpson"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Ringgold County Child Care Center",
+    "Project": "Ringgold County Child Care Center Re-Design",
+    "Location": "IA",
+    "Amount": "$725,366",
+    "Requestor(s)": "Axne"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Stanton Child Care Resource Center",
+    "Project": "Stanton Child Care Resource Center Expansion",
+    "Location": "IA",
+    "Amount": "$1,000,000",
+    "Requestor(s)": "Axne"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Northern Lights YMCA",
+    "Project": "Northern Lights Community Center Renovation",
+    "Location": "MI",
+    "Amount": "$1,750,000",
+    "Requestor(s)": "Bergman"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Fort Valley State University",
+    "Project": "Fort Valley State University and Albany State University local Food Project.",
+    "Location": "GA",
+    "Amount": "$746,250",
+    "Requestor(s)": "Bishop (GA)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Delaware State Fair, Inc.",
+    "Project": "New Castle Agricultural Programming Building",
+    "Location": "DE",
+    "Amount": "$937,500",
+    "Requestor(s)": "Blunt Rochester"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Richard Allen Coalition",
+    "Project": "Richard Allen Historic School Repair",
+    "Location": "DE",
+    "Amount": "$100,000",
+    "Requestor(s)": "Blunt Rochester"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Banks Fire District #13",
+    "Project": "Banks Fire District EMS Equipment",
+    "Location": "OR",
+    "Amount": "$93,500",
+    "Requestor(s)": "Bonamici"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Mt. Vernon",
+    "Project": "Mt. Vernon Police Station",
+    "Location": "IL",
+    "Amount": "$1,000,000",
+    "Requestor(s)": "Bost"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Northampton County Government",
+    "Project": "Northampton County Courthouse",
+    "Location": "NC",
+    "Amount": "$5,000,000",
+    "Requestor(s)": "Butterfield"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Town of Nashville",
+    "Project": "Nashville Fire Station",
+    "Location": "NC",
+    "Amount": "$1,338,750",
+    "Requestor(s)": "Butterfield"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Guadalupe",
+    "Project": "LeRoy Park Safety Modernization",
+    "Location": "CA",
+    "Amount": "$1,700,000",
+    "Requestor(s)": "Carbajal"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Pride of Atmore",
+    "Project": "Atmore Revitalization Project",
+    "Location": "AL",
+    "Amount": "$885,000",
+    "Requestor(s)": "Carl"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Central Falls",
+    "Project": "Holden Community Center",
+    "Location": "RI",
+    "Amount": "$2,000,000",
+    "Requestor(s)": "Cicilline"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Vital Aging of Williamsburg County, Inc.",
+    "Project": "Murdaugh Senior Center",
+    "Location": "SC",
+    "Amount": "$2,883,469",
+    "Requestor(s)": "Clyburn"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Rio Grande City",
+    "Project": "Starr County Courthouse",
+    "Location": "TX",
+    "Amount": "$2,392,763",
+    "Requestor(s)": "Cuellar"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Sullivan City",
+    "Project": "El Faro Road Flood Mitigation",
+    "Location": "TX",
+    "Amount": "$3,539,318",
+    "Requestor(s)": "Cuellar"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Town of La Joya",
+    "Project": "La Joya Fire Station",
+    "Location": "TX",
+    "Amount": "$1,275,000",
+    "Requestor(s)": "Cuellar"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Sauk-Suiattle Indian Tribe",
+    "Project": "Sauk-Suiattle Community Center",
+    "Location": "WA",
+    "Amount": "$210,000",
+    "Requestor(s)": "DelBene"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Volunteers of America Western Washington",
+    "Project": "Sky Valley Teen Center",
+    "Location": "WA",
+    "Amount": "$500,000",
+    "Requestor(s)": "DelBene"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Nooksack Indian Tribe",
+    "Project": "Nooksack Clinic and Wellness Facility",
+    "Location": "WA",
+    "Amount": "$1,000,000",
+    "Requestor(s)": "DelBene"
+   }
+  ],
+  "2": [
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Village of Philmont Fire Department",
+    "Project": "Village of Philmont Fire Station",
+    "Location": "NY",
+    "Amount": "$82,000",
+    "Requestor(s)": "Delgado"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "M-ARK Project, Inc.",
+    "Project": "M-ARK Child Care Project",
+    "Location": "NY",
+    "Amount": "$100,000",
+    "Requestor(s)": "Delgado"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Liberty County",
+    "Project": "Liberty County EMS Facility",
+    "Location": "FL",
+    "Amount": "$825,000",
+    "Requestor(s)": "Dunn"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Medina County Senior Center, Inc.",
+    "Project": "Medina County Senior Center",
+    "Location": "TX",
+    "Amount": "$562,500",
+    "Requestor(s)": "Gonzales, Tony"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "East Wayne Fire District",
+    "Project": "East Wayne Fire Station",
+    "Location": "OH",
+    "Amount": "$958,392",
+    "Requestor(s)": "Gonzalez (OH)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "VFW Lopez Williams Post",
+    "Project": "Brooks County VFW",
+    "Location": "TX",
+    "Amount": "$304,454",
+    "Requestor(s)": "Gonzalez, Vicente"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Township of Hardwick",
+    "Project": "Hardwick Township Virtual Services",
+    "Location": "NJ",
+    "Amount": "$17,460",
+    "Requestor(s)": "Gottheimer"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Douglass Community Services",
+    "Project": "Douglass Community Center",
+    "Location": "MO",
+    "Amount": "$1,000,000",
+    "Requestor(s)": "Graves (MO)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Northfield Volunteer Fire Company",
+    "Project": "Northfield Fire Department Modernization",
+    "Location": "CT",
+    "Amount": "$225,000",
+    "Requestor(s)": "Hayes"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Torrington",
+    "Project": "Northwest Hills Animal Control Facility",
+    "Location": "CT",
+    "Amount": "$1,100,000",
+    "Requestor(s)": "Hayes"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Protivin Community Fire District",
+    "Project": "Protivin Community Fire Station",
+    "Location": "IA",
+    "Amount": "$100,000",
+    "Requestor(s)": "Hinson"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Sunflower Child Care Center, Inc.",
+    "Project": "Sunflower Child Development Center",
+    "Location": "IA",
+    "Amount": "$200,000",
+    "Requestor(s)": "Hinson"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Prince George’s County",
+    "Project": "Prince George’s County Water Tanks",
+    "Location": "MD",
+    "Amount": "$1,350,000",
+    "Requestor(s)": "Hoyer; Brown"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Royalton-Hartland Central School District.",
+    "Project": "Royalton-Hartland Agricultural Learning Lab",
+    "Location": "NY",
+    "Amount": "$515,685",
+    "Requestor(s)": "Jacobs (NY)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "County of Wyoming",
+    "Project": "Wyoming County Fire Training Center",
+    "Location": "NY",
+    "Amount": "$597,289",
+    "Requestor(s)": "Jacobs (NY)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Cornell Cooperative Extension Association of Orleans County.",
+    "Project": "Cornell Cooperative Extension Learning Center",
+    "Location": "NY",
+    "Amount": "$379,432",
+    "Requestor(s)": "Jacobs (NY)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Waianae Community Redevelopment Corporation.",
+    "Project": "MA’O Organic Farms Infrastructure",
+    "Location": "HI",
+    "Amount": "$896,000",
+    "Requestor(s)": "Kahele"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Port Angeles Food Bank",
+    "Project": "Port Angeles Food Bank Expansion",
+    "Location": "WA",
+    "Amount": "$900,000",
+    "Requestor(s)": "Kilmer"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Platteville",
+    "Project": "City of Platteville Fire Station",
+    "Location": "WI",
+    "Amount": "$7,000,000",
+    "Requestor(s)": "Kind"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Cochise County",
+    "Project": "Cochise County Animal Shelter",
+    "Location": "AZ",
+    "Amount": "$1,100,000",
+    "Requestor(s)": "Kirkpatrick"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "County of Nevada",
+    "Project": "North San Juan Fire Suppression System",
+    "Location": "CA",
+    "Amount": "$1,050,000",
+    "Requestor(s)": "LaMalfa"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Anderson",
+    "Project": "Sewer and Storm Drain Cleaner Truck",
+    "Location": "CA",
+    "Amount": "$262,900",
+    "Requestor(s)": "LaMalfa"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Goosefoot Community Fund",
+    "Project": "Goosefoot Community Center",
+    "Location": "WA",
+    "Amount": "$346,625",
+    "Requestor(s)": "Larsen (WA)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Bradner Fire Department",
+    "Project": "Bradner Fire Station",
+    "Location": "OH",
+    "Amount": "$1,260,000",
+    "Requestor(s)": "Latta"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "University of Florida",
+    "Project": "Cherry Lake 4H Center",
+    "Location": "FL",
+    "Amount": "$1,125,000",
+    "Requestor(s)": "Lawson (FL)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Pueblo of San Felipe",
+    "Project": "San Felipe Community Center",
+    "Location": "NM",
+    "Amount": "$1,500,000",
+    "Requestor(s)": "Leger Fernandez"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Town of Phillipstown",
+    "Project": "Philipstown Highway Facility Center",
+    "Location": "NY",
+    "Amount": "$1,787,500",
+    "Requestor(s)": "Maloney, Sean"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "North San Juan Water Conservation District.",
+    "Project": "North San Joaquin Water Conservation District",
+    "Location": "CA",
+    "Amount": "$1,000,000",
+    "Requestor(s)": "McNerney"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Berwick Area YMCA",
+    "Project": "Berwick Community Center",
+    "Location": "PA",
+    "Amount": "$1,000,000",
+    "Requestor(s)": "Meuser"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Borough of Jim Thorpe",
+    "Project": "Jim Thorpe Facility Upgrade",
+    "Location": "PA",
+    "Amount": "$2,500,000",
+    "Requestor(s)": "Meuser"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "IQHub",
+    "Project": "IQHub Community Classroom",
+    "Location": "MI",
+    "Amount": "$137,671",
+    "Requestor(s)": "Moolenaar"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Four Lakes Task Force",
+    "Project": "Four Lakes Public Safety Booms",
+    "Location": "MI",
+    "Amount": "$795,000",
+    "Requestor(s)": "Moolenaar"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Yakima Nation",
+    "Project": "Yakima Nation Water Canal Maintenance",
+    "Location": "WA",
+    "Amount": "$742,500",
+    "Requestor(s)": "Newhouse"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Town of Superior",
+    "Project": "Superior Entrepreneurship and Innovation Center",
+    "Location": "AZ",
+    "Amount": "$2,000,000",
+    "Requestor(s)": "O’Halleran"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Maine 4-H Foundation",
+    "Project": "4-H Innovation and Learning Center",
+    "Location": "ME",
+    "Amount": "$450,000",
+    "Requestor(s)": "Pingree"
+   }
+  ],
+  "3": [
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Virgin Islands Department of Planning and Natural Resources.",
+    "Project": "Krum Bay Marine Enforcement Pier",
+    "Location": "VI",
+    "Amount": "$750,000",
+    "Requestor(s)": "Plaskett"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Virgin Islands Department of Planning and Natural Resources.",
+    "Project": "Gallows Bay Marine Enforcement Pier",
+    "Location": "VI",
+    "Amount": "$750,000",
+    "Requestor(s)": "Plaskett"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Reedsburg",
+    "Project": "City of Reedsburg Community Center",
+    "Location": "WI",
+    "Amount": "$220,000",
+    "Requestor(s)": "Pocan"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Desert Valley Senior Center",
+    "Project": "Desert Valley Senior Center",
+    "Location": "AZ",
+    "Amount": "$16,800",
+    "Requestor(s)": "Raúl M. Grijalva"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Greene County Board of Commissioners.",
+    "Project": "Greene County Business Incubator",
+    "Location": "PA",
+    "Amount": "$1,395,000",
+    "Requestor(s)": "Reschenthaler"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Morehead",
+    "Project": "Morehead Fire Station",
+    "Location": "KY",
+    "Amount": "$300,000",
+    "Requestor(s)": "Rogers (KY)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Commonwealth Healthcare Corporation.",
+    "Project": "Peritoneal Dialysis Expansion Project",
+    "Location": "MP",
+    "Amount": "$391,500",
+    "Requestor(s)": "Sablan"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Commonwealth Healthcare Corporation.",
+    "Project": "Health IT Upgrades",
+    "Location": "MP",
+    "Amount": "$980,639",
+    "Requestor(s)": "Sablan"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Guam Fisherman’s Cooperative Association.",
+    "Project": "Guam Fisherman’s Co-Op Facility",
+    "Location": "GU",
+    "Amount": "$3,000,000",
+    "Requestor(s)": "San Nicolas"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Ellensburg",
+    "Project": "Friends in Service to Humanity Food Bank",
+    "Location": "WA",
+    "Amount": "$900,000",
+    "Requestor(s)": "Schrier"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Shoshone Bannock Tribe",
+    "Project": "Shoshone Bannock Tribal Fire Station",
+    "Location": "ID",
+    "Amount": "$7,000,000",
+    "Requestor(s)": "Simpson"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Town of Blackstone",
+    "Project": "Blackstone Aerial Ladder Fire Truck",
+    "Location": "VA",
+    "Amount": "$923,937",
+    "Requestor(s)": "Spanberger"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "County of Amelia",
+    "Project": "Amelia County Court Office",
+    "Location": "VA",
+    "Amount": "$375,000",
+    "Requestor(s)": "Spanberger"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Moriarty",
+    "Project": "Moriarty Fire Station",
+    "Location": "NM",
+    "Amount": "$5,250,000",
+    "Requestor(s)": "Stansbury"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Little Falls",
+    "Project": "Little Falls Child Care Facility",
+    "Location": "MN",
+    "Amount": "$825,000",
+    "Requestor(s)": "Stauber"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Essex County",
+    "Project": "Essex County Ag and Youth Center",
+    "Location": "NY",
+    "Amount": "$997,000",
+    "Requestor(s)": "Stefanik"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Cary Christian Center",
+    "Project": "Cary Christian Center Facility",
+    "Location": "MS",
+    "Amount": "$37,500",
+    "Requestor(s)": "Thompson (MS)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "BDT Housing Services Enterprise",
+    "Project": "IT Montgomery Home Restoration",
+    "Location": "MS",
+    "Amount": "$2,250,000",
+    "Requestor(s)": "Thompson (MS)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Rosedale",
+    "Project": "Bolivar County Community Facility",
+    "Location": "MS",
+    "Amount": "$225,000",
+    "Requestor(s)": "Thompson (MS)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Fannie Lou Hamer Cancer Foundation",
+    "Project": "Fannie Lou Hamer Cancer Foundation Facility Revitalization.",
+    "Location": "MS",
+    "Amount": "$2,250,000",
+    "Requestor(s)": "Thompson (MS)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Central Mississippi, Inc.",
+    "Project": "Mississippi Delta Disaster Relief Shelter",
+    "Location": "MS",
+    "Amount": "$300,000",
+    "Requestor(s)": "Thompson (MS)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Indiana University of Pennsylvania",
+    "Project": "IUP Academy of Culinary Arts Building",
+    "Location": "PA",
+    "Amount": "$500,000",
+    "Requestor(s)": "Thompson (PA)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Jefferson County-Dubois Area Vocational Technical School.",
+    "Project": "Farm to Refrigerator Training Facility",
+    "Location": "PA",
+    "Amount": "$1,125,000",
+    "Requestor(s)": "Thompson (PA)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "United Way of Tri County",
+    "Project": "Marlborough Community Covered Food Pantry",
+    "Location": "MA",
+    "Amount": "$26,838",
+    "Requestor(s)": "Trahan"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Allegany College of Maryland",
+    "Project": "Allegany College Facility Revitalization",
+    "Location": "MD",
+    "Amount": "$187,500",
+    "Requestor(s)": "Trone"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Office of the Salem County Administrator.",
+    "Project": "Salem County Courthouse Revitalization",
+    "Location": "NJ",
+    "Amount": "$3,750,000",
+    "Requestor(s)": "Van Drew"
+   }
+  ],
+  "4": [
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Fairbanks Museum and Planetarium",
+    "Project": "St Johnsbury Science Annex",
+    "Location": "VT",
+    "Amount": "$2,465,176",
+    "Requestor(s)": "Welch"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Pocono Family YMCA",
+    "Project": "Pocono Family Community Center",
+    "Location": "PA",
+    "Amount": "$1,000,000",
+    "Requestor(s)": "Wild"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "Mount Bethel Fire Department",
+    "Project": "Mount Bethel Fire Department Emergency Shelter",
+    "Location": "PA",
+    "Amount": "$247,500",
+    "Requestor(s)": "Wild"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Kodiak",
+    "Project": "Kodiak Fire Station Replacement",
+    "Location": "AK",
+    "Amount": "$7,000,000",
+    "Requestor(s)": "Young"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "Community Facilities",
+    "Recipient": "City of Kiana",
+    "Project": "Kiana Fire Response and Equipment",
+    "Location": "AK",
+    "Amount": "$3,350,000",
+    "Requestor(s)": "Young"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Northern Michigan University",
+    "Project": "Rural Broadband Expansion for Northern Michigan University.",
+    "Location": "MI",
+    "Amount": "$1,200,000",
+    "Requestor(s)": "Bergman"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Goodhue County",
+    "Project": "Goodhue County Broadband Expansion",
+    "Location": "MN",
+    "Amount": "$3,210,000",
+    "Requestor(s)": "Craig"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Town of Ghent",
+    "Project": "Upstate New York Broadband Expansion",
+    "Location": "NY",
+    "Amount": "$829,594",
+    "Requestor(s)": "Delgado"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "County of El Paso",
+    "Project": "Cotton Valley Broadband Expansion",
+    "Location": "TX",
+    "Amount": "$2,850,000",
+    "Requestor(s)": "Escobar"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Niagara County",
+    "Project": "Niagara-Orleans Broadband Expansion",
+    "Location": "NY",
+    "Amount": "$3,877,500",
+    "Requestor(s)": "Jacobs (NY)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Illinois Department of Commerce and Economic Opportunity.",
+    "Project": "Pembroke Township Broadband Expansion",
+    "Location": "IL",
+    "Amount": "$3,000,000",
+    "Requestor(s)": "Kelly (IL)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Impact Corry",
+    "Project": "Corry Area Tech Center and Hub",
+    "Location": "PA",
+    "Amount": "$500,000",
+    "Requestor(s)": "Kelly (PA)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Plumas-Sierra Telecommunications",
+    "Project": "Plumas-Sierra Broadband Expansion",
+    "Location": "CA",
+    "Amount": "$4,000,198",
+    "Requestor(s)": "LaMalfa"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "City of Espanola",
+    "Project": "Espanola Broadband Expansion",
+    "Location": "NM",
+    "Amount": "$879,506",
+    "Requestor(s)": "Leger Fernandez"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Charles City County",
+    "Project": "Charles City County Broadband Expansion",
+    "Location": "VA",
+    "Amount": "$2,643,508",
+    "Requestor(s)": "McEachin"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Town of Sandwich",
+    "Project": "Sandwich Broadband Expansion",
+    "Location": "NH",
+    "Amount": "$1,650,000",
+    "Requestor(s)": "Pappas"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Chelan County PUD",
+    "Project": "Chelan County Broadband Expansion",
+    "Location": "WA",
+    "Amount": "$1,286,390",
+    "Requestor(s)": "Schrier"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "County of Isle of Wight",
+    "Project": "Isle of Wight Broadband Expansion",
+    "Location": "VA",
+    "Amount": "$318,750",
+    "Requestor(s)": "Scott (VA)"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Brazos Valley Council of Governments",
+    "Project": "Bremond Broadband Expansion",
+    "Location": "TX",
+    "Amount": "$1,500,000",
+    "Requestor(s)": "Sessions"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Pine County",
+    "Project": "Pine County Broadband Expansion",
+    "Location": "MN",
+    "Amount": "$5,576,250",
+    "Requestor(s)": "Stauber"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Herkimer County",
+    "Project": "Herkimer County Broadband Expansion",
+    "Location": "NY",
+    "Amount": "$500,000",
+    "Requestor(s)": "Stefanik"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Village of Sherburne",
+    "Project": "Village of Sherburne Broadband Expansion",
+    "Location": "NY",
+    "Amount": "$212,022",
+    "Requestor(s)": "Tenney"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Town of Westerlo",
+    "Project": "Westerlo Broadband Expansion",
+    "Location": "NY",
+    "Amount": "$1,687,500",
+    "Requestor(s)": "Tonko"
+   },
+   {
+    "Agency": "Rural Development",
+    "Account": "ReConnect",
+    "Recipient": "Garrett County",
+    "Project": "Garrett County Broadband Expansion",
+    "Location": "MD",
+    "Amount": "$883,574",
+    "Requestor(s)": "Trone"
+   }
+  ]
+ }
+}
