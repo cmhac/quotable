@@ -17,6 +17,8 @@ An initial, barebones port. The pipeline works end to end and the offline test s
 ├── README.md - General documentation for the repository
 ├── AGENTS.md - Documentation specifically for AI agents working in this repository
 ├── CLAUDE.md - symlink to AGENTS.md for Claude Code
+├── .env - Environment variables, including the OpenAI API key, gitignored
+├── .env.example - Example environment variables file, tracked in git
 ├── specs/ - Specification documents for the project
 ├── pyproject.toml - Dependencies (pinned), ruff/ty/pytest config
 ├── src/pdf_table_extract/

@@ -11,3 +11,6 @@ wheels/
 
 # live-test request cache
 tests/live/.cache/
+
+# Environment variables
+.env
