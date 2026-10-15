@@ -44,16 +44,16 @@ An initial, barebones port. The pipeline works end to end and the offline test s
 
 Commands live in the `justfile` ([just](https://github.com/casey/just) is the command runner; run `just` to list them). Use these rather than typing the underlying `uv run ...` commands, and add a recipe there when a new command is something a person will need to run.
 
-| Command | What it does |
-|---|---|
-| `just setup` | `uv sync --extra openai` and install the git pre-commit hook (run once after cloning) |
-| `just lint` | `ruff check .` (reports only, changes nothing) |
-| `just format` | `ruff format .` |
-| `just typecheck` | `ty check` |
-| `just test [pytest args]` | Offline tests: no network, no API key. Pass pytest args, e.g. `just test -k grounding` |
-| `just test-live` | Live tests (`-m live`): calls a real model and costs money. Needs `OPENAI_API_KEY` and `PDF_TABLE_EXTRACT_LIVE_MODEL`, read from `.env` (see `.env.example`); without both the test is skipped. Never run without the user's explicit go-ahead |
-| `just hooks` | Run every pre-commit hook on all tracked files |
-| `just check` | `just hooks`, then `just test` |
+| Command                   | What it does                                                                                                                                                                                                                                   |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `just setup`              | `uv sync --extra openai` and install the git pre-commit hook (run once after cloning)                                                                                                                                                          |
+| `just lint`               | `ruff check .` (reports only, changes nothing)                                                                                                                                                                                                 |
+| `just format`             | `ruff format .`                                                                                                                                                                                                                                |
+| `just typecheck`          | `ty check`                                                                                                                                                                                                                                     |
+| `just test [pytest args]` | Offline tests: no network, no API key. Pass pytest args, e.g. `just test -k grounding`                                                                                                                                                         |
+| `just test-live`          | Live tests (`-m live`): calls a real model and costs money. Needs `OPENAI_API_KEY` and `PDF_TABLE_EXTRACT_LIVE_MODEL`, read from `.env` (see `.env.example`); without both the test is skipped. Never run without the user's explicit go-ahead |
+| `just hooks`              | Run every pre-commit hook on all tracked files                                                                                                                                                                                                 |
+| `just check`              | `just hooks`, then `just test`                                                                                                                                                                                                                 |
 
 Pre-commit (`.pre-commit-config.yaml`) runs `ruff check --fix`, `ruff format` and `ty check` on every commit. The hooks are local hooks that call `uv run`, so they use the ruff and ty versions pinned in `uv.lock` rather than separately pinned hook revisions. Tests are not part of the hooks; run `just test` yourself. Ruff, ty and the offline tests must pass before you finish a change. Do not bypass hooks with `--no-verify`.
 
@@ -63,8 +63,9 @@ Two things to know about the hooks: `pre-commit run --all-files` (and so `just h
 
 This project follows a spec-driven development approach, meaning that the specifications defined in the `specs/` directory serve as the primary source of truth for the project's functionality. The development workflow is as follows:
 
-1. User requests features, bug fixes, and other changes, and the agent writes an initial specification for the requested change in the `specs/` directory.
-2. User reviews the spec and provides feedback or approval.
+1. User requests features, bug fixes, and other changes, and the agent writes an initial specification for the requested change in the `specs/` directory. Agent opens a new branch for the implementation of the specification.
+2. User reviews the spec and provides feedback or approval. If there are any open questions that need the user's decision, the user is required to provide clear guidance or answers before the agent proceeds with splitting the spec into actionable tasks.
+   CRITICAL: DO NOT move to step 3 until all open questions have been resolved and the user has provided clear guidance or answers.
 3. Agent splits the spec into actionable tasks that can be implemented in the codebase.
 4. User reviews the actionable tasks and provides feedback or approval before implementation begins.
 5. Agent implements the actionable tasks in the codebase, ensuring that the implementation aligns with the approved specifications.
