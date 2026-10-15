@@ -35,10 +35,16 @@ Model requests are cached on disk by a hash of everything that decides the answe
 
 ## Development
 
+Commands are in the `justfile` ([just](https://github.com/casey/just)); run `just` to list them.
+
 ```bash
-uv sync --extra openai          # --extra openai is only needed for the adapter test
-uv run pytest                   # offline: no network, no API key, ~5 s
-uv run ruff check . && uv run ruff format --check . && uv run ty check
+just setup       # uv sync --extra openai, and install the git pre-commit hook
+just test        # offline: no network, no API key, ~5 s
+just lint        # ruff check
+just format      # ruff format
+just typecheck   # ty check
+just hooks       # all pre-commit hooks (ruff check --fix, ruff format, ty) on all tracked files
+just check       # hooks, then tests
 ```
 
 ### Tests

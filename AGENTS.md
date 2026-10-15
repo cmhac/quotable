@@ -8,7 +8,7 @@
 
 ## Project state
 
-An initial, barebones port. The pipeline works end to end and the offline test suite passes (75 tests, no network or API key needed). The live test in `tests/live/` has been written but not run. Nothing is committed yet. Not yet ported from the original: page orientation, histogram-based layout matching, adding schema-missing columns from header labels, the `incomplete` verdict and per-layout bands in the position check, splitting large rechecks, dollar-based cost caps, and a CSV/CLI writer. `README.md` lists these in "Not carried over yet".
+An initial, barebones port. The pipeline works end to end and the offline test suite passes (75 tests, no network or API key needed). The live test in `tests/live/` has been written but not run. Not yet ported from the original: page orientation, histogram-based layout matching, adding schema-missing columns from header labels, the `incomplete` verdict and per-layout bands in the position check, splitting large rechecks, dollar-based cost caps, and a CSV/CLI writer. `README.md` lists these in "Not carried over yet".
 
 ## File structure
 
@@ -21,6 +21,8 @@ An initial, barebones port. The pipeline works end to end and the offline test s
 ├── .env.example - Example environment variables file, tracked in git
 ├── specs/ - Specification documents for the project
 ├── pyproject.toml - Dependencies (pinned), ruff/ty/pytest config
+├── justfile - Commands for lint, format, type check, tests and hooks (run `just`)
+├── .pre-commit-config.yaml - Pre-commit hooks: ruff check --fix, ruff format, ty check
 ├── src/pdf_table_extract/
 │   ├── extract.py - The pipeline: extract_table(pdf, client)
 │   ├── text.py - Text layer: tokenize, load_layer
@@ -39,6 +41,25 @@ An initial, barebones port. The pipeline works end to end and the offline test s
 ```
 
 Note: `specs/` and `CLAUDE.md` do not exist yet; they are created with the first spec.
+
+## Commands and quality gates
+
+Commands live in the `justfile` ([just](https://github.com/casey/just) is the command runner; run `just` to list them). Use these rather than typing the underlying `uv run ...` commands, and add a recipe there when a new command is something a person will need to run.
+
+| Command | What it does |
+|---|---|
+| `just setup` | `uv sync --extra openai` and install the git pre-commit hook (run once after cloning) |
+| `just lint` | `ruff check .` (reports only, changes nothing) |
+| `just format` | `ruff format .` |
+| `just typecheck` | `ty check` |
+| `just test [pytest args]` | Offline tests: no network, no API key. Pass pytest args, e.g. `just test -k grounding` |
+| `just test-live` | Live tests (`-m live`): calls a real model and costs money. Needs `OPENAI_API_KEY` and `PDF_TABLE_EXTRACT_LIVE_MODEL`. Never run without the user's explicit go-ahead |
+| `just hooks` | Run every pre-commit hook on all tracked files |
+| `just check` | `just hooks`, then `just test` |
+
+Pre-commit (`.pre-commit-config.yaml`) runs `ruff check --fix`, `ruff format` and `ty check` on every commit. The hooks are local hooks that call `uv run`, so they use the ruff and ty versions pinned in `uv.lock` rather than separately pinned hook revisions. Tests are not part of the hooks; run `just test` yourself. Ruff, ty and the offline tests must pass before you finish a change. Do not bypass hooks with `--no-verify`.
+
+Two things to know about the hooks: `pre-commit run --all-files` (and so `just hooks`) only covers files git tracks, so stage or commit new files first for it to see them; and a hook that auto-fixes a file reports a pass for a file git does not track yet.
 
 ## Spec-driven development
 
