@@ -12,17 +12,28 @@ from pdf_table_extract.pydantic_ai_client import PydanticAIClient  # needs the [
 client = CachedClient(PydanticAIClient("openai:<model-name>"), Path(".cache"), max_requests=100)
 table = extract_table(Path("tables.pdf"), client)
 
-table.records()   # one flat dict per row: values, <column>__grounding, <column>__coverage, ...
-table.flagged()   # every cell that is not an exact match, with its status
+table.records()  # one flat dict per row: values, <column>__grounding, <column>__coverage, ...
+table.flagged()  # every cell that is not an exact match, with its status
 ```
 
 Any object with an `identity` string and an `async ask(request)` method is a client, so
 other providers (or a fake) plug in without touching the pipeline.
 
+## Requires a readable text layer
+
+Every value is checked against the PDF's text layer, and grounding cannot be turned off.
+Before any model request, the text layer is scored with English character trigrams; a PDF
+whose layer is garbled (a broken font encoding, bad OCR) or missing (a scan with no OCR) is
+rejected with `TextLayerError`, having made no request. The fix is to improve the PDF's OCR
+(for example re-run OCR over the whole document, replacing the existing text layer with
+`ocrmypdf --force-ocr`) and try again. The model is English and Latin-script only. A
+document with text but too few letters to score (only numbers) is accepted.
+
 ## What it does
 
 | Stage | Module | What happens |
 |---|---|---|
+| Text-layer check | `textcheck` | Each page's text is scored against an English trigram model; the document is rejected if more than 10% of the scorable pages are garbled, or it has no text. |
 | Schema discovery | `extract` | The first pages go to the model, which returns only the column structure. |
 | Layout discovery | `layout` | Each page's printed header (found in the text layer) says which columns that page prints; pages without a header inherit the previous layout. |
 | Extraction | `extract` | One request per page returns its rows. Rows with wrong keys are sent back once. |

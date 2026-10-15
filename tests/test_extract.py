@@ -1,9 +1,15 @@
 import copy
+import inspect
 import json
 
 import pytest
 
-from pdf_table_extract import ExtractionError, extract_table
+from pdf_table_extract import (
+    ExtractionError,
+    TextLayerError,
+    extract_table,
+    extract_table_async,
+)
 from pdf_table_extract.llm import Image
 from pdf_table_extract.models import Column, PageRows, TableSchema
 from tests.conftest import DATA, FakeClient, load_sample, replay
@@ -146,3 +152,23 @@ def test_a_column_the_page_does_not_print_is_not_asked_for_and_stays_blank(make_
     (row,) = table.records()[1:]
     assert row["Amount"] == "" and row["Amount__grounding"] == "not_on_page"
     assert table.flagged() == []
+
+
+def test_a_garbled_text_layer_is_rejected_before_any_request():
+    client = replay(["A"], {1: [{"A": "x"}]})
+    with pytest.raises(TextLayerError, match="garbled"):
+        extract_table(DATA / "senate_expenditures_garbled.pdf", client)
+    assert client.requests == []
+
+
+def test_a_pdf_with_no_text_is_rejected_before_any_request(make_pdf):
+    client = replay(["A"], {1: [{"A": "x"}]})
+    with pytest.raises(TextLayerError, match="no text layer"):
+        extract_table(make_pdf([[]]), client)
+    assert client.requests == []
+
+
+def test_the_text_layer_check_has_no_off_switch():
+    parameters = set(inspect.signature(extract_table).parameters)
+    assert parameters == {"pdf", "client", "schema_pages", "recheck"}
+    assert set(inspect.signature(extract_table_async).parameters) == parameters

@@ -3,6 +3,7 @@
 from pdf_table_extract.extract import ExtractionError, extract_table, extract_table_async
 from pdf_table_extract.llm import BudgetExceededError, CachedClient, Image, LLMClient, Request
 from pdf_table_extract.table import Flag, Row, Table
+from pdf_table_extract.textcheck import TextLayerError
 
 __all__ = [
     "BudgetExceededError",
@@ -14,6 +15,7 @@ __all__ = [
     "Request",
     "Row",
     "Table",
+    "TextLayerError",
     "extract_table",
     "extract_table_async",
 ]

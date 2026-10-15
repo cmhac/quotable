@@ -8,7 +8,7 @@
 
 ## Project state
 
-An initial, barebones port. The pipeline works end to end and the offline test suite passes (75 tests, no network or API key needed). The live test in `tests/live/` has been written but not run. Not yet ported from the original: page orientation, histogram-based layout matching, adding schema-missing columns from header labels, the `incomplete` verdict and per-layout bands in the position check, splitting large rechecks, dollar-based cost caps, and a CSV/CLI writer. `README.md` lists these in "Not carried over yet".
+An initial, barebones port. The pipeline works end to end and the offline test suite passes (95 tests, no network or API key needed). Spec 001 (reject documents whose text layer is garbled or missing, before any model request) is implemented; OCR is required and grounding cannot be disabled. The live test in `tests/live/` is opt-in (see Commands). Not yet ported from the original: page orientation, histogram-based layout matching, adding schema-missing columns from header labels, the `incomplete` verdict and per-layout bands in the position check, splitting large rechecks, dollar-based cost caps, and a CSV/CLI writer. `README.md` lists these in "Not carried over yet".
 
 ## File structure
 
@@ -20,12 +20,16 @@ An initial, barebones port. The pipeline works end to end and the offline test s
 ├── .env - Environment variables, including the OpenAI API key, gitignored
 ├── .env.example - Example environment variables file, tracked in git
 ├── specs/ - Specification documents for the project
+├── scripts/ - Maintainer scripts (build_trigrams.py regenerates the reference counts)
 ├── pyproject.toml - Dependencies (pinned), ruff/ty/pytest config
 ├── justfile - Commands for lint, format, type check, tests and hooks (run `just`)
 ├── .pre-commit-config.yaml - Pre-commit hooks: ruff check --fix, ruff format, ty check
 ├── src/pdf_table_extract/
 │   ├── extract.py - The pipeline: extract_table(pdf, client)
 │   ├── text.py - Text layer: tokenize, load_layer
+│   ├── textcheck.py - Garbled/missing text-layer check (English trigram score); TextLayerError
+│   ├── ngrams.py - Letter runs, trigrams and the shipped reference counts
+│   ├── data/trigram_counts.json - English trigram counts, built by scripts/build_trigrams.py
 │   ├── layout.py - Page header detection and per-page columns
 │   ├── grounding.py - Look values up in the text layer
 │   ├── position.py - Row/column position check

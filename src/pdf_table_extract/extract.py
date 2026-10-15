@@ -1,6 +1,10 @@
 """
-The pipeline: schema discovery, per-page extraction, grounding, position check.
+The pipeline: text-layer check, schema discovery, per-page extraction, grounding, position check.
 
+0. Text-layer check: before anything is rendered or sent to a model, the PDF's text layer
+   must be readable (see :mod:`pdf_table_extract.textcheck`). A garbled or missing layer
+   raises ``TextLayerError`` having made no request, because values could not be verified.
+   There is no option to skip this.
 1. Schema discovery: the first ``schema_pages`` page images go to the model in one
    request, which returns only the column structure (multi-level headers are
    written ``<level1>.<level2>``).
@@ -27,6 +31,7 @@ from pdf_table_extract.models import PageRows, TableSchema
 from pdf_table_extract.recheck import recheck_table
 from pdf_table_extract.table import PageResult, Table, ground_document
 from pdf_table_extract.text import Layer, load_layer
+from pdf_table_extract.textcheck import check_text_layers
 
 DPI = 150
 SCHEMA_PAGES = 5  # how many leading pages are shown to schema discovery
@@ -145,8 +150,9 @@ async def extract_table_async(
 ) -> Table:
     """Run the whole pipeline on one PDF."""
     with pymupdf.open(pdf) as document:
-        pngs = [render_png(p) for p in document]
         layers: dict[int, Layer] = {i + 1: load_layer(p) for i, p in enumerate(document)}
+        check_text_layers(layers)  # before rendering or any request; cannot be skipped
+        pngs = [render_png(p) for p in document]
 
     schema_request = Request(
         "schema", SCHEMA_PROMPT, TableSchema, [Image(png) for png in pngs[:schema_pages]]
