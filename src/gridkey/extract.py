@@ -1,21 +1,25 @@
 """
-The pipeline: text-layer check, schema discovery, per-page extraction, grounding, position check.
+The pipeline: text-layer check, table discovery, per-page extraction, grounding, position check.
 
 0. Text-layer check: before anything is rendered or sent to a model, the PDF's text layer
    must be readable (see :mod:`gridkey.textcheck`). A garbled or missing layer
    raises ``TextLayerError`` having made no request, because values could not be verified.
    There is no option to skip this.
-1. Schema discovery: the first ``schema_pages`` page images go to the model in one
-   request, which returns only the column structure (multi-level headers are
-   written ``<level1>.<level2>``).
+1. Table discovery: every page image goes to the model, ``discovery_pages`` at a time,
+   and the model lists the tables on each page with their columns (multi-level headers
+   are written ``<level1>.<level2>``). Tables with the same columns on different pages
+   are one table (see :mod:`gridkey.discover`). Everything below runs once per table.
 2. Page layouts: each page's columns come from its printed header (see
    :mod:`gridkey.layout`), so a column printed on some pages only is asked
    for only on those.
-3. Page extraction: one request per page (page image + columns) returns one object
-   per row. Rows whose keys do not match are sent back once with the problems found;
-   a second failure aborts the run.
-4. Grounding and position check: every value is looked up in the page's text layer,
-   then required to sit in its own row and column (see ``grounding`` and ``position``).
+3. Page extraction: one request per table and page (page image + columns) returns one
+   object per row. On a page with several tables the request names the other tables and
+   asks for this one only. Rows whose keys do not match are sent back once with the
+   problems found; a second failure aborts the run.
+4. Grounding and position check: every value is looked up in the table's text layer (the
+   whole page, or on a page with several tables only that table's band, see
+   :mod:`gridkey.regions`), then required to sit in its own row and column (see
+   ``grounding`` and ``position``).
 """
 
 import asyncio
@@ -25,29 +29,22 @@ from pathlib import Path
 
 import pymupdf
 
+from gridkey.discover import DISCOVERY_PAGES, Found, discover
 from gridkey.layout import page_layouts
 from gridkey.llm import Image, LLMClient, Request
 from gridkey.models import PageRows, TableSchema
 from gridkey.recheck import recheck_table
+from gridkey.regions import table_layers
+from gridkey.schema import ExtractionError
 from gridkey.table import PageResult, Table, ground_document
 from gridkey.text import Layer, load_layer
 from gridkey.textcheck import check_text_layers
 
 DPI = 150
-SCHEMA_PAGES = 5  # how many leading pages are shown to schema discovery
 MAX_CONCURRENT_REQUESTS = 4
 MAX_PROBLEMS = 30
 MAX_PREVIOUS_OUTPUT_CHARS = 20_000  # truncation of the output echoed on retry
 
-SCHEMA_PROMPT = (
-    "These are the first pages of a PDF containing a table. Determine ONLY the "
-    "column structure of the table - do not extract any row data. Return the "
-    "columns in left-to-right order. If a header has multiple levels (a "
-    "spanning header over sub-headers), name the column '<level1>.<level2>' "
-    "(and deeper levels the same way). If header text is wrapped across lines, "
-    "join it with a single space. Ignore page titles, subtitles and page "
-    "numbers. Report a column only once even though it repeats on each page."
-)
 EXTRACT_PROMPT = (
     "Extract every data row of the table on this page image. Return one JSON "
     "object per row. Each object must have EXACTLY the keys listed in the "
@@ -61,26 +58,10 @@ EXTRACT_PROMPT = (
     "table rows. If a cell is visually shared by consecutive rows (blank "
     "below it), repeat its value in each row it covers."
 )
-
-
-class ExtractionError(RuntimeError):
-    """The model output could not be turned into a valid table."""
-
-
-def validate_schema(schema: TableSchema) -> list[str]:
-    """Return the column names, raising if they cannot key a table."""
-    names = [c.name.strip() for c in schema.columns]
-    problems = []
-    if not names:
-        problems.append("no columns")
-    if any(not n for n in names):
-        problems.append("blank column name")
-    if len(set(names)) != len(names):
-        problems.append("duplicate column names")
-    if problems:
-        msg = f"schema discovery returned an unusable schema: {', '.join(problems)}"
-        raise ExtractionError(msg)
-    return names
+MULTI_TABLE_SENTENCE = (
+    "This page holds more than one table. Extract ONLY the table whose columns are listed in "
+    "the column structure; do not return rows of the other table(s) named below."
+)
 
 
 def validate_rows(rows: list[dict[str, str]], keys: list[str]) -> list[str]:
@@ -124,16 +105,36 @@ def page_schema(schema: TableSchema, present: tuple[str, ...]) -> TableSchema:
     return TableSchema(columns=columns, notes=schema.notes)
 
 
-async def extract_page(page: int, png: bytes, schema: TableSchema, client: LLMClient) -> PageResult:
-    """Extract one page's rows; retry once with the problems named if invalid."""
+def other_tables_text(others: list[tuple[str, list[str]]]) -> str:
+    """Return the prompt text that names the other tables on the page."""
+    lines = "\n".join(f"- {label}: {', '.join(columns)}" for label, columns in others)
+    return f"Other tables on this page:\n{lines}"
+
+
+async def extract_page(
+    page: int,
+    png: bytes,
+    schema: TableSchema,
+    client: LLMClient,
+    others: list[tuple[str, list[str]]] | None = None,
+) -> PageResult:
+    """
+    Extract one table's rows from one page; retry once with the problems named if invalid.
+
+    ``others`` names (label, columns) of the other tables on the page, if there are any.
+    """
     keys = [c.name.strip() for c in schema.columns]
-    base = [column_structure(schema), Image(png)]
-    answer = await client.ask(Request("extract", EXTRACT_PROMPT, PageRows, base, page))
+    base: list[str | Image] = [column_structure(schema), Image(png)]
+    prompt = EXTRACT_PROMPT
+    if others:
+        base.append(other_tables_text(others))
+        prompt = f"{EXTRACT_PROMPT} {MULTI_TABLE_SENTENCE}"
+    answer = await client.ask(Request("extract", prompt, PageRows, base, page))
     problems = validate_rows(answer.rows, keys)
     if not problems:
         return PageResult(page, answer.rows)
     retry = [*base, retry_prompt(answer.rows, problems)]
-    answer = await client.ask(Request("extract", EXTRACT_PROMPT, PageRows, retry, page))
+    answer = await client.ask(Request("extract", prompt, PageRows, retry, page))
     problems = validate_rows(answer.rows, keys)
     if problems:
         msg = f"page {page}: rows still invalid after one retry: {problems}"
@@ -141,56 +142,84 @@ async def extract_page(page: int, png: bytes, schema: TableSchema, client: LLMCl
     return PageResult(page, answer.rows)
 
 
-async def extract_table_async(
+def table_page_layers(found: list[Found], layers: dict[int, Layer]) -> list[dict[int, Layer]]:
+    """
+    Return, per table, the text layer of each page it is on.
+
+    A page with one table keeps the whole layer; on a page with several, each table gets
+    its own band (``ExtractionError`` if one cannot be isolated).
+    """
+    out: list[dict[int, Layer]] = [{} for _ in found]
+    for page in sorted({p for f in found for p in f.rows}):
+        on_page = [i for i, f in enumerate(found) if page in f.rows]
+        specs = [(found[i].label, *found[i].rows[page]) for i in on_page]
+        for i, layer in zip(on_page, table_layers(page, layers[page], specs), strict=True):
+            out[i][page] = layer
+    return out
+
+
+async def extract_tables_async(
     pdf: Path,
     client: LLMClient,
     *,
-    schema_pages: int = SCHEMA_PAGES,
+    discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
-) -> Table:
-    """Run the whole pipeline on one PDF."""
+) -> list[Table]:
+    """Run the whole pipeline on one PDF; return one ``Table`` per table in it."""
     with pymupdf.open(pdf) as document:
         layers: dict[int, Layer] = {i + 1: load_layer(p) for i, p in enumerate(document)}
         check_text_layers(layers)  # before rendering or any request; cannot be skipped
         pngs = [render_png(p) for p in document]
 
-    schema_request = Request(
-        "schema", SCHEMA_PROMPT, TableSchema, [Image(png) for png in pngs[:schema_pages]]
-    )
-    schema = await client.ask(schema_request)
-    columns = validate_schema(schema)
-    layouts = page_layouts(columns, [layers[n] for n in sorted(layers)])
+    found = await discover(pngs, client, discovery_pages=discovery_pages)
+    table_layers_by_page = table_page_layers(found, layers)  # may reject a page before extracting
+    layouts = [
+        page_layouts(f.columns, [layers[p] for p in f.pages]) for f in found
+    ]  # from the whole pages: the header sits above a table's band
 
     gate = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
 
-    async def one(number: int, png: bytes, present: tuple[str, ...]) -> PageResult:
+    async def one(index: int, page: int, present: tuple[str, ...]) -> PageResult:
+        table = found[index]
+        others = [
+            (f.label, f.columns) for i, f in enumerate(found) if i != index and page in f.rows
+        ]
         async with gate:
-            result = await extract_page(number, png, page_schema(schema, present), client)
-        absent = tuple(c for c in columns if c not in present)
+            result = await extract_page(
+                page, pngs[page - 1], page_schema(table.schema, present), client, others
+            )
+        absent = tuple(c for c in table.columns if c not in present)
         rows = [{**dict.fromkeys(absent, ""), **row} for row in result.rows]
         return replace(result, rows=rows, absent=absent)
 
-    pages = await asyncio.gather(
-        *(
-            one(n, png, lay.columns)
-            for n, (png, lay) in enumerate(zip(pngs, layouts, strict=True), 1)
+    jobs = [
+        (index, page, layout.columns)
+        for index, (f, lays) in enumerate(zip(found, layouts, strict=True))
+        for page, layout in zip(f.pages, lays, strict=True)
+    ]
+    results = await asyncio.gather(*(one(*job) for job in jobs))
+
+    tables: list[Table] = []
+    for index, f in enumerate(found):
+        pages = [r for (i, _, _), r in zip(jobs, results, strict=True) if i == index]
+        page_layers = table_layers_by_page[index]
+        grounded, position = ground_document(f.columns, pages, page_layers)
+        tables.append(
+            Table(f.columns, pages, page_layers, grounded, position, layouts[index], label=f.label)
         )
-    )
-    grounded, position = ground_document(columns, list(pages), layers)
-    table = Table(columns, list(pages), layers, grounded, position, layouts)
     if recheck:
-        table = await recheck_table(table, pdf, client)
-    return table
+        tables = list(await asyncio.gather(*(recheck_table(t, pdf, client) for t in tables)))
+    return tables
 
 
-def extract_table(
+def extract_tables(
     pdf: Path,
     client: LLMClient,
     *,
-    schema_pages: int = SCHEMA_PAGES,
+    discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
-) -> Table:
-    """Run the whole pipeline on one PDF (synchronous wrapper)."""
+) -> list[Table]:
+    """Run the whole pipeline on one PDF (synchronous wrapper); one ``Table`` per table."""
     return asyncio.run(
-        extract_table_async(Path(pdf), client, schema_pages=schema_pages, recheck=recheck)
+        extract_tables_async(Path(pdf), client, discovery_pages=discovery_pages, recheck=recheck)
     )

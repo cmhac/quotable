@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pytest
 
-from gridkey import CachedClient, extract_table
+from gridkey import CachedClient, extract_tables
 from gridkey.pydantic_ai_client import PydanticAIClient
 from tests.conftest import DATA
 
@@ -32,7 +32,7 @@ pytestmark = [
     ),
 ]
 
-MAX_NEW_REQUESTS = 6  # one document page: schema + extract (+ recheck)
+MAX_NEW_REQUESTS = 6  # one document page: discovery + extract (+ recheck)
 CACHE = Path(__file__).parent / ".cache"
 
 
@@ -41,7 +41,7 @@ def test_a_one_page_document_is_extracted_and_grounded_by_a_real_model():
     recorded = json.loads((DATA / f"{name}.rows.json").read_text())
     client = CachedClient(PydanticAIClient(MODEL), CACHE / name, max_requests=MAX_NEW_REQUESTS)
 
-    table = extract_table(DATA / f"{name}.pdf", client)
+    (table,) = extract_tables(DATA / f"{name}.pdf", client)
 
     assert len(table.columns) == len(recorded["columns"])
     expected_rows = len(recorded["pages"]["1"])

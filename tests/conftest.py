@@ -7,8 +7,8 @@ from pathlib import Path
 import pymupdf
 import pytest
 
-from gridkey.llm import Request
-from gridkey.models import Column, PageRows, TableSchema
+from gridkey.llm import Image, Request
+from gridkey.models import Column, PageRows, PageTables, TableInfo, WindowTables
 
 DATA = Path(__file__).parent / "data"
 SAMPLES = ["fy22_milcon_house_original", "fy24_milcon_house_original", "fy22_ag_house_original"]
@@ -68,12 +68,34 @@ class FakeClient:
         return [r.stage for r in self.requests]
 
 
+def window_of(request: Request, tables: list[PageTables]) -> WindowTables:
+    """Return a discovery answer with ``tables`` repeated for each page image in ``request``."""
+    images = sum(isinstance(p, Image) for p in request.parts)
+    return WindowTables(pages=[tables[min(i, len(tables) - 1)] for i in range(images)])
+
+
+def one_table(columns: list[str], label: str = "table") -> PageTables:
+    """A page that holds one table with these columns (first and last row text left blank)."""
+    info = TableInfo(
+        label=label,
+        columns=[Column(name=c, description="") for c in columns],
+        first_row="",
+        last_row="",
+    )
+    return PageTables(tables=[info])
+
+
 def replay(columns: list[str], pages: dict[int, list[dict[str, str]]]) -> FakeClient:
-    """A fake model that answers schema and extract requests with recorded rows."""
+    """
+    A fake model that answers discovery and extract requests with recorded rows.
+
+    Discovery reports one table with ``columns`` on every page; the first and last row text
+    is blank because it is only used on pages that hold several tables.
+    """
 
     def handler(request: Request) -> object:
         if request.stage == "schema":
-            return TableSchema(columns=[Column(name=c, description="") for c in columns])
+            return window_of(request, [one_table(columns)])
         if request.stage == "extract":
             assert request.page is not None
             return PageRows(rows=[dict(r) for r in pages[request.page]])

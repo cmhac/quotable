@@ -7,39 +7,47 @@ import pytest
 from gridkey import (
     ExtractionError,
     TextLayerError,
-    extract_table,
-    extract_table_async,
+    extract_tables,
+    extract_tables_async,
 )
 from gridkey.llm import Image
-from gridkey.models import Column, PageRows, TableSchema
-from tests.conftest import DATA, FakeClient, load_sample, replay
+from gridkey.models import PageRows
+from tests.conftest import DATA, FakeClient, load_sample, one_table, replay, window_of
 
 
 def test_the_sample_documents_come_back_as_the_rows_the_model_gave(sample):
     client = replay(sample["columns"], sample["pages"])
-    table = extract_table(sample["pdf"], client, recheck=False)
+    (table,) = extract_tables(sample["pdf"], client, recheck=False)
     assert table.columns == sample["columns"]
     for number, rows in sample["pages"].items():
         assert [r.values for r in table.page_rows(number)] == rows
 
 
-def test_it_asks_for_the_schema_once_then_for_each_page(sample):
+def test_it_asks_for_the_tables_once_then_for_each_page(sample):
     client = replay(sample["columns"], sample["pages"])
-    extract_table(sample["pdf"], client, recheck=False)
+    extract_tables(sample["pdf"], client, recheck=False)
     assert client.stages() == ["schema"] + ["extract"] * len(sample["pages"])
 
 
-def test_schema_discovery_sees_only_the_first_pages():
+def test_discovery_sees_every_page_in_windows():
     four_pages = load_sample("fy22_ag_house_original")
     client = replay(four_pages["columns"], four_pages["pages"])
-    extract_table(four_pages["pdf"], client, schema_pages=2, recheck=False)
-    images = [p for p in client.requests[0].parts if isinstance(p, Image)]
-    assert len(images) == 2
+    extract_tables(four_pages["pdf"], client, discovery_pages=2, recheck=False)
+    discovery = [r for r in client.requests if r.stage == "schema"]
+    assert [sum(isinstance(p, Image) for p in r.parts) for r in discovery] == [2, 2]
+
+
+def test_discovery_sees_all_four_pages_in_one_request_by_default():
+    four_pages = load_sample("fy22_ag_house_original")
+    client = replay(four_pages["columns"], four_pages["pages"])
+    extract_tables(four_pages["pdf"], client, recheck=False)
+    discovery = [r for r in client.requests if r.stage == "schema"]
+    assert [sum(isinstance(p, Image) for p in r.parts) for r in discovery] == [4]
 
 
 def test_each_page_request_has_the_columns_and_that_pages_image(sample):
     client = replay(sample["columns"], sample["pages"])
-    extract_table(sample["pdf"], client, recheck=False)
+    extract_tables(sample["pdf"], client, recheck=False)
     request = client.requests[1]
     assert request.page == 1
     assert sum(isinstance(p, Image) for p in request.parts) == 1
@@ -49,7 +57,7 @@ def test_each_page_request_has_the_columns_and_that_pages_image(sample):
 
 def test_every_cell_carries_a_grounding_status_and_coverage(sample):
     client = replay(sample["columns"], sample["pages"])
-    table = extract_table(sample["pdf"], client, recheck=False)
+    (table,) = extract_tables(sample["pdf"], client, recheck=False)
     record = table.records()[0]
     for column in sample["columns"]:
         assert record[column] == sample["pages"][1][0][column]
@@ -68,7 +76,7 @@ def test_a_clean_sample_has_nothing_flagged():
     recorded = json.loads((DATA / "fy22_milcon_house_original.rows.json").read_text())
     pages = {int(p): rows for p, rows in recorded["pages"].items()}
     client = replay(recorded["columns"], pages)
-    table = extract_table(DATA / "fy22_milcon_house_original.pdf", client, recheck=False)
+    (table,) = extract_tables(DATA / "fy22_milcon_house_original.pdf", client, recheck=False)
     assert table.flagged() == []
     assert {r["grounding_status"] for r in table.records()} == {"exact"}
 
@@ -78,7 +86,7 @@ def test_a_value_moved_to_another_row_is_caught_by_the_position_check():
     rows = copy.deepcopy(recorded["pages"]["1"])
     rows[1]["Project"], rows[8]["Project"] = rows[8]["Project"], rows[1]["Project"]
     client = replay(recorded["columns"], {1: rows})
-    table = extract_table(DATA / "fy22_milcon_house_original.pdf", client, recheck=False)
+    (table,) = extract_tables(DATA / "fy22_milcon_house_original.pdf", client, recheck=False)
     assert table.position["misplaced"] == 2
     assert {(f.row, f.column, f.status) for f in table.flagged()} == {
         (2, "Project", "misplaced"),
@@ -97,13 +105,11 @@ def test_rows_with_the_wrong_keys_are_sent_back_once(make_pdf):
 
     def handler(request):
         if request.stage == "schema":
-            return TableSchema(
-                columns=[Column(name="A", description=""), Column(name="B", description="")]
-            )
+            return window_of(request, [one_table(["A", "B"])])
         return next(answers)
 
     client = FakeClient(handler)
-    table = extract_table(path, client, recheck=False)
+    (table,) = extract_tables(path, client, recheck=False)
     assert [r.values for r in table.page_rows(1)] == [{"A": "Alpha", "B": "Beta"}]
     retry = client.requests[-1]
     assert any("Extra" in p for p in retry.parts if isinstance(p, str))  # the problem is named
@@ -114,11 +120,11 @@ def test_rows_that_are_still_wrong_after_the_retry_abort(make_pdf):
 
     def handler(request):
         if request.stage == "schema":
-            return TableSchema(columns=[Column(name="A", description="")])
+            return window_of(request, [one_table(["A"])])
         return PageRows(rows=[{"Nope": "Alpha"}])
 
     with pytest.raises(ExtractionError, match="page 1"):
-        extract_table(path, FakeClient(handler), recheck=False)
+        extract_tables(path, FakeClient(handler), recheck=False)
 
 
 def test_a_column_the_page_does_not_print_is_not_asked_for_and_stays_blank(make_pdf):
@@ -142,11 +148,11 @@ def test_a_column_the_page_does_not_print_is_not_asked_for_and_stays_blank(make_
 
     def handler(request):
         if request.stage == "schema":
-            return TableSchema(columns=[Column(name=c, description="") for c in header])
+            return window_of(request, [one_table(header)])
         return PageRows(rows=rows[request.page])
 
     client = FakeClient(handler)
-    table = extract_table(path, client, recheck=False)
+    (table,) = extract_tables(path, client, recheck=False)
     asked = "\n".join(p for p in client.requests[2].parts if isinstance(p, str))
     assert "Amount" not in asked
     (row,) = table.records()[1:]
@@ -157,18 +163,18 @@ def test_a_column_the_page_does_not_print_is_not_asked_for_and_stays_blank(make_
 def test_a_garbled_text_layer_is_rejected_before_any_request():
     client = replay(["A"], {1: [{"A": "x"}]})
     with pytest.raises(TextLayerError, match="garbled"):
-        extract_table(DATA / "senate_expenditures_garbled.pdf", client)
+        extract_tables(DATA / "senate_expenditures_garbled.pdf", client)
     assert client.requests == []
 
 
 def test_a_pdf_with_no_text_is_rejected_before_any_request(make_pdf):
     client = replay(["A"], {1: [{"A": "x"}]})
     with pytest.raises(TextLayerError, match="no text layer"):
-        extract_table(make_pdf([[]]), client)
+        extract_tables(make_pdf([[]]), client)
     assert client.requests == []
 
 
 def test_the_text_layer_check_has_no_off_switch():
-    parameters = set(inspect.signature(extract_table).parameters)
-    assert parameters == {"pdf", "client", "schema_pages", "recheck"}
-    assert set(inspect.signature(extract_table_async).parameters) == parameters
+    parameters = set(inspect.signature(extract_tables).parameters)
+    assert parameters == {"pdf", "client", "discovery_pages", "recheck"}
+    assert set(inspect.signature(extract_tables_async).parameters) == parameters

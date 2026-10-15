@@ -9,15 +9,20 @@ this is the key that unlocks them.
 
 ```python
 from pathlib import Path
-from gridkey import CachedClient, extract_table
+from gridkey import CachedClient, extract_tables
 from gridkey.pydantic_ai_client import PydanticAIClient  # needs the [openai] extra
 
 client = CachedClient(PydanticAIClient("openai:<model-name>"), Path(".cache"), max_requests=100)
-table = extract_table(Path("tables.pdf"), client)
+tables = extract_tables(Path("tables.pdf"), client)  # one Table per table in the PDF
 
-table.records()  # one flat dict per row: values, <column>__grounding, <column>__coverage, ...
-table.flagged()  # every cell that is not an exact match, with its status
+for table in tables:
+    table.label      # the model's short name for the table
+    table.records()  # one flat dict per row: values, <column>__grounding, <column>__coverage, ...
+    table.flagged()  # every cell that is not an exact match, with its status
 ```
+
+A PDF with one table returns a list of one. Pages are shown to the model `discovery_pages`
+at a time (default 4; pass `discovery_pages=` to change it).
 
 Any object with an `identity` string and an `async ask(request)` method is a client, so
 other providers (or a fake) plug in without touching the pipeline.
@@ -37,15 +42,24 @@ document with text but too few letters to score (only numbers) is accepted.
 | Stage | Module | What happens |
 |---|---|---|
 | Text-layer check | `textcheck` | Each page's text is scored against an English trigram model; the document is rejected if more than 10% of the scorable pages are garbled, or it has no text. |
-| Schema discovery | `extract` | The first pages go to the model, which returns only the column structure. |
-| Layout discovery | `layout` | Each page's printed header (found in the text layer) says which columns that page prints; pages without a header inherit the previous layout. |
-| Extraction | `extract` | One request per page returns its rows. Rows with wrong keys are sent back once. |
-| Grounding | `grounding` | Each value is looked up in the page's text layer: exact token match, else a fuzzy longest-common-subsequence match. Statuses: `exact`, `fuzzy`, `ungrounded`, `untokenized`, `empty`, `not_on_page`. |
+| Table discovery | `discover` | Every page goes to the model, `discovery_pages` at a time, one window after the next. It lists the tables on each page with their columns and the words of each table's first and last row. Later windows are told the tables found so far, so a page that continues a table without printing its header reuses that table's columns. Tables with the same columns on different pages are one table. |
+| Layout discovery | `layout` | For each table, each page's printed header (found in the text layer) says which columns that page prints; pages without a header inherit the previous layout. |
+| Extraction | `extract` | One request per table and page returns its rows. On a page with several tables the request names the other tables and asks for this one only. Rows with wrong keys are sent back once. |
+| Grounding | `grounding` | Each value is looked up in the table's text layer (the page's, or on a page with several tables only the band between the table's first and last row, found with `regions`): exact token match, else a fuzzy longest-common-subsequence match. Statuses: `exact`, `fuzzy`, `ungrounded`, `untokenized`, `empty`, `not_on_page`. |
 | Position check | `position` | A value must sit in its own row and column (row windows from uniquely-occurring values, column bands pooled over the document). Values found elsewhere become `misplaced`. |
 | Recheck | `recheck` | Flagged cells go back to the model once with their reason, the page image and the page's whole text layer; the model is told to copy the text layer's reading. An answer is kept only if grounding of that cell strictly improves. Because the text layer wins, OCR errors in it (for example thousands commas read as periods) can pass into the output. |
 
 Model requests are cached on disk by a hash of everything that decides the answer
 (`CachedClient`), and `max_requests` caps how many new requests one run may make.
+
+## Not handled
+
+- Tables side by side on a page. Tables are separated by a vertical band only; if two bands
+  overlap, or a table's first or last row cannot be found in the text layer, the run raises
+  `ExtractionError`.
+- Tables whose column names change between pages beyond case and punctuation are returned as
+  separate tables; two real tables with the same columns are returned as one.
+- Titles and captions printed outside a table (a fiscal year, a section name) are not captured.
 
 ## Development
 

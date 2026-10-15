@@ -82,7 +82,7 @@ def ground_document(
 
 @dataclass
 class Table:
-    """Everything the pipeline produced for one PDF."""
+    """Everything the pipeline produced for one table of a PDF (``pages`` are its pages only)."""
 
     columns: list[str]
     pages: list[PageResult]
@@ -91,6 +91,7 @@ class Table:
     position: dict[str, int]
     layouts: list[PageLayout] = field(default_factory=list)
     proposals: list[Proposal] = field(default_factory=list)  # what the recheck proposed
+    label: str = ""  # the model's short name for the table; the caller's use only
 
     def page_rows(self, page: int) -> list[Row]:
         """Return the rows of one page (1-based)."""

@@ -8,7 +8,7 @@
 
 ## Project state
 
-An initial, barebones port. The pipeline works end to end and the offline test suite passes (101 tests, no network or API key needed). Spec 001 (reject documents whose text layer is garbled or missing, before any model request) is implemented; OCR is required and grounding cannot be disabled. Spec 002 (the recheck sends the page's whole text layer and tells the model to copy it, so the text layer wins over the model) is implemented. Spec 003 renamed the project to `gridkey` (package, distribution and the `GRIDKEY_LIVE_MODEL` variable); behaviour is unchanged. The live test in `tests/live/` is opt-in (see Commands). Not yet ported from the original: page orientation, histogram-based layout matching, adding schema-missing columns from header labels, the `incomplete` verdict and per-layout bands in the position check, splitting large rechecks, dollar-based cost caps, and a CSV/CLI writer. `README.md` lists these in "Not carried over yet".
+An initial, barebones port. The pipeline works end to end and the offline test suite passes (138 tests, no network or API key needed). Spec 001 (reject documents whose text layer is garbled or missing, before any model request) is implemented; OCR is required and grounding cannot be disabled. Spec 002 (the recheck sends the page's whole text layer and tells the model to copy it, so the text layer wins over the model) is implemented. Spec 003 renamed the project to `gridkey` (package, distribution and the `GRIDKEY_LIVE_MODEL` variable); behaviour is unchanged. Spec 004 (several tables per document, including several on one page) is implemented: `extract_tables` returns one `Table` per table, discovery looks at every page in windows, and a table on a shared page is checked against its own band of the text layer only; its live check on the OCR'd Senate PDF (task 008) has not been run. The live test in `tests/live/` is opt-in (see Commands). Not yet ported from the original: page orientation, histogram-based layout matching, adding schema-missing columns from header labels, the `incomplete` verdict and per-layout bands in the position check, splitting large rechecks, dollar-based cost caps, and a CSV/CLI writer. `README.md` lists these in "Not carried over yet"; what spec 004 does not handle is under "Not handled".
 
 ## File structure
 
@@ -25,7 +25,10 @@ An initial, barebones port. The pipeline works end to end and the offline test s
 ├── justfile - Commands for lint, format, type check, tests and hooks (run `just`)
 ├── .pre-commit-config.yaml - Pre-commit hooks: ruff check --fix, ruff format, ty check
 ├── src/gridkey/
-│   ├── extract.py - The pipeline: extract_table(pdf, client)
+│   ├── extract.py - The pipeline: extract_tables(pdf, client) -> list[Table]
+│   ├── discover.py - Table discovery: windows of pages, tables found so far carried forward, grouping by columns
+│   ├── regions.py - A table's band of a page that holds several tables (from its first and last row)
+│   ├── schema.py - ExtractionError and the column checks
 │   ├── text.py - Text layer: tokenize, load_layer, Layer.lines
 │   ├── textcheck.py - Garbled/missing text-layer check (English trigram score); TextLayerError
 │   ├── ngrams.py - Letter runs, trigrams and the shipped reference counts
