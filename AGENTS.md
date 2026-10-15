@@ -53,7 +53,7 @@ Commands live in the `justfile` ([just](https://github.com/casey/just) is the co
 | `just format` | `ruff format .` |
 | `just typecheck` | `ty check` |
 | `just test [pytest args]` | Offline tests: no network, no API key. Pass pytest args, e.g. `just test -k grounding` |
-| `just test-live` | Live tests (`-m live`): calls a real model and costs money. Needs `OPENAI_API_KEY` and `PDF_TABLE_EXTRACT_LIVE_MODEL`. Never run without the user's explicit go-ahead |
+| `just test-live` | Live tests (`-m live`): calls a real model and costs money. Needs `OPENAI_API_KEY` and `PDF_TABLE_EXTRACT_LIVE_MODEL`, read from `.env` (see `.env.example`); without both the test is skipped. Never run without the user's explicit go-ahead |
 | `just hooks` | Run every pre-commit hook on all tracked files |
 | `just check` | `just hooks`, then `just test` |
 

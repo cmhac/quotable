@@ -1,5 +1,8 @@
 # Commands for working on this repo. Run `just` to list them.
 
+# Load .env (git-ignored) into the environment of every recipe
+set dotenv-load
+
 default:
     @just --list
 
@@ -26,7 +29,7 @@ test *args:
 
 # Run the live tests: calls a real model and costs money (needs OPENAI_API_KEY and PDF_TABLE_EXTRACT_LIVE_MODEL)
 test-live:
-    uv run pytest -m live
+    uv run pytest -m live -rs
 
 # Run every pre-commit hook (ruff check --fix, ruff format, ty) on all files
 hooks:
