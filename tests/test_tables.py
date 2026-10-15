@@ -2,12 +2,12 @@
 
 import pytest
 
-from gridkey import BudgetExceededError, CachedClient, ExtractionError, extract_tables
+from gridkey import BudgetExceededError, ExtractionError
 from gridkey.discover import DISCOVER_PROMPT
 from gridkey.extract import EXTRACT_PROMPT, MULTI_TABLE_SENTENCE
-from gridkey.llm import Image
+from gridkey.llm import CachedClient, Image
 from gridkey.models import CellRecheck, Column, PageRecheck, PageRows, PageTables, TableInfo
-from tests.conftest import FakeClient, window_of
+from tests.conftest import FakeClient, extract_tables, window_of
 
 HEADER_B = [(72, 60, "Name"), (182, 60, "Amount"), (292, 60, "Note")]
 A_ROWS = [{"Item": "Alpha", "Amount": "$100"}, {"Item": "Beta", "Amount": "$250"}]

@@ -1,15 +1,25 @@
 """
-A client backed by pydantic-ai (``pip install gridkey[openai]``).
+The model client: sends requests to a vision model through pydantic-ai.
 
 ``model`` is anything pydantic-ai accepts: a ``"provider:model-name"`` string (the
-provider's API key is read from the environment as usual) or a model instance.
-The import is deferred so the rest of the package does not need pydantic-ai.
+provider's API key is read from the environment as usual) or a pydantic-ai ``Model``
+instance, which is how a custom provider is plugged in.
 """
 
 import json
 from typing import Any
 
+from pydantic_ai import Agent, BinaryContent
+from pydantic_ai.models import Model
+
 from gridkey.llm import Image, Request
+
+
+def model_name(model: Model | str) -> str:
+    """Return the name that identifies ``model`` in the request cache key."""
+    if isinstance(model, str):
+        return model
+    return f"{model.system}:{model.model_name}"
 
 
 class PydanticAIClient:
@@ -17,7 +27,7 @@ class PydanticAIClient:
 
     def __init__(
         self,
-        model: Any,  # noqa: ANN401
+        model: Model | str,
         *,
         identity: str | None = None,
         model_settings: dict[str, Any] | None = None,
@@ -25,13 +35,11 @@ class PydanticAIClient:
         """Use ``model``; ``identity`` (default: model name + settings) keys the request cache."""
         self.model = model
         self.model_settings: Any = model_settings or {}
-        name = identity or (model if isinstance(model, str) else type(model).__name__)
+        name = identity or model_name(model)
         self.identity = f"{name}:{json.dumps(self.model_settings, sort_keys=True)}"
 
     async def ask(self, request: Request) -> Any:  # noqa: ANN401
         """Run the request and return an instance of ``request.output_type``."""
-        from pydantic_ai import Agent, BinaryContent  # noqa: PLC0415
-
         agent = Agent(
             self.model,
             output_type=request.output_type,

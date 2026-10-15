@@ -8,7 +8,7 @@
 
 ## Project state
 
-An initial, barebones port. The pipeline works end to end and the offline test suite passes (138 tests, no network or API key needed). Spec 001 (reject documents whose text layer is garbled or missing, before any model request) is implemented; OCR is required and grounding cannot be disabled. Spec 002 (the recheck sends the page's whole text layer and tells the model to copy it, so the text layer wins over the model) is implemented. Spec 003 renamed the project to `gridkey` (package, distribution and the `GRIDKEY_LIVE_MODEL` variable); behaviour is unchanged. Spec 004 (several tables per document, including several on one page) is implemented: `extract_tables` returns one `Table` per table, discovery looks at every page in windows, and a table on a shared page is checked against its own band of the text layer only; its live check on the OCR'd Senate PDF (task 008) has not been run. The live test in `tests/live/` is opt-in (see Commands). Not yet ported from the original: page orientation, histogram-based layout matching, adding schema-missing columns from header labels, the `incomplete` verdict and per-layout bands in the position check, splitting large rechecks, dollar-based cost caps, and a CSV/CLI writer. `README.md` lists these in "Not carried over yet"; what spec 004 does not handle is under "Not handled".
+An initial, barebones port. The pipeline works end to end and the offline test suite passes (148 tests, no network or API key needed). Spec 001 (reject documents whose text layer is garbled or missing, before any model request) is implemented; OCR is required and grounding cannot be disabled. Spec 002 (the recheck sends the page's whole text layer and tells the model to copy it, so the text layer wins over the model) is implemented. Spec 003 renamed the project to `gridkey` (package, distribution and the live-test model variable); behaviour is unchanged. Spec 004 (several tables per document, including several on one page) is implemented: `extract_tables` returns one `Table` per table, discovery looks at every page in windows, and a table on a shared page is checked against its own band of the text layer only; its live check on the OCR'd Senate PDF (task 008) has not been run. Spec 005 (one entrypoint) is implemented: `extract_tables(pdf, model, *, cache_dir, max_requests, model_settings, discovery_pages, recheck)` is the only public way in, `model` is a required argument (a pydantic-ai model string or `Model` instance, never read from the environment), and pydantic-ai with all provider SDKs (no PyTorch) is a regular dependency. The offline tests drive the pipeline through the internal `run_pipeline(pdf, client)` with fake clients. The live test in `tests/live/` is opt-in (see Commands). Not yet ported from the original: page orientation, histogram-based layout matching, adding schema-missing columns from header labels, the `incomplete` verdict and per-layout bands in the position check, splitting large rechecks, dollar-based cost caps, and a CSV/CLI writer. `README.md` lists these in "Not carried over yet"; what spec 004 does not handle is under "Not handled".
 
 ## File structure
 
@@ -25,7 +25,7 @@ An initial, barebones port. The pipeline works end to end and the offline test s
 ├── justfile - Commands for lint, format, type check, tests and hooks (run `just`)
 ├── .pre-commit-config.yaml - Pre-commit hooks: ruff check --fix, ruff format, ty check
 ├── src/gridkey/
-│   ├── extract.py - The pipeline: extract_tables(pdf, client) -> list[Table]
+│   ├── extract.py - The public extract_tables(pdf, model, ...) -> list[Table], and run_pipeline(pdf, client) (internal, used by the tests)
 │   ├── discover.py - Table discovery: windows of pages, tables found so far carried forward, grouping by columns
 │   ├── regions.py - A table's band of a page that holds several tables (from its first and last row)
 │   ├── schema.py - ExtractionError and the column checks
@@ -39,8 +39,8 @@ An initial, barebones port. The pipeline works end to end and the offline test s
 │   ├── recheck.py - Second look at flagged cells
 │   ├── table.py - Table/Row/Flag results and ground_document
 │   ├── models.py - Pydantic structured outputs requested from the model
-│   ├── llm.py - Request/Image, LLMClient protocol, CachedClient (disk cache, request cap)
-│   └── pydantic_ai_client.py - Optional pydantic-ai client (the [openai] extra)
+│   ├── llm.py - Internal: Request/Image, LLMClient protocol, CachedClient (optional disk cache, request cap)
+│   └── _model.py - Internal: the pydantic-ai client built from the `model` argument
 └── tests/
     ├── data/ - Sample PDFs plus recorded model rows (*.rows.json)
     ├── live/ - Tests that call a real model (opt-in, deselected by default)
@@ -53,12 +53,12 @@ Commands live in the `justfile` ([just](https://github.com/casey/just) is the co
 
 | Command                   | What it does                                                                                                                                                                                                                                   |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `just setup`              | `uv sync --extra openai` and install the git pre-commit hook (run once after cloning)                                                                                                                                                          |
+| `just setup`              | `uv sync` and install the git pre-commit hook (run once after cloning)                                                                                                                                                          |
 | `just lint`               | `ruff check .` (reports only, changes nothing)                                                                                                                                                                                                 |
 | `just format`             | `ruff format .`                                                                                                                                                                                                                                |
 | `just typecheck`          | `ty check`                                                                                                                                                                                                                                     |
 | `just test [pytest args]` | Offline tests: no network, no API key. Pass pytest args, e.g. `just test -k grounding`                                                                                                                                                         |
-| `just test-live`          | Live tests (`-m live`): calls a real model and costs money. Needs `OPENAI_API_KEY` and `GRIDKEY_LIVE_MODEL`, read from `.env` (see `.env.example`); without both the test is skipped. Never run without the user's explicit go-ahead |
+| `just test-live`          | Live tests (`-m live`): calls a real model and costs money. Needs `OPENAI_API_KEY` and `GRIDKEY_LIVE_TEST_MODEL` (test-only; the library never reads the model from the environment), read from `.env` (see `.env.example`); without both the test is skipped. Never run without the user's explicit go-ahead |
 | `just hooks`              | Run every pre-commit hook on all tracked files                                                                                                                                                                                                 |
 | `just check`              | `just hooks`, then `just test`                                                                                                                                                                                                                 |
 

@@ -8,24 +8,30 @@ The name is a play on words: tables in PDFs are grids that are locked on the pag
 this is the key that unlocks them.
 
 ```python
-from pathlib import Path
-from gridkey import CachedClient, extract_tables
-from gridkey.pydantic_ai_client import PydanticAIClient  # needs the [openai] extra
+from gridkey import extract_tables
 
-client = CachedClient(PydanticAIClient("openai:<model-name>"), Path(".cache"), max_requests=100)
-tables = extract_tables(Path("tables.pdf"), client)  # one Table per table in the PDF
+tables = extract_tables(
+    "tables.pdf",
+    model="openai:<model-name>",  # required; a pydantic-ai model string or Model instance
+    cache_dir=".cache",  # optional: cache model answers on disk
+    max_requests=100,  # optional: cap on new (uncached) model requests
+)  # one Table per table in the PDF
 
 for table in tables:
-    table.label      # the model's short name for the table
+    table.label  # the model's short name for the table
     table.records()  # one flat dict per row: values, <column>__grounding, <column>__coverage, ...
     table.flagged()  # every cell that is not an exact match, with its status
 ```
 
+`model` has no default and is never read from an environment variable. It is a
+[pydantic-ai](https://ai.pydantic.dev) model string (`"provider:model-name"`) or a pydantic-ai
+`Model` instance, which is how a custom provider plugs in. The provider's API key comes from the
+environment, as pydantic-ai documents it (for example `OPENAI_API_KEY`). The install includes the
+SDKs for Anthropic, Bedrock, Cohere, Google, Groq, Hugging Face, Mistral, OpenAI, OpenRouter and
+xAI. `model_settings=` is passed to pydantic-ai. `extract_tables_async` takes the same arguments.
+
 A PDF with one table returns a list of one. Pages are shown to the model `discovery_pages`
 at a time (default 4; pass `discovery_pages=` to change it).
-
-Any object with an `identity` string and an `async ask(request)` method is a client, so
-other providers (or a fake) plug in without touching the pipeline.
 
 ## Requires a readable text layer
 
@@ -49,8 +55,9 @@ document with text but too few letters to score (only numbers) is accepted.
 | Position check | `position` | A value must sit in its own row and column (row windows from uniquely-occurring values, column bands pooled over the document). Values found elsewhere become `misplaced`. |
 | Recheck | `recheck` | Flagged cells go back to the model once with their reason, the page image and the page's whole text layer; the model is told to copy the text layer's reading. An answer is kept only if grounding of that cell strictly improves. Because the text layer wins, OCR errors in it (for example thousands commas read as periods) can pass into the output. |
 
-Model requests are cached on disk by a hash of everything that decides the answer
-(`CachedClient`), and `max_requests` caps how many new requests one run may make.
+Model requests are cached on disk when `cache_dir` is given, by a hash of everything that
+decides the answer, and `max_requests` caps how many new requests one run may make (with or
+without a cache; `BudgetExceededError` beyond it).
 
 ## Not handled
 
@@ -66,7 +73,7 @@ Model requests are cached on disk by a hash of everything that decides the answe
 Commands are in the `justfile` ([just](https://github.com/casey/just)); run `just` to list them.
 
 ```bash
-just setup       # uv sync --extra openai, and install the git pre-commit hook
+just setup       # uv sync, and install the git pre-commit hook
 just test        # offline: no network, no API key, ~5 s
 just lint        # ruff check
 just format      # ruff format
@@ -82,10 +89,10 @@ just check       # hooks, then tests
   any API call. Several tests corrupt the recorded rows (a swapped value, a typo) to
   check that the position check and the recheck catch it.
 - `tests/live/` calls a real model. These tests are deselected by default and skip
-  themselves unless `OPENAI_API_KEY` and `GRIDKEY_LIVE_MODEL` are set:
+  themselves unless `OPENAI_API_KEY` and `GRIDKEY_LIVE_TEST_MODEL` are set:
 
   ```bash
-  GRIDKEY_LIVE_MODEL="openai:<model-name>" uv run pytest -m live
+  GRIDKEY_LIVE_TEST_MODEL="openai:<model-name>" uv run pytest -m live
   ```
 
   Their answers are cached in `tests/live/.cache`, and each run is capped at a few requests.

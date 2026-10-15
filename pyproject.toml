@@ -10,12 +10,9 @@ requires-python = ">=3.11"
 dependencies = [
     "pydantic==2.13.5",
     "pymupdf==1.28.2",
+    # Every provider SDK pydantic-ai supports, except the extras that pull in PyTorch.
+    "pydantic-ai-slim[anthropic,bedrock,cohere,google,groq,huggingface,mistral,openai,openrouter,xai]==2.54.0",
 ]
-
-[project.optional-dependencies]
-# Only needed for the bundled OpenAI-backed client; any object with an async
-# ``ask`` method works as a client.
-openai = ["pydantic-ai-slim[openai]==2.54.0"]
 
 [dependency-groups]
 dev = [

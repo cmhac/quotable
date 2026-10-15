@@ -26,12 +26,15 @@ import asyncio
 import json
 from dataclasses import replace
 from pathlib import Path
+from typing import Any
 
 import pymupdf
+from pydantic_ai.models import Model
 
+from gridkey._model import PydanticAIClient
 from gridkey.discover import DISCOVERY_PAGES, Found, discover
 from gridkey.layout import page_layouts
-from gridkey.llm import Image, LLMClient, Request
+from gridkey.llm import CachedClient, Image, LLMClient, Request
 from gridkey.models import PageRows, TableSchema
 from gridkey.recheck import recheck_table
 from gridkey.regions import table_layers
@@ -158,14 +161,14 @@ def table_page_layers(found: list[Found], layers: dict[int, Layer]) -> list[dict
     return out
 
 
-async def extract_tables_async(
+async def run_pipeline(
     pdf: Path,
     client: LLMClient,
     *,
     discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
 ) -> list[Table]:
-    """Run the whole pipeline on one PDF; return one ``Table`` per table in it."""
+    """Run the whole pipeline on one PDF with an already-built client (internal; tests use it)."""
     with pymupdf.open(pdf) as document:
         layers: dict[int, Layer] = {i + 1: load_layer(p) for i, p in enumerate(document)}
         check_text_layers(layers)  # before rendering or any request; cannot be skipped
@@ -212,14 +215,51 @@ async def extract_tables_async(
     return tables
 
 
-def extract_tables(
-    pdf: Path,
-    client: LLMClient,
+async def extract_tables_async(  # noqa: PLR0913
+    pdf: str | Path,
+    model: Model | str,
     *,
+    cache_dir: str | Path | None = None,
+    max_requests: int | None = None,
+    model_settings: dict[str, Any] | None = None,
+    discovery_pages: int = DISCOVERY_PAGES,
+    recheck: bool = True,
+) -> list[Table]:
+    """
+    Run the whole pipeline on one PDF; return one ``Table`` per table in it.
+
+    ``model`` is required: a pydantic-ai ``"provider:model-name"`` string (the provider's API
+    key comes from the environment, as pydantic-ai documents) or a pydantic-ai ``Model``
+    instance. ``cache_dir`` caches model answers on disk there; ``max_requests`` caps the new
+    (uncached) requests and raises ``BudgetExceededError`` beyond it.
+    """
+    client = CachedClient(
+        PydanticAIClient(model, model_settings=model_settings),
+        None if cache_dir is None else Path(cache_dir),
+        max_requests,
+    )
+    return await run_pipeline(Path(pdf), client, discovery_pages=discovery_pages, recheck=recheck)
+
+
+def extract_tables(  # noqa: PLR0913
+    pdf: str | Path,
+    model: Model | str,
+    *,
+    cache_dir: str | Path | None = None,
+    max_requests: int | None = None,
+    model_settings: dict[str, Any] | None = None,
     discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
 ) -> list[Table]:
     """Run the whole pipeline on one PDF (synchronous wrapper); one ``Table`` per table."""
     return asyncio.run(
-        extract_tables_async(Path(pdf), client, discovery_pages=discovery_pages, recheck=recheck)
+        extract_tables_async(
+            pdf,
+            model,
+            cache_dir=cache_dir,
+            max_requests=max_requests,
+            model_settings=model_settings,
+            discovery_pages=discovery_pages,
+            recheck=recheck,
+        )
     )

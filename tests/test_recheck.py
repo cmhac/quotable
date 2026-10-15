@@ -3,12 +3,11 @@ import json
 
 import pymupdf
 
-from gridkey import extract_tables
 from gridkey.llm import Image
 from gridkey.models import CellRecheck, PageRecheck
 from gridkey.recheck import RECHECK_PROMPT
 from gridkey.text import load_layer
-from tests.conftest import DATA, FakeClient, replay
+from tests.conftest import DATA, FakeClient, extract_tables, replay
 
 PDF = DATA / "fy22_milcon_house_original.pdf"
 RECORDED = json.loads((DATA / "fy22_milcon_house_original.rows.json").read_text())

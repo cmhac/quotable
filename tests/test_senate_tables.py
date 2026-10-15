@@ -2,9 +2,8 @@
 
 import json
 
-from gridkey import extract_tables
 from gridkey.models import PageRows, WindowTables
-from tests.conftest import DATA, FakeClient
+from tests.conftest import DATA, FakeClient, extract_tables
 
 PDF = DATA / "senate_expenditures_paddleocr.pdf"
 RECORDED = json.loads((DATA / "senate_expenditures_paddleocr.rows.json").read_text())

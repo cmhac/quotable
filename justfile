@@ -6,9 +6,9 @@ set dotenv-load
 default:
     @just --list
 
-# Install dependencies (including the optional pydantic-ai client) and the git hooks
+# Install dependencies and the git hooks
 setup:
-    uv sync --extra openai
+    uv sync
     uv run pre-commit install
 
 # Lint (no changes made)
@@ -27,7 +27,7 @@ typecheck:
 test *args:
     uv run pytest {{ args }}
 
-# Run the live tests: calls a real model and costs money (needs OPENAI_API_KEY and GRIDKEY_LIVE_MODEL)
+# Run the live tests: calls a real model and costs money (needs OPENAI_API_KEY and GRIDKEY_LIVE_TEST_MODEL)
 test-live:
     uv run pytest -m live -rs
 

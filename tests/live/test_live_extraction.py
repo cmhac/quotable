@@ -3,8 +3,11 @@ Tests that call a real model. They cost money and need credentials, so they are
 deselected by default (``addopts = -m 'not live'``) and skip themselves unless both
 environment variables are set:
 
-    OPENAI_API_KEY                   the provider's API key
-    GRIDKEY_LIVE_MODEL     a pydantic-ai model string, e.g. "openai:<model-name>"
+    OPENAI_API_KEY             the provider's API key
+    GRIDKEY_LIVE_TEST_MODEL    a pydantic-ai model string, e.g. "openai:<model-name>"
+
+``GRIDKEY_LIVE_TEST_MODEL`` is read by this test only; the library never reads the model
+from the environment.
 
 Run them with:  uv run pytest -m live
 
@@ -18,17 +21,16 @@ from pathlib import Path
 
 import pytest
 
-from gridkey import CachedClient, extract_tables
-from gridkey.pydantic_ai_client import PydanticAIClient
+from gridkey import extract_tables
 from tests.conftest import DATA
 
-MODEL = os.environ.get("GRIDKEY_LIVE_MODEL", "")
+MODEL = os.environ.get("GRIDKEY_LIVE_TEST_MODEL", "")
 
 pytestmark = [
     pytest.mark.live,
     pytest.mark.skipif(
         not (MODEL and os.environ.get("OPENAI_API_KEY")),
-        reason="set OPENAI_API_KEY and GRIDKEY_LIVE_MODEL to run live tests",
+        reason="set OPENAI_API_KEY and GRIDKEY_LIVE_TEST_MODEL to run live tests",
     ),
 ]
 
@@ -39,9 +41,10 @@ CACHE = Path(__file__).parent / ".cache"
 def test_a_one_page_document_is_extracted_and_grounded_by_a_real_model():
     name = "fy22_milcon_house_original"
     recorded = json.loads((DATA / f"{name}.rows.json").read_text())
-    client = CachedClient(PydanticAIClient(MODEL), CACHE / name, max_requests=MAX_NEW_REQUESTS)
 
-    (table,) = extract_tables(DATA / f"{name}.pdf", client)
+    (table,) = extract_tables(
+        DATA / f"{name}.pdf", MODEL, cache_dir=CACHE / name, max_requests=MAX_NEW_REQUESTS
+    )
 
     assert len(table.columns) == len(recorded["columns"])
     expected_rows = len(recorded["pages"]["1"])

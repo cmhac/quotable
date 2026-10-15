@@ -4,15 +4,20 @@ import json
 
 import pytest
 
-from gridkey import (
-    ExtractionError,
-    TextLayerError,
-    extract_tables,
-    extract_tables_async,
-)
+from gridkey import ExtractionError, TextLayerError, extract_tables_async
+from gridkey import extract_tables as public_extract_tables
+from gridkey.extract import run_pipeline
 from gridkey.llm import Image
 from gridkey.models import PageRows
-from tests.conftest import DATA, FakeClient, load_sample, one_table, replay, window_of
+from tests.conftest import (
+    DATA,
+    FakeClient,
+    extract_tables,
+    load_sample,
+    one_table,
+    replay,
+    window_of,
+)
 
 
 def test_the_sample_documents_come_back_as_the_rows_the_model_gave(sample):
@@ -175,6 +180,20 @@ def test_a_pdf_with_no_text_is_rejected_before_any_request(make_pdf):
 
 
 def test_the_text_layer_check_has_no_off_switch():
-    parameters = set(inspect.signature(extract_tables).parameters)
-    assert parameters == {"pdf", "client", "discovery_pages", "recheck"}
+    parameters = set(inspect.signature(public_extract_tables).parameters)
+    assert parameters == {
+        "pdf",
+        "model",
+        "cache_dir",
+        "max_requests",
+        "model_settings",
+        "discovery_pages",
+        "recheck",
+    }
     assert set(inspect.signature(extract_tables_async).parameters) == parameters
+    assert set(inspect.signature(run_pipeline).parameters) == {
+        "pdf",
+        "client",
+        "discovery_pages",
+        "recheck",
+    }

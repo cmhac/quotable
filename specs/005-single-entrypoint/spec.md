@@ -22,9 +22,9 @@ from gridkey import extract_tables
 
 tables = extract_tables(
     "tables.pdf",
-    model="openai:<model-name>",   # required, no default, never read from the environment
-    cache_dir=".cache",            # optional
-    max_requests=100,              # optional
+    model="openai:<model-name>",  # required, no default, never read from the environment
+    cache_dir=".cache",  # optional
+    max_requests=100,  # optional
 )
 ```
 

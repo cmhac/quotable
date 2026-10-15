@@ -1,5 +1,6 @@
 """Shared fixtures: the sample PDFs, their recorded rows, a synthetic PDF builder, a fake model."""
 
+import asyncio
 import json
 from collections.abc import Callable
 from pathlib import Path
@@ -7,13 +8,23 @@ from pathlib import Path
 import pymupdf
 import pytest
 
-from gridkey.llm import Image, Request
+from gridkey.extract import run_pipeline
+from gridkey.llm import Image, LLMClient, Request
 from gridkey.models import Column, PageRows, PageTables, TableInfo, WindowTables
+from gridkey.table import Table
 
 DATA = Path(__file__).parent / "data"
 SAMPLES = ["fy22_milcon_house_original", "fy24_milcon_house_original", "fy22_ag_house_original"]
 
 Word = tuple[float, float, str]  # x, y (baseline), text
+
+
+def extract_tables(
+    pdf: Path, client: LLMClient, *, discovery_pages: int | None = None, recheck: bool = True
+) -> list[Table]:
+    """Run the pipeline with a fake client (the public function takes a model instead)."""
+    options = {} if discovery_pages is None else {"discovery_pages": discovery_pages}
+    return asyncio.run(run_pipeline(Path(pdf), client, recheck=recheck, **options))
 
 
 @pytest.fixture
