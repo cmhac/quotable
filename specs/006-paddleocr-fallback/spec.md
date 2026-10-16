@@ -1,6 +1,7 @@
 # 006 - OCR with PaddleOCR when the text layer is garbled or missing, and an always-on cache
 
-Status: draft, awaiting review (no open questions left)
+Status: implemented (the NVIDIA GPU path has never run on real hardware; see the manual checklist
+in `tests/data/README.md`)
 
 ## Summary
 
@@ -440,3 +441,37 @@ Resolved by the user:
 - Always cache, to `.gridkey/` in the current directory unless `cache_dir` is given, for
   model answers as well as OCR; no in-memory mode.
 - Model downloads are left to PaddleOCR.
+
+## Differences found in implementation
+
+The probe is in `probe.md`. Where the spec and what was built differ:
+
+- **`model_dir`** is not a PaddleOCR argument (PaddleOCR takes one directory per model). In
+  `OcrConfig` it is a folder with one subfolder per model, named like the model (the layout of
+  `~/.paddlex/official_models`). Because the subfolder names are the model names, `OcrConfig`
+  raises `ValueError` if `model_dir`, or one model name, is given and the other name is not
+  known (gridkey knows the `lang="en"` names for PP-OCRv3 to v6). Checked against the real
+  models in `tests/ocr`.
+- **Word boxes** (`text_word`, `text_word_boxes`) carry no per-word score, include the spaces
+  between words as entries of their own, and also split at punctuation: `$15,142,000.00` comes
+  as `'$', '15', ',', '142', ',', '000.00'` and `SALARIES, OFFICERS` as `'SALARIES', ', ',
+  'OFFICERS'`. The adapter joins pieces until whitespace (a word is a run of pieces with none
+  between them) and gives each word its line's score and the union of its pieces' boxes. This
+  was found only by the live run: the first version kept every piece as a word, which broke
+  every number with a thousands comma and made the band search for the page's first row fail.
+- **The OCR cache key** uses the model names from the config when set, and otherwise relies on
+  `lang`, `ocr_version` and the PaddleOCR version (all in the key) to decide the default models,
+  so it needs no table of default model names.
+- **`ocr_pages`** lives in `gridkey/ocr_pages.py`, not `ocr.py`, because it uses the OCR cache,
+  which imports `ocr.py`.
+- **The default pipeline also loads PaddleOCR's text-line orientation model** (6.6 MB, on by
+  default in PaddleOCR; it rotates single lines, not pages), so the first-run download is about
+  140 MB rather than 130 MB.
+- **CPU speed:** about 55 s for one full page at 300 dpi on an Apple Silicon Mac (default
+  `cpu_threads`).
+- **`paddlepaddle-gpu` 3.3.1** exists on Paddle's cu126 index for the CPU pin's version (the docs'
+  example says 3.2.0); `--extra-index-url` resolves as well as `-i`. Resolved with `uv pip
+  compile`, not installed.
+- **Real-OCR tests** cannot use the recorded discovery answer of the Senate PDF: its first and
+  last row text is spelled as the hand-made OCR copy has it, and a fresh OCR run spells some of it
+  differently, so the page-1 bands cannot be found. They replay the detail table alone instead.

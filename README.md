@@ -13,7 +13,7 @@ from gridkey import extract_tables
 tables = extract_tables(
     "tables.pdf",
     model="openai:<model-name>",  # required; a pydantic-ai model string or Model instance
-    cache_dir=".cache",  # optional: cache model answers on disk
+    cache_dir="cache",  # optional: where answers and OCR results are cached (default .gridkey/)
     max_requests=100,  # optional: cap on new (uncached) model requests
 )  # one Table per table in the PDF
 
@@ -33,15 +33,101 @@ xAI. `model_settings=` is passed to pydantic-ai. `extract_tables_async` takes th
 A PDF with one table returns a list of one. Pages are shown to the model `discovery_pages`
 at a time (default 4; pass `discovery_pages=` to change it).
 
-## Requires a readable text layer
+## The text layer, and OCR
 
 Every value is checked against the PDF's text layer, and grounding cannot be turned off.
-Before any model request, the text layer is scored with English character trigrams; a PDF
+Before any model request, the text layer is scored with English character trigrams. A page
 whose layer is garbled (a broken font encoding, bad OCR) or missing (a scan with no OCR) is
-rejected with `TextLayerError`, having made no request. The fix is to improve the PDF's OCR
-(for example re-run OCR over the whole document, replacing the existing text layer with
-`ocrmypdf --force-ocr`) and try again. The model is English and Latin-script only. A
-document with text but too few letters to score (only numbers) is accepted.
+a bad page. If too many pages are bad, gridkey OCRs the bad pages (only those) with
+[PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR), builds a text layer from the result,
+checks again, and carries on. If the OCR'd text is still unreadable, or OCR is not installed,
+the run stops with `TextLayerError`, still before any model request. The check is English and
+Latin-script only. A document with text but too few letters to score (only numbers) is
+accepted.
+
+```python
+from gridkey import OcrConfig, extract_tables
+
+extract_tables("scan.pdf", model=...)  # ocr=True: OCR bad pages with the defaults
+extract_tables("scan.pdf", model=..., ocr=OcrConfig(dpi=200, device="cpu"))  # configured
+extract_tables("scan.pdf", model=..., ocr=False)  # never OCR: reject a bad layer instead
+```
+
+`Table.ocr_pages` lists the pages of a table whose text layer came from OCR. The recheck
+defers to the text layer, so an OCR error (the sample OCR'd Senate PDF reads every thousands
+comma as a period: `68.027.74`) can pass into the output; review those pages with more care.
+
+### Installing OCR
+
+OCR is an optional extra, so a plain `pip install gridkey` stays small. If you are sure your
+PDFs have good text layers you never need it. If a PDF needs OCR and PaddleOCR is not
+installed, gridkey raises `OcrUnavailableError` (a `TextLayerError`) saying so, before any
+model request, so the only cost is installing and running again.
+
+```bash
+# CPU (macOS Apple Silicon, Linux x86_64, Windows x86_64; Python 3.11 to 3.13): one command
+pip install "gridkey[ocr]"
+```
+
+The extra installs `paddleocr` and the CPU build of `paddlepaddle` (about 100 to 200 MB, plus
+OpenCV, pandas and others). It cannot install on Intel Macs, Linux ARM or Python 3.14, where
+PaddlePaddle publishes no wheel; OCR the PDF yourself there (for example `ocrmypdf --force-ocr`).
+
+### OCR on an NVIDIA GPU
+
+With `device="auto"` (the default) OCR runs on an NVIDIA GPU when the installed PaddlePaddle can
+use one and on the CPU otherwise. If an NVIDIA GPU is found but PaddlePaddle cannot use it, OCR
+runs on the CPU and logs a warning saying why. A GPU that was chosen automatically and fails
+(for example out of memory) falls back to the CPU once; a device you name is not retried. AMD
+GPUs and Apple GPUs are not supported: those machines run on the CPU.
+
+PaddlePaddle's CPU and GPU wheels both provide the `paddle` package, and the GPU wheels are on
+Paddle's own index, not PyPI, so there is no `gpu` extra. Install the core extra, then the GPU
+build:
+
+```bash
+pip install "gridkey[ocr-core]"
+pip install paddlepaddle-gpu==3.3.1 \
+  --extra-index-url https://www.paddlepaddle.org.cn/packages/stable/cu126/
+# cu126 needs an NVIDIA driver >= 550.54.14; cu118 (use .../cu118/) needs >= 450.80.02 on Linux.
+# You need the driver, not the CUDA toolkit. Linux x86_64 and Windows only. NVIDIA 50-series
+# on Windows needs the special wheels listed in PaddleOCR's install guide.
+
+# with uv
+uv pip install "gridkey[ocr-core]"
+uv pip install paddlepaddle-gpu==3.3.1 \
+  --extra-index-url https://www.paddlepaddle.org.cn/packages/stable/cu126/
+```
+
+Do not install `gridkey[ocr]` in the same environment: it brings the CPU build, which would
+overwrite the GPU one. The GPU path is untested on real hardware (the development machine has
+no NVIDIA GPU); `tests/data/README.md` has a manual checklist. The `uv` line and
+`--extra-index-url` were checked to resolve, not to install.
+
+### OCR settings
+
+`OcrConfig` has a default for everything: `lang="en"`, `ocr_version="PP-OCRv6"` (medium
+models, the same on every device), `dpi=300`, `device="auto"` (or `"cpu"`, `"gpu"`, `"gpu:1"`),
+`cpu_threads`, `min_confidence=0.0`, `text_detection_model` / `text_recognition_model` (name a
+smaller or larger model), `engine` (passed to PaddleOCR; only PaddlePaddle is tested),
+`model_dir`, and `paddleocr_options` / `predict_options` for any other PaddleOCR argument.
+Options that rotate or unwarp the page are refused, since they would move the OCR boxes away
+from the page the model sees. On a CPU a full page at 300 dpi takes about a minute (measured on
+an Apple Silicon Mac); results are cached, so it is a one-time cost per page and setting.
+
+PaddleOCR downloads its models itself the first time they are needed (about 140 MB for the
+default ones) and stores them where PaddleOCR does (`~/.paddlex`). For an offline machine, copy
+that folder's model subfolders and pass `OcrConfig(model_dir=<folder>)`.
+
+### The cache
+
+Model answers and OCR results are always cached on disk, in `.gridkey/` in the current working
+directory unless you pass `cache_dir`. gridkey creates the folder and, for the default one,
+puts a `.gitignore` containing `*` in it. There is no in-memory mode, and nothing is ever
+deleted: remove the folder to start over. It holds content derived from your PDF (the model's
+extracted values and the OCR'd text), so delete it if the data is sensitive. A run that cannot
+write the folder raises an `OSError` naming it. A cached OCR page is reused whatever device made
+it, and works without the OCR extra installed.
 
 ## What it does
 
@@ -55,9 +141,9 @@ document with text but too few letters to score (only numbers) is accepted.
 | Position check | `position` | A value must sit in its own row and column (row windows from uniquely-occurring values, column bands pooled over the document). Values found elsewhere become `misplaced`. |
 | Recheck | `recheck` | Flagged cells go back to the model once with their reason, the page image and the page's whole text layer; the model is told to copy the text layer's reading. An answer is kept only if grounding of that cell strictly improves. Because the text layer wins, OCR errors in it (for example thousands commas read as periods) can pass into the output. |
 
-Model requests are cached on disk when `cache_dir` is given, by a hash of everything that
-decides the answer, and `max_requests` caps how many new requests one run may make (with or
-without a cache; `BudgetExceededError` beyond it).
+Model requests are always cached on disk (see "The cache" above), by a hash of everything that
+decides the answer, and `max_requests` caps how many new requests one run may make
+(`BudgetExceededError` beyond it).
 
 ## Not handled
 
@@ -67,6 +153,8 @@ without a cache; `BudgetExceededError` beyond it).
 - Tables whose column names change between pages beyond case and punctuation are returned as
   separate tables; two real tables with the same columns are returned as one.
 - Titles and captions printed outside a table (a fiscal year, a section name) are not captured.
+- Page orientation in scans: OCR does not rotate or unwarp pages, so a sideways scan with no
+  `/Rotate` flag stays sideways and is rejected after OCR.
 
 ## Development
 
@@ -74,7 +162,8 @@ Commands are in the `justfile` ([just](https://github.com/casey/just)); run `jus
 
 ```bash
 just setup       # uv sync, and install the git pre-commit hook
-just test        # offline: no network, no API key, ~5 s
+just test        # offline: no network, no API key, ~15 s
+just test-ocr    # real PaddleOCR models on the CPU: slow, no API cost, downloads models first time
 just lint        # ruff check
 just format      # ruff format
 just typecheck   # ty check
@@ -88,6 +177,8 @@ just check       # hooks, then tests
   against real sample PDFs (`tests/data/`), so the whole pipeline is exercised without
   any API call. Several tests corrupt the recorded rows (a swapped value, a typo) to
   check that the position check and the recheck catch it.
+- `tests/ocr/` runs the real PaddleOCR models on the CPU (`just test-ocr`). Deselected by
+  default; it takes minutes, downloads the models on first use, and calls no model API.
 - `tests/live/` calls a real model. These tests are deselected by default and skip
   themselves unless `OPENAI_API_KEY` and `GRIDKEY_LIVE_TEST_MODEL` are set:
 

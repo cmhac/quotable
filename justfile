@@ -31,6 +31,10 @@ test *args:
 test-live:
     uv run pytest -m live -rs
 
+# Run the real-OCR tests: real PaddleOCR models on the CPU (slow, downloads ~140 MB of models on first use, no API cost)
+test-ocr:
+    uv run pytest -m ocr -rs --durations=0
+
 # Run every pre-commit hook (ruff check --fix, ruff format, ty) on all files
 hooks:
     uv run pre-commit run --all-files

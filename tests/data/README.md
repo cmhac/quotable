@@ -24,3 +24,38 @@ first-pass extract answers (before any recheck) from a live run on this PDF, and
 answer is that run's. The answer was recorded with a prototype of the discovery prompt that also
 asked for a page number and a `continues_from_previous_page` flag per table; those two fields are
 dropped here because the library no longer asks for them. The rest is as the model returned it.
+
+## NVIDIA GPU check (manual)
+
+There is no automated test for the GPU path: the development machine is a Mac with no NVIDIA
+GPU, so the GPU code is only tested against fakes (`tests/test_ocr_device.py`,
+`tests/test_paddle_adapter.py`). Someone with an NVIDIA card should run this once and record it
+below. Nothing in this repository claims a GPU result until a row is filled in.
+
+On Linux x86_64 or Windows. The dev group installs the CPU build of PaddlePaddle, so swap it for the
+GPU build and use `--no-sync` so that `uv run` does not put the CPU build back:
+
+```bash
+uv sync
+uv pip uninstall paddlepaddle
+uv pip install paddlepaddle-gpu==3.3.1 --extra-index-url https://www.paddlepaddle.org.cn/packages/stable/cu126/
+uv run --no-sync python -c "import paddle; print(paddle.__version__, paddle.device.is_compiled_with_cuda(), paddle.device.cuda.device_count())"
+# expect: 3.3.1 True 1 (or more)
+uv run --no-sync pytest -m ocr -rs --durations=0               # device="auto" must pick the GPU
+uv run --no-sync python -c "
+import logging; logging.basicConfig(level=logging.INFO)
+from pathlib import Path
+from gridkey import OcrConfig
+from gridkey._paddle import PaddleEngine
+from gridkey.ocr_pages import ocr_pages
+config = OcrConfig(device='gpu')
+ocr_pages(Path('tests/data/senate_expenditures_garbled.pdf'), [1], config, PaddleEngine(config), Path('gk-cache'))
+"
+```
+
+Check that the log says `OCR device: gpu:0`, that there is no "trying again on the CPU" warning,
+and that a page takes seconds, not about a minute as on a CPU. Then record:
+
+| Date | Card | Driver | CUDA wheel | PaddlePaddle | Result | Seconds per page |
+|---|---|---|---|---|---|---|
+| | | | | | | |

@@ -12,6 +12,9 @@ wheels/
 # live-test request cache
 tests/live/.cache/
 
+# gridkey's default cache folder (model answers and OCR results derived from PDFs)
+.gridkey/
+
 # Environment variables
 .env
 

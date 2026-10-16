@@ -189,6 +189,7 @@ def test_the_text_layer_check_has_no_off_switch():
         "model_settings",
         "discovery_pages",
         "recheck",
+        "ocr",  # chooses whether bad pages are OCR'd; the text-layer check itself has no switch
     }
     assert set(inspect.signature(extract_tables_async).parameters) == parameters
     assert set(inspect.signature(run_pipeline).parameters) == {
@@ -196,4 +197,7 @@ def test_the_text_layer_check_has_no_off_switch():
         "client",
         "discovery_pages",
         "recheck",
+        "ocr",
+        "ocr_config",
+        "cache_dir",
     }

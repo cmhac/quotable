@@ -92,6 +92,9 @@ class Table:
     layouts: list[PageLayout] = field(default_factory=list)
     proposals: list[Proposal] = field(default_factory=list)  # what the recheck proposed
     label: str = ""  # the model's short name for the table; the caller's use only
+    # pages of this table whose text layer came from OCR (grounding against OCR text can pass
+    # OCR errors into the output, so review these more carefully)
+    ocr_pages: tuple[int, ...] = ()
 
     def page_rows(self, page: int) -> list[Row]:
         """Return the rows of one page (1-based)."""

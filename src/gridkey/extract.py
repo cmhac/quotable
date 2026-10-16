@@ -2,9 +2,11 @@
 The pipeline: text-layer check, table discovery, per-page extraction, grounding, position check.
 
 0. Text-layer check: before anything is rendered or sent to a model, the PDF's text layer
-   must be readable (see :mod:`gridkey.textcheck`). A garbled or missing layer
-   raises ``TextLayerError`` having made no request, because values could not be verified.
-   There is no option to skip this.
+   must be readable (see :mod:`gridkey.textcheck`). If it is garbled or missing, the bad pages
+   are OCR'd (see :mod:`gridkey.ocr_pages`) and the merged layers are checked again; a layer
+   that is still unreadable, or OCR that is off or not installed, raises ``TextLayerError``
+   having made no request, because values could not be verified. There is no option to skip
+   the check.
 1. Table discovery: every page image goes to the model, ``discovery_pages`` at a time,
    and the model lists the tables on each page with their columns (multi-level headers
    are written ``<level1>.<level2>``). Tables with the same columns on different pages
@@ -32,16 +34,20 @@ import pymupdf
 from pydantic_ai.models import Model
 
 from gridkey._model import PydanticAIClient
+from gridkey._paddle import PaddleEngine
+from gridkey.cache import resolve_cache_dir
 from gridkey.discover import DISCOVERY_PAGES, Found, discover
 from gridkey.layout import page_layouts
 from gridkey.llm import CachedClient, Image, LLMClient, Request
 from gridkey.models import PageRows, TableSchema
+from gridkey.ocr import OcrConfig, OcrEngine
+from gridkey.ocr_pages import ocr_pages
 from gridkey.recheck import recheck_table
 from gridkey.regions import table_layers
 from gridkey.schema import ExtractionError
 from gridkey.table import PageResult, Table, ground_document
 from gridkey.text import Layer, load_layer
-from gridkey.textcheck import check_text_layers
+from gridkey.textcheck import REMEDY_OCR_OFF, TextLayerError, assess_text_layers, ocr_failed_message
 
 DPI = 150
 MAX_CONCURRENT_REQUESTS = 4
@@ -161,17 +167,59 @@ def table_page_layers(found: list[Found], layers: dict[int, Layer]) -> list[dict
     return out
 
 
-async def run_pipeline(
+async def usable_layers(
+    pdf: Path,
+    layers: dict[int, Layer],
+    engine: OcrEngine | None,
+    config: OcrConfig,
+    cache_dir: Path | None,
+) -> tuple[dict[int, Layer], tuple[int, ...]]:
+    """
+    Return the text layers to ground against, and the pages whose layer came from OCR.
+
+    A document that passes the check keeps its layers and the engine is never touched. One
+    that fails has its bad pages (garbled or empty) OCR'd, in a worker thread, and the merged
+    layers are checked again. ``TextLayerError`` (or its subclass ``OcrUnavailableError``) is
+    raised if OCR is off, cannot run, or does not help; no model request has been made.
+    """
+    before = assess_text_layers(layers)
+    if before.reason is None:
+        return layers, ()
+    if engine is None:
+        raise TextLayerError(f"{before.reason} {REMEDY_OCR_OFF}")
+    replaced = await asyncio.to_thread(
+        ocr_pages, pdf, before.bad_pages, config, engine, resolve_cache_dir(cache_dir)
+    )
+    merged = {**layers, **replaced}
+    after = assess_text_layers(merged)
+    if after.reason is not None:
+        describe = getattr(engine, "description", "OCR")
+        raise TextLayerError(ocr_failed_message(before, after, before.bad_pages, describe))
+    return merged, before.bad_pages
+
+
+async def run_pipeline(  # noqa: PLR0913
     pdf: Path,
     client: LLMClient,
     *,
     discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
+    ocr: OcrEngine | None = None,
+    ocr_config: OcrConfig | None = None,
+    cache_dir: Path | None = None,
 ) -> list[Table]:
-    """Run the whole pipeline on one PDF with an already-built client (internal; tests use it)."""
+    """
+    Run the whole pipeline on one PDF with an already-built client (internal; tests use it).
+
+    ``ocr`` is the engine used for pages with a garbled or missing text layer (``None``: no
+    OCR, such a document is rejected); ``ocr_config`` its settings; ``cache_dir`` where the
+    OCR results are cached.
+    """
     with pymupdf.open(pdf) as document:
         layers: dict[int, Layer] = {i + 1: load_layer(p) for i, p in enumerate(document)}
-        check_text_layers(layers)  # before rendering or any request; cannot be skipped
+    # before rendering or any request; cannot be skipped
+    layers, ocr_done = await usable_layers(pdf, layers, ocr, ocr_config or OcrConfig(), cache_dir)
+    with pymupdf.open(pdf) as document:
         pngs = [render_png(p) for p in document]
 
     found = await discover(pngs, client, discovery_pages=discovery_pages)
@@ -208,11 +256,30 @@ async def run_pipeline(
         page_layers = table_layers_by_page[index]
         grounded, position = ground_document(f.columns, pages, page_layers)
         tables.append(
-            Table(f.columns, pages, page_layers, grounded, position, layouts[index], label=f.label)
+            Table(
+                f.columns,
+                pages,
+                page_layers,
+                grounded,
+                position,
+                layouts[index],
+                label=f.label,
+                ocr_pages=tuple(r.page for r in pages if r.page in ocr_done),
+            )
         )
     if recheck:
         tables = list(await asyncio.gather(*(recheck_table(t, pdf, client) for t in tables)))
     return tables
+
+
+def _ocr_config(ocr: OcrConfig | bool) -> OcrConfig | None:  # noqa: FBT001
+    """Return the OCR settings, or ``None`` when OCR is off."""
+    if isinstance(ocr, OcrConfig):
+        return ocr
+    if isinstance(ocr, bool):
+        return OcrConfig() if ocr else None
+    msg = f"ocr must be True, False or an OcrConfig, not {type(ocr).__name__}"
+    raise TypeError(msg)
 
 
 async def extract_tables_async(  # noqa: PLR0913
@@ -224,21 +291,38 @@ async def extract_tables_async(  # noqa: PLR0913
     model_settings: dict[str, Any] | None = None,
     discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
+    ocr: OcrConfig | bool = True,
 ) -> list[Table]:
     """
     Run the whole pipeline on one PDF; return one ``Table`` per table in it.
 
     ``model`` is required: a pydantic-ai ``"provider:model-name"`` string (the provider's API
     key comes from the environment, as pydantic-ai documents) or a pydantic-ai ``Model``
-    instance. ``cache_dir`` caches model answers on disk there; ``max_requests`` caps the new
-    (uncached) requests and raises ``BudgetExceededError`` beyond it.
+    instance. Model answers are always cached on disk, in ``cache_dir`` or else in ``.gridkey/``
+    in the current directory (created if missing, with a ``.gitignore`` of its own);
+    ``max_requests`` caps the new (uncached) requests and raises ``BudgetExceededError``
+    beyond it.
+
+    ``ocr`` says what to do when the PDF's text layer is garbled or missing: ``True`` (the
+    default) OCRs the bad pages with PaddleOCR using ``OcrConfig()``, an ``OcrConfig``
+    configures that, and ``False`` rejects such a PDF with ``TextLayerError``. OCR results are
+    cached next to the model answers. Either way the text layer is checked before any model
+    request.
     """
+    config = _ocr_config(ocr)
+    directory = resolve_cache_dir(cache_dir)
     client = CachedClient(
-        PydanticAIClient(model, model_settings=model_settings),
-        None if cache_dir is None else Path(cache_dir),
-        max_requests,
+        PydanticAIClient(model, model_settings=model_settings), directory, max_requests
     )
-    return await run_pipeline(Path(pdf), client, discovery_pages=discovery_pages, recheck=recheck)
+    return await run_pipeline(
+        Path(pdf),
+        client,
+        discovery_pages=discovery_pages,
+        recheck=recheck,
+        ocr=None if config is None else PaddleEngine(config),
+        ocr_config=config,
+        cache_dir=directory,
+    )
 
 
 def extract_tables(  # noqa: PLR0913
@@ -250,6 +334,7 @@ def extract_tables(  # noqa: PLR0913
     model_settings: dict[str, Any] | None = None,
     discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
+    ocr: OcrConfig | bool = True,
 ) -> list[Table]:
     """Run the whole pipeline on one PDF (synchronous wrapper); one ``Table`` per table."""
     return asyncio.run(
@@ -261,5 +346,6 @@ def extract_tables(  # noqa: PLR0913
             model_settings=model_settings,
             discovery_pages=discovery_pages,
             recheck=recheck,
+            ocr=ocr,
         )
     )

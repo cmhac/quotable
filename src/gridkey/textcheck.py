@@ -4,7 +4,9 @@ Check that a PDF's text layer is readable before anything is sent to a model.
 Grounding compares every extracted value with the text layer, so a garbled layer (a broken
 font encoding, bad OCR) or a missing one (a scan without OCR) makes verification
 impossible. Each page's letters are scored against an English character-trigram model; the
-document is rejected when too many scorable pages look like noise. There is no way to turn
+document is rejected when too many scorable pages look like noise. A rejected document has
+its bad pages OCR'd and is checked again (:func:`gridkey.extract.usable_layers`); it is
+rejected for good only if OCR is off, unavailable or does not help. There is no way to turn
 this check off.
 """
 
@@ -32,10 +34,17 @@ LISTED_PAGES = 5
 
 Verdict = Literal["ok", "garbled", "unassessable"]
 
-REMEDY = (
-    "Extraction checks every value against the PDF's text layer, so that layer must be "
-    "readable. Improve the PDF's OCR: re-run OCR over the whole document, replacing the "
-    "existing text layer (for example `ocrmypdf --force-ocr`), then try again."
+# The advice that ends a rejection, by why OCR did not rescue the document.
+WHY_READABLE = "Extraction checks every value against the PDF's text layer, so it must be readable."
+REMEDY_OCR_OFF = (
+    f"{WHY_READABLE} OCR is turned off (`ocr=False`): enable it (the default), or OCR the PDF "
+    "yourself: re-run OCR over the whole document, replacing the existing text layer (for "
+    "example `ocrmypdf --force-ocr`), then try again."
+)
+REMEDY_OCR_FAILED = (
+    f"{WHY_READABLE} Try a higher `dpi` or another `ocr_version` in `OcrConfig`, or re-run OCR "
+    "over the whole document with another tool, replacing the existing text layer (for "
+    "example `ocrmypdf --force-ocr`), then try again."
 )
 
 
@@ -102,26 +111,63 @@ def _excerpt(layer: Layer) -> str:
     return " ".join(page_text(layer).split())[:EXCERPT_CHARS]
 
 
-def check_text_layers(layers: dict[int, Layer]) -> list[PageQuality]:
-    """
-    Return each page's quality, or raise ``TextLayerError`` if the document is unusable.
+@dataclass(frozen=True)
+class Assessment:
+    """The result of checking a document's text layers, without raising."""
 
-    Rejected: a document with no text on any page, or one where more than
-    ``MAX_GARBLED_PAGE_SHARE`` of the scorable pages are garbled. A document that has
-    text but no scorable page (for example only numbers) is accepted.
+    pages: list[PageQuality]
+    reason: str | None  # why the document is rejected, without advice (see the REMEDY_ texts)
+    bad_pages: tuple[int, ...]  # garbled pages and pages with no words, in page order
+
+
+def assess_text_layers(layers: dict[int, Layer]) -> Assessment:
     """
-    if not any(layer.words for layer in layers.values()):
-        msg = f"The PDF has no text layer (it looks like a scan without OCR). {REMEDY}"
-        raise TextLayerError(msg)
+    Return each page's quality, whether the document is usable, and which pages are bad.
+
+    Rejected (``reason`` is set): a document with no text on any page, or one where more
+    than ``MAX_GARBLED_PAGE_SHARE`` of the scorable pages are garbled. A document that has
+    text but no scorable page (for example only numbers) is accepted. ``bad_pages`` lists
+    the pages judged garbled plus the pages with no words, whether or not the document is
+    rejected.
+    """
     results = [score_page(page, layers[page]) for page in sorted(layers)]
+    garbled = [r for r in results if r.verdict == "garbled"]
+    empty = [r.page for r in results if not layers[r.page].words]
+    bad_pages = tuple(sorted({r.page for r in garbled} | set(empty)))
+    if not any(layer.words for layer in layers.values()):
+        reason = "The PDF has no text layer (it looks like a scan without OCR)."
+        return Assessment(results, reason, bad_pages)
     assessed = [r for r in results if r.verdict != "unassessable"]
-    garbled = [r for r in assessed if r.verdict == "garbled"]
+    reason = None
     if assessed and len(garbled) / len(assessed) > MAX_GARBLED_PAGE_SHARE:
         pages = [r.page for r in garbled]
-        msg = (
+        reason = (
             f"The PDF's text layer is garbled: {len(garbled)} of {len(assessed)} scorable "
             f"pages do not contain readable text (pages {_page_list(pages)}), "
-            f"e.g. {_excerpt(layers[pages[0]])!r}. {REMEDY}"
+            f"e.g. {_excerpt(layers[pages[0]])!r}."
         )
-        raise TextLayerError(msg)
-    return results
+    return Assessment(results, reason, bad_pages)
+
+
+def check_text_layers(layers: dict[int, Layer]) -> list[PageQuality]:
+    """Return each page's quality, or raise ``TextLayerError`` if the document is unusable."""
+    assessment = assess_text_layers(layers)
+    if assessment.reason is not None:
+        raise TextLayerError(f"{assessment.reason} {REMEDY_OCR_OFF}")
+    return assessment.pages
+
+
+def ocr_failed_message(
+    before: Assessment, after: Assessment, pages: tuple[int, ...], by: str
+) -> str:
+    """
+    Return the rejection for a document that is still unreadable after OCR.
+
+    ``pages`` are the OCR'd pages, ``by`` describes the engine and device, ``before`` and
+    ``after`` are the assessments of the original and the OCR-patched layers.
+    """
+    listed = _page_list(list(pages))
+    return (
+        f"{before.reason} gridkey OCR'd page(s) {listed} with {by}, but the text layer is "
+        f"still not usable: {after.reason} {REMEDY_OCR_FAILED}"
+    )

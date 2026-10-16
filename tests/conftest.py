@@ -4,6 +4,7 @@ import asyncio
 import json
 from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 import pymupdf
 import pytest
@@ -23,8 +24,18 @@ def extract_tables(
     pdf: Path, client: LLMClient, *, discovery_pages: int | None = None, recheck: bool = True
 ) -> list[Table]:
     """Run the pipeline with a fake client (the public function takes a model instead)."""
-    options = {} if discovery_pages is None else {"discovery_pages": discovery_pages}
+    options: dict[str, Any] = (
+        {} if discovery_pages is None else {"discovery_pages": discovery_pages}
+    )
     return asyncio.run(run_pipeline(Path(pdf), client, recheck=recheck, **options))
+
+
+@pytest.fixture(autouse=True)
+def _run_in_a_temp_working_directory(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Run every test in an empty working directory, so no test writes ``.gridkey/`` here."""
+    work = tmp_path / "cwd"
+    work.mkdir()
+    monkeypatch.chdir(work)
 
 
 @pytest.fixture

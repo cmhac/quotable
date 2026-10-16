@@ -6,10 +6,10 @@ imports a vendor SDK. Any object with an ``identity`` string and an async ``ask`
 works, which is how the offline tests run the whole pipeline with a fake model. This
 module is internal: users call ``gridkey.extract_tables`` with a model.
 
-``CachedClient`` wraps any client with a cap on new requests and, if given a
-``cache_dir``, a request cache. The key covers the client's identity, the instructions,
-the output schema and every prompt part (text and image bytes), so a re-run never pays
-twice for the same request.
+``CachedClient`` wraps any client with a cap on new requests and an on-disk request cache
+(always on, see :mod:`gridkey.cache`). The key covers the client's identity, the
+instructions, the output schema and every prompt part (text and image bytes), so a re-run
+never pays twice for the same request.
 
 Deliberately left out (see the original project): dollar pricing and a cost cap
 (``max_requests`` caps new calls instead) and request concurrency limits.
@@ -18,12 +18,13 @@ Deliberately left out (see the original project): dollar pricing and a cost cap
 import hashlib
 import json
 import sys
-import uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol
 
 from pydantic import BaseModel, ValidationError
+
+from gridkey.cache import write_atomic
 
 
 class BudgetExceededError(RuntimeError):
@@ -82,22 +83,12 @@ def request_key(identity: str, request: Request) -> str:
     return hashlib.sha256(blob.encode()).hexdigest()
 
 
-def _write_atomic(path: Path, text: str) -> None:
-    """Write ``text`` to ``path`` so readers never see a partial file."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(f"{path.name}.{uuid.uuid4().hex}.tmp")
-    tmp.write_text(text, encoding="utf-8")
-    tmp.replace(path)
-
-
 class CachedClient:
-    """Wrap a client with an optional disk cache and a cap on new requests."""
+    """Wrap a client with a disk cache and a cap on new requests."""
 
-    def __init__(
-        self, inner: LLMClient, cache_dir: Path | None = None, max_requests: int | None = None
-    ) -> None:
+    def __init__(self, inner: LLMClient, cache_dir: Path, max_requests: int | None = None) -> None:
         """
-        Cache ``inner``'s answers in ``cache_dir`` (``None``: no cache); cap new requests.
+        Cache ``inner``'s answers in ``cache_dir`` (it must exist); cap new requests.
 
         At most ``max_requests`` requests reach ``inner``; the next raises ``BudgetExceededError``.
         """
@@ -109,19 +100,16 @@ class CachedClient:
 
     async def ask(self, request: Request) -> Any:  # noqa: ANN401
         """Return the cached answer, or ask the wrapped client and cache it."""
-        path = None
-        if self.cache_dir is not None:
-            path = self.cache_dir / f"{request_key(self.identity, request)}.json"
-            if path.exists():
-                try:
-                    return request.output_type.model_validate(json.loads(path.read_text("utf-8")))
-                except (ValueError, ValidationError) as err:
-                    print(f"ignoring unusable cache file {path.name}: {err}", file=sys.stderr)
+        path = self.cache_dir / f"{request_key(self.identity, request)}.json"
+        if path.exists():
+            try:
+                return request.output_type.model_validate(json.loads(path.read_text("utf-8")))
+            except (ValueError, ValidationError) as err:
+                print(f"ignoring unusable cache file {path.name}: {err}", file=sys.stderr)
         if self.max_requests is not None and self.new_requests >= self.max_requests:
             msg = f"{self.new_requests} new requests made, cap is {self.max_requests}"
             raise BudgetExceededError(msg)
         self.new_requests += 1
         answer = await self.inner.ask(request)
-        if path is not None:
-            _write_atomic(path, answer.model_dump_json(indent=1))
+        write_atomic(path, answer.model_dump_json(indent=1))
         return answer

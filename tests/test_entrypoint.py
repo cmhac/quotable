@@ -66,20 +66,23 @@ def test_the_pdf_can_be_a_string_and_the_async_twin_works():
     assert table.columns == SAMPLE["columns"]
 
 
-def test_a_second_run_with_a_cache_dir_makes_no_model_request(tmp_path):
-    cache = tmp_path / "cache"
+@pytest.mark.parametrize("explicit", [False, True])
+def test_a_second_run_makes_no_model_request_with_or_without_a_cache_dir(tmp_path, explicit):
+    cache = str(tmp_path / "cache") if explicit else None
     first = Calls()
     extract_tables(PDF, first.model(), cache_dir=cache, recheck=False)
     second = Calls()
-    extract_tables(PDF, second.model(), cache_dir=str(cache), recheck=False)
+    extract_tables(PDF, second.model(), cache_dir=cache, recheck=False)
     assert first.count == 2
     assert second.count == 0
 
 
-@pytest.mark.parametrize("use_cache", [False, True])
-def test_max_requests_caps_new_requests_with_or_without_a_cache(tmp_path, use_cache):
+@pytest.mark.parametrize("explicit", [False, True])
+def test_max_requests_caps_new_requests_with_the_default_or_an_explicit_directory(
+    tmp_path, explicit
+):
     calls = Calls()
-    cache = tmp_path / "cache" if use_cache else None
+    cache = tmp_path / "cache" if explicit else None
     with pytest.raises(BudgetExceededError):
         extract_tables(PDF, calls.model(), cache_dir=cache, max_requests=1, recheck=False)
     assert calls.count == 1
@@ -91,6 +94,8 @@ def test_the_public_names_are_the_entrypoint_and_its_results():
             "BudgetExceededError",
             "ExtractionError",
             "Flag",
+            "OcrConfig",
+            "OcrUnavailableError",
             "Row",
             "Table",
             "TextLayerError",

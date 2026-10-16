@@ -8,6 +8,7 @@ from gridkey.textcheck import (
     MAX_GARBLED_PAGE_SHARE,
     MIN_LETTERS,
     TextLayerError,
+    assess_text_layers,
     check_text_layers,
     score_page,
 )
@@ -95,3 +96,37 @@ def test_message_names_reason_pages_excerpt_and_remedy():
     assert "pages 1, 2, 3, 4, 5 and 2 more" in message
     assert repr(" ".join(random_letters(1).split())[:40]) in message
     assert "re-run OCR" in message
+
+
+def test_bad_pages_of_a_mixed_document_are_the_garbled_and_the_empty_ones():
+    layers = {n: layer_of(ENGLISH) for n in range(1, 21)}
+    layers[4] = layer_of(random_letters(1))  # garbled
+    layers[9] = Layer()  # no words
+    assessment = assess_text_layers(layers)
+    assert assessment.bad_pages == (4, 9)
+    assert [p.page for p in assessment.pages] == list(range(1, 21))
+    assert assessment.reason is None  # one garbled page of 19 scorable ones is within the limit
+
+
+def test_a_document_with_no_bad_pages_has_an_empty_bad_page_tuple():
+    assessment = assess_text_layers({1: layer_of(ENGLISH), 2: layer_of("1 2 3 4 5")})
+    assert assessment.bad_pages == ()
+    assert assessment.reason is None
+
+
+def test_a_document_without_any_words_has_every_page_bad():
+    assessment = assess_text_layers({1: Layer(), 2: Layer(), 3: Layer()})
+    assert assessment.bad_pages == (1, 2, 3)
+    assert assessment.reason is not None
+    assert "no text layer" in assessment.reason
+
+
+def test_reason_is_the_text_check_text_layers_raises():
+    layers = {n: layer_of(random_letters(n)) for n in range(1, 4)}
+    assessment = assess_text_layers(layers)
+    assert assessment.bad_pages == (1, 2, 3)
+    with pytest.raises(TextLayerError) as error:
+        check_text_layers(layers)
+    assert assessment.reason is not None
+    assert str(error.value).startswith(assessment.reason)
+    assert "OCR is turned off" in str(error.value)

@@ -96,11 +96,11 @@ def test_new_requests_stop_at_the_cap_but_cached_ones_do_not_count(tmp_path):
     assert inner.calls == 2
 
 
-def test_without_a_cache_dir_every_request_reaches_the_model_and_the_cap_still_applies():
+def test_the_cap_counts_only_requests_that_miss_the_cache(tmp_path):
     inner = CountingClient()
-    client = CachedClient(inner, None, max_requests=2)
+    client = CachedClient(inner, tmp_path, max_requests=1)
     asyncio.run(client.ask(_request()))
-    asyncio.run(client.ask(_request()))  # same request again: no cache, so it counts
+    asyncio.run(client.ask(_request()))  # the same request again is served from the cache
     with pytest.raises(BudgetExceededError):
-        asyncio.run(client.ask(_request()))
-    assert inner.calls == 2
+        asyncio.run(client.ask(_request(parts=["another"])))
+    assert inner.calls == 1

@@ -8,7 +8,7 @@
 
 ## Project state
 
-An initial, barebones port. The pipeline works end to end and the offline test suite passes (148 tests, no network or API key needed). Spec 001 (reject documents whose text layer is garbled or missing, before any model request) is implemented; OCR is required and grounding cannot be disabled. Spec 002 (the recheck sends the page's whole text layer and tells the model to copy it, so the text layer wins over the model) is implemented. Spec 003 renamed the project to `gridkey` (package, distribution and the live-test model variable); behaviour is unchanged. Spec 004 (several tables per document, including several on one page) is implemented: `extract_tables` returns one `Table` per table, discovery looks at every page in windows, and a table on a shared page is checked against its own band of the text layer only; its live check on the OCR'd Senate PDF (task 008) has not been run. Spec 005 (one entrypoint) is implemented: `extract_tables(pdf, model, *, cache_dir, max_requests, model_settings, discovery_pages, recheck)` is the only public way in, `model` is a required argument (a pydantic-ai model string or `Model` instance, never read from the environment), and pydantic-ai with all provider SDKs (no PyTorch) is a regular dependency. The offline tests drive the pipeline through the internal `run_pipeline(pdf, client)` with fake clients. The live test in `tests/live/` is opt-in (see Commands). Not yet ported from the original: page orientation, histogram-based layout matching, adding schema-missing columns from header labels, the `incomplete` verdict and per-layout bands in the position check, splitting large rechecks, dollar-based cost caps, and a CSV/CLI writer. `README.md` lists these in "Not carried over yet"; what spec 004 does not handle is under "Not handled".
+An initial, barebones port. The pipeline works end to end and the offline test suite passes (308 tests, no network, API key or PaddleOCR needed). Spec 001 (reject documents whose text layer is garbled or missing, before any model request) is implemented, and grounding cannot be disabled. Spec 002 (the recheck sends the page's whole text layer and tells the model to copy it, so the text layer wins over the model) is implemented. Spec 003 renamed the project to `gridkey` (package, distribution and the live-test model variable); behaviour is unchanged. Spec 004 (several tables per document, including several on one page) is implemented: `extract_tables` returns one `Table` per table, discovery looks at every page in windows, and a table on a shared page is checked against its own band of the text layer only; its live check on the OCR'd Senate PDF (task 008) has not been run. Spec 005 (one entrypoint) is implemented: `extract_tables(pdf, model, *, cache_dir, max_requests, model_settings, discovery_pages, recheck, ocr)` is the only public way in, `model` is a required argument (a pydantic-ai model string or `Model` instance, never read from the environment), and pydantic-ai with all provider SDKs (no PyTorch) is a regular dependency. The offline tests drive the pipeline through the internal `run_pipeline(pdf, client)` with fake clients. The live test in `tests/live/` is opt-in (see Commands). Spec 006 (OCR with PaddleOCR, and an always-on cache) is implemented: when the text-layer check would reject a document, `extract_tables(..., ocr=True | False | OcrConfig)` OCRs only the bad pages (garbled or empty), checks again and carries on, and `Table.ocr_pages` lists the OCR'd pages; PaddleOCR is the optional extras `gridkey[ocr]` (CPU) and `gridkey[ocr-core]` (NVIDIA users add `paddlepaddle-gpu` themselves), imported only when a page misses the OCR cache; model answers and OCR results are always cached in `.gridkey/` (or `cache_dir`). The NVIDIA path has never run on real hardware (checklist in `tests/data/README.md`), and AMD is not supported. The real-OCR tests in `tests/ocr/` are opt-in too. Not yet ported from the original: page orientation, histogram-based layout matching, adding schema-missing columns from header labels, the `incomplete` verdict and per-layout bands in the position check, splitting large rechecks, dollar-based cost caps, and a CSV/CLI writer. `README.md` lists these in "Not carried over yet"; what spec 004 does not handle is under "Not handled".
 
 ## File structure
 
@@ -25,12 +25,18 @@ An initial, barebones port. The pipeline works end to end and the offline test s
 ├── justfile - Commands for lint, format, type check, tests and hooks (run `just`)
 ├── .pre-commit-config.yaml - Pre-commit hooks: ruff check --fix, ruff format, ty check
 ├── src/gridkey/
-│   ├── extract.py - The public extract_tables(pdf, model, ...) -> list[Table], and run_pipeline(pdf, client) (internal, used by the tests)
+│   ├── extract.py - The public extract_tables(pdf, model, ..., ocr) -> list[Table], usable_layers (check, OCR, check again), and run_pipeline(pdf, client, ocr=...) (internal, used by the tests)
 │   ├── discover.py - Table discovery: windows of pages, tables found so far carried forward, grouping by columns
 │   ├── regions.py - A table's band of a page that holds several tables (from its first and last row)
 │   ├── schema.py - ExtractionError and the column checks
+│   ├── cache.py - The cache directory rule (`cache_dir` or `.gridkey/`, with its own .gitignore) and the atomic write
+│   ├── ocr.py - OcrConfig, OcrWord, the OcrEngine protocol, OcrUnavailableError, words_to_layer (pixels -> points)
+│   ├── ocr_pages.py - ocr_pages: OCR cache first, render and recognise only on a miss, build Layers
+│   ├── ocr_cache.py - The OCR cache key and per-page files in `<cache>/ocr/` (imports no PaddleOCR)
+│   ├── ocr_device.py - Pure device choice (CPU or NVIDIA) over Capabilities, and detect_capabilities
+│   ├── _paddle.py - Internal: the only module importing `paddleocr` (deferred), GPU-to-CPU fallback
 │   ├── text.py - Text layer: tokenize, load_layer, Layer.lines
-│   ├── textcheck.py - Garbled/missing text-layer check (English trigram score); TextLayerError
+│   ├── textcheck.py - Garbled/missing text-layer check (English trigram score), assess_text_layers, the rejection messages; TextLayerError
 │   ├── ngrams.py - Letter runs, trigrams and the shipped reference counts
 │   ├── data/trigram_counts.json - English trigram counts, built by scripts/build_trigrams.py
 │   ├── layout.py - Page header detection and per-page columns
@@ -43,7 +49,9 @@ An initial, barebones port. The pipeline works end to end and the offline test s
 │   └── _model.py - Internal: the pydantic-ai client built from the `model` argument
 └── tests/
     ├── data/ - Sample PDFs plus recorded model rows (*.rows.json)
+    ├── ocr/ - Tests that run the real PaddleOCR models on the CPU (opt-in, deselected by default)
     ├── live/ - Tests that call a real model (opt-in, deselected by default)
+    ├── fake_ocr.py, fake_paddle.py - Fake OCR engines and a fake `paddleocr`/`paddle` for the offline tests
     └── test_*.py - Offline tests, driven by a fake model
 ```
 
@@ -58,6 +66,7 @@ Commands live in the `justfile` ([just](https://github.com/casey/just) is the co
 | `just format`             | `ruff format .`                                                                                                                                                                                                                                |
 | `just typecheck`          | `ty check`                                                                                                                                                                                                                                     |
 | `just test [pytest args]` | Offline tests: no network, no API key. Pass pytest args, e.g. `just test -k grounding`                                                                                                                                                         |
+| `just test-ocr`           | Real-OCR tests (`-m ocr`): run the real PaddleOCR models on the CPU, so they take minutes and download about 140 MB of models on first use (through PaddleOCR). They call no model API and cost no money                                  |
 | `just test-live`          | Live tests (`-m live`): calls a real model and costs money. Needs `OPENAI_API_KEY` and `GRIDKEY_LIVE_TEST_MODEL` (test-only; the library never reads the model from the environment), read from `.env` (see `.env.example`); without both the test is skipped. Never run without the user's explicit go-ahead |
 | `just hooks`              | Run every pre-commit hook on all tracked files                                                                                                                                                                                                 |
 | `just check`              | `just hooks`, then `just test`                                                                                                                                                                                                                 |
