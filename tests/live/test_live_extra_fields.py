@@ -163,17 +163,22 @@ def run_pipeline_live(pdf: Path, request: ExtraFields, cache: Path, cap: int):
 
 def rows_of(tables: list[Table]) -> list[tuple[str, ...]]:
     """
-    Return every row's values, with a comma read as a period.
+    Return every row's values in lower case, with a comma read as a period.
 
     On a scan the two are hard to tell apart (the PDF's own text layer has both for the same
-    printed comma), so the model's reading of one flips from run to run. Nothing else is
-    loosened: a different letter, word or case still differs.
+    printed comma), so the model's reading of one flips from run to run, and so does the case
+    of a heading. Nothing else is loosened: a different letter or word still differs.
     """
-    return [tuple(v.replace(",", ".") for v in r.values.values()) for t in tables for r in t.rows()]
+    return [
+        tuple(v.replace(",", ".").lower() for v in r.values.values())
+        for t in tables
+        for r in t.rows()
+    ]
 
 
 def shape_of(tables: list[Table]) -> list[tuple]:
-    return [(t.columns, [r.page for r in t.pages]) for t in tables]
+    """Return each table's column names (case ignored) and pages."""
+    return [([c.lower() for c in t.columns], [r.page for r in t.pages]) for t in tables]
 
 
 def pages_of(pdf: Path) -> int:

@@ -94,3 +94,9 @@ Result, 3 runs: 13 of 15 regression runs pass. Still failing, with different cau
 - run 2: the headings read in Title Case instead of upper case (shape), plus two cut or
   changed names (`GALLEGO`/`GALLEGOS`, `LAISCH, MARK` / `LAISCH, MARK P`);
 - run 3: `STAFF` against `PROFESSIONAL STAFF`.
+
+Case is ignored too (headings, values): a heading read as `Description` for `DESCRIPTION` is
+not a difference. Result, 3 runs: 13 of 15 regression runs pass. The two left are cut names
+in the run without extra fields (run 2: `GALLEGO`, `LAISCH, MARK`; run 3: `STAFF`); the text
+layer has the full `GALLEGOS`, `LAISCH. MARK P` and `PROFESSIONAL STAFF`, so the run with
+extra fields was the correct one each time.
