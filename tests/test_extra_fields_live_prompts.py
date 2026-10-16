@@ -17,6 +17,8 @@ from tests.extra_fields_live import (
     neutral_fields,
     neutral_request,
     overlap,
+    same_reading,
+    same_rows,
     value_lines,
     words_in_box,
 )
@@ -201,3 +203,42 @@ def test_a_described_request_names_each_field_and_says_what_to_do_with_its_label
     assert "Leave the label" in by_name["year"]  # "<label> 2018": the value is what follows
     assert "keep every word" in by_name["account"]  # the account line is kept whole
     assert all("title printed at the very top of every page" in d for d in by_name.values())
+
+
+# --- two readings of one scan (the Senate regression) --------------------------------------------
+@pytest.mark.parametrize(
+    ("one", "other"),
+    [
+        ("LETTIERI, D ANN G", "LETTIERI. D ANN G"),  # comma against period
+        ("Description", "DESCRIPTION"),  # case
+        ("STAFF", "PROFESSIONAL STAFF"),  # a dropped word
+        ("LAISCH, MARK", "LAISCH, MARK P"),  # a dropped last word
+        ("GALLEGO, CHRISTOPHER D", "GALLEGOS. CHRISTOPHER D"),  # a dropped last letter
+        ("", ""),
+    ],
+)
+def test_two_readings_of_one_cell_agree_when_one_is_a_cut_off_of_the_other(one, other):
+    assert same_reading(one, other)
+    assert same_reading(other, one)
+
+
+@pytest.mark.parametrize(
+    ("one", "other"),
+    [
+        ("BROWN, KELLY D", "BROWN, KELLY E"),  # a different letter
+        ("STAFF", "PROFESSIONAL STUFF"),  # a different word
+        ("MARK LAISCH", "LAISCH, MARK"),  # the same words in another order
+        ("", "STAFF"),  # a cell read as blank is a difference
+        ("76,215.00", "76,215.01"),
+    ],
+)
+def test_two_readings_of_one_cell_differ_on_a_different_letter_word_or_blank(one, other):
+    assert not same_reading(one, other)
+    assert not same_reading(other, one)
+
+
+def test_rows_agree_only_cell_by_cell_and_in_order():
+    rows = [("a", "STAFF"), ("b", "")]
+    assert same_rows(rows, [("a", "PROFESSIONAL STAFF"), ("b", "")])
+    assert not same_rows(rows, rows[::-1])
+    assert not same_rows(rows, rows[:1])

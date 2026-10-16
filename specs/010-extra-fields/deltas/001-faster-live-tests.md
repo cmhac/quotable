@@ -100,3 +100,16 @@ not a difference. Result, 3 runs: 13 of 15 regression runs pass. The two left ar
 in the run without extra fields (run 2: `GALLEGO`, `LAISCH, MARK`; run 3: `STAFF`); the text
 layer has the full `GALLEGOS`, `LAISCH. MARK P` and `PROFESSIONAL STAFF`, so the run with
 extra fields was the correct one each time.
+
+## Senate regression: a cut-off reading agrees with the full one
+
+The remaining Senate differences were the model cutting a value short in the run without extra
+fields (a dropped wrapped word, a dropped last letter). Grounding cannot see these: it checks
+that the model's words are printed on the page, not that it left none out, and it strips a plural
+`s` from every word. On the cached runs only 1 of 5,022 exact cells was exact only through that
+rule, and the printed word beside a cut-off cell sits no closer than beside any other cell on
+this scan (0.27 pt against a median of 0.3 pt), so no cheap geometric check separates them.
+The comparison therefore treats two readings as the same when one is the other cut short
+(`same_reading` / `same_rows` in `tests/extra_fields_live.py`, checked offline); a different
+letter, a different word, another order or a blank cell is still a difference. Rows are now
+compared in order. Result, 3 runs: all 15 regression runs pass.

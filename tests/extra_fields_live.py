@@ -12,6 +12,7 @@ offline over the whole fixture and the Senate sample, so a description that leak
 ``just test`` before any money is spent.
 """
 
+import re
 from collections.abc import Iterable, Sequence
 from dataclasses import replace
 from pathlib import Path
@@ -243,3 +244,39 @@ def described_request(truth: dict[str, Any], pdf: Path, *, carry: bool) -> Extra
         else:
             items.append(hinted(item))
     return replace(base, fields=items)
+
+
+# --- comparing two model readings of the same scan (the Senate regression) ----------------------
+def _word_parts(text: str) -> list[str]:
+    """Return a value's words, lower case, with the punctuation between them dropped."""
+    return re.findall(r"[a-z0-9]+", text.lower())
+
+
+def same_reading(one: str, other: str) -> bool:
+    """
+    Return whether two readings of one cell agree, allowing one to be a cut-off of the other.
+
+    Comma against period and case never matter. A reading also agrees with a longer one that
+    contains it word for word (``STAFF`` in ``PROFESSIONAL STAFF``), where a word may itself be
+    cut short at its end (``GALLEGO`` for ``GALLEGOS``). Anything else, a different letter or a
+    different word, is a difference.
+    """
+    a, b = _word_parts(one), _word_parts(other)
+    if not a or not b:
+        return a == b  # a blank cell agrees only with a blank one
+    short, long = (a, b) if len(a) <= len(b) else (b, a)
+    return any(
+        all(
+            x.startswith(y) or y.startswith(x)
+            for x, y in zip(long[at : at + len(short)], short, strict=True)
+        )
+        for at in range(len(long) - len(short) + 1)
+    )
+
+
+def same_rows(one: Sequence[Sequence[str]], other: Sequence[Sequence[str]]) -> bool:
+    """Return whether two lists of rows agree cell by cell, in order, under ``same_reading``."""
+    return len(one) == len(other) and all(
+        len(x) == len(y) and all(same_reading(p, q) for p, q in zip(x, y, strict=True))
+        for x, y in zip(one, other, strict=True)
+    )

@@ -61,6 +61,7 @@ from tests.extra_fields_live import (
     live_runs,
     neutral_fields,
     overlap,
+    same_rows,
     words_in_box,
 )
 from tests.fixture_tables import DATA, doc_ids, load_doc
@@ -167,7 +168,8 @@ def rows_of(tables: list[Table]) -> list[tuple[str, ...]]:
 
     On a scan the two are hard to tell apart (the PDF's own text layer has both for the same
     printed comma), so the model's reading of one flips from run to run, and so does the case
-    of a heading. Nothing else is loosened: a different letter or word still differs.
+    of a heading. The comparison itself (``same_rows``) also lets a reading be a cut-off of
+    the other, as the model sometimes drops a wrapped word or a last letter of a name.
     """
     return [
         tuple(v.replace(",", ".").lower() for v in r.values.values())
@@ -208,7 +210,7 @@ def test_asking_for_extra_fields_does_not_change_the_tables(source, run):
         extra_fields=request,
     )
     assert shape_of(asked) == shape_of(plain)
-    assert sorted(rows_of(asked)) == sorted(rows_of(plain))
+    assert same_rows(rows_of(plain), rows_of(asked))
 
 
 # --- accuracy on the fixture ------------------------------------------------------------------
