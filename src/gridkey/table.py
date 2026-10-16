@@ -1,14 +1,59 @@
 """The extracted table with the grounding verdict of every cell."""
 
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Literal, NamedTuple
 
 from gridkey.grounding import SEVERITY, UNFLAGGED, FieldGrounding, ground_rows
 from gridkey.layout import PageLayout
 from gridkey.position import PageGrounding, check_positions
 from gridkey.text import Layer
 
+if TYPE_CHECKING:
+    import pandas
+    import polars
+
 GROUNDING_SUFFIX = "__grounding"
 COVERAGE_SUFFIX = "__coverage"
+
+Kind = Literal["int", "str", "float"]
+
+
+class OutputNames(NamedTuple):
+    """The names of the library's own columns in `Table.records()` and the DataFrames."""
+
+    page: str
+    row: str
+    grounding: dict[str, str]  # PDF column -> name of its grounding status column
+    coverage: dict[str, str]  # PDF column -> name of its coverage column
+    status: str
+    changes: str
+
+
+def output_names(columns: list[str]) -> OutputNames:
+    """
+    Name the library's columns so that none takes the name of a PDF column or of another one.
+
+    PDF columns are never renamed. A library column whose name is taken gets ``_`` appended
+    until it is free (spec 008). Without a collision every name is the default one.
+    """
+    taken = set(columns)
+
+    def free(name: str) -> str:
+        while name in taken:
+            name += "_"
+        taken.add(name)
+        return name
+
+    page = free("page")
+    row = free("row")
+    grounding: dict[str, str] = {}
+    coverage: dict[str, str] = {}
+    for column in columns:
+        grounding[column] = free(column + GROUNDING_SUFFIX)
+        coverage[column] = free(column + COVERAGE_SUFFIX)
+    return OutputNames(
+        page, row, grounding, coverage, free("grounding_status"), free("recheck_changes")
+    )
 
 
 @dataclass
@@ -131,7 +176,12 @@ class Table:
         return [row for result in self.pages for row in self.page_rows(result.page)]
 
     def records(self) -> list[dict[str, object]]:
-        """Return flat rows: page, row, the values, then each column's grounding."""
+        """
+        Return flat rows: page, row, the values, then each column's grounding.
+
+        A library column whose name a PDF column already has gets a trailing ``_``.
+        """
+        names = output_names(self.columns)
         out: list[dict[str, object]] = []
         changes: dict[tuple[int, int], list[str]] = {}
         for p in self.proposals:
@@ -139,15 +189,41 @@ class Table:
                 text = f'{p.column}: "{p.original}" -> "{p.proposed}"'
                 changes.setdefault((p.page, p.row), []).append(text)
         for row in self.rows():
-            record: dict[str, object] = {"page": row.page, "row": row.row, **row.values}
+            record: dict[str, object] = {names.page: row.page, names.row: row.row, **row.values}
             for column in self.columns:
                 cell = row.cells[column]
-                record[column + GROUNDING_SUFFIX] = cell.status
-                record[column + COVERAGE_SUFFIX] = cell.coverage
-            record["grounding_status"] = row.status
-            record["recheck_changes"] = "; ".join(changes.get((row.page, row.row), []))
+                record[names.grounding[column]] = cell.status
+                record[names.coverage[column]] = cell.coverage
+            record[names.status] = row.status
+            record[names.changes] = "; ".join(changes.get((row.page, row.row), []))
             out.append(record)
         return out
+
+    def _frame_columns(self) -> list[tuple[str, Kind]]:
+        """Return (name, kind) for every column of `records()`, in order."""
+        names = output_names(self.columns)
+        out: list[tuple[str, Kind]] = [(names.page, "int"), (names.row, "int")]
+        out += [(column, "str") for column in self.columns]
+        for column in self.columns:
+            out += [(names.grounding[column], "str"), (names.coverage[column], "float")]
+        return [*out, (names.status, "str"), (names.changes, "str")]
+
+    def to_pandas(self) -> "pandas.DataFrame":
+        """Return `records()` as a pandas DataFrame (ints, strings and a float coverage)."""
+        import pandas as pd  # noqa: PLC0415
+
+        columns = self._frame_columns()
+        dtypes = {"int": "int64", "str": "str", "float": "float64"}
+        frame = pd.DataFrame(self.records(), columns=[name for name, _ in columns])
+        return frame.astype({name: dtypes[kind] for name, kind in columns})
+
+    def to_polars(self) -> "polars.DataFrame":
+        """Return `records()` as a polars DataFrame (ints, strings and a float coverage)."""
+        import polars as pl  # noqa: PLC0415
+
+        dtypes = {"int": pl.Int64, "str": pl.String, "float": pl.Float64}
+        schema = {name: dtypes[kind] for name, kind in self._frame_columns()}
+        return pl.DataFrame(self.records(), schema=schema)
 
     def flagged(self) -> list[Flag]:
         """Return every cell whose status needs review."""

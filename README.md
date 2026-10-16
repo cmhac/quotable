@@ -20,6 +20,8 @@ tables = extract_tables(
 for table in tables:
     table.label  # the model's short name for the table
     table.records()  # one flat dict per row: values, <column>__grounding, <column>__coverage, ...
+    table.to_pandas()  # the same rows as a pandas DataFrame
+    table.to_polars()  # ... or a polars DataFrame
     table.flagged()  # every cell that is not an exact match, with its status
 ```
 
@@ -29,6 +31,13 @@ for table in tables:
 environment, as pydantic-ai documents it (for example `OPENAI_API_KEY`). The install includes the
 SDKs for Anthropic, Bedrock, Cohere, Google, Groq, Hugging Face, Mistral, OpenAI, OpenRouter and
 xAI. `model_settings=` is passed to pydantic-ai. `extract_tables_async` takes the same arguments.
+
+pandas and polars are installed with gridkey. The frames have the columns of `records()`: `page`,
+`row`, the PDF's columns (strings, exactly as extracted), then for each of them its `__grounding`
+status and `__coverage` (a float, missing when the cell was never looked up), then
+`grounding_status` and `recheck_changes`. A PDF column is never renamed: if it already has the name
+of one of those columns (a PDF column called `page`, say), the gridkey column gets a trailing `_`
+(`page_`). Write a CSV with `table.to_polars().write_csv(path)`.
 
 A PDF with one table returns a list of one. Pages are shown to the model `discovery_pages`
 at a time (default 4; pass `discovery_pages=` to change it).
@@ -96,7 +105,7 @@ pip install "gridkey[ocr]"
 ```
 
 The extra installs `paddleocr` and the CPU build of `paddlepaddle` (about 100 to 200 MB, plus
-OpenCV, pandas and others). It cannot install on Intel Macs, Linux ARM or Python 3.14, where
+OpenCV and others). It cannot install on Intel Macs, Linux ARM or Python 3.14, where
 PaddlePaddle publishes no wheel; OCR the PDF yourself there (for example `ocrmypdf --force-ocr`).
 
 ### OCR on an NVIDIA GPU
@@ -236,4 +245,5 @@ Deliberately omitted from this first cut; the original code is the reference for
   of the text layer sent, and undoing accepted changes that make another cell worse.
 - **Cost:** dollar pricing and a dollar cap (only a request-count cap exists), usage ledger,
   and the run-metadata sidecar.
-- **Output:** no CSV/sidecar writer or CLI yet; `Table.records()` is the interface.
+- **Output:** no CSV/sidecar writer or CLI yet; `Table.records()`, `Table.to_pandas()` and
+  `Table.to_polars()` are the interface.
