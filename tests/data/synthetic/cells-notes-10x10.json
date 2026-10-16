@@ -1,0 +1,507 @@
+{
+ "id": "cells-notes-10x10",
+ "description": "census8: the sparse Notes column has 10 values in part A and 10 in part B",
+ "tags": [
+  "family:min_cells",
+  "schema:census8"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Spruce",
+      "Bennington",
+      "25,210",
+      "6,277",
+      "34.0",
+      "29.0%",
+      "May 1, 2019",
+      "Merged"
+     ],
+     [
+      "Lamoille",
+      "Washington",
+      "78,827",
+      "14,757",
+      "52.2",
+      "26.1%",
+      "Jul 11, 2017",
+      ""
+     ],
+     [
+      "Harbor",
+      "Juniper",
+      "85,857",
+      "83,313",
+      "23.1",
+      "24.2%",
+      "Sep 23, 2017",
+      ""
+     ],
+     [
+      "Poplar",
+      "Granite",
+      "78,035",
+      "34,419",
+      "50.7",
+      "9.0%",
+      "Mar 5, 2023",
+      ""
+     ],
+     [
+      "Addison",
+      "Windham",
+      "75,415",
+      "59,131",
+      "24.2",
+      "8.0%",
+      "Sep 16, 2017",
+      ""
+     ],
+     [
+      "Orleans",
+      "Birch",
+      "77,147",
+      "58,840",
+      "25.5",
+      "9.0%",
+      "Jul 18, 2016",
+      "Late filing"
+     ],
+     [
+      "Harbor",
+      "Windham",
+      "12,791",
+      "82,690",
+      "24.8",
+      "19.5%",
+      "May 19, 2018",
+      ""
+     ],
+     [
+      "Caledonia",
+      "Tamarack",
+      "29,811",
+      "68,190",
+      "56.6",
+      "6.1%",
+      "Jul 18, 2015",
+      ""
+     ],
+     [
+      "Orange",
+      "Birch",
+      "55,696",
+      "44,941",
+      "24.7",
+      "3.9%",
+      "Sep 11, 2015",
+      ""
+     ],
+     [
+      "Windham",
+      "Juniper",
+      "86,567",
+      "70,804",
+      "28.6",
+      "26.2%",
+      "May 19, 2019",
+      ""
+     ]
+    ],
+    "2": [
+     [
+      "Juniper",
+      "Harbor",
+      "70,670",
+      "12,920",
+      "46.7",
+      "2.3%",
+      "May 15, 2023",
+      "Late filing"
+     ],
+     [
+      "Orange",
+      "Spruce",
+      "20,971",
+      "26,233",
+      "43.9",
+      "20.6%",
+      "Sep 11, 2020",
+      ""
+     ],
+     [
+      "Addison",
+      "Orleans",
+      "92,345",
+      "52,260",
+      "44.6",
+      "3.7%",
+      "Sep 23, 2016",
+      "Revised"
+     ],
+     [
+      "Orleans",
+      "Cedar",
+      "74,800",
+      "2,917",
+      "29.8",
+      "6.1%",
+      "Jul 10, 2015",
+      "Pending review"
+     ],
+     [
+      "Juniper",
+      "Franklin",
+      "15,509",
+      "85,331",
+      "55.9",
+      "6.3%",
+      "May 13, 2017",
+      "On hold"
+     ],
+     [
+      "Laurel",
+      "Tamarack",
+      "62,028",
+      "46,575",
+      "48.8",
+      "27.8%",
+      "Nov 17, 2022",
+      "Revised"
+     ],
+     [
+      "Aspen",
+      "Aspen",
+      "51,482",
+      "78,113",
+      "40.0",
+      "11.8%",
+      "May 26, 2022",
+      "Pending review"
+     ],
+     [
+      "Juniper",
+      "Caledonia",
+      "91,046",
+      "33,361",
+      "36.8",
+      "25.4%",
+      "May 9, 2023",
+      "Merged"
+     ],
+     [
+      "Birch",
+      "Spruce",
+      "50,686",
+      "63,809",
+      "23.8",
+      "23.5%",
+      "Nov 27, 2018",
+      "On hold"
+     ],
+     [
+      "Maple",
+      "Aspen",
+      "47,221",
+      "28,965",
+      "43.2",
+      "5.6%",
+      "Jan 23, 2016",
+      ""
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Town Name",
+    "County Name",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Aspen",
+      "Birch",
+      "90,759",
+      "87,449",
+      "48.6",
+      "2.9%",
+      "Nov 16, 2023",
+      ""
+     ],
+     [
+      "Poplar",
+      "Lamoille",
+      "24,653",
+      "86,270",
+      "29.6",
+      "4.1%",
+      "Nov 22, 2021",
+      ""
+     ],
+     [
+      "Poplar",
+      "Washington",
+      "66,903",
+      "72,596",
+      "57.0",
+      "16.4%",
+      "May 15, 2022",
+      "On hold"
+     ],
+     [
+      "Essex",
+      "Chittenden",
+      "59,203",
+      "30,325",
+      "42.2",
+      "10.8%",
+      "Jul 26, 2020",
+      "Revised"
+     ],
+     [
+      "Alder",
+      "Caledonia",
+      "4,576",
+      "86,134",
+      "27.9",
+      "13.5%",
+      "Jan 1, 2015",
+      ""
+     ],
+     [
+      "Orleans",
+      "Addison",
+      "76,372",
+      "76,859",
+      "28.5",
+      "12.1%",
+      "Jul 20, 2021",
+      "New site"
+     ],
+     [
+      "Poplar",
+      "Spruce",
+      "52,384",
+      "213",
+      "44.7",
+      "24.1%",
+      "Sep 7, 2023",
+      "Revised"
+     ],
+     [
+      "Aspen",
+      "Sorrel",
+      "20,569",
+      "43,823",
+      "30.8",
+      "7.9%",
+      "Mar 26, 2017",
+      ""
+     ],
+     [
+      "Granite",
+      "Rutland",
+      "14,863",
+      "57,559",
+      "45.8",
+      "15.6%",
+      "Nov 19, 2017",
+      ""
+     ],
+     [
+      "Lamoille",
+      "Lamoille",
+      "80,119",
+      "13,754",
+      "54.0",
+      "6.7%",
+      "Jan 25, 2021",
+      "Pending review"
+     ]
+    ],
+    "6": [
+     [
+      "Caledonia",
+      "Addison",
+      "19,140",
+      "9,248",
+      "26.7",
+      "19.6%",
+      "Mar 8, 2022",
+      "Pending review"
+     ],
+     [
+      "Tamarack",
+      "Chittenden",
+      "35,315",
+      "81,072",
+      "56.3",
+      "18.4%",
+      "Sep 8, 2018",
+      ""
+     ],
+     [
+      "Bennington",
+      "Tamarack",
+      "67,915",
+      "85,961",
+      "29.5",
+      "15.8%",
+      "Jan 17, 2023",
+      ""
+     ],
+     [
+      "Granite",
+      "Addison",
+      "94,670",
+      "29,407",
+      "46.8",
+      "14.9%",
+      "Sep 6, 2018",
+      "Revised"
+     ],
+     [
+      "Aspen",
+      "Granite",
+      "55,670",
+      "8,278",
+      "35.8",
+      "5.7%",
+      "Nov 23, 2019",
+      "See memo"
+     ],
+     [
+      "Windham",
+      "Harbor",
+      "97,615",
+      "56,300",
+      "33.7",
+      "8.6%",
+      "Nov 26, 2015",
+      "Pending review"
+     ],
+     [
+      "Alder",
+      "Aspen",
+      "14,191",
+      "92,440",
+      "27.1",
+      "27.6%",
+      "Sep 13, 2021",
+      ""
+     ],
+     [
+      "Lantern",
+      "Sorrel",
+      "96,035",
+      "70,513",
+      "24.7",
+      "4.0%",
+      "Jan 27, 2015",
+      ""
+     ],
+     [
+      "Birch",
+      "Orange",
+      "70,583",
+      "84,858",
+      "52.0",
+      "29.7%",
+      "Jul 23, 2022",
+      ""
+     ],
+     [
+      "Laurel",
+      "Willow",
+      "55,776",
+      "86,443",
+      "22.0",
+      "5.5%",
+      "Mar 16, 2018",
+      "Late filing"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": true,
+   "probes": [
+    "min_cells"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 8,
+    "columns_b": 8,
+    "same_signature": false,
+    "equal_positions": 6,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

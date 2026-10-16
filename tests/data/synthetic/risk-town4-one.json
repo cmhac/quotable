@@ -1,0 +1,331 @@
+{
+ "id": "risk-town4-one",
+ "description": "town4: current figures vs a table of 2020 figures (one)",
+ "tags": [
+  "family:residual_risk",
+  "schema:town4"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Tamarack",
+      "Spruce",
+      "21,632",
+      "67,161"
+     ],
+     [
+      "Summit",
+      "Maple",
+      "58,239",
+      "58,535"
+     ],
+     [
+      "Aspen",
+      "Addison",
+      "58,039",
+      "1,856"
+     ],
+     [
+      "Bennington",
+      "Alder",
+      "69,641",
+      "73,588"
+     ],
+     [
+      "Juniper",
+      "Hickory",
+      "984",
+      "59,867"
+     ],
+     [
+      "Chittenden",
+      "Orange",
+      "46,357",
+      "81,149"
+     ],
+     [
+      "Sorrel",
+      "Sorrel",
+      "33,579",
+      "51,959"
+     ],
+     [
+      "Bennington",
+      "Summit",
+      "43,635",
+      "64,834"
+     ],
+     [
+      "Bennington",
+      "Hickory",
+      "62,691",
+      "36,415"
+     ],
+     [
+      "Essex",
+      "Lantern",
+      "35,743",
+      "61,374"
+     ]
+    ],
+    "2": [
+     [
+      "Spruce",
+      "Alder",
+      "29,532",
+      "72,100"
+     ],
+     [
+      "Orange",
+      "Aspen",
+      "2,081",
+      "61,108"
+     ],
+     [
+      "Willow",
+      "Summit",
+      "39,267",
+      "38,197"
+     ],
+     [
+      "Birch",
+      "Spruce",
+      "50,840",
+      "60,926"
+     ],
+     [
+      "Grand Isle",
+      "Willow",
+      "93,509",
+      "34,209"
+     ],
+     [
+      "Aspen",
+      "Bennington",
+      "53,155",
+      "41,923"
+     ],
+     [
+      "Lamoille",
+      "Summit",
+      "96,492",
+      "26,107"
+     ],
+     [
+      "Essex",
+      "Alder",
+      "24,852",
+      "67,408"
+     ],
+     [
+      "Rutland",
+      "Spruce",
+      "81,252",
+      "26,612"
+     ],
+     [
+      "Addison",
+      "Sorrel",
+      "73,378",
+      "17,768"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Town",
+    "County",
+    "Population 2020",
+    "Households"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Windham",
+      "Harbor",
+      "10,346",
+      "17,756"
+     ],
+     [
+      "Rutland",
+      "Bennington",
+      "69,198",
+      "64,396"
+     ],
+     [
+      "Washington",
+      "Addison",
+      "88,459",
+      "24,787"
+     ],
+     [
+      "Cedar",
+      "Rutland",
+      "65,937",
+      "66,566"
+     ],
+     [
+      "Addison",
+      "Chittenden",
+      "51,422",
+      "96,348"
+     ],
+     [
+      "Tamarack",
+      "Spruce",
+      "14,239",
+      "39,807"
+     ],
+     [
+      "Laurel",
+      "Tamarack",
+      "73,279",
+      "85,883"
+     ],
+     [
+      "Alder",
+      "Hickory",
+      "61,750",
+      "1,947"
+     ],
+     [
+      "Orleans",
+      "Orange",
+      "77,281",
+      "40,994"
+     ],
+     [
+      "Juniper",
+      "Orleans",
+      "83,880",
+      "77,277"
+     ]
+    ],
+    "6": [
+     [
+      "Alder",
+      "Summit",
+      "51,460",
+      "9,055"
+     ],
+     [
+      "Tamarack",
+      "Franklin",
+      "94,735",
+      "68,995"
+     ],
+     [
+      "Lantern",
+      "Addison",
+      "17,817",
+      "1,153"
+     ],
+     [
+      "Alder",
+      "Lantern",
+      "8,311",
+      "22,616"
+     ],
+     [
+      "Sorrel",
+      "Windham",
+      "71,740",
+      "40,844"
+     ],
+     [
+      "Windham",
+      "Alder",
+      "60,032",
+      "50,081"
+     ],
+     [
+      "Franklin",
+      "Essex",
+      "67,464",
+      "74,789"
+     ],
+     [
+      "Orange",
+      "Laurel",
+      "91,902",
+      "70,283"
+     ],
+     [
+      "Poplar",
+      "Orleans",
+      "14,100",
+      "59,214"
+     ],
+     [
+      "Poplar",
+      "Sorrel",
+      "96,602",
+      "97,998"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": false,
+   "expect_merge": null,
+   "probes": [
+    "residual_risk"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 4,
+    "columns_b": 4,
+    "same_signature": false,
+    "equal_positions": 3,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

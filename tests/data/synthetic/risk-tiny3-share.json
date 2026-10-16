@@ -1,0 +1,288 @@
+{
+ "id": "risk-tiny3-share",
+ "description": "tiny3: a short table and a longer-named table of different things (share)",
+ "tags": [
+  "family:residual_risk",
+  "schema:tiny3"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Juniper",
+      "22,547",
+      "25.9%"
+     ],
+     [
+      "Spruce",
+      "62,997",
+      "2.8%"
+     ],
+     [
+      "Lantern",
+      "87,951",
+      "9.1%"
+     ],
+     [
+      "Laurel",
+      "20,090",
+      "20.2%"
+     ],
+     [
+      "Harbor",
+      "56,133",
+      "23.4%"
+     ],
+     [
+      "Spruce",
+      "34,094",
+      "14.1%"
+     ],
+     [
+      "Caledonia",
+      "26,997",
+      "26.8%"
+     ],
+     [
+      "Alder",
+      "33,320",
+      "30.4%"
+     ],
+     [
+      "Cedar",
+      "64,300",
+      "3.4%"
+     ],
+     [
+      "Orange",
+      "38,890",
+      "23.5%"
+     ]
+    ],
+    "2": [
+     [
+      "Harbor",
+      "53,156",
+      "8.0%"
+     ],
+     [
+      "Cedar",
+      "40,196",
+      "17.6%"
+     ],
+     [
+      "Orleans",
+      "26,930",
+      "13.7%"
+     ],
+     [
+      "Willow",
+      "15,165",
+      "4.7%"
+     ],
+     [
+      "Lantern",
+      "93,202",
+      "4.7%"
+     ],
+     [
+      "Caledonia",
+      "88,213",
+      "18.2%"
+     ],
+     [
+      "Harbor",
+      "22,584",
+      "27.1%"
+     ],
+     [
+      "Sorrel",
+      "78,306",
+      "3.4%"
+     ],
+     [
+      "Aspen",
+      "9,038",
+      "19.7%"
+     ],
+     [
+      "Maple",
+      "77,568",
+      "2.3%"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share Percent"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Summit",
+      "47,615",
+      "13.9%"
+     ],
+     [
+      "Tamarack",
+      "66,337",
+      "17.1%"
+     ],
+     [
+      "Franklin",
+      "47,170",
+      "14.4%"
+     ],
+     [
+      "Aspen",
+      "6,375",
+      "8.1%"
+     ],
+     [
+      "Addison",
+      "42,166",
+      "4.0%"
+     ],
+     [
+      "Birch",
+      "89,100",
+      "12.1%"
+     ],
+     [
+      "Spruce",
+      "31,745",
+      "14.3%"
+     ],
+     [
+      "Poplar",
+      "39,599",
+      "28.4%"
+     ],
+     [
+      "Tamarack",
+      "74,286",
+      "14.0%"
+     ],
+     [
+      "Lantern",
+      "60,805",
+      "21.6%"
+     ]
+    ],
+    "6": [
+     [
+      "Sorrel",
+      "41,200",
+      "20.1%"
+     ],
+     [
+      "Birch",
+      "28,674",
+      "19.6%"
+     ],
+     [
+      "Essex",
+      "58,970",
+      "23.8%"
+     ],
+     [
+      "Franklin",
+      "44,004",
+      "6.1%"
+     ],
+     [
+      "Birch",
+      "26,056",
+      "17.4%"
+     ],
+     [
+      "Willow",
+      "38,978",
+      "11.9%"
+     ],
+     [
+      "Franklin",
+      "84,480",
+      "13.3%"
+     ],
+     [
+      "Laurel",
+      "49,548",
+      "15.9%"
+     ],
+     [
+      "Alder",
+      "26,871",
+      "7.1%"
+     ],
+     [
+      "Essex",
+      "35,913",
+      "16.3%"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": false,
+   "expect_merge": null,
+   "probes": [
+    "residual_risk",
+    "half_equal"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 3,
+    "columns_b": 3,
+    "same_signature": false,
+    "equal_positions": 2,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

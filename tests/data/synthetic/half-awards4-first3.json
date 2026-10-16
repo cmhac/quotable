@@ -1,0 +1,331 @@
+{
+ "id": "half-awards4-first3",
+ "description": "awards4: 3 of 4 headers reworded (first 3)",
+ "tags": [
+  "family:half_sweep",
+  "schema:awards4"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Cedar Library",
+      "Spruce",
+      "$516,000",
+      "76,587"
+     ],
+     [
+      "Cedar Orchard",
+      "Windham",
+      "$116,000",
+      "96,527"
+     ],
+     [
+      "Harbor Clinic",
+      "Chittenden",
+      "$398,000",
+      "47,714"
+     ],
+     [
+      "Lantern Library",
+      "Granite",
+      "$795,000",
+      "7,197"
+     ],
+     [
+      "Willow Depot",
+      "Poplar",
+      "$703,000",
+      "65,070"
+     ],
+     [
+      "Lantern Wharf",
+      "Hickory",
+      "$502,000",
+      "77,580"
+     ],
+     [
+      "Lantern Clinic",
+      "Washington",
+      "$130,000",
+      "75,475"
+     ],
+     [
+      "Maple Wharf",
+      "Bennington",
+      "$368,000",
+      "95,276"
+     ],
+     [
+      "Riverside Market",
+      "Willow",
+      "$464,000",
+      "11,759"
+     ],
+     [
+      "Willow Clinic",
+      "Poplar",
+      "$322,000",
+      "89,121"
+     ]
+    ],
+    "2": [
+     [
+      "Lantern Bridge",
+      "Willow",
+      "$598,000",
+      "49,854"
+     ],
+     [
+      "Cedar Clinic",
+      "Bennington",
+      "$626,000",
+      "7,097"
+     ],
+     [
+      "Harbor Orchard",
+      "Spruce",
+      "$899,000",
+      "91,526"
+     ],
+     [
+      "Granite Wharf",
+      "Chittenden",
+      "$184,000",
+      "55,934"
+     ],
+     [
+      "Willow Bridge",
+      "Caledonia",
+      "$978,000",
+      "81,662"
+     ],
+     [
+      "Willow Library",
+      "Alder",
+      "$684,000",
+      "79,760"
+     ],
+     [
+      "Willow Depot",
+      "Tamarack",
+      "$581,000",
+      "65,977"
+     ],
+     [
+      "Riverside Market",
+      "Aspen",
+      "$177,000",
+      "6,116"
+     ],
+     [
+      "Willow Orchard",
+      "Maple",
+      "$967,000",
+      "49,413"
+     ],
+     [
+      "Summit Clinic",
+      "Laurel",
+      "$71,000",
+      "44,801"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Applicant Name",
+    "Program Area",
+    "Amount Awarded Total",
+    "Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Maple Wharf",
+      "Tamarack",
+      "$343,000",
+      "13,474"
+     ],
+     [
+      "Lantern Orchard",
+      "Summit",
+      "$307,000",
+      "54,850"
+     ],
+     [
+      "Willow Orchard",
+      "Washington",
+      "$858,000",
+      "86,245"
+     ],
+     [
+      "Granite Wharf",
+      "Summit",
+      "$649,000",
+      "90,353"
+     ],
+     [
+      "Cedar Bridge",
+      "Alder",
+      "$780,000",
+      "3,619"
+     ],
+     [
+      "Riverside Market",
+      "Spruce",
+      "$802,000",
+      "28,254"
+     ],
+     [
+      "Lantern Bridge",
+      "Windham",
+      "$397,000",
+      "83,697"
+     ],
+     [
+      "Harbor Depot",
+      "Birch",
+      "$401,000",
+      "8,716"
+     ],
+     [
+      "Harbor Library",
+      "Bennington",
+      "$708,000",
+      "89,914"
+     ],
+     [
+      "Willow Trail",
+      "Poplar",
+      "$581,000",
+      "47,695"
+     ]
+    ],
+    "6": [
+     [
+      "Harbor Market",
+      "Windham",
+      "$130,000",
+      "23,023"
+     ],
+     [
+      "Willow Depot",
+      "Lamoille",
+      "$640,000",
+      "93,925"
+     ],
+     [
+      "Cedar Depot",
+      "Chittenden",
+      "$40,000",
+      "1,854"
+     ],
+     [
+      "Summit Market",
+      "Tamarack",
+      "$255,000",
+      "38,853"
+     ],
+     [
+      "Lantern Bridge",
+      "Spruce",
+      "$78,000",
+      "38,914"
+     ],
+     [
+      "Summit Orchard",
+      "Summit",
+      "$49,000",
+      "88,079"
+     ],
+     [
+      "Summit Depot",
+      "Aspen",
+      "$675,000",
+      "72,353"
+     ],
+     [
+      "Cedar Depot",
+      "Summit",
+      "$803,000",
+      "39,011"
+     ],
+     [
+      "Cedar Depot",
+      "Maple",
+      "$874,000",
+      "73,836"
+     ],
+     [
+      "Willow Clinic",
+      "Willow",
+      "$865,000",
+      "81,218"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": null,
+   "probes": [
+    "half_equal"
+   ],
+   "stage": "merge",
+   "note": "1 of 4 positions have equal words",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 4,
+    "columns_b": 4,
+    "same_signature": false,
+    "equal_positions": 1,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

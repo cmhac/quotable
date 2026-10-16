@@ -1,0 +1,211 @@
+{
+ "id": "cells-12x3",
+ "description": "projects6: part A has 12 rows, part B has 3",
+ "tags": [
+  "family:min_cells",
+  "schema:projects6"
+ ],
+ "pages": 4,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1
+   ],
+   "columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    1
+   ],
+   "rows": {
+    "1": [
+     [
+      "Lantern Orchard",
+      "Lantern",
+      "$642,000",
+      "$867,000",
+      "$133,000",
+      "Aspen"
+     ],
+     [
+      "Cedar Bridge",
+      "Hickory",
+      "$740,000",
+      "$282,000",
+      "$546,000",
+      "Summit"
+     ],
+     [
+      "Riverside Depot",
+      "Alder",
+      "$171,000",
+      "$619,000",
+      "$714,000",
+      "Lamoille"
+     ],
+     [
+      "Maple Library",
+      "Sorrel",
+      "$925,000",
+      "$241,000",
+      "$954,000",
+      "Orange"
+     ],
+     [
+      "Riverside Library",
+      "Washington",
+      "$680,000",
+      "$275,000",
+      "$788,000",
+      "Windham"
+     ],
+     [
+      "Cedar Trail",
+      "Grand Isle",
+      "$199,000",
+      "$926,000",
+      "$846,000",
+      "Juniper"
+     ],
+     [
+      "Maple Trail",
+      "Caledonia",
+      "$339,000",
+      "$416,000",
+      "$767,000",
+      "Windham"
+     ],
+     [
+      "Granite Bridge",
+      "Essex",
+      "$969,000",
+      "$153,000",
+      "$507,000",
+      "Orange"
+     ],
+     [
+      "Lantern Market",
+      "Franklin",
+      "$99,000",
+      "$415,000",
+      "$843,000",
+      "Alder"
+     ],
+     [
+      "Cedar Wharf",
+      "Lamoille",
+      "$321,000",
+      "$182,000",
+      "$98,000",
+      "Maple"
+     ],
+     [
+      "Harbor Wharf",
+      "Hickory",
+      "$795,000",
+      "$841,000",
+      "$441,000",
+      "Spruce"
+     ],
+     [
+      "Cedar Wharf",
+      "Laurel",
+      "$972,000",
+      "$399,000",
+      "$252,000",
+      "Birch"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    4
+   ],
+   "columns": [
+    "Project Name",
+    "County Name",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    4
+   ],
+   "rows": {
+    "4": [
+     [
+      "Lantern Orchard",
+      "Lamoille",
+      "$419,000",
+      "$314,000",
+      "$252,000",
+      "Lamoille"
+     ],
+     [
+      "Harbor Wharf",
+      "Addison",
+      "$50,000",
+      "$229,000",
+      "$385,000",
+      "Poplar"
+     ],
+     [
+      "Summit Bridge",
+      "Caledonia",
+      "$725,000",
+      "$964,000",
+      "$147,000",
+      "Grand Isle"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": false,
+   "probes": [
+    "min_cells"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 6,
+    "columns_b": 6,
+    "same_signature": false,
+    "equal_positions": 4,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

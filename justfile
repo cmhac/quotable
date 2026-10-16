@@ -35,6 +35,10 @@ test-live:
 test-ocr:
     uv run pytest -m ocr -rs --durations=0
 
+# Regenerate the golden synthetic fixture (tests/data/synthetic): PDFs plus truth files
+synthetic:
+    uv run python -m tests.synthetic_cases
+
 # Run every pre-commit hook (ruff check --fix, ruff format, ty) on all files
 hooks:
     uv run pre-commit run --all-files

@@ -1,0 +1,3296 @@
+[
+ {
+  "id": "half-projects6-first1",
+  "description": "projects6: 1 of 6 headers reworded (first 1)",
+  "tags": [
+   "family:half_sweep",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-projects6-last1",
+  "description": "projects6: 1 of 6 headers reworded (last 1)",
+  "tags": [
+   "family:half_sweep",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-projects6-first2",
+  "description": "projects6: 2 of 6 headers reworded (first 2)",
+  "tags": [
+   "family:half_sweep",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-projects6-last2",
+  "description": "projects6: 2 of 6 headers reworded (last 2)",
+  "tags": [
+   "family:half_sweep",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-projects6-first3",
+  "description": "projects6: 3 of 6 headers reworded (first 3)",
+  "tags": [
+   "family:half_sweep",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-projects6-last3",
+  "description": "projects6: 3 of 6 headers reworded (last 3)",
+  "tags": [
+   "family:half_sweep",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-projects6-first4",
+  "description": "projects6: 4 of 6 headers reworded (first 4)",
+  "tags": [
+   "family:half_sweep",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-projects6-last4",
+  "description": "projects6: 4 of 6 headers reworded (last 4)",
+  "tags": [
+   "family:half_sweep",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-projects6-first5",
+  "description": "projects6: 5 of 6 headers reworded (first 5)",
+  "tags": [
+   "family:half_sweep",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-projects6-last5",
+  "description": "projects6: 5 of 6 headers reworded (last 5)",
+  "tags": [
+   "family:half_sweep",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-projects6-first6",
+  "description": "projects6: 6 of 6 headers reworded (first 6)",
+  "tags": [
+   "family:half_sweep",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-awards4-first1",
+  "description": "awards4: 1 of 4 headers reworded (first 1)",
+  "tags": [
+   "family:half_sweep",
+   "schema:awards4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-awards4-last1",
+  "description": "awards4: 1 of 4 headers reworded (last 1)",
+  "tags": [
+   "family:half_sweep",
+   "schema:awards4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-awards4-first2",
+  "description": "awards4: 2 of 4 headers reworded (first 2)",
+  "tags": [
+   "family:half_sweep",
+   "schema:awards4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-awards4-last2",
+  "description": "awards4: 2 of 4 headers reworded (last 2)",
+  "tags": [
+   "family:half_sweep",
+   "schema:awards4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-awards4-first3",
+  "description": "awards4: 3 of 4 headers reworded (first 3)",
+  "tags": [
+   "family:half_sweep",
+   "schema:awards4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-awards4-last3",
+  "description": "awards4: 3 of 4 headers reworded (last 3)",
+  "tags": [
+   "family:half_sweep",
+   "schema:awards4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-awards4-first4",
+  "description": "awards4: 4 of 4 headers reworded (first 4)",
+  "tags": [
+   "family:half_sweep",
+   "schema:awards4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-tiny3-first1",
+  "description": "tiny3: 1 of 3 headers reworded (first 1)",
+  "tags": [
+   "family:half_sweep",
+   "schema:tiny3"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-tiny3-last1",
+  "description": "tiny3: 1 of 3 headers reworded (last 1)",
+  "tags": [
+   "family:half_sweep",
+   "schema:tiny3"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-tiny3-first2",
+  "description": "tiny3: 2 of 3 headers reworded (first 2)",
+  "tags": [
+   "family:half_sweep",
+   "schema:tiny3"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-tiny3-last2",
+  "description": "tiny3: 2 of 3 headers reworded (last 2)",
+  "tags": [
+   "family:half_sweep",
+   "schema:tiny3"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-tiny3-first3",
+  "description": "tiny3: 3 of 3 headers reworded (first 3)",
+  "tags": [
+   "family:half_sweep",
+   "schema:tiny3"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-first1",
+  "description": "census8: 1 of 8 headers reworded (first 1)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-last1",
+  "description": "census8: 1 of 8 headers reworded (last 1)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-first2",
+  "description": "census8: 2 of 8 headers reworded (first 2)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-last2",
+  "description": "census8: 2 of 8 headers reworded (last 2)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-first3",
+  "description": "census8: 3 of 8 headers reworded (first 3)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-last3",
+  "description": "census8: 3 of 8 headers reworded (last 3)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-first4",
+  "description": "census8: 4 of 8 headers reworded (first 4)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-last4",
+  "description": "census8: 4 of 8 headers reworded (last 4)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-first5",
+  "description": "census8: 5 of 8 headers reworded (first 5)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-last5",
+  "description": "census8: 5 of 8 headers reworded (last 5)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-first6",
+  "description": "census8: 6 of 8 headers reworded (first 6)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-last6",
+  "description": "census8: 6 of 8 headers reworded (last 6)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-first7",
+  "description": "census8: 7 of 8 headers reworded (first 7)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-last7",
+  "description": "census8: 7 of 8 headers reworded (last 7)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-census8-first8",
+  "description": "census8: 8 of 8 headers reworded (first 8)",
+  "tags": [
+   "family:half_sweep",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-first1",
+  "description": "wide10: 1 of 10 headers reworded (first 1)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-last1",
+  "description": "wide10: 1 of 10 headers reworded (last 1)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-first2",
+  "description": "wide10: 2 of 10 headers reworded (first 2)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-last2",
+  "description": "wide10: 2 of 10 headers reworded (last 2)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-first3",
+  "description": "wide10: 3 of 10 headers reworded (first 3)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-last3",
+  "description": "wide10: 3 of 10 headers reworded (last 3)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-first4",
+  "description": "wide10: 4 of 10 headers reworded (first 4)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-last4",
+  "description": "wide10: 4 of 10 headers reworded (last 4)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-first5",
+  "description": "wide10: 5 of 10 headers reworded (first 5)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-last5",
+  "description": "wide10: 5 of 10 headers reworded (last 5)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-first6",
+  "description": "wide10: 6 of 10 headers reworded (first 6)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-last6",
+  "description": "wide10: 6 of 10 headers reworded (last 6)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-first7",
+  "description": "wide10: 7 of 10 headers reworded (first 7)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-last7",
+  "description": "wide10: 7 of 10 headers reworded (last 7)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-first8",
+  "description": "wide10: 8 of 10 headers reworded (first 8)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-last8",
+  "description": "wide10: 8 of 10 headers reworded (last 8)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-first9",
+  "description": "wide10: 9 of 10 headers reworded (first 9)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-last9",
+  "description": "wide10: 9 of 10 headers reworded (last 9)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "half-wide10-first10",
+  "description": "wide10: 10 of 10 headers reworded (first 10)",
+  "tags": [
+   "family:half_sweep",
+   "schema:wide10"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "order-projects6-all",
+  "description": "projects6: every reorderable header has its words in another order",
+  "tags": [
+   "family:word_order",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "token_containment"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "order-awards4-all",
+  "description": "awards4: every reorderable header has its words in another order",
+  "tags": [
+   "family:word_order",
+   "schema:awards4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "token_containment"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "order-projects6-plus-reword",
+  "description": "projects6: two headers reordered and one reworded (5 of 6 positions equal words)",
+  "tags": [
+   "family:word_order",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "token_containment"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp0",
+  "description": "projects6: part B moved +0 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp2",
+  "description": "projects6: part B moved +2 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp4",
+  "description": "projects6: part B moved +4 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp6",
+  "description": "projects6: part B moved +6 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp8",
+  "description": "projects6: part B moved +8 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp9",
+  "description": "projects6: part B moved +9 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "grid",
+     "tolerance_band"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp10",
+  "description": "projects6: part B moved +10 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "grid",
+     "tolerance_band"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp11",
+  "description": "projects6: part B moved +11 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "grid",
+     "tolerance_band"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp12",
+  "description": "projects6: part B moved +12 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "grid",
+     "tolerance_band"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp14",
+  "description": "projects6: part B moved +14 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp16",
+  "description": "projects6: part B moved +16 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp20",
+  "description": "projects6: part B moved +20 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp24",
+  "description": "projects6: part B moved +24 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp30",
+  "description": "projects6: part B moved +30 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftp40",
+  "description": "projects6: part B moved +40 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftm6",
+  "description": "projects6: part B moved -6 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "gridmshiftm16",
+  "description": "projects6: part B moved -16 pt",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "grid-drift6",
+  "description": "projects6: only the third column of part B is 6 pt to the right",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "grid-drift8",
+  "description": "projects6: only the third column of part B is 8 pt to the right",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "grid-drift14",
+  "description": "projects6: only the third column of part B is 14 pt to the right",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "grid-drift24",
+  "description": "projects6: only the third column of part B is 24 pt to the right",
+  "tags": [
+   "family:grid",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "grid"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "align-rr",
+  "description": "projects6: numbers aligned r in part A and r in part B",
+  "tags": [
+   "family:alignment",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "grid",
+     "alignment"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "align-lr",
+  "description": "projects6: numbers aligned l in part A and r in part B",
+  "tags": [
+   "family:alignment",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "grid",
+     "alignment"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "align-rl",
+  "description": "projects6: numbers aligned r in part A and l in part B",
+  "tags": [
+   "family:alignment",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "grid",
+     "alignment"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "align-font9_0",
+  "description": "projects6: part B printed at 9.0 pt instead of 8 pt",
+  "tags": [
+   "family:alignment",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "grid",
+     "alignment"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "align-font10_0",
+  "description": "projects6: part B printed at 10.0 pt instead of 8 pt",
+  "tags": [
+   "family:alignment",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": null,
+    "probes": [
+     "grid",
+     "alignment"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-10x10",
+  "description": "projects6: part A has 10 rows, part B has 10",
+  "tags": [
+   "family:min_cells",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-20x4",
+  "description": "projects6: part A has 20 rows, part B has 4",
+  "tags": [
+   "family:min_cells",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-4x20",
+  "description": "projects6: part A has 4 rows, part B has 20",
+  "tags": [
+   "family:min_cells",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-4x4",
+  "description": "projects6: part A has 4 rows, part B has 4",
+  "tags": [
+   "family:min_cells",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-5x5",
+  "description": "projects6: part A has 5 rows, part B has 5",
+  "tags": [
+   "family:min_cells",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-5x20",
+  "description": "projects6: part A has 5 rows, part B has 20",
+  "tags": [
+   "family:min_cells",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-20x5",
+  "description": "projects6: part A has 20 rows, part B has 5",
+  "tags": [
+   "family:min_cells",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-6x6",
+  "description": "projects6: part A has 6 rows, part B has 6",
+  "tags": [
+   "family:min_cells",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-3x3",
+  "description": "projects6: part A has 3 rows, part B has 3",
+  "tags": [
+   "family:min_cells",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-2x2",
+  "description": "projects6: part A has 2 rows, part B has 2",
+  "tags": [
+   "family:min_cells",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-12x3",
+  "description": "projects6: part A has 12 rows, part B has 3",
+  "tags": [
+   "family:min_cells",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-notes-10x10",
+  "description": "census8: the sparse Notes column has 10 values in part A and 10 in part B",
+  "tags": [
+   "family:min_cells",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-notes-6x6",
+  "description": "census8: the sparse Notes column has 6 values in part A and 6 in part B",
+  "tags": [
+   "family:min_cells",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-notes-5x5",
+  "description": "census8: the sparse Notes column has 5 values in part A and 5 in part B",
+  "tags": [
+   "family:min_cells",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-notes-4x4",
+  "description": "census8: the sparse Notes column has 4 values in part A and 4 in part B",
+  "tags": [
+   "family:min_cells",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-notes-3x3",
+  "description": "census8: the sparse Notes column has 3 values in part A and 3 in part B",
+  "tags": [
+   "family:min_cells",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-notes-10x4",
+  "description": "census8: the sparse Notes column has 10 values in part A and 4 in part B",
+  "tags": [
+   "family:min_cells",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-notes-4x10",
+  "description": "census8: the sparse Notes column has 4 values in part A and 10 in part B",
+  "tags": [
+   "family:min_cells",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "cells-notes-0x0",
+  "description": "census8: the sparse Notes column has 0 values in part A and 0 in part B",
+  "tags": [
+   "family:min_cells",
+   "schema:census8"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "min_cells"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-share100",
+  "description": "projects6: 100% of the third column are amounts, the rest words",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-share90",
+  "description": "projects6: 90% of the third column are amounts, the rest words",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-share85",
+  "description": "projects6: 85% of the third column are amounts, the rest words",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-share80",
+  "description": "projects6: 80% of the third column are amounts, the rest words",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-share75",
+  "description": "projects6: 75% of the third column are amounts, the rest words",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-share60",
+  "description": "projects6: 60% of the third column are amounts, the rest words",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-share50",
+  "description": "projects6: 50% of the third column are amounts, the rest words",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-asym100-85",
+  "description": "projects6: amounts are 100% of a column in A, 85% in B",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-asym100-70",
+  "description": "projects6: amounts are 100% of a column in A, 70% in B",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-asym70-100",
+  "description": "projects6: amounts are 70% of a column in A, 100% in B",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-asym90-60",
+  "description": "projects6: amounts are 90% of a column in A, 60% in B",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-kind-integer",
+  "description": "projects6: the third column holds integer values in part B instead of amounts",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": null,
+    "expect_merge": false,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-kind-percent",
+  "description": "projects6: the third column holds percent values in part B instead of amounts",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": null,
+    "expect_merge": false,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-kind-word",
+  "description": "projects6: the third column holds word values in part B instead of amounts",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": null,
+    "expect_merge": false,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-kind-date",
+  "description": "projects6: the third column holds date values in part B instead of amounts",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": null,
+    "expect_merge": false,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-kind-decimal",
+  "description": "projects6: the third column holds decimal values in part B instead of amounts",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": null,
+    "expect_merge": false,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "shape-kind-text",
+  "description": "projects6: the third column holds text values in part B instead of amounts",
+  "tags": [
+   "family:shape",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": null,
+    "expect_merge": false,
+    "probes": [
+     "shape"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "struct-shared-page",
+  "description": "two tables printed one above the other on the same pages, one with reworded headers",
+  "tags": [
+   "family:structure",
+   "schema:projects6"
+  ],
+  "pages": 2,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": false,
+    "expect_merge": false,
+    "probes": [
+     "shared_page"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "struct-extra-column",
+  "description": "part B has a seventh column (Notes)",
+  "tags": [
+   "family:structure",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "count"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "struct-dropped-column",
+  "description": "part B lacks the last column",
+  "tags": [
+   "family:structure",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "count"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "struct-swapped-columns",
+  "description": "part B has its third and fourth columns swapped",
+  "tags": [
+   "family:structure",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": null,
+    "expect_merge": false,
+    "probes": [
+     "order"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "struct-abbreviation",
+  "description": "'Requested Amt' for 'Requested Amount'",
+  "tags": [
+   "family:structure",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "token_containment",
+     "known_limit"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "struct-unrelated-wording",
+  "description": "'Funds Sought' for 'Requested Amount'",
+  "tags": [
+   "family:structure",
+   "schema:projects6"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "token_containment",
+     "known_limit"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "struct-ambiguous-amount",
+  "description": "bare 'Amount' next to 'Amount Awarded' in part A",
+  "tags": [
+   "family:structure",
+   "schema:ambig4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": null,
+    "expect_merge": false,
+    "probes": [
+     "ambiguity"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "struct-three-parts-one-wording",
+  "description": "part A, then parts B and C that print the same reworded header",
+  "tags": [
+   "family:structure",
+   "schema:projects6"
+  ],
+  "pages": 10,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "unique"
+    ],
+    "stage": "merge"
+   },
+   {
+    "a": "A",
+    "b": "C",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "unique"
+    ],
+    "stage": "merge"
+   },
+   {
+    "a": "B",
+    "b": "C",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "unique"
+    ],
+    "stage": "discovery"
+   }
+  ]
+ },
+ {
+  "id": "struct-three-parts-two-wordings",
+  "description": "part A, then parts B and C that reword different headers: A has two partners",
+  "tags": [
+   "family:structure",
+   "schema:projects6"
+  ],
+  "pages": 10,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "unique"
+    ],
+    "stage": "merge"
+   },
+   {
+    "a": "A",
+    "b": "C",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "unique"
+    ],
+    "stage": "merge"
+   },
+   {
+    "a": "B",
+    "b": "C",
+    "same_table": true,
+    "expect_merge": false,
+    "probes": [
+     "unique"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "struct-interleaved",
+  "description": "table A, a different table X, then table A again with two headers reworded",
+  "tags": [
+   "family:structure",
+   "schema:projects6"
+  ],
+  "pages": 7,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "unique"
+    ],
+    "stage": "merge"
+   },
+   {
+    "a": "A",
+    "b": "X",
+    "same_table": false,
+    "expect_merge": false,
+    "probes": [
+     "count"
+    ],
+    "stage": "merge"
+   },
+   {
+    "a": "X",
+    "b": "B",
+    "same_table": false,
+    "expect_merge": false,
+    "probes": [
+     "count"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "struct-two-tables-one-template",
+  "description": "'Amount Awarded' in one section, 'Amount Declined' in another",
+  "tags": [
+   "family:structure",
+   "schema:awards4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": false,
+    "expect_merge": false,
+    "probes": [
+     "token_containment"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "risk-town4-both",
+  "description": "town4: current figures vs a table of 2020 figures (both)",
+  "tags": [
+   "family:residual_risk",
+   "schema:town4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": false,
+    "expect_merge": null,
+    "probes": [
+     "residual_risk"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "risk-town4-one",
+  "description": "town4: current figures vs a table of 2020 figures (one)",
+  "tags": [
+   "family:residual_risk",
+   "schema:town4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": false,
+    "expect_merge": null,
+    "probes": [
+     "residual_risk"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "risk-town4-shifted",
+  "description": "town4: current figures vs a table of 2020 figures (shifted)",
+  "tags": [
+   "family:residual_risk",
+   "schema:town4"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": false,
+    "expect_merge": false,
+    "probes": [
+     "residual_risk"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "risk-tiny3-count",
+  "description": "tiny3: a short table and a longer-named table of different things (count)",
+  "tags": [
+   "family:residual_risk",
+   "schema:tiny3"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": false,
+    "expect_merge": null,
+    "probes": [
+     "residual_risk",
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "risk-tiny3-share",
+  "description": "tiny3: a short table and a longer-named table of different things (share)",
+  "tags": [
+   "family:residual_risk",
+   "schema:tiny3"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": false,
+    "expect_merge": null,
+    "probes": [
+     "residual_risk",
+     "half_equal"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "pipe-exact-gap0",
+  "description": "same header, 0 table-free pages in between",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "discovery"
+   }
+  ]
+ },
+ {
+  "id": "pipe-reworded-gap0",
+  "description": "two headers reworded, 0 table-free pages in between",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 4,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "pipe-exact-gap1",
+  "description": "same header, 1 table-free pages in between",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 5,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "discovery"
+   }
+  ]
+ },
+ {
+  "id": "pipe-reworded-gap1",
+  "description": "two headers reworded, 1 table-free pages in between",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 5,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "pipe-exact-gap4",
+  "description": "same header, 4 table-free pages in between",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 8,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "discovery"
+   }
+  ]
+ },
+ {
+  "id": "pipe-reworded-gap4",
+  "description": "two headers reworded, 4 table-free pages in between",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 8,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "pipe-exact-gap9",
+  "description": "same header, 9 table-free pages in between",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 13,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "discovery"
+   }
+  ]
+ },
+ {
+  "id": "pipe-reworded-gap9",
+  "description": "two headers reworded, 9 table-free pages in between",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 13,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "pipe-exact-gap20",
+  "description": "same header, 20 table-free pages in between",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 24,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "discovery"
+   }
+  ]
+ },
+ {
+  "id": "pipe-reworded-gap20",
+  "description": "two headers reworded, 20 table-free pages in between",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 24,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "pipe-reworded-headerless",
+  "description": "reworded header on the first page of B only",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 10,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "pipe-reworded-lookalike",
+  "description": "reworded header after pages of bullet lists",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 7,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "pipe-caps",
+  "description": "same words in capitals after the gap",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 7,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "discovery"
+   }
+  ]
+ },
+ {
+  "id": "pipe-long-parts",
+  "description": "four pages in each part, reworded header",
+  "tags": [
+   "family:pipeline",
+   "schema:projects6"
+  ],
+  "pages": 14,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": true,
+    "expect_merge": true,
+    "probes": [
+     "pipeline"
+    ],
+    "stage": "merge"
+   }
+  ]
+ },
+ {
+  "id": "ctrl-single-table",
+  "description": "one table over three pages",
+  "tags": [
+   "family:controls"
+  ],
+  "pages": 3,
+  "relations": []
+ },
+ {
+  "id": "ctrl-unrelated",
+  "description": "a six-column and a four-column table with different headers",
+  "tags": [
+   "family:controls"
+  ],
+  "pages": 6,
+  "relations": [
+   {
+    "a": "A",
+    "b": "B",
+    "same_table": false,
+    "expect_merge": false,
+    "probes": [
+     "count"
+    ],
+    "stage": "merge"
+   }
+  ]
+ }
+]

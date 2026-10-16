@@ -1,0 +1,123 @@
+{
+ "id": "cells-2x2",
+ "description": "projects6: part A has 2 rows, part B has 2",
+ "tags": [
+  "family:min_cells",
+  "schema:projects6"
+ ],
+ "pages": 4,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1
+   ],
+   "columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    1
+   ],
+   "rows": {
+    "1": [
+     [
+      "Riverside Bridge",
+      "Laurel",
+      "$684,000",
+      "$63,000",
+      "$324,000",
+      "Grand Isle"
+     ],
+     [
+      "Cedar Market",
+      "Aspen",
+      "$268,000",
+      "$945,000",
+      "$203,000",
+      "Juniper"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    4
+   ],
+   "columns": [
+    "Project Name",
+    "County Name",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    4
+   ],
+   "rows": {
+    "4": [
+     [
+      "Cedar Trail",
+      "Spruce",
+      "$151,000",
+      "$512,000",
+      "$358,000",
+      "Washington"
+     ],
+     [
+      "Riverside Bridge",
+      "Essex",
+      "$51,000",
+      "$49,000",
+      "$764,000",
+      "Poplar"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": false,
+   "probes": [
+    "min_cells"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 6,
+    "columns_b": 6,
+    "same_signature": false,
+    "equal_positions": 4,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

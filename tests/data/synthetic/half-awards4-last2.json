@@ -1,0 +1,331 @@
+{
+ "id": "half-awards4-last2",
+ "description": "awards4: 2 of 4 headers reworded (last 2)",
+ "tags": [
+  "family:half_sweep",
+  "schema:awards4"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Riverside Bridge",
+      "Hickory",
+      "$657,000",
+      "84,984"
+     ],
+     [
+      "Summit Clinic",
+      "Sorrel",
+      "$714,000",
+      "17,663"
+     ],
+     [
+      "Lantern Trail",
+      "Bennington",
+      "$943,000",
+      "53,064"
+     ],
+     [
+      "Willow Bridge",
+      "Birch",
+      "$491,000",
+      "23,558"
+     ],
+     [
+      "Lantern Depot",
+      "Lamoille",
+      "$21,000",
+      "48,313"
+     ],
+     [
+      "Lantern Trail",
+      "Bennington",
+      "$747,000",
+      "32,467"
+     ],
+     [
+      "Willow Library",
+      "Orange",
+      "$213,000",
+      "66,760"
+     ],
+     [
+      "Riverside Market",
+      "Bennington",
+      "$170,000",
+      "44,663"
+     ],
+     [
+      "Cedar Market",
+      "Tamarack",
+      "$648,000",
+      "54,977"
+     ],
+     [
+      "Riverside Bridge",
+      "Grand Isle",
+      "$337,000",
+      "9,852"
+     ]
+    ],
+    "2": [
+     [
+      "Harbor Trail",
+      "Aspen",
+      "$782,000",
+      "83,481"
+     ],
+     [
+      "Harbor Market",
+      "Bennington",
+      "$701,000",
+      "38,478"
+     ],
+     [
+      "Cedar Library",
+      "Juniper",
+      "$524,000",
+      "9,420"
+     ],
+     [
+      "Granite Wharf",
+      "Laurel",
+      "$257,000",
+      "34,037"
+     ],
+     [
+      "Summit Bridge",
+      "Rutland",
+      "$263,000",
+      "32,578"
+     ],
+     [
+      "Lantern Wharf",
+      "Maple",
+      "$131,000",
+      "25,406"
+     ],
+     [
+      "Riverside Market",
+      "Essex",
+      "$647,000",
+      "51,598"
+     ],
+     [
+      "Harbor Depot",
+      "Chittenden",
+      "$377,000",
+      "13,275"
+     ],
+     [
+      "Summit Wharf",
+      "Essex",
+      "$156,000",
+      "79,335"
+     ],
+     [
+      "Summit Clinic",
+      "Caledonia",
+      "$595,000",
+      "86,423"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded Total",
+    "Fiscal Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Granite Wharf",
+      "Chittenden",
+      "$949,000",
+      "78,775"
+     ],
+     [
+      "Maple Clinic",
+      "Birch",
+      "$832,000",
+      "50,643"
+     ],
+     [
+      "Cedar Bridge",
+      "Maple",
+      "$641,000",
+      "88,777"
+     ],
+     [
+      "Maple Wharf",
+      "Granite",
+      "$827,000",
+      "64,656"
+     ],
+     [
+      "Summit Trail",
+      "Franklin",
+      "$935,000",
+      "82,074"
+     ],
+     [
+      "Cedar Library",
+      "Poplar",
+      "$713,000",
+      "81,445"
+     ],
+     [
+      "Lantern Trail",
+      "Hickory",
+      "$967,000",
+      "15,928"
+     ],
+     [
+      "Cedar Library",
+      "Summit",
+      "$720,000",
+      "15,948"
+     ],
+     [
+      "Summit Clinic",
+      "Bennington",
+      "$291,000",
+      "52,200"
+     ],
+     [
+      "Lantern Market",
+      "Windham",
+      "$608,000",
+      "38,307"
+     ]
+    ],
+    "6": [
+     [
+      "Summit Library",
+      "Birch",
+      "$926,000",
+      "77,913"
+     ],
+     [
+      "Summit Wharf",
+      "Bennington",
+      "$662,000",
+      "62,596"
+     ],
+     [
+      "Lantern Depot",
+      "Alder",
+      "$749,000",
+      "34,569"
+     ],
+     [
+      "Harbor Market",
+      "Addison",
+      "$381,000",
+      "6,871"
+     ],
+     [
+      "Summit Depot",
+      "Cedar",
+      "$915,000",
+      "86,214"
+     ],
+     [
+      "Riverside Depot",
+      "Birch",
+      "$897,000",
+      "33,200"
+     ],
+     [
+      "Granite Library",
+      "Cedar",
+      "$50,000",
+      "2,220"
+     ],
+     [
+      "Harbor Bridge",
+      "Tamarack",
+      "$24,000",
+      "10,016"
+     ],
+     [
+      "Lantern Library",
+      "Addison",
+      "$532,000",
+      "23,062"
+     ],
+     [
+      "Cedar Orchard",
+      "Cedar",
+      "$888,000",
+      "40,574"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": null,
+   "probes": [
+    "half_equal"
+   ],
+   "stage": "merge",
+   "note": "2 of 4 positions have equal words",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 4,
+    "columns_b": 4,
+    "same_signature": false,
+    "equal_positions": 2,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

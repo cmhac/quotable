@@ -1,0 +1,331 @@
+{
+ "id": "risk-town4-shifted",
+ "description": "town4: current figures vs a table of 2020 figures (shifted)",
+ "tags": [
+  "family:residual_risk",
+  "schema:town4"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Windham",
+      "Harbor",
+      "36,640",
+      "88,497"
+     ],
+     [
+      "Sorrel",
+      "Birch",
+      "31,884",
+      "13,997"
+     ],
+     [
+      "Willow",
+      "Franklin",
+      "72,029",
+      "52,393"
+     ],
+     [
+      "Poplar",
+      "Windham",
+      "16,947",
+      "29,255"
+     ],
+     [
+      "Franklin",
+      "Hickory",
+      "64,362",
+      "82,438"
+     ],
+     [
+      "Tamarack",
+      "Lamoille",
+      "26,690",
+      "64,761"
+     ],
+     [
+      "Summit",
+      "Washington",
+      "2,371",
+      "93,171"
+     ],
+     [
+      "Addison",
+      "Chittenden",
+      "23,526",
+      "84,065"
+     ],
+     [
+      "Birch",
+      "Orange",
+      "64,673",
+      "39,605"
+     ],
+     [
+      "Rutland",
+      "Sorrel",
+      "95,567",
+      "97,210"
+     ]
+    ],
+    "2": [
+     [
+      "Poplar",
+      "Cedar",
+      "75,682",
+      "12,913"
+     ],
+     [
+      "Harbor",
+      "Orleans",
+      "22,151",
+      "50,128"
+     ],
+     [
+      "Lamoille",
+      "Lantern",
+      "72,892",
+      "76,538"
+     ],
+     [
+      "Spruce",
+      "Tamarack",
+      "13,401",
+      "93,470"
+     ],
+     [
+      "Hickory",
+      "Orleans",
+      "55,198",
+      "67,462"
+     ],
+     [
+      "Birch",
+      "Chittenden",
+      "42,402",
+      "21,463"
+     ],
+     [
+      "Summit",
+      "Granite",
+      "1,146",
+      "53,730"
+     ],
+     [
+      "Addison",
+      "Lamoille",
+      "76,852",
+      "15,951"
+     ],
+     [
+      "Chittenden",
+      "Hickory",
+      "33,443",
+      "86,694"
+     ],
+     [
+      "Alder",
+      "Franklin",
+      "5,695",
+      "21,701"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Town",
+    "County",
+    "Population 2020",
+    "Households 2020"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Franklin",
+      "Granite",
+      "39,898",
+      "6,255"
+     ],
+     [
+      "Harbor",
+      "Hickory",
+      "86,992",
+      "12,343"
+     ],
+     [
+      "Essex",
+      "Harbor",
+      "32,554",
+      "76,966"
+     ],
+     [
+      "Spruce",
+      "Orange",
+      "22,588",
+      "68,084"
+     ],
+     [
+      "Franklin",
+      "Granite",
+      "63,414",
+      "86,394"
+     ],
+     [
+      "Granite",
+      "Birch",
+      "35,898",
+      "18,837"
+     ],
+     [
+      "Addison",
+      "Grand Isle",
+      "8,683",
+      "27,575"
+     ],
+     [
+      "Alder",
+      "Poplar",
+      "51,403",
+      "56,611"
+     ],
+     [
+      "Tamarack",
+      "Grand Isle",
+      "96,743",
+      "82,141"
+     ],
+     [
+      "Windham",
+      "Franklin",
+      "46,550",
+      "42,957"
+     ]
+    ],
+    "6": [
+     [
+      "Rutland",
+      "Addison",
+      "38,528",
+      "70,935"
+     ],
+     [
+      "Sorrel",
+      "Addison",
+      "97,266",
+      "32,113"
+     ],
+     [
+      "Sorrel",
+      "Sorrel",
+      "85,722",
+      "1,336"
+     ],
+     [
+      "Lamoille",
+      "Windham",
+      "6,791",
+      "24,524"
+     ],
+     [
+      "Lantern",
+      "Birch",
+      "93,521",
+      "48,220"
+     ],
+     [
+      "Harbor",
+      "Lamoille",
+      "73,515",
+      "58,764"
+     ],
+     [
+      "Spruce",
+      "Caledonia",
+      "61,561",
+      "82,841"
+     ],
+     [
+      "Chittenden",
+      "Windham",
+      "59,171",
+      "12,415"
+     ],
+     [
+      "Bennington",
+      "Aspen",
+      "11,165",
+      "82,977"
+     ],
+     [
+      "Juniper",
+      "Hickory",
+      "36,827",
+      "78,690"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": false,
+   "expect_merge": false,
+   "probes": [
+    "residual_risk"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 4,
+    "columns_b": 4,
+    "same_signature": false,
+    "equal_positions": 2,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

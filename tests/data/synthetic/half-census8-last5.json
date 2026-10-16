@@ -1,0 +1,507 @@
+{
+ "id": "half-census8-last5",
+ "description": "census8: 5 of 8 headers reworded (last 5)",
+ "tags": [
+  "family:half_sweep",
+  "schema:census8"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Willow",
+      "Orange",
+      "26,108",
+      "43,250",
+      "37.5",
+      "16.8%",
+      "Jan 24, 2021",
+      "New site"
+     ],
+     [
+      "Juniper",
+      "Cedar",
+      "88,297",
+      "88,009",
+      "38.7",
+      "13.6%",
+      "Sep 6, 2023",
+      ""
+     ],
+     [
+      "Laurel",
+      "Franklin",
+      "78,100",
+      "37,715",
+      "38.8",
+      "13.9%",
+      "Nov 1, 2019",
+      "Revised"
+     ],
+     [
+      "Tamarack",
+      "Grand Isle",
+      "29,756",
+      "48,855",
+      "25.7",
+      "29.5%",
+      "Mar 8, 2015",
+      "See memo"
+     ],
+     [
+      "Birch",
+      "Bennington",
+      "81,030",
+      "76,427",
+      "21.0",
+      "15.9%",
+      "Mar 9, 2016",
+      ""
+     ],
+     [
+      "Aspen",
+      "Bennington",
+      "10,278",
+      "26,645",
+      "30.7",
+      "8.4%",
+      "Mar 4, 2018",
+      ""
+     ],
+     [
+      "Rutland",
+      "Rutland",
+      "92,017",
+      "41,131",
+      "31.8",
+      "19.8%",
+      "Sep 23, 2021",
+      ""
+     ],
+     [
+      "Laurel",
+      "Windham",
+      "33,775",
+      "54,100",
+      "53.0",
+      "10.6%",
+      "Jan 20, 2019",
+      ""
+     ],
+     [
+      "Birch",
+      "Laurel",
+      "94,491",
+      "19,881",
+      "26.4",
+      "29.3%",
+      "Jul 21, 2022",
+      "On hold"
+     ],
+     [
+      "Essex",
+      "Hickory",
+      "11,580",
+      "62,876",
+      "24.4",
+      "11.4%",
+      "Jul 20, 2022",
+      ""
+     ]
+    ],
+    "2": [
+     [
+      "Aspen",
+      "Tamarack",
+      "43,468",
+      "11,552",
+      "27.6",
+      "27.0%",
+      "Jul 25, 2020",
+      "Revised"
+     ],
+     [
+      "Aspen",
+      "Hickory",
+      "70,917",
+      "8,943",
+      "36.7",
+      "9.5%",
+      "May 4, 2020",
+      "On hold"
+     ],
+     [
+      "Aspen",
+      "Rutland",
+      "14,077",
+      "15,225",
+      "28.1",
+      "27.9%",
+      "Jul 2, 2017",
+      "New site"
+     ],
+     [
+      "Washington",
+      "Chittenden",
+      "21,810",
+      "18,541",
+      "28.1",
+      "14.7%",
+      "Jan 27, 2020",
+      ""
+     ],
+     [
+      "Franklin",
+      "Franklin",
+      "87,109",
+      "46,464",
+      "24.7",
+      "15.9%",
+      "Nov 16, 2015",
+      "New site"
+     ],
+     [
+      "Birch",
+      "Poplar",
+      "8,682",
+      "39,107",
+      "47.6",
+      "27.3%",
+      "Sep 14, 2019",
+      "See memo"
+     ],
+     [
+      "Sorrel",
+      "Birch",
+      "19,160",
+      "38,730",
+      "28.2",
+      "23.5%",
+      "Jul 26, 2022",
+      ""
+     ],
+     [
+      "Sorrel",
+      "Alder",
+      "58,390",
+      "34,494",
+      "33.6",
+      "14.3%",
+      "Jan 3, 2017",
+      ""
+     ],
+     [
+      "Essex",
+      "Essex",
+      "33,863",
+      "94,649",
+      "39.6",
+      "15.7%",
+      "Nov 12, 2022",
+      ""
+     ],
+     [
+      "Grand Isle",
+      "Bennington",
+      "90,371",
+      "67,630",
+      "34.9",
+      "23.0%",
+      "May 11, 2018",
+      "See memo"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households Total",
+    "Age",
+    "Poverty Rate Percent",
+    "Survey",
+    "Notes Remarks"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Addison",
+      "Poplar",
+      "55,769",
+      "87,985",
+      "55.6",
+      "20.6%",
+      "Jan 22, 2020",
+      ""
+     ],
+     [
+      "Rutland",
+      "Spruce",
+      "36,035",
+      "17,560",
+      "52.9",
+      "7.7%",
+      "Jan 26, 2021",
+      "See memo"
+     ],
+     [
+      "Grand Isle",
+      "Maple",
+      "12,561",
+      "61,194",
+      "52.0",
+      "13.2%",
+      "May 26, 2018",
+      "Revised"
+     ],
+     [
+      "Alder",
+      "Chittenden",
+      "87,254",
+      "73,140",
+      "45.5",
+      "4.5%",
+      "Sep 11, 2022",
+      "Pending review"
+     ],
+     [
+      "Washington",
+      "Franklin",
+      "17,278",
+      "3,069",
+      "32.9",
+      "23.1%",
+      "Sep 16, 2019",
+      ""
+     ],
+     [
+      "Lantern",
+      "Franklin",
+      "67,652",
+      "30,501",
+      "36.8",
+      "21.1%",
+      "Jan 8, 2021",
+      ""
+     ],
+     [
+      "Harbor",
+      "Granite",
+      "66,585",
+      "29,634",
+      "26.2",
+      "26.7%",
+      "Sep 13, 2016",
+      "See memo"
+     ],
+     [
+      "Rutland",
+      "Alder",
+      "3,047",
+      "84,703",
+      "27.9",
+      "29.8%",
+      "Jul 8, 2017",
+      ""
+     ],
+     [
+      "Franklin",
+      "Franklin",
+      "19,928",
+      "34,815",
+      "42.3",
+      "22.1%",
+      "Jul 15, 2021",
+      ""
+     ],
+     [
+      "Juniper",
+      "Franklin",
+      "45,788",
+      "20,702",
+      "35.0",
+      "5.4%",
+      "Sep 6, 2022",
+      "Merged"
+     ]
+    ],
+    "6": [
+     [
+      "Washington",
+      "Granite",
+      "33,849",
+      "19,062",
+      "24.0",
+      "29.7%",
+      "Jul 14, 2017",
+      ""
+     ],
+     [
+      "Juniper",
+      "Poplar",
+      "57,380",
+      "24,449",
+      "46.6",
+      "26.3%",
+      "Sep 1, 2016",
+      "See memo"
+     ],
+     [
+      "Poplar",
+      "Essex",
+      "34,688",
+      "76,462",
+      "32.5",
+      "22.6%",
+      "Sep 25, 2019",
+      "On hold"
+     ],
+     [
+      "Lamoille",
+      "Grand Isle",
+      "78,285",
+      "54,514",
+      "50.9",
+      "4.7%",
+      "May 23, 2017",
+      "Merged"
+     ],
+     [
+      "Washington",
+      "Bennington",
+      "3,230",
+      "69,135",
+      "53.9",
+      "10.6%",
+      "Mar 21, 2017",
+      "Pending review"
+     ],
+     [
+      "Sorrel",
+      "Windham",
+      "26,262",
+      "77,860",
+      "53.4",
+      "16.3%",
+      "Jul 20, 2017",
+      ""
+     ],
+     [
+      "Poplar",
+      "Juniper",
+      "1,883",
+      "13,387",
+      "36.0",
+      "23.7%",
+      "Mar 8, 2015",
+      ""
+     ],
+     [
+      "Cedar",
+      "Willow",
+      "27,553",
+      "96,502",
+      "34.4",
+      "18.4%",
+      "Jul 10, 2018",
+      "Pending review"
+     ],
+     [
+      "Summit",
+      "Spruce",
+      "76,078",
+      "22,200",
+      "49.9",
+      "30.8%",
+      "May 1, 2023",
+      ""
+     ],
+     [
+      "Birch",
+      "Harbor",
+      "12,274",
+      "84,776",
+      "28.8",
+      "12.5%",
+      "Sep 19, 2020",
+      ""
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": null,
+   "probes": [
+    "half_equal"
+   ],
+   "stage": "merge",
+   "note": "3 of 8 positions have equal words",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 8,
+    "columns_b": 8,
+    "same_signature": false,
+    "equal_positions": 3,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

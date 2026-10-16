@@ -1,0 +1,331 @@
+{
+ "id": "risk-town4-both",
+ "description": "town4: current figures vs a table of 2020 figures (both)",
+ "tags": [
+  "family:residual_risk",
+  "schema:town4"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Orleans",
+      "Poplar",
+      "55,592",
+      "4,388"
+     ],
+     [
+      "Bennington",
+      "Franklin",
+      "18,540",
+      "13,282"
+     ],
+     [
+      "Lamoille",
+      "Hickory",
+      "12,064",
+      "53,573"
+     ],
+     [
+      "Chittenden",
+      "Alder",
+      "35,856",
+      "23,228"
+     ],
+     [
+      "Lantern",
+      "Granite",
+      "78,298",
+      "30,276"
+     ],
+     [
+      "Birch",
+      "Washington",
+      "95,287",
+      "9,535"
+     ],
+     [
+      "Chittenden",
+      "Chittenden",
+      "47,063",
+      "82,760"
+     ],
+     [
+      "Essex",
+      "Spruce",
+      "86,498",
+      "85,436"
+     ],
+     [
+      "Granite",
+      "Hickory",
+      "97,284",
+      "78,532"
+     ],
+     [
+      "Tamarack",
+      "Lantern",
+      "18,226",
+      "73,670"
+     ]
+    ],
+    "2": [
+     [
+      "Essex",
+      "Tamarack",
+      "57,119",
+      "11,139"
+     ],
+     [
+      "Granite",
+      "Laurel",
+      "66,680",
+      "68,735"
+     ],
+     [
+      "Bennington",
+      "Tamarack",
+      "43,770",
+      "14,041"
+     ],
+     [
+      "Rutland",
+      "Addison",
+      "6,520",
+      "85,830"
+     ],
+     [
+      "Orange",
+      "Juniper",
+      "50,525",
+      "36,377"
+     ],
+     [
+      "Alder",
+      "Lamoille",
+      "17,833",
+      "51,443"
+     ],
+     [
+      "Grand Isle",
+      "Granite",
+      "2,248",
+      "45,480"
+     ],
+     [
+      "Poplar",
+      "Poplar",
+      "5,612",
+      "81,551"
+     ],
+     [
+      "Chittenden",
+      "Essex",
+      "61,104",
+      "53,179"
+     ],
+     [
+      "Chittenden",
+      "Grand Isle",
+      "69,227",
+      "52,913"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Town",
+    "County",
+    "Population 2020",
+    "Households 2020"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Hickory",
+      "Essex",
+      "68,033",
+      "73,974"
+     ],
+     [
+      "Tamarack",
+      "Birch",
+      "29,714",
+      "49,843"
+     ],
+     [
+      "Tamarack",
+      "Franklin",
+      "75,419",
+      "95,015"
+     ],
+     [
+      "Willow",
+      "Washington",
+      "66,281",
+      "37,110"
+     ],
+     [
+      "Hickory",
+      "Orleans",
+      "8,704",
+      "19,168"
+     ],
+     [
+      "Grand Isle",
+      "Willow",
+      "13,621",
+      "42,347"
+     ],
+     [
+      "Hickory",
+      "Orange",
+      "46,038",
+      "95,664"
+     ],
+     [
+      "Maple",
+      "Bennington",
+      "74,390",
+      "74,574"
+     ],
+     [
+      "Juniper",
+      "Hickory",
+      "95,601",
+      "13,657"
+     ],
+     [
+      "Poplar",
+      "Cedar",
+      "15,900",
+      "2,488"
+     ]
+    ],
+    "6": [
+     [
+      "Harbor",
+      "Summit",
+      "22,962",
+      "80,840"
+     ],
+     [
+      "Grand Isle",
+      "Orange",
+      "7,077",
+      "78,591"
+     ],
+     [
+      "Summit",
+      "Franklin",
+      "74,736",
+      "76,288"
+     ],
+     [
+      "Aspen",
+      "Orleans",
+      "61,881",
+      "66,414"
+     ],
+     [
+      "Rutland",
+      "Harbor",
+      "37,250",
+      "8,463"
+     ],
+     [
+      "Addison",
+      "Essex",
+      "21,969",
+      "3,535"
+     ],
+     [
+      "Harbor",
+      "Franklin",
+      "47,372",
+      "52,504"
+     ],
+     [
+      "Willow",
+      "Grand Isle",
+      "5,938",
+      "87,152"
+     ],
+     [
+      "Summit",
+      "Juniper",
+      "4,684",
+      "16,835"
+     ],
+     [
+      "Maple",
+      "Orange",
+      "35,774",
+      "22,084"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": false,
+   "expect_merge": null,
+   "probes": [
+    "residual_risk"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 4,
+    "columns_b": 4,
+    "same_signature": false,
+    "equal_positions": 2,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

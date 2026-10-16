@@ -1,0 +1,331 @@
+{
+ "id": "half-awards4-first2",
+ "description": "awards4: 2 of 4 headers reworded (first 2)",
+ "tags": [
+  "family:half_sweep",
+  "schema:awards4"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Willow Orchard",
+      "Chittenden",
+      "$118,000",
+      "49,246"
+     ],
+     [
+      "Granite Library",
+      "Juniper",
+      "$708,000",
+      "67,421"
+     ],
+     [
+      "Harbor Wharf",
+      "Granite",
+      "$130,000",
+      "53,837"
+     ],
+     [
+      "Willow Market",
+      "Washington",
+      "$672,000",
+      "64,536"
+     ],
+     [
+      "Willow Trail",
+      "Aspen",
+      "$124,000",
+      "18,494"
+     ],
+     [
+      "Willow Bridge",
+      "Addison",
+      "$513,000",
+      "96,740"
+     ],
+     [
+      "Summit Orchard",
+      "Addison",
+      "$399,000",
+      "93,230"
+     ],
+     [
+      "Maple Orchard",
+      "Sorrel",
+      "$466,000",
+      "45,985"
+     ],
+     [
+      "Maple Trail",
+      "Essex",
+      "$979,000",
+      "52,107"
+     ],
+     [
+      "Summit Library",
+      "Orleans",
+      "$62,000",
+      "1,382"
+     ]
+    ],
+    "2": [
+     [
+      "Willow Wharf",
+      "Hickory",
+      "$639,000",
+      "72,390"
+     ],
+     [
+      "Harbor Depot",
+      "Caledonia",
+      "$441,000",
+      "79,892"
+     ],
+     [
+      "Willow Market",
+      "Spruce",
+      "$168,000",
+      "19,130"
+     ],
+     [
+      "Cedar Library",
+      "Poplar",
+      "$570,000",
+      "54,111"
+     ],
+     [
+      "Willow Bridge",
+      "Laurel",
+      "$757,000",
+      "64,270"
+     ],
+     [
+      "Summit Orchard",
+      "Maple",
+      "$451,000",
+      "45,572"
+     ],
+     [
+      "Riverside Orchard",
+      "Sorrel",
+      "$177,000",
+      "36,348"
+     ],
+     [
+      "Lantern Clinic",
+      "Washington",
+      "$161,000",
+      "65,614"
+     ],
+     [
+      "Willow Clinic",
+      "Alder",
+      "$222,000",
+      "3,849"
+     ],
+     [
+      "Granite Market",
+      "Rutland",
+      "$631,000",
+      "24,901"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Applicant Name",
+    "Program Area",
+    "Amount Awarded",
+    "Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Granite Clinic",
+      "Laurel",
+      "$780,000",
+      "33,431"
+     ],
+     [
+      "Harbor Trail",
+      "Summit",
+      "$421,000",
+      "41,421"
+     ],
+     [
+      "Cedar Market",
+      "Hickory",
+      "$643,000",
+      "92,395"
+     ],
+     [
+      "Summit Wharf",
+      "Orange",
+      "$865,000",
+      "31,733"
+     ],
+     [
+      "Granite Clinic",
+      "Grand Isle",
+      "$227,000",
+      "55,649"
+     ],
+     [
+      "Willow Wharf",
+      "Birch",
+      "$811,000",
+      "30,968"
+     ],
+     [
+      "Harbor Bridge",
+      "Summit",
+      "$568,000",
+      "34,232"
+     ],
+     [
+      "Harbor Depot",
+      "Summit",
+      "$520,000",
+      "36,180"
+     ],
+     [
+      "Willow Library",
+      "Orange",
+      "$95,000",
+      "67,363"
+     ],
+     [
+      "Summit Orchard",
+      "Alder",
+      "$683,000",
+      "73,825"
+     ]
+    ],
+    "6": [
+     [
+      "Maple Bridge",
+      "Caledonia",
+      "$94,000",
+      "48,074"
+     ],
+     [
+      "Summit Market",
+      "Alder",
+      "$759,000",
+      "83,396"
+     ],
+     [
+      "Maple Trail",
+      "Willow",
+      "$226,000",
+      "20,572"
+     ],
+     [
+      "Maple Library",
+      "Orange",
+      "$217,000",
+      "62,027"
+     ],
+     [
+      "Riverside Trail",
+      "Chittenden",
+      "$170,000",
+      "46,638"
+     ],
+     [
+      "Willow Orchard",
+      "Lamoille",
+      "$153,000",
+      "12,972"
+     ],
+     [
+      "Willow Library",
+      "Tamarack",
+      "$679,000",
+      "42,813"
+     ],
+     [
+      "Cedar Depot",
+      "Grand Isle",
+      "$711,000",
+      "2,922"
+     ],
+     [
+      "Maple Orchard",
+      "Addison",
+      "$245,000",
+      "85,416"
+     ],
+     [
+      "Lantern Library",
+      "Spruce",
+      "$482,000",
+      "70,309"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": null,
+   "probes": [
+    "half_equal"
+   ],
+   "stage": "merge",
+   "note": "2 of 4 positions have equal words",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 4,
+    "columns_b": 4,
+    "same_signature": false,
+    "equal_positions": 2,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

@@ -1,0 +1,171 @@
+{
+ "id": "cells-5x5",
+ "description": "projects6: part A has 5 rows, part B has 5",
+ "tags": [
+  "family:min_cells",
+  "schema:projects6"
+ ],
+ "pages": 4,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1
+   ],
+   "columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    1
+   ],
+   "rows": {
+    "1": [
+     [
+      "Cedar Market",
+      "Birch",
+      "$504,000",
+      "$336,000",
+      "$981,000",
+      "Grand Isle"
+     ],
+     [
+      "Summit Wharf",
+      "Birch",
+      "$624,000",
+      "$637,000",
+      "$684,000",
+      "Hickory"
+     ],
+     [
+      "Lantern Clinic",
+      "Essex",
+      "$942,000",
+      "$838,000",
+      "$525,000",
+      "Lamoille"
+     ],
+     [
+      "Cedar Library",
+      "Orange",
+      "$740,000",
+      "$759,000",
+      "$634,000",
+      "Birch"
+     ],
+     [
+      "Granite Depot",
+      "Maple",
+      "$563,000",
+      "$184,000",
+      "$231,000",
+      "Caledonia"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    4
+   ],
+   "columns": [
+    "Project Name",
+    "County Name",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    4
+   ],
+   "rows": {
+    "4": [
+     [
+      "Summit Bridge",
+      "Spruce",
+      "$99,000",
+      "$287,000",
+      "$777,000",
+      "Bennington"
+     ],
+     [
+      "Summit Clinic",
+      "Poplar",
+      "$622,000",
+      "$797,000",
+      "$483,000",
+      "Washington"
+     ],
+     [
+      "Summit Market",
+      "Rutland",
+      "$32,000",
+      "$464,000",
+      "$898,000",
+      "Orange"
+     ],
+     [
+      "Willow Clinic",
+      "Windham",
+      "$409,000",
+      "$261,000",
+      "$973,000",
+      "Caledonia"
+     ],
+     [
+      "Cedar Orchard",
+      "Summit",
+      "$146,000",
+      "$765,000",
+      "$765,000",
+      "Chittenden"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": true,
+   "probes": [
+    "min_cells"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 6,
+    "columns_b": 6,
+    "same_signature": false,
+    "equal_positions": 4,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

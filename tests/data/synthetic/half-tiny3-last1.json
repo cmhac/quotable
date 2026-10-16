@@ -1,0 +1,287 @@
+{
+ "id": "half-tiny3-last1",
+ "description": "tiny3: 1 of 3 headers reworded (last 1)",
+ "tags": [
+  "family:half_sweep",
+  "schema:tiny3"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Grand Isle",
+      "83,705",
+      "25.3%"
+     ],
+     [
+      "Maple",
+      "61,763",
+      "6.0%"
+     ],
+     [
+      "Summit",
+      "83,857",
+      "28.0%"
+     ],
+     [
+      "Maple",
+      "83,414",
+      "15.4%"
+     ],
+     [
+      "Orleans",
+      "23,721",
+      "29.5%"
+     ],
+     [
+      "Addison",
+      "59,366",
+      "4.3%"
+     ],
+     [
+      "Alder",
+      "95,177",
+      "5.4%"
+     ],
+     [
+      "Aspen",
+      "94,485",
+      "29.6%"
+     ],
+     [
+      "Spruce",
+      "90,160",
+      "27.5%"
+     ],
+     [
+      "Poplar",
+      "90,103",
+      "13.9%"
+     ]
+    ],
+    "2": [
+     [
+      "Birch",
+      "36,176",
+      "4.2%"
+     ],
+     [
+      "Juniper",
+      "14,414",
+      "17.5%"
+     ],
+     [
+      "Chittenden",
+      "87,184",
+      "17.2%"
+     ],
+     [
+      "Lamoille",
+      "39,201",
+      "11.5%"
+     ],
+     [
+      "Bennington",
+      "50,826",
+      "12.2%"
+     ],
+     [
+      "Granite",
+      "4,027",
+      "3.1%"
+     ],
+     [
+      "Tamarack",
+      "19,970",
+      "28.1%"
+     ],
+     [
+      "Spruce",
+      "59,805",
+      "13.4%"
+     ],
+     [
+      "Washington",
+      "92,991",
+      "24.2%"
+     ],
+     [
+      "Windham",
+      "23,355",
+      "25.9%"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share Percent"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Willow",
+      "46,155",
+      "15.1%"
+     ],
+     [
+      "Summit",
+      "11,956",
+      "8.4%"
+     ],
+     [
+      "Caledonia",
+      "20,841",
+      "5.7%"
+     ],
+     [
+      "Maple",
+      "80,204",
+      "13.8%"
+     ],
+     [
+      "Juniper",
+      "86,689",
+      "7.2%"
+     ],
+     [
+      "Juniper",
+      "60,133",
+      "5.3%"
+     ],
+     [
+      "Orange",
+      "13,399",
+      "8.7%"
+     ],
+     [
+      "Orange",
+      "77,420",
+      "7.8%"
+     ],
+     [
+      "Poplar",
+      "33,706",
+      "7.4%"
+     ],
+     [
+      "Granite",
+      "41,931",
+      "16.0%"
+     ]
+    ],
+    "6": [
+     [
+      "Birch",
+      "40,036",
+      "22.2%"
+     ],
+     [
+      "Lantern",
+      "78,519",
+      "10.7%"
+     ],
+     [
+      "Maple",
+      "83,418",
+      "17.5%"
+     ],
+     [
+      "Rutland",
+      "10,978",
+      "23.3%"
+     ],
+     [
+      "Essex",
+      "45,649",
+      "20.4%"
+     ],
+     [
+      "Essex",
+      "38,706",
+      "24.1%"
+     ],
+     [
+      "Willow",
+      "72,202",
+      "2.5%"
+     ],
+     [
+      "Laurel",
+      "30,159",
+      "14.3%"
+     ],
+     [
+      "Summit",
+      "92,057",
+      "13.3%"
+     ],
+     [
+      "Cedar",
+      "8,680",
+      "14.9%"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": null,
+   "probes": [
+    "half_equal"
+   ],
+   "stage": "merge",
+   "note": "2 of 3 positions have equal words",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 3,
+    "columns_b": 3,
+    "same_signature": false,
+    "equal_positions": 2,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

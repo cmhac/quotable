@@ -1,0 +1,139 @@
+{
+ "id": "cells-3x3",
+ "description": "projects6: part A has 3 rows, part B has 3",
+ "tags": [
+  "family:min_cells",
+  "schema:projects6"
+ ],
+ "pages": 4,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1
+   ],
+   "columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    1
+   ],
+   "rows": {
+    "1": [
+     [
+      "Riverside Wharf",
+      "Aspen",
+      "$97,000",
+      "$709,000",
+      "$540,000",
+      "Essex"
+     ],
+     [
+      "Harbor Wharf",
+      "Bennington",
+      "$653,000",
+      "$763,000",
+      "$718,000",
+      "Alder"
+     ],
+     [
+      "Harbor Market",
+      "Lamoille",
+      "$869,000",
+      "$392,000",
+      "$560,000",
+      "Tamarack"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    4
+   ],
+   "columns": [
+    "Project Name",
+    "County Name",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    4
+   ],
+   "rows": {
+    "4": [
+     [
+      "Lantern Bridge",
+      "Granite",
+      "$263,000",
+      "$559,000",
+      "$738,000",
+      "Juniper"
+     ],
+     [
+      "Summit Library",
+      "Orange",
+      "$518,000",
+      "$472,000",
+      "$470,000",
+      "Essex"
+     ],
+     [
+      "Summit Orchard",
+      "Rutland",
+      "$534,000",
+      "$832,000",
+      "$425,000",
+      "Windham"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": false,
+   "probes": [
+    "min_cells"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 6,
+    "columns_b": 6,
+    "same_signature": false,
+    "equal_positions": 4,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

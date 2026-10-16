@@ -1,0 +1,419 @@
+{
+ "id": "pipe-reworded-gap0",
+ "description": "two headers reworded, 0 table-free pages in between",
+ "tags": [
+  "family:pipeline",
+  "schema:projects6"
+ ],
+ "pages": 4,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Summit Depot",
+      "Hickory",
+      "$913,000",
+      "$185,000",
+      "$563,000",
+      "Sorrel"
+     ],
+     [
+      "Riverside Depot",
+      "Essex",
+      "$323,000",
+      "$135,000",
+      "$433,000",
+      "Maple"
+     ],
+     [
+      "Granite Clinic",
+      "Hickory",
+      "$511,000",
+      "$413,000",
+      "$719,000",
+      "Grand Isle"
+     ],
+     [
+      "Cedar Bridge",
+      "Lantern",
+      "$704,000",
+      "$650,000",
+      "$781,000",
+      "Caledonia"
+     ],
+     [
+      "Cedar Market",
+      "Grand Isle",
+      "$132,000",
+      "$336,000",
+      "$688,000",
+      "Addison"
+     ],
+     [
+      "Maple Bridge",
+      "Maple",
+      "$550,000",
+      "$212,000",
+      "$432,000",
+      "Summit"
+     ],
+     [
+      "Maple Trail",
+      "Birch",
+      "$183,000",
+      "$232,000",
+      "$200,000",
+      "Orange"
+     ],
+     [
+      "Willow Depot",
+      "Orange",
+      "$98,000",
+      "$608,000",
+      "$748,000",
+      "Bennington"
+     ],
+     [
+      "Riverside Bridge",
+      "Maple",
+      "$414,000",
+      "$248,000",
+      "$647,000",
+      "Caledonia"
+     ],
+     [
+      "Granite Library",
+      "Essex",
+      "$740,000",
+      "$850,000",
+      "$87,000",
+      "Lantern"
+     ]
+    ],
+    "2": [
+     [
+      "Granite Library",
+      "Birch",
+      "$987,000",
+      "$197,000",
+      "$862,000",
+      "Essex"
+     ],
+     [
+      "Harbor Bridge",
+      "Granite",
+      "$525,000",
+      "$903,000",
+      "$721,000",
+      "Granite"
+     ],
+     [
+      "Willow Market",
+      "Orleans",
+      "$459,000",
+      "$243,000",
+      "$232,000",
+      "Juniper"
+     ],
+     [
+      "Summit Library",
+      "Addison",
+      "$667,000",
+      "$185,000",
+      "$318,000",
+      "Lantern"
+     ],
+     [
+      "Lantern Clinic",
+      "Granite",
+      "$56,000",
+      "$59,000",
+      "$562,000",
+      "Lamoille"
+     ],
+     [
+      "Maple Orchard",
+      "Willow",
+      "$263,000",
+      "$85,000",
+      "$269,000",
+      "Granite"
+     ],
+     [
+      "Willow Clinic",
+      "Caledonia",
+      "$646,000",
+      "$889,000",
+      "$952,000",
+      "Tamarack"
+     ],
+     [
+      "Granite Library",
+      "Bennington",
+      "$463,000",
+      "$205,000",
+      "$702,000",
+      "Bennington"
+     ],
+     [
+      "Granite Depot",
+      "Alder",
+      "$685,000",
+      "$808,000",
+      "$862,000",
+      "Juniper"
+     ],
+     [
+      "Cedar Library",
+      "Sorrel",
+      "$260,000",
+      "$254,000",
+      "$396,000",
+      "Summit"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    3,
+    4
+   ],
+   "columns": [
+    "Project Name",
+    "County Name",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    3,
+    4
+   ],
+   "rows": {
+    "3": [
+     [
+      "Cedar Clinic",
+      "Essex",
+      "$927,000",
+      "$146,000",
+      "$833,000",
+      "Caledonia"
+     ],
+     [
+      "Cedar Trail",
+      "Harbor",
+      "$720,000",
+      "$928,000",
+      "$336,000",
+      "Caledonia"
+     ],
+     [
+      "Granite Clinic",
+      "Tamarack",
+      "$938,000",
+      "$41,000",
+      "$79,000",
+      "Grand Isle"
+     ],
+     [
+      "Granite Clinic",
+      "Juniper",
+      "$520,000",
+      "$251,000",
+      "$653,000",
+      "Willow"
+     ],
+     [
+      "Cedar Wharf",
+      "Poplar",
+      "$212,000",
+      "$632,000",
+      "$656,000",
+      "Aspen"
+     ],
+     [
+      "Cedar Bridge",
+      "Summit",
+      "$660,000",
+      "$123,000",
+      "$679,000",
+      "Caledonia"
+     ],
+     [
+      "Maple Market",
+      "Summit",
+      "$202,000",
+      "$722,000",
+      "$170,000",
+      "Poplar"
+     ],
+     [
+      "Summit Depot",
+      "Poplar",
+      "$376,000",
+      "$771,000",
+      "$278,000",
+      "Grand Isle"
+     ],
+     [
+      "Summit Clinic",
+      "Orleans",
+      "$491,000",
+      "$582,000",
+      "$988,000",
+      "Summit"
+     ],
+     [
+      "Riverside Wharf",
+      "Orange",
+      "$693,000",
+      "$571,000",
+      "$280,000",
+      "Bennington"
+     ]
+    ],
+    "4": [
+     [
+      "Granite Wharf",
+      "Harbor",
+      "$461,000",
+      "$489,000",
+      "$548,000",
+      "Willow"
+     ],
+     [
+      "Harbor Trail",
+      "Orange",
+      "$937,000",
+      "$281,000",
+      "$426,000",
+      "Bennington"
+     ],
+     [
+      "Maple Clinic",
+      "Orleans",
+      "$453,000",
+      "$360,000",
+      "$700,000",
+      "Windham"
+     ],
+     [
+      "Maple Bridge",
+      "Birch",
+      "$775,000",
+      "$825,000",
+      "$234,000",
+      "Orleans"
+     ],
+     [
+      "Willow Wharf",
+      "Birch",
+      "$364,000",
+      "$912,000",
+      "$381,000",
+      "Orleans"
+     ],
+     [
+      "Granite Library",
+      "Windham",
+      "$829,000",
+      "$624,000",
+      "$412,000",
+      "Granite"
+     ],
+     [
+      "Riverside Orchard",
+      "Orange",
+      "$342,000",
+      "$646,000",
+      "$263,000",
+      "Willow"
+     ],
+     [
+      "Summit Clinic",
+      "Windham",
+      "$642,000",
+      "$483,000",
+      "$44,000",
+      "Laurel"
+     ],
+     [
+      "Summit Trail",
+      "Laurel",
+      "$818,000",
+      "$73,000",
+      "$247,000",
+      "Hickory"
+     ],
+     [
+      "Granite Wharf",
+      "Hickory",
+      "$449,000",
+      "$965,000",
+      "$265,000",
+      "Addison"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": true,
+   "probes": [
+    "pipeline"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 6,
+    "columns_b": 6,
+    "same_signature": false,
+    "equal_positions": 4,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

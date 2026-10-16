@@ -1,0 +1,507 @@
+{
+ "id": "half-census8-first3",
+ "description": "census8: 3 of 8 headers reworded (first 3)",
+ "tags": [
+  "family:half_sweep",
+  "schema:census8"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Orange",
+      "Addison",
+      "54,363",
+      "17,044",
+      "25.8",
+      "3.0%",
+      "Nov 27, 2019",
+      ""
+     ],
+     [
+      "Rutland",
+      "Tamarack",
+      "16,724",
+      "28,971",
+      "22.2",
+      "10.6%",
+      "Mar 18, 2022",
+      "On hold"
+     ],
+     [
+      "Cedar",
+      "Alder",
+      "80,492",
+      "68,811",
+      "28.4",
+      "6.4%",
+      "Mar 12, 2015",
+      ""
+     ],
+     [
+      "Rutland",
+      "Tamarack",
+      "10,002",
+      "28,790",
+      "50.4",
+      "14.4%",
+      "Jul 14, 2015",
+      "Merged"
+     ],
+     [
+      "Lantern",
+      "Lamoille",
+      "39,161",
+      "60,987",
+      "43.2",
+      "27.1%",
+      "Jul 12, 2015",
+      "New site"
+     ],
+     [
+      "Sorrel",
+      "Poplar",
+      "91,204",
+      "7,319",
+      "49.1",
+      "3.9%",
+      "Sep 19, 2019",
+      ""
+     ],
+     [
+      "Orange",
+      "Summit",
+      "3,546",
+      "82,678",
+      "45.3",
+      "7.1%",
+      "Mar 10, 2015",
+      "New site"
+     ],
+     [
+      "Rutland",
+      "Washington",
+      "82,342",
+      "36,787",
+      "47.5",
+      "30.5%",
+      "Jan 7, 2021",
+      ""
+     ],
+     [
+      "Willow",
+      "Windham",
+      "72,159",
+      "91,194",
+      "52.6",
+      "15.9%",
+      "May 4, 2022",
+      "Late filing"
+     ],
+     [
+      "Lamoille",
+      "Sorrel",
+      "49,471",
+      "86,960",
+      "45.5",
+      "8.1%",
+      "Sep 10, 2017",
+      ""
+     ]
+    ],
+    "2": [
+     [
+      "Chittenden",
+      "Sorrel",
+      "32,587",
+      "56,387",
+      "56.6",
+      "28.1%",
+      "Sep 2, 2020",
+      "Pending review"
+     ],
+     [
+      "Caledonia",
+      "Spruce",
+      "56,297",
+      "22,116",
+      "35.9",
+      "23.7%",
+      "Jul 19, 2021",
+      "Pending review"
+     ],
+     [
+      "Laurel",
+      "Hickory",
+      "2,123",
+      "9,995",
+      "47.5",
+      "11.2%",
+      "Mar 22, 2017",
+      ""
+     ],
+     [
+      "Granite",
+      "Orange",
+      "16,255",
+      "68,065",
+      "39.9",
+      "23.3%",
+      "Mar 15, 2020",
+      ""
+     ],
+     [
+      "Laurel",
+      "Spruce",
+      "47,818",
+      "35,904",
+      "53.4",
+      "3.0%",
+      "Mar 18, 2022",
+      ""
+     ],
+     [
+      "Granite",
+      "Granite",
+      "75,769",
+      "2,149",
+      "33.3",
+      "2.7%",
+      "Jan 2, 2015",
+      ""
+     ],
+     [
+      "Bennington",
+      "Orleans",
+      "19,743",
+      "34,057",
+      "35.1",
+      "25.9%",
+      "Mar 11, 2016",
+      "Revised"
+     ],
+     [
+      "Essex",
+      "Spruce",
+      "70,734",
+      "63,877",
+      "40.6",
+      "22.2%",
+      "Nov 24, 2016",
+      "On hold"
+     ],
+     [
+      "Willow",
+      "Granite",
+      "66,351",
+      "72,132",
+      "22.9",
+      "16.7%",
+      "Mar 17, 2019",
+      "Late filing"
+     ],
+     [
+      "Essex",
+      "Caledonia",
+      "6,896",
+      "12,885",
+      "28.8",
+      "13.7%",
+      "Jan 1, 2022",
+      ""
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Town Name",
+    "County Name",
+    "Population Total",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Juniper",
+      "Essex",
+      "16,283",
+      "15,347",
+      "24.3",
+      "5.0%",
+      "Mar 20, 2016",
+      "On hold"
+     ],
+     [
+      "Lamoille",
+      "Washington",
+      "50,371",
+      "48,400",
+      "53.1",
+      "26.3%",
+      "Jan 4, 2018",
+      "New site"
+     ],
+     [
+      "Rutland",
+      "Grand Isle",
+      "95,432",
+      "18,798",
+      "23.2",
+      "25.4%",
+      "Mar 6, 2015",
+      ""
+     ],
+     [
+      "Maple",
+      "Lamoille",
+      "8,138",
+      "1,770",
+      "30.0",
+      "28.0%",
+      "Jan 12, 2018",
+      ""
+     ],
+     [
+      "Washington",
+      "Laurel",
+      "90,838",
+      "8,651",
+      "35.0",
+      "20.7%",
+      "Mar 18, 2021",
+      ""
+     ],
+     [
+      "Orleans",
+      "Sorrel",
+      "55,343",
+      "76,297",
+      "48.1",
+      "12.7%",
+      "Nov 24, 2018",
+      ""
+     ],
+     [
+      "Washington",
+      "Orange",
+      "49,294",
+      "58,146",
+      "52.8",
+      "8.0%",
+      "Nov 14, 2016",
+      ""
+     ],
+     [
+      "Orange",
+      "Harbor",
+      "37,485",
+      "51,255",
+      "42.1",
+      "27.8%",
+      "Jan 12, 2019",
+      ""
+     ],
+     [
+      "Tamarack",
+      "Essex",
+      "14,736",
+      "37,819",
+      "33.1",
+      "29.7%",
+      "May 3, 2022",
+      "New site"
+     ],
+     [
+      "Addison",
+      "Hickory",
+      "3,737",
+      "40,985",
+      "40.8",
+      "20.5%",
+      "Mar 9, 2019",
+      "See memo"
+     ]
+    ],
+    "6": [
+     [
+      "Sorrel",
+      "Rutland",
+      "91,705",
+      "61,549",
+      "54.4",
+      "7.0%",
+      "Jul 20, 2018",
+      "On hold"
+     ],
+     [
+      "Hickory",
+      "Aspen",
+      "3,576",
+      "76,627",
+      "56.4",
+      "5.0%",
+      "May 9, 2019",
+      "Pending review"
+     ],
+     [
+      "Chittenden",
+      "Tamarack",
+      "17,526",
+      "30,060",
+      "30.5",
+      "13.0%",
+      "May 16, 2022",
+      ""
+     ],
+     [
+      "Essex",
+      "Essex",
+      "29,925",
+      "33,654",
+      "36.0",
+      "17.1%",
+      "Nov 17, 2016",
+      ""
+     ],
+     [
+      "Addison",
+      "Tamarack",
+      "920",
+      "14,223",
+      "49.7",
+      "24.9%",
+      "Mar 24, 2023",
+      ""
+     ],
+     [
+      "Grand Isle",
+      "Chittenden",
+      "33,092",
+      "88,771",
+      "22.5",
+      "8.5%",
+      "Sep 8, 2016",
+      "New site"
+     ],
+     [
+      "Rutland",
+      "Willow",
+      "49,388",
+      "49,985",
+      "30.8",
+      "5.0%",
+      "Sep 17, 2015",
+      "Revised"
+     ],
+     [
+      "Grand Isle",
+      "Caledonia",
+      "42,482",
+      "95,939",
+      "36.1",
+      "5.7%",
+      "Mar 16, 2019",
+      "New site"
+     ],
+     [
+      "Granite",
+      "Granite",
+      "3,858",
+      "5,810",
+      "21.3",
+      "17.4%",
+      "Jan 21, 2016",
+      ""
+     ],
+     [
+      "Sorrel",
+      "Grand Isle",
+      "83,385",
+      "75,827",
+      "44.3",
+      "11.9%",
+      "Jul 2, 2021",
+      "Revised"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": null,
+   "probes": [
+    "half_equal"
+   ],
+   "stage": "merge",
+   "note": "5 of 8 positions have equal words",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 8,
+    "columns_b": 8,
+    "same_signature": false,
+    "equal_positions": 5,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

@@ -1,0 +1,507 @@
+{
+ "id": "cells-notes-4x10",
+ "description": "census8: the sparse Notes column has 4 values in part A and 10 in part B",
+ "tags": [
+  "family:min_cells",
+  "schema:census8"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Franklin",
+      "Orange",
+      "18,527",
+      "73,018",
+      "54.1",
+      "23.4%",
+      "Nov 6, 2015",
+      ""
+     ],
+     [
+      "Washington",
+      "Caledonia",
+      "16,201",
+      "19,254",
+      "36.3",
+      "31.0%",
+      "Jul 6, 2022",
+      ""
+     ],
+     [
+      "Franklin",
+      "Caledonia",
+      "7,652",
+      "64,378",
+      "37.0",
+      "18.0%",
+      "Nov 23, 2022",
+      ""
+     ],
+     [
+      "Grand Isle",
+      "Summit",
+      "42,050",
+      "67,256",
+      "30.3",
+      "20.2%",
+      "Jan 11, 2021",
+      "On hold"
+     ],
+     [
+      "Addison",
+      "Spruce",
+      "88,038",
+      "2,652",
+      "36.3",
+      "29.3%",
+      "Mar 15, 2023",
+      ""
+     ],
+     [
+      "Spruce",
+      "Lantern",
+      "13,086",
+      "48,521",
+      "39.2",
+      "30.0%",
+      "Jan 17, 2018",
+      ""
+     ],
+     [
+      "Hickory",
+      "Cedar",
+      "35,740",
+      "79,930",
+      "41.6",
+      "3.5%",
+      "May 4, 2020",
+      ""
+     ],
+     [
+      "Orleans",
+      "Windham",
+      "63,488",
+      "88,859",
+      "50.8",
+      "30.4%",
+      "Mar 9, 2019",
+      ""
+     ],
+     [
+      "Washington",
+      "Orleans",
+      "76,604",
+      "22,146",
+      "28.7",
+      "2.4%",
+      "May 16, 2016",
+      ""
+     ],
+     [
+      "Bennington",
+      "Chittenden",
+      "61,448",
+      "13,653",
+      "46.2",
+      "27.3%",
+      "Mar 2, 2020",
+      ""
+     ]
+    ],
+    "2": [
+     [
+      "Summit",
+      "Windham",
+      "97,724",
+      "83,859",
+      "30.4",
+      "9.6%",
+      "Sep 12, 2018",
+      ""
+     ],
+     [
+      "Cedar",
+      "Cedar",
+      "42,854",
+      "70,306",
+      "27.0",
+      "4.2%",
+      "Sep 18, 2015",
+      ""
+     ],
+     [
+      "Alder",
+      "Juniper",
+      "75,799",
+      "5,189",
+      "43.6",
+      "11.6%",
+      "Jan 26, 2021",
+      ""
+     ],
+     [
+      "Summit",
+      "Rutland",
+      "69,560",
+      "76,988",
+      "45.8",
+      "4.9%",
+      "Sep 26, 2021",
+      ""
+     ],
+     [
+      "Washington",
+      "Granite",
+      "46,777",
+      "25,719",
+      "48.5",
+      "3.7%",
+      "Jul 2, 2019",
+      "See memo"
+     ],
+     [
+      "Alder",
+      "Laurel",
+      "16,769",
+      "38,409",
+      "48.3",
+      "12.5%",
+      "Nov 20, 2020",
+      ""
+     ],
+     [
+      "Bennington",
+      "Harbor",
+      "79,144",
+      "96,576",
+      "36.2",
+      "6.7%",
+      "Nov 8, 2023",
+      "Merged"
+     ],
+     [
+      "Laurel",
+      "Lamoille",
+      "18,473",
+      "26,329",
+      "51.7",
+      "15.3%",
+      "Mar 3, 2021",
+      ""
+     ],
+     [
+      "Tamarack",
+      "Hickory",
+      "48,926",
+      "45,594",
+      "29.4",
+      "18.3%",
+      "Jul 1, 2015",
+      "Late filing"
+     ],
+     [
+      "Orange",
+      "Poplar",
+      "6,016",
+      "23,476",
+      "45.9",
+      "16.0%",
+      "May 7, 2021",
+      ""
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Town Name",
+    "County Name",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Alder",
+      "Hickory",
+      "4,027",
+      "68,995",
+      "45.8",
+      "24.0%",
+      "Nov 26, 2019",
+      "Late filing"
+     ],
+     [
+      "Franklin",
+      "Rutland",
+      "39,075",
+      "13,891",
+      "48.2",
+      "3.9%",
+      "Jul 9, 2019",
+      "Pending review"
+     ],
+     [
+      "Chittenden",
+      "Windham",
+      "73,643",
+      "37,712",
+      "41.3",
+      "28.7%",
+      "Jan 1, 2022",
+      "New site"
+     ],
+     [
+      "Essex",
+      "Orleans",
+      "6,235",
+      "46,569",
+      "42.7",
+      "13.1%",
+      "Nov 11, 2016",
+      "New site"
+     ],
+     [
+      "Harbor",
+      "Caledonia",
+      "53,804",
+      "56,497",
+      "42.6",
+      "4.6%",
+      "May 18, 2023",
+      ""
+     ],
+     [
+      "Juniper",
+      "Chittenden",
+      "93,263",
+      "50,473",
+      "40.0",
+      "8.5%",
+      "Mar 10, 2016",
+      ""
+     ],
+     [
+      "Willow",
+      "Alder",
+      "71,088",
+      "53,114",
+      "50.9",
+      "7.9%",
+      "Sep 12, 2022",
+      ""
+     ],
+     [
+      "Tamarack",
+      "Windham",
+      "21,911",
+      "73,791",
+      "30.6",
+      "15.1%",
+      "May 20, 2018",
+      ""
+     ],
+     [
+      "Lantern",
+      "Birch",
+      "34,329",
+      "38,851",
+      "54.7",
+      "27.7%",
+      "Jul 5, 2023",
+      ""
+     ],
+     [
+      "Caledonia",
+      "Lantern",
+      "93,244",
+      "2,071",
+      "34.4",
+      "30.5%",
+      "Sep 22, 2015",
+      "Revised"
+     ]
+    ],
+    "6": [
+     [
+      "Laurel",
+      "Windham",
+      "84,258",
+      "769",
+      "22.3",
+      "14.2%",
+      "Sep 21, 2017",
+      ""
+     ],
+     [
+      "Bennington",
+      "Harbor",
+      "30,303",
+      "64,311",
+      "41.2",
+      "9.0%",
+      "Mar 21, 2019",
+      "See memo"
+     ],
+     [
+      "Essex",
+      "Alder",
+      "67,939",
+      "30,428",
+      "40.4",
+      "25.9%",
+      "May 24, 2017",
+      "Merged"
+     ],
+     [
+      "Summit",
+      "Alder",
+      "27,822",
+      "39,755",
+      "50.3",
+      "26.6%",
+      "Jan 12, 2019",
+      "Merged"
+     ],
+     [
+      "Chittenden",
+      "Alder",
+      "18,458",
+      "66,566",
+      "36.4",
+      "20.6%",
+      "Jan 11, 2018",
+      "Revised"
+     ],
+     [
+      "Maple",
+      "Summit",
+      "48,190",
+      "562",
+      "42.7",
+      "29.2%",
+      "Sep 8, 2022",
+      ""
+     ],
+     [
+      "Caledonia",
+      "Laurel",
+      "49,217",
+      "2,924",
+      "24.0",
+      "16.3%",
+      "Jan 19, 2019",
+      ""
+     ],
+     [
+      "Lantern",
+      "Poplar",
+      "22,895",
+      "76,305",
+      "29.7",
+      "27.4%",
+      "Mar 20, 2016",
+      ""
+     ],
+     [
+      "Addison",
+      "Grand Isle",
+      "24,483",
+      "24,942",
+      "23.7",
+      "24.9%",
+      "Jan 17, 2015",
+      ""
+     ],
+     [
+      "Lamoille",
+      "Windham",
+      "22,253",
+      "41,156",
+      "28.2",
+      "28.7%",
+      "Sep 16, 2023",
+      "Pending review"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": false,
+   "probes": [
+    "min_cells"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 8,
+    "columns_b": 8,
+    "same_signature": false,
+    "equal_positions": 6,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

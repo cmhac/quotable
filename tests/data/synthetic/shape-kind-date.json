@@ -1,0 +1,419 @@
+{
+ "id": "shape-kind-date",
+ "description": "projects6: the third column holds date values in part B instead of amounts",
+ "tags": [
+  "family:shape",
+  "schema:projects6"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Harbor Clinic",
+      "Birch",
+      "$372,000",
+      "$568,000",
+      "$410,000",
+      "Alder"
+     ],
+     [
+      "Willow Orchard",
+      "Maple",
+      "$563,000",
+      "$162,000",
+      "$142,000",
+      "Lamoille"
+     ],
+     [
+      "Lantern Bridge",
+      "Cedar",
+      "$787,000",
+      "$545,000",
+      "$594,000",
+      "Washington"
+     ],
+     [
+      "Harbor Orchard",
+      "Caledonia",
+      "$90,000",
+      "$984,000",
+      "$29,000",
+      "Harbor"
+     ],
+     [
+      "Summit Market",
+      "Caledonia",
+      "$406,000",
+      "$35,000",
+      "$887,000",
+      "Chittenden"
+     ],
+     [
+      "Lantern Market",
+      "Lantern",
+      "$955,000",
+      "$60,000",
+      "$379,000",
+      "Poplar"
+     ],
+     [
+      "Lantern Trail",
+      "Laurel",
+      "$848,000",
+      "$783,000",
+      "$559,000",
+      "Harbor"
+     ],
+     [
+      "Summit Wharf",
+      "Aspen",
+      "$569,000",
+      "$80,000",
+      "$441,000",
+      "Poplar"
+     ],
+     [
+      "Willow Library",
+      "Maple",
+      "$282,000",
+      "$825,000",
+      "$176,000",
+      "Juniper"
+     ],
+     [
+      "Cedar Trail",
+      "Alder",
+      "$549,000",
+      "$888,000",
+      "$417,000",
+      "Willow"
+     ]
+    ],
+    "2": [
+     [
+      "Summit Wharf",
+      "Lamoille",
+      "$239,000",
+      "$517,000",
+      "$107,000",
+      "Washington"
+     ],
+     [
+      "Harbor Market",
+      "Spruce",
+      "$151,000",
+      "$317,000",
+      "$267,000",
+      "Birch"
+     ],
+     [
+      "Willow Market",
+      "Maple",
+      "$93,000",
+      "$906,000",
+      "$765,000",
+      "Granite"
+     ],
+     [
+      "Willow Depot",
+      "Birch",
+      "$452,000",
+      "$833,000",
+      "$799,000",
+      "Essex"
+     ],
+     [
+      "Granite Market",
+      "Poplar",
+      "$114,000",
+      "$874,000",
+      "$96,000",
+      "Birch"
+     ],
+     [
+      "Cedar Bridge",
+      "Poplar",
+      "$76,000",
+      "$504,000",
+      "$763,000",
+      "Franklin"
+     ],
+     [
+      "Cedar Wharf",
+      "Harbor",
+      "$170,000",
+      "$690,000",
+      "$882,000",
+      "Chittenden"
+     ],
+     [
+      "Lantern Market",
+      "Harbor",
+      "$167,000",
+      "$669,000",
+      "$830,000",
+      "Cedar"
+     ],
+     [
+      "Summit Clinic",
+      "Aspen",
+      "$198,000",
+      "$485,000",
+      "$64,000",
+      "Summit"
+     ],
+     [
+      "Harbor Wharf",
+      "Chittenden",
+      "$209,000",
+      "$985,000",
+      "$320,000",
+      "Essex"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Project Name",
+    "County Name",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Maple Orchard",
+      "Lantern",
+      "Mar 26, 2016",
+      "$537,000",
+      "$595,000",
+      "Franklin"
+     ],
+     [
+      "Harbor Depot",
+      "Aspen",
+      "Nov 5, 2021",
+      "$696,000",
+      "$210,000",
+      "Granite"
+     ],
+     [
+      "Riverside Library",
+      "Spruce",
+      "Nov 25, 2016",
+      "$918,000",
+      "$143,000",
+      "Maple"
+     ],
+     [
+      "Cedar Library",
+      "Juniper",
+      "Jan 19, 2016",
+      "$477,000",
+      "$978,000",
+      "Rutland"
+     ],
+     [
+      "Harbor Orchard",
+      "Orleans",
+      "May 16, 2016",
+      "$469,000",
+      "$159,000",
+      "Juniper"
+     ],
+     [
+      "Summit Depot",
+      "Laurel",
+      "Sep 15, 2019",
+      "$547,000",
+      "$193,000",
+      "Washington"
+     ],
+     [
+      "Harbor Wharf",
+      "Cedar",
+      "Jul 4, 2015",
+      "$464,000",
+      "$805,000",
+      "Juniper"
+     ],
+     [
+      "Summit Depot",
+      "Washington",
+      "Jul 4, 2021",
+      "$387,000",
+      "$231,000",
+      "Lamoille"
+     ],
+     [
+      "Summit Market",
+      "Lamoille",
+      "Nov 25, 2017",
+      "$170,000",
+      "$836,000",
+      "Windham"
+     ],
+     [
+      "Lantern Bridge",
+      "Franklin",
+      "Mar 2, 2018",
+      "$258,000",
+      "$902,000",
+      "Laurel"
+     ]
+    ],
+    "6": [
+     [
+      "Maple Wharf",
+      "Alder",
+      "Mar 8, 2023",
+      "$261,000",
+      "$816,000",
+      "Juniper"
+     ],
+     [
+      "Maple Depot",
+      "Rutland",
+      "Mar 21, 2021",
+      "$120,000",
+      "$460,000",
+      "Alder"
+     ],
+     [
+      "Cedar Trail",
+      "Aspen",
+      "Jan 21, 2020",
+      "$73,000",
+      "$184,000",
+      "Hickory"
+     ],
+     [
+      "Cedar Trail",
+      "Washington",
+      "Sep 21, 2018",
+      "$221,000",
+      "$894,000",
+      "Laurel"
+     ],
+     [
+      "Willow Wharf",
+      "Windham",
+      "Jul 5, 2019",
+      "$777,000",
+      "$959,000",
+      "Cedar"
+     ],
+     [
+      "Lantern Market",
+      "Rutland",
+      "Sep 18, 2023",
+      "$510,000",
+      "$63,000",
+      "Windham"
+     ],
+     [
+      "Maple Bridge",
+      "Addison",
+      "May 9, 2022",
+      "$102,000",
+      "$669,000",
+      "Spruce"
+     ],
+     [
+      "Cedar Wharf",
+      "Tamarack",
+      "Jan 15, 2020",
+      "$824,000",
+      "$661,000",
+      "Tamarack"
+     ],
+     [
+      "Willow Depot",
+      "Orange",
+      "May 14, 2022",
+      "$555,000",
+      "$220,000",
+      "Addison"
+     ],
+     [
+      "Maple Wharf",
+      "Windham",
+      "Mar 7, 2016",
+      "$93,000",
+      "$184,000",
+      "Birch"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": null,
+   "expect_merge": false,
+   "probes": [
+    "shape"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 6,
+    "columns_b": 6,
+    "same_signature": false,
+    "equal_positions": 4,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

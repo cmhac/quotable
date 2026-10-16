@@ -1,0 +1,187 @@
+{
+ "id": "cells-6x6",
+ "description": "projects6: part A has 6 rows, part B has 6",
+ "tags": [
+  "family:min_cells",
+  "schema:projects6"
+ ],
+ "pages": 4,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1
+   ],
+   "columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    1
+   ],
+   "rows": {
+    "1": [
+     [
+      "Summit Library",
+      "Laurel",
+      "$236,000",
+      "$306,000",
+      "$558,000",
+      "Alder"
+     ],
+     [
+      "Lantern Depot",
+      "Willow",
+      "$540,000",
+      "$673,000",
+      "$774,000",
+      "Sorrel"
+     ],
+     [
+      "Maple Wharf",
+      "Windham",
+      "$336,000",
+      "$609,000",
+      "$154,000",
+      "Orange"
+     ],
+     [
+      "Granite Bridge",
+      "Willow",
+      "$927,000",
+      "$865,000",
+      "$787,000",
+      "Granite"
+     ],
+     [
+      "Willow Orchard",
+      "Cedar",
+      "$773,000",
+      "$988,000",
+      "$353,000",
+      "Maple"
+     ],
+     [
+      "Riverside Orchard",
+      "Granite",
+      "$374,000",
+      "$420,000",
+      "$520,000",
+      "Sorrel"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    4
+   ],
+   "columns": [
+    "Project Name",
+    "County Name",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    4
+   ],
+   "rows": {
+    "4": [
+     [
+      "Harbor Bridge",
+      "Lamoille",
+      "$213,000",
+      "$906,000",
+      "$517,000",
+      "Chittenden"
+     ],
+     [
+      "Harbor Market",
+      "Tamarack",
+      "$822,000",
+      "$411,000",
+      "$40,000",
+      "Cedar"
+     ],
+     [
+      "Willow Wharf",
+      "Orleans",
+      "$572,000",
+      "$186,000",
+      "$792,000",
+      "Poplar"
+     ],
+     [
+      "Granite Wharf",
+      "Aspen",
+      "$962,000",
+      "$532,000",
+      "$337,000",
+      "Bennington"
+     ],
+     [
+      "Harbor Market",
+      "Poplar",
+      "$561,000",
+      "$572,000",
+      "$369,000",
+      "Essex"
+     ],
+     [
+      "Cedar Library",
+      "Lantern",
+      "$37,000",
+      "$664,000",
+      "$461,000",
+      "Washington"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": true,
+   "probes": [
+    "min_cells"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 6,
+    "columns_b": 6,
+    "same_signature": false,
+    "equal_positions": 4,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

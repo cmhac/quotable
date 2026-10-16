@@ -1,0 +1,420 @@
+{
+ "id": "align-rl",
+ "description": "projects6: numbers aligned r in part A and l in part B",
+ "tags": [
+  "family:alignment",
+  "schema:projects6"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Cedar Wharf",
+      "Windham",
+      "$850,000",
+      "$235,000",
+      "$633,000",
+      "Addison"
+     ],
+     [
+      "Cedar Bridge",
+      "Orange",
+      "$945,000",
+      "$818,000",
+      "$498,000",
+      "Juniper"
+     ],
+     [
+      "Lantern Library",
+      "Juniper",
+      "$614,000",
+      "$819,000",
+      "$128,000",
+      "Cedar"
+     ],
+     [
+      "Harbor Orchard",
+      "Harbor",
+      "$497,000",
+      "$875,000",
+      "$619,000",
+      "Alder"
+     ],
+     [
+      "Harbor Clinic",
+      "Spruce",
+      "$127,000",
+      "$547,000",
+      "$425,000",
+      "Orleans"
+     ],
+     [
+      "Summit Clinic",
+      "Sorrel",
+      "$884,000",
+      "$642,000",
+      "$249,000",
+      "Washington"
+     ],
+     [
+      "Maple Bridge",
+      "Addison",
+      "$562,000",
+      "$762,000",
+      "$901,000",
+      "Orleans"
+     ],
+     [
+      "Summit Bridge",
+      "Orange",
+      "$248,000",
+      "$757,000",
+      "$635,000",
+      "Alder"
+     ],
+     [
+      "Willow Trail",
+      "Poplar",
+      "$653,000",
+      "$693,000",
+      "$57,000",
+      "Franklin"
+     ],
+     [
+      "Cedar Library",
+      "Willow",
+      "$288,000",
+      "$456,000",
+      "$962,000",
+      "Poplar"
+     ]
+    ],
+    "2": [
+     [
+      "Harbor Bridge",
+      "Aspen",
+      "$959,000",
+      "$169,000",
+      "$870,000",
+      "Orange"
+     ],
+     [
+      "Harbor Orchard",
+      "Birch",
+      "$552,000",
+      "$967,000",
+      "$159,000",
+      "Laurel"
+     ],
+     [
+      "Riverside Market",
+      "Lamoille",
+      "$482,000",
+      "$782,000",
+      "$408,000",
+      "Grand Isle"
+     ],
+     [
+      "Riverside Trail",
+      "Orleans",
+      "$870,000",
+      "$812,000",
+      "$53,000",
+      "Poplar"
+     ],
+     [
+      "Harbor Clinic",
+      "Addison",
+      "$296,000",
+      "$245,000",
+      "$414,000",
+      "Windham"
+     ],
+     [
+      "Granite Wharf",
+      "Grand Isle",
+      "$240,000",
+      "$567,000",
+      "$738,000",
+      "Granite"
+     ],
+     [
+      "Maple Bridge",
+      "Spruce",
+      "$912,000",
+      "$851,000",
+      "$565,000",
+      "Lamoille"
+     ],
+     [
+      "Riverside Orchard",
+      "Grand Isle",
+      "$410,000",
+      "$388,000",
+      "$345,000",
+      "Juniper"
+     ],
+     [
+      "Harbor Market",
+      "Chittenden",
+      "$570,000",
+      "$378,000",
+      "$912,000",
+      "Chittenden"
+     ],
+     [
+      "Riverside Trail",
+      "Essex",
+      "$31,000",
+      "$364,000",
+      "$970,000",
+      "Franklin"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Project Name",
+    "County Name",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Lantern Trail",
+      "Tamarack",
+      "$664,000",
+      "$267,000",
+      "$725,000",
+      "Harbor"
+     ],
+     [
+      "Lantern Wharf",
+      "Sorrel",
+      "$53,000",
+      "$694,000",
+      "$141,000",
+      "Rutland"
+     ],
+     [
+      "Maple Bridge",
+      "Spruce",
+      "$833,000",
+      "$325,000",
+      "$870,000",
+      "Addison"
+     ],
+     [
+      "Cedar Orchard",
+      "Franklin",
+      "$30,000",
+      "$945,000",
+      "$185,000",
+      "Willow"
+     ],
+     [
+      "Maple Clinic",
+      "Rutland",
+      "$217,000",
+      "$740,000",
+      "$592,000",
+      "Harbor"
+     ],
+     [
+      "Willow Trail",
+      "Orleans",
+      "$108,000",
+      "$200,000",
+      "$22,000",
+      "Essex"
+     ],
+     [
+      "Summit Bridge",
+      "Sorrel",
+      "$240,000",
+      "$797,000",
+      "$939,000",
+      "Birch"
+     ],
+     [
+      "Maple Orchard",
+      "Franklin",
+      "$310,000",
+      "$118,000",
+      "$874,000",
+      "Windham"
+     ],
+     [
+      "Riverside Bridge",
+      "Granite",
+      "$236,000",
+      "$180,000",
+      "$986,000",
+      "Addison"
+     ],
+     [
+      "Cedar Bridge",
+      "Poplar",
+      "$943,000",
+      "$641,000",
+      "$154,000",
+      "Bennington"
+     ]
+    ],
+    "6": [
+     [
+      "Lantern Wharf",
+      "Lamoille",
+      "$104,000",
+      "$298,000",
+      "$459,000",
+      "Juniper"
+     ],
+     [
+      "Granite Market",
+      "Juniper",
+      "$722,000",
+      "$59,000",
+      "$597,000",
+      "Windham"
+     ],
+     [
+      "Lantern Library",
+      "Willow",
+      "$633,000",
+      "$896,000",
+      "$244,000",
+      "Harbor"
+     ],
+     [
+      "Riverside Clinic",
+      "Orleans",
+      "$680,000",
+      "$533,000",
+      "$804,000",
+      "Rutland"
+     ],
+     [
+      "Willow Clinic",
+      "Cedar",
+      "$223,000",
+      "$424,000",
+      "$194,000",
+      "Chittenden"
+     ],
+     [
+      "Riverside Bridge",
+      "Orleans",
+      "$100,000",
+      "$216,000",
+      "$655,000",
+      "Hickory"
+     ],
+     [
+      "Cedar Library",
+      "Birch",
+      "$530,000",
+      "$163,000",
+      "$53,000",
+      "Spruce"
+     ],
+     [
+      "Lantern Market",
+      "Grand Isle",
+      "$544,000",
+      "$765,000",
+      "$545,000",
+      "Orange"
+     ],
+     [
+      "Summit Depot",
+      "Essex",
+      "$812,000",
+      "$957,000",
+      "$756,000",
+      "Grand Isle"
+     ],
+     [
+      "Maple Bridge",
+      "Franklin",
+      "$434,000",
+      "$648,000",
+      "$575,000",
+      "Laurel"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": null,
+   "probes": [
+    "grid",
+    "alignment"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 6,
+    "columns_b": 6,
+    "same_signature": false,
+    "equal_positions": 4,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

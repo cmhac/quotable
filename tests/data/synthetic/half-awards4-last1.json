@@ -1,0 +1,331 @@
+{
+ "id": "half-awards4-last1",
+ "description": "awards4: 1 of 4 headers reworded (last 1)",
+ "tags": [
+  "family:half_sweep",
+  "schema:awards4"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Cedar Wharf",
+      "Caledonia",
+      "$218,000",
+      "66,644"
+     ],
+     [
+      "Granite Trail",
+      "Maple",
+      "$556,000",
+      "59,766"
+     ],
+     [
+      "Maple Depot",
+      "Juniper",
+      "$273,000",
+      "23,601"
+     ],
+     [
+      "Maple Orchard",
+      "Orange",
+      "$840,000",
+      "72,359"
+     ],
+     [
+      "Maple Market",
+      "Washington",
+      "$180,000",
+      "61,086"
+     ],
+     [
+      "Riverside Bridge",
+      "Laurel",
+      "$522,000",
+      "49,541"
+     ],
+     [
+      "Cedar Library",
+      "Spruce",
+      "$118,000",
+      "441"
+     ],
+     [
+      "Willow Trail",
+      "Hickory",
+      "$23,000",
+      "44,689"
+     ],
+     [
+      "Summit Depot",
+      "Rutland",
+      "$403,000",
+      "15,492"
+     ],
+     [
+      "Lantern Market",
+      "Grand Isle",
+      "$265,000",
+      "84,455"
+     ]
+    ],
+    "2": [
+     [
+      "Harbor Clinic",
+      "Laurel",
+      "$476,000",
+      "62,111"
+     ],
+     [
+      "Summit Wharf",
+      "Birch",
+      "$89,000",
+      "60,843"
+     ],
+     [
+      "Lantern Clinic",
+      "Summit",
+      "$732,000",
+      "92,182"
+     ],
+     [
+      "Harbor Depot",
+      "Granite",
+      "$707,000",
+      "451"
+     ],
+     [
+      "Granite Bridge",
+      "Lamoille",
+      "$888,000",
+      "39,772"
+     ],
+     [
+      "Harbor Bridge",
+      "Summit",
+      "$915,000",
+      "83,357"
+     ],
+     [
+      "Granite Depot",
+      "Laurel",
+      "$627,000",
+      "13,503"
+     ],
+     [
+      "Lantern Bridge",
+      "Spruce",
+      "$914,000",
+      "69,419"
+     ],
+     [
+      "Summit Library",
+      "Aspen",
+      "$857,000",
+      "50,619"
+     ],
+     [
+      "Lantern Market",
+      "Harbor",
+      "$441,000",
+      "88,083"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Fiscal Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Willow Orchard",
+      "Rutland",
+      "$226,000",
+      "94,422"
+     ],
+     [
+      "Maple Trail",
+      "Spruce",
+      "$981,000",
+      "54,501"
+     ],
+     [
+      "Riverside Library",
+      "Essex",
+      "$46,000",
+      "78,977"
+     ],
+     [
+      "Lantern Wharf",
+      "Cedar",
+      "$543,000",
+      "7,296"
+     ],
+     [
+      "Cedar Wharf",
+      "Bennington",
+      "$169,000",
+      "13,521"
+     ],
+     [
+      "Cedar Bridge",
+      "Cedar",
+      "$604,000",
+      "72,058"
+     ],
+     [
+      "Harbor Trail",
+      "Willow",
+      "$38,000",
+      "8,092"
+     ],
+     [
+      "Willow Market",
+      "Orleans",
+      "$758,000",
+      "17,725"
+     ],
+     [
+      "Riverside Depot",
+      "Birch",
+      "$866,000",
+      "87,336"
+     ],
+     [
+      "Willow Library",
+      "Rutland",
+      "$412,000",
+      "84,020"
+     ]
+    ],
+    "6": [
+     [
+      "Maple Library",
+      "Caledonia",
+      "$825,000",
+      "40,665"
+     ],
+     [
+      "Cedar Library",
+      "Maple",
+      "$709,000",
+      "5,181"
+     ],
+     [
+      "Granite Clinic",
+      "Orleans",
+      "$38,000",
+      "54,399"
+     ],
+     [
+      "Granite Clinic",
+      "Summit",
+      "$681,000",
+      "57,128"
+     ],
+     [
+      "Riverside Market",
+      "Poplar",
+      "$612,000",
+      "19,674"
+     ],
+     [
+      "Cedar Trail",
+      "Aspen",
+      "$727,000",
+      "81,216"
+     ],
+     [
+      "Granite Depot",
+      "Hickory",
+      "$419,000",
+      "13,491"
+     ],
+     [
+      "Maple Clinic",
+      "Bennington",
+      "$172,000",
+      "8,593"
+     ],
+     [
+      "Summit Orchard",
+      "Rutland",
+      "$169,000",
+      "91,771"
+     ],
+     [
+      "Granite Trail",
+      "Birch",
+      "$215,000",
+      "37,394"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": null,
+   "probes": [
+    "half_equal"
+   ],
+   "stage": "merge",
+   "note": "3 of 4 positions have equal words",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 4,
+    "columns_b": 4,
+    "same_signature": false,
+    "equal_positions": 3,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

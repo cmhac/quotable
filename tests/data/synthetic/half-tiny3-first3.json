@@ -1,0 +1,287 @@
+{
+ "id": "half-tiny3-first3",
+ "description": "tiny3: 3 of 3 headers reworded (first 3)",
+ "tags": [
+  "family:half_sweep",
+  "schema:tiny3"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Harbor",
+      "68,362",
+      "10.5%"
+     ],
+     [
+      "Sorrel",
+      "14,297",
+      "18.0%"
+     ],
+     [
+      "Lantern",
+      "85,305",
+      "27.6%"
+     ],
+     [
+      "Sorrel",
+      "52,307",
+      "21.0%"
+     ],
+     [
+      "Alder",
+      "45,317",
+      "5.4%"
+     ],
+     [
+      "Hickory",
+      "19,583",
+      "19.9%"
+     ],
+     [
+      "Laurel",
+      "83,922",
+      "27.3%"
+     ],
+     [
+      "Harbor",
+      "88,573",
+      "6.7%"
+     ],
+     [
+      "Alder",
+      "88,735",
+      "24.4%"
+     ],
+     [
+      "Aspen",
+      "55,530",
+      "22.1%"
+     ]
+    ],
+    "2": [
+     [
+      "Hickory",
+      "19,879",
+      "11.5%"
+     ],
+     [
+      "Tamarack",
+      "25,382",
+      "16.5%"
+     ],
+     [
+      "Chittenden",
+      "8,208",
+      "11.7%"
+     ],
+     [
+      "Washington",
+      "52,446",
+      "12.4%"
+     ],
+     [
+      "Hickory",
+      "32,383",
+      "25.8%"
+     ],
+     [
+      "Hickory",
+      "43,880",
+      "20.3%"
+     ],
+     [
+      "Tamarack",
+      "76,846",
+      "5.5%"
+     ],
+     [
+      "Essex",
+      "38,259",
+      "14.7%"
+     ],
+     [
+      "Sorrel",
+      "45,361",
+      "12.4%"
+     ],
+     [
+      "Windham",
+      "15,132",
+      "19.8%"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Full Name",
+    "Count Total",
+    "Share Percent"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Poplar",
+      "21,751",
+      "3.8%"
+     ],
+     [
+      "Poplar",
+      "14,742",
+      "15.4%"
+     ],
+     [
+      "Poplar",
+      "79,794",
+      "2.5%"
+     ],
+     [
+      "Willow",
+      "59,001",
+      "7.5%"
+     ],
+     [
+      "Summit",
+      "8,550",
+      "4.2%"
+     ],
+     [
+      "Tamarack",
+      "71,606",
+      "29.7%"
+     ],
+     [
+      "Grand Isle",
+      "5,445",
+      "26.0%"
+     ],
+     [
+      "Windham",
+      "80,582",
+      "4.3%"
+     ],
+     [
+      "Franklin",
+      "84,656",
+      "10.3%"
+     ],
+     [
+      "Orleans",
+      "85,956",
+      "25.6%"
+     ]
+    ],
+    "6": [
+     [
+      "Alder",
+      "523",
+      "8.6%"
+     ],
+     [
+      "Spruce",
+      "88,657",
+      "25.8%"
+     ],
+     [
+      "Juniper",
+      "59,282",
+      "18.2%"
+     ],
+     [
+      "Rutland",
+      "42,740",
+      "15.3%"
+     ],
+     [
+      "Cedar",
+      "38,467",
+      "13.1%"
+     ],
+     [
+      "Cedar",
+      "10,889",
+      "19.5%"
+     ],
+     [
+      "Tamarack",
+      "24,893",
+      "27.0%"
+     ],
+     [
+      "Cedar",
+      "72,556",
+      "20.8%"
+     ],
+     [
+      "Grand Isle",
+      "66,942",
+      "22.2%"
+     ],
+     [
+      "Rutland",
+      "83,213",
+      "17.4%"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": null,
+   "probes": [
+    "half_equal"
+   ],
+   "stage": "merge",
+   "note": "0 of 3 positions have equal words",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 3,
+    "columns_b": 3,
+    "same_signature": false,
+    "equal_positions": 0,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

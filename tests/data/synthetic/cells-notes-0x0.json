@@ -1,0 +1,507 @@
+{
+ "id": "cells-notes-0x0",
+ "description": "census8: the sparse Notes column has 0 values in part A and 0 in part B",
+ "tags": [
+  "family:min_cells",
+  "schema:census8"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Addison",
+      "Addison",
+      "53,495",
+      "36,050",
+      "51.5",
+      "18.0%",
+      "Jul 1, 2022",
+      ""
+     ],
+     [
+      "Hickory",
+      "Spruce",
+      "95,759",
+      "58,254",
+      "34.5",
+      "12.2%",
+      "Jul 16, 2017",
+      ""
+     ],
+     [
+      "Bennington",
+      "Cedar",
+      "645",
+      "4,686",
+      "21.6",
+      "29.2%",
+      "Jul 6, 2020",
+      ""
+     ],
+     [
+      "Orange",
+      "Harbor",
+      "55,339",
+      "55,990",
+      "50.6",
+      "26.4%",
+      "May 8, 2018",
+      ""
+     ],
+     [
+      "Alder",
+      "Tamarack",
+      "24,509",
+      "44,714",
+      "54.6",
+      "17.4%",
+      "May 8, 2023",
+      ""
+     ],
+     [
+      "Washington",
+      "Windham",
+      "61,829",
+      "84,414",
+      "28.5",
+      "13.8%",
+      "Sep 26, 2023",
+      ""
+     ],
+     [
+      "Caledonia",
+      "Juniper",
+      "48,821",
+      "58,196",
+      "37.8",
+      "26.6%",
+      "Mar 13, 2018",
+      ""
+     ],
+     [
+      "Juniper",
+      "Summit",
+      "19,610",
+      "87,979",
+      "23.8",
+      "4.4%",
+      "Jan 9, 2017",
+      ""
+     ],
+     [
+      "Essex",
+      "Essex",
+      "28,534",
+      "69,808",
+      "30.6",
+      "8.6%",
+      "Mar 21, 2019",
+      ""
+     ],
+     [
+      "Tamarack",
+      "Bennington",
+      "34,714",
+      "58,577",
+      "31.3",
+      "25.5%",
+      "Jan 5, 2021",
+      ""
+     ]
+    ],
+    "2": [
+     [
+      "Washington",
+      "Maple",
+      "86,291",
+      "46,614",
+      "52.7",
+      "4.1%",
+      "Jan 2, 2022",
+      ""
+     ],
+     [
+      "Tamarack",
+      "Bennington",
+      "58,636",
+      "53,504",
+      "48.2",
+      "10.4%",
+      "Mar 11, 2020",
+      ""
+     ],
+     [
+      "Hickory",
+      "Cedar",
+      "30,939",
+      "7,679",
+      "24.4",
+      "30.4%",
+      "Sep 15, 2015",
+      ""
+     ],
+     [
+      "Franklin",
+      "Rutland",
+      "10,196",
+      "94,454",
+      "39.8",
+      "16.5%",
+      "Nov 15, 2019",
+      ""
+     ],
+     [
+      "Caledonia",
+      "Willow",
+      "1,192",
+      "60,069",
+      "39.8",
+      "11.3%",
+      "Sep 12, 2020",
+      ""
+     ],
+     [
+      "Grand Isle",
+      "Caledonia",
+      "58,431",
+      "41,172",
+      "21.2",
+      "27.7%",
+      "May 10, 2016",
+      ""
+     ],
+     [
+      "Tamarack",
+      "Cedar",
+      "95,957",
+      "74,549",
+      "48.6",
+      "22.2%",
+      "Mar 26, 2018",
+      ""
+     ],
+     [
+      "Juniper",
+      "Summit",
+      "34,217",
+      "78,515",
+      "21.4",
+      "17.4%",
+      "Nov 20, 2022",
+      ""
+     ],
+     [
+      "Windham",
+      "Grand Isle",
+      "81,381",
+      "50,496",
+      "45.1",
+      "24.9%",
+      "Sep 27, 2020",
+      ""
+     ],
+     [
+      "Bennington",
+      "Granite",
+      "77,638",
+      "46,271",
+      "33.7",
+      "9.0%",
+      "May 15, 2020",
+      ""
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Town Name",
+    "County Name",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "schema_columns": [
+    "Town",
+    "County",
+    "Population",
+    "Households",
+    "Median Age",
+    "Poverty Rate",
+    "Last Survey",
+    "Notes"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Birch",
+      "Lantern",
+      "8,176",
+      "66,632",
+      "28.8",
+      "28.2%",
+      "Sep 8, 2022",
+      ""
+     ],
+     [
+      "Hickory",
+      "Washington",
+      "91,995",
+      "32,331",
+      "30.1",
+      "26.6%",
+      "May 11, 2023",
+      ""
+     ],
+     [
+      "Chittenden",
+      "Tamarack",
+      "96,719",
+      "19,233",
+      "57.6",
+      "16.3%",
+      "Nov 14, 2022",
+      ""
+     ],
+     [
+      "Franklin",
+      "Aspen",
+      "18,930",
+      "65,967",
+      "47.4",
+      "29.3%",
+      "Mar 11, 2015",
+      ""
+     ],
+     [
+      "Granite",
+      "Windham",
+      "34,100",
+      "22,587",
+      "52.9",
+      "12.2%",
+      "Jan 19, 2017",
+      ""
+     ],
+     [
+      "Grand Isle",
+      "Harbor",
+      "5,646",
+      "83,190",
+      "30.4",
+      "17.0%",
+      "Sep 19, 2015",
+      ""
+     ],
+     [
+      "Chittenden",
+      "Summit",
+      "46,123",
+      "83,109",
+      "30.9",
+      "22.8%",
+      "Jan 24, 2015",
+      ""
+     ],
+     [
+      "Bennington",
+      "Birch",
+      "96,770",
+      "46,969",
+      "37.8",
+      "8.0%",
+      "May 25, 2019",
+      ""
+     ],
+     [
+      "Alder",
+      "Tamarack",
+      "36,101",
+      "910",
+      "57.0",
+      "6.7%",
+      "Jan 21, 2019",
+      ""
+     ],
+     [
+      "Addison",
+      "Orleans",
+      "16,650",
+      "29,621",
+      "53.3",
+      "13.3%",
+      "Jan 4, 2021",
+      ""
+     ]
+    ],
+    "6": [
+     [
+      "Grand Isle",
+      "Cedar",
+      "36,264",
+      "6,596",
+      "26.0",
+      "10.0%",
+      "Sep 27, 2023",
+      ""
+     ],
+     [
+      "Addison",
+      "Poplar",
+      "33,438",
+      "88,734",
+      "28.8",
+      "4.0%",
+      "Jan 26, 2022",
+      ""
+     ],
+     [
+      "Juniper",
+      "Lamoille",
+      "16,381",
+      "75,914",
+      "53.3",
+      "12.7%",
+      "Jul 23, 2018",
+      ""
+     ],
+     [
+      "Grand Isle",
+      "Chittenden",
+      "58,711",
+      "74,539",
+      "33.1",
+      "8.8%",
+      "Sep 3, 2023",
+      ""
+     ],
+     [
+      "Birch",
+      "Windham",
+      "44,691",
+      "66,469",
+      "52.8",
+      "29.8%",
+      "Jul 10, 2017",
+      ""
+     ],
+     [
+      "Maple",
+      "Orange",
+      "44,460",
+      "38,931",
+      "52.9",
+      "26.4%",
+      "Mar 3, 2015",
+      ""
+     ],
+     [
+      "Maple",
+      "Willow",
+      "71,495",
+      "57,836",
+      "35.7",
+      "10.2%",
+      "Jan 12, 2022",
+      ""
+     ],
+     [
+      "Summit",
+      "Granite",
+      "80,729",
+      "10,946",
+      "55.5",
+      "29.6%",
+      "Mar 18, 2023",
+      ""
+     ],
+     [
+      "Windham",
+      "Franklin",
+      "14,147",
+      "47,300",
+      "43.0",
+      "2.3%",
+      "Sep 21, 2022",
+      ""
+     ],
+     [
+      "Rutland",
+      "Windham",
+      "85,022",
+      "83,785",
+      "26.4",
+      "11.8%",
+      "Jul 11, 2022",
+      ""
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": false,
+   "probes": [
+    "min_cells"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 8,
+    "columns_b": 8,
+    "same_signature": false,
+    "equal_positions": 6,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

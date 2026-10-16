@@ -1,0 +1,419 @@
+{
+ "id": "gridmshiftp0",
+ "description": "projects6: part B moved +0 pt",
+ "tags": [
+  "family:grid",
+  "schema:projects6"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Lantern Market",
+      "Laurel",
+      "$349,000",
+      "$910,000",
+      "$765,000",
+      "Bennington"
+     ],
+     [
+      "Lantern Wharf",
+      "Laurel",
+      "$817,000",
+      "$982,000",
+      "$484,000",
+      "Summit"
+     ],
+     [
+      "Cedar Bridge",
+      "Aspen",
+      "$657,000",
+      "$841,000",
+      "$241,000",
+      "Willow"
+     ],
+     [
+      "Willow Orchard",
+      "Washington",
+      "$228,000",
+      "$950,000",
+      "$748,000",
+      "Willow"
+     ],
+     [
+      "Granite Bridge",
+      "Harbor",
+      "$26,000",
+      "$31,000",
+      "$351,000",
+      "Orange"
+     ],
+     [
+      "Summit Wharf",
+      "Rutland",
+      "$203,000",
+      "$389,000",
+      "$100,000",
+      "Spruce"
+     ],
+     [
+      "Summit Trail",
+      "Essex",
+      "$792,000",
+      "$129,000",
+      "$44,000",
+      "Orange"
+     ],
+     [
+      "Lantern Clinic",
+      "Sorrel",
+      "$598,000",
+      "$124,000",
+      "$827,000",
+      "Lantern"
+     ],
+     [
+      "Summit Wharf",
+      "Poplar",
+      "$931,000",
+      "$759,000",
+      "$130,000",
+      "Cedar"
+     ],
+     [
+      "Willow Clinic",
+      "Addison",
+      "$463,000",
+      "$909,000",
+      "$850,000",
+      "Orange"
+     ]
+    ],
+    "2": [
+     [
+      "Riverside Market",
+      "Orange",
+      "$716,000",
+      "$541,000",
+      "$904,000",
+      "Birch"
+     ],
+     [
+      "Willow Bridge",
+      "Cedar",
+      "$367,000",
+      "$756,000",
+      "$362,000",
+      "Harbor"
+     ],
+     [
+      "Willow Library",
+      "Bennington",
+      "$543,000",
+      "$879,000",
+      "$555,000",
+      "Maple"
+     ],
+     [
+      "Harbor Trail",
+      "Caledonia",
+      "$683,000",
+      "$215,000",
+      "$165,000",
+      "Alder"
+     ],
+     [
+      "Granite Trail",
+      "Chittenden",
+      "$342,000",
+      "$117,000",
+      "$344,000",
+      "Addison"
+     ],
+     [
+      "Maple Wharf",
+      "Windham",
+      "$238,000",
+      "$144,000",
+      "$447,000",
+      "Poplar"
+     ],
+     [
+      "Summit Wharf",
+      "Willow",
+      "$674,000",
+      "$457,000",
+      "$578,000",
+      "Franklin"
+     ],
+     [
+      "Cedar Orchard",
+      "Chittenden",
+      "$723,000",
+      "$282,000",
+      "$585,000",
+      "Cedar"
+     ],
+     [
+      "Willow Wharf",
+      "Laurel",
+      "$193,000",
+      "$273,000",
+      "$300,000",
+      "Hickory"
+     ],
+     [
+      "Summit Market",
+      "Tamarack",
+      "$325,000",
+      "$311,000",
+      "$973,000",
+      "Maple"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Project Name",
+    "County Name",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Willow Depot",
+      "Washington",
+      "$222,000",
+      "$404,000",
+      "$729,000",
+      "Harbor"
+     ],
+     [
+      "Maple Library",
+      "Spruce",
+      "$600,000",
+      "$156,000",
+      "$244,000",
+      "Lamoille"
+     ],
+     [
+      "Harbor Market",
+      "Windham",
+      "$159,000",
+      "$749,000",
+      "$626,000",
+      "Sorrel"
+     ],
+     [
+      "Summit Trail",
+      "Aspen",
+      "$836,000",
+      "$373,000",
+      "$561,000",
+      "Summit"
+     ],
+     [
+      "Summit Wharf",
+      "Orleans",
+      "$111,000",
+      "$340,000",
+      "$726,000",
+      "Hickory"
+     ],
+     [
+      "Maple Bridge",
+      "Caledonia",
+      "$439,000",
+      "$625,000",
+      "$66,000",
+      "Laurel"
+     ],
+     [
+      "Granite Trail",
+      "Poplar",
+      "$341,000",
+      "$517,000",
+      "$161,000",
+      "Lamoille"
+     ],
+     [
+      "Harbor Library",
+      "Spruce",
+      "$435,000",
+      "$109,000",
+      "$198,000",
+      "Birch"
+     ],
+     [
+      "Granite Market",
+      "Cedar",
+      "$41,000",
+      "$147,000",
+      "$799,000",
+      "Bennington"
+     ],
+     [
+      "Granite Library",
+      "Maple",
+      "$257,000",
+      "$720,000",
+      "$381,000",
+      "Windham"
+     ]
+    ],
+    "6": [
+     [
+      "Harbor Orchard",
+      "Orleans",
+      "$803,000",
+      "$656,000",
+      "$504,000",
+      "Caledonia"
+     ],
+     [
+      "Harbor Trail",
+      "Alder",
+      "$698,000",
+      "$718,000",
+      "$770,000",
+      "Aspen"
+     ],
+     [
+      "Maple Depot",
+      "Spruce",
+      "$810,000",
+      "$428,000",
+      "$375,000",
+      "Grand Isle"
+     ],
+     [
+      "Riverside Market",
+      "Willow",
+      "$270,000",
+      "$191,000",
+      "$852,000",
+      "Willow"
+     ],
+     [
+      "Cedar Library",
+      "Summit",
+      "$805,000",
+      "$607,000",
+      "$643,000",
+      "Essex"
+     ],
+     [
+      "Lantern Clinic",
+      "Birch",
+      "$105,000",
+      "$170,000",
+      "$240,000",
+      "Birch"
+     ],
+     [
+      "Maple Orchard",
+      "Lamoille",
+      "$396,000",
+      "$608,000",
+      "$638,000",
+      "Bennington"
+     ],
+     [
+      "Riverside Trail",
+      "Laurel",
+      "$700,000",
+      "$509,000",
+      "$428,000",
+      "Poplar"
+     ],
+     [
+      "Cedar Clinic",
+      "Chittenden",
+      "$677,000",
+      "$398,000",
+      "$911,000",
+      "Poplar"
+     ],
+     [
+      "Willow Wharf",
+      "Harbor",
+      "$506,000",
+      "$159,000",
+      "$49,000",
+      "Hickory"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": true,
+   "probes": [
+    "grid"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 6,
+    "columns_b": 6,
+    "same_signature": false,
+    "equal_positions": 4,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

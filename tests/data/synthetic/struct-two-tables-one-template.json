@@ -1,0 +1,331 @@
+{
+ "id": "struct-two-tables-one-template",
+ "description": "'Amount Awarded' in one section, 'Amount Declined' in another",
+ "tags": [
+  "family:structure",
+  "schema:awards4"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Harbor Library",
+      "Granite",
+      "$205,000",
+      "56,887"
+     ],
+     [
+      "Riverside Wharf",
+      "Cedar",
+      "$258,000",
+      "40,607"
+     ],
+     [
+      "Willow Orchard",
+      "Alder",
+      "$658,000",
+      "11,750"
+     ],
+     [
+      "Maple Orchard",
+      "Poplar",
+      "$467,000",
+      "41,963"
+     ],
+     [
+      "Riverside Bridge",
+      "Hickory",
+      "$859,000",
+      "77,004"
+     ],
+     [
+      "Lantern Depot",
+      "Windham",
+      "$501,000",
+      "17,311"
+     ],
+     [
+      "Harbor Market",
+      "Spruce",
+      "$314,000",
+      "29,969"
+     ],
+     [
+      "Willow Clinic",
+      "Windham",
+      "$431,000",
+      "68,571"
+     ],
+     [
+      "Summit Bridge",
+      "Cedar",
+      "$982,000",
+      "96,860"
+     ],
+     [
+      "Lantern Trail",
+      "Bennington",
+      "$474,000",
+      "2,984"
+     ]
+    ],
+    "2": [
+     [
+      "Granite Bridge",
+      "Rutland",
+      "$648,000",
+      "88,982"
+     ],
+     [
+      "Riverside Clinic",
+      "Poplar",
+      "$675,000",
+      "82,597"
+     ],
+     [
+      "Cedar Clinic",
+      "Windham",
+      "$618,000",
+      "50,328"
+     ],
+     [
+      "Lantern Depot",
+      "Lantern",
+      "$276,000",
+      "39,362"
+     ],
+     [
+      "Lantern Library",
+      "Aspen",
+      "$53,000",
+      "12,026"
+     ],
+     [
+      "Harbor Clinic",
+      "Laurel",
+      "$516,000",
+      "69,619"
+     ],
+     [
+      "Lantern Library",
+      "Lantern",
+      "$294,000",
+      "92,190"
+     ],
+     [
+      "Willow Wharf",
+      "Washington",
+      "$571,000",
+      "32,286"
+     ],
+     [
+      "Riverside Orchard",
+      "Tamarack",
+      "$386,000",
+      "47,194"
+     ],
+     [
+      "Maple Clinic",
+      "Essex",
+      "$976,000",
+      "81,432"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Applicant",
+    "Program",
+    "Amount Declined",
+    "Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Riverside Market",
+      "Juniper",
+      "$566,000",
+      "83,653"
+     ],
+     [
+      "Willow Clinic",
+      "Willow",
+      "$660,000",
+      "36,291"
+     ],
+     [
+      "Harbor Clinic",
+      "Summit",
+      "$435,000",
+      "71,816"
+     ],
+     [
+      "Maple Clinic",
+      "Grand Isle",
+      "$429,000",
+      "68,538"
+     ],
+     [
+      "Maple Clinic",
+      "Orleans",
+      "$789,000",
+      "15,117"
+     ],
+     [
+      "Willow Library",
+      "Grand Isle",
+      "$133,000",
+      "80,019"
+     ],
+     [
+      "Summit Wharf",
+      "Hickory",
+      "$449,000",
+      "76,343"
+     ],
+     [
+      "Granite Depot",
+      "Tamarack",
+      "$684,000",
+      "69,510"
+     ],
+     [
+      "Cedar Bridge",
+      "Cedar",
+      "$884,000",
+      "12,481"
+     ],
+     [
+      "Willow Orchard",
+      "Orleans",
+      "$491,000",
+      "14,403"
+     ]
+    ],
+    "6": [
+     [
+      "Lantern Orchard",
+      "Maple",
+      "$673,000",
+      "14,861"
+     ],
+     [
+      "Harbor Bridge",
+      "Lamoille",
+      "$823,000",
+      "67,147"
+     ],
+     [
+      "Maple Depot",
+      "Bennington",
+      "$308,000",
+      "97,495"
+     ],
+     [
+      "Riverside Depot",
+      "Juniper",
+      "$245,000",
+      "74,084"
+     ],
+     [
+      "Granite Depot",
+      "Granite",
+      "$53,000",
+      "6,006"
+     ],
+     [
+      "Riverside Clinic",
+      "Poplar",
+      "$808,000",
+      "9,255"
+     ],
+     [
+      "Willow Bridge",
+      "Bennington",
+      "$455,000",
+      "22,024"
+     ],
+     [
+      "Maple Trail",
+      "Lamoille",
+      "$251,000",
+      "90,314"
+     ],
+     [
+      "Harbor Orchard",
+      "Essex",
+      "$894,000",
+      "62,808"
+     ],
+     [
+      "Maple Bridge",
+      "Hickory",
+      "$159,000",
+      "6,037"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": false,
+   "expect_merge": false,
+   "probes": [
+    "token_containment"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": false,
+   "names_check": {
+    "columns_a": 4,
+    "columns_b": 4,
+    "same_signature": false,
+    "equal_positions": 3,
+    "compatible_all": false,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

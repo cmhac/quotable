@@ -1,0 +1,287 @@
+{
+ "id": "half-tiny3-last2",
+ "description": "tiny3: 2 of 3 headers reworded (last 2)",
+ "tags": [
+  "family:half_sweep",
+  "schema:tiny3"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Hickory",
+      "19,814",
+      "6.6%"
+     ],
+     [
+      "Poplar",
+      "58,737",
+      "24.9%"
+     ],
+     [
+      "Poplar",
+      "21,914",
+      "4.1%"
+     ],
+     [
+      "Spruce",
+      "81,520",
+      "16.1%"
+     ],
+     [
+      "Sorrel",
+      "54,595",
+      "23.3%"
+     ],
+     [
+      "Tamarack",
+      "9,309",
+      "23.2%"
+     ],
+     [
+      "Summit",
+      "93,621",
+      "10.3%"
+     ],
+     [
+      "Aspen",
+      "53,349",
+      "21.3%"
+     ],
+     [
+      "Tamarack",
+      "54,974",
+      "11.8%"
+     ],
+     [
+      "Tamarack",
+      "72,666",
+      "27.6%"
+     ]
+    ],
+    "2": [
+     [
+      "Lantern",
+      "65,071",
+      "28.2%"
+     ],
+     [
+      "Juniper",
+      "96,543",
+      "20.5%"
+     ],
+     [
+      "Addison",
+      "54,548",
+      "21.4%"
+     ],
+     [
+      "Washington",
+      "51,386",
+      "29.4%"
+     ],
+     [
+      "Orleans",
+      "37,111",
+      "12.6%"
+     ],
+     [
+      "Bennington",
+      "82,004",
+      "6.1%"
+     ],
+     [
+      "Washington",
+      "5,405",
+      "29.4%"
+     ],
+     [
+      "Aspen",
+      "14,561",
+      "10.6%"
+     ],
+     [
+      "Cedar",
+      "18,299",
+      "2.4%"
+     ],
+     [
+      "Spruce",
+      "40,843",
+      "9.0%"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Name",
+    "Count Total",
+    "Share Percent"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Sorrel",
+      "78,983",
+      "4.9%"
+     ],
+     [
+      "Caledonia",
+      "78,595",
+      "17.6%"
+     ],
+     [
+      "Orange",
+      "61,834",
+      "24.4%"
+     ],
+     [
+      "Harbor",
+      "31,307",
+      "14.9%"
+     ],
+     [
+      "Granite",
+      "38,123",
+      "20.6%"
+     ],
+     [
+      "Washington",
+      "97,905",
+      "25.8%"
+     ],
+     [
+      "Orange",
+      "58,630",
+      "18.9%"
+     ],
+     [
+      "Summit",
+      "70,882",
+      "4.2%"
+     ],
+     [
+      "Addison",
+      "58,849",
+      "9.5%"
+     ],
+     [
+      "Addison",
+      "33,780",
+      "26.7%"
+     ]
+    ],
+    "6": [
+     [
+      "Juniper",
+      "9,564",
+      "17.9%"
+     ],
+     [
+      "Windham",
+      "23,992",
+      "16.7%"
+     ],
+     [
+      "Cedar",
+      "72,065",
+      "28.2%"
+     ],
+     [
+      "Hickory",
+      "3,384",
+      "26.7%"
+     ],
+     [
+      "Poplar",
+      "5,968",
+      "29.2%"
+     ],
+     [
+      "Willow",
+      "16,378",
+      "18.6%"
+     ],
+     [
+      "Orleans",
+      "12,064",
+      "20.3%"
+     ],
+     [
+      "Willow",
+      "29,317",
+      "22.3%"
+     ],
+     [
+      "Summit",
+      "82,123",
+      "25.5%"
+     ],
+     [
+      "Grand Isle",
+      "32,112",
+      "25.0%"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": null,
+   "probes": [
+    "half_equal"
+   ],
+   "stage": "merge",
+   "note": "1 of 3 positions have equal words",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 3,
+    "columns_b": 3,
+    "same_signature": false,
+    "equal_positions": 1,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

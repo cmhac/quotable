@@ -1,0 +1,419 @@
+{
+ "id": "shape-kind-percent",
+ "description": "projects6: the third column holds percent values in part B instead of amounts",
+ "tags": [
+  "family:shape",
+  "schema:projects6"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Harbor Clinic",
+      "Granite",
+      "$637,000",
+      "$647,000",
+      "$421,000",
+      "Spruce"
+     ],
+     [
+      "Cedar Clinic",
+      "Washington",
+      "$784,000",
+      "$762,000",
+      "$376,000",
+      "Laurel"
+     ],
+     [
+      "Summit Trail",
+      "Caledonia",
+      "$119,000",
+      "$459,000",
+      "$434,000",
+      "Hickory"
+     ],
+     [
+      "Cedar Trail",
+      "Rutland",
+      "$84,000",
+      "$596,000",
+      "$480,000",
+      "Sorrel"
+     ],
+     [
+      "Lantern Bridge",
+      "Harbor",
+      "$244,000",
+      "$493,000",
+      "$577,000",
+      "Alder"
+     ],
+     [
+      "Granite Depot",
+      "Juniper",
+      "$430,000",
+      "$578,000",
+      "$639,000",
+      "Chittenden"
+     ],
+     [
+      "Granite Depot",
+      "Willow",
+      "$699,000",
+      "$441,000",
+      "$420,000",
+      "Addison"
+     ],
+     [
+      "Summit Bridge",
+      "Chittenden",
+      "$610,000",
+      "$455,000",
+      "$439,000",
+      "Lamoille"
+     ],
+     [
+      "Summit Library",
+      "Laurel",
+      "$846,000",
+      "$366,000",
+      "$414,000",
+      "Washington"
+     ],
+     [
+      "Granite Orchard",
+      "Hickory",
+      "$626,000",
+      "$881,000",
+      "$651,000",
+      "Spruce"
+     ]
+    ],
+    "2": [
+     [
+      "Granite Wharf",
+      "Bennington",
+      "$106,000",
+      "$150,000",
+      "$252,000",
+      "Addison"
+     ],
+     [
+      "Cedar Market",
+      "Poplar",
+      "$778,000",
+      "$319,000",
+      "$571,000",
+      "Orange"
+     ],
+     [
+      "Cedar Orchard",
+      "Birch",
+      "$38,000",
+      "$324,000",
+      "$78,000",
+      "Caledonia"
+     ],
+     [
+      "Maple Library",
+      "Grand Isle",
+      "$915,000",
+      "$229,000",
+      "$847,000",
+      "Windham"
+     ],
+     [
+      "Harbor Depot",
+      "Rutland",
+      "$467,000",
+      "$313,000",
+      "$633,000",
+      "Caledonia"
+     ],
+     [
+      "Lantern Depot",
+      "Caledonia",
+      "$177,000",
+      "$681,000",
+      "$829,000",
+      "Windham"
+     ],
+     [
+      "Harbor Bridge",
+      "Addison",
+      "$74,000",
+      "$337,000",
+      "$248,000",
+      "Grand Isle"
+     ],
+     [
+      "Willow Library",
+      "Willow",
+      "$765,000",
+      "$244,000",
+      "$139,000",
+      "Juniper"
+     ],
+     [
+      "Maple Library",
+      "Essex",
+      "$434,000",
+      "$341,000",
+      "$677,000",
+      "Juniper"
+     ],
+     [
+      "Harbor Orchard",
+      "Orleans",
+      "$153,000",
+      "$963,000",
+      "$985,000",
+      "Essex"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Project Name",
+    "County Name",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Granite Library",
+      "Laurel",
+      "5.0%",
+      "$466,000",
+      "$182,000",
+      "Essex"
+     ],
+     [
+      "Lantern Depot",
+      "Orleans",
+      "17.9%",
+      "$431,000",
+      "$282,000",
+      "Juniper"
+     ],
+     [
+      "Lantern Depot",
+      "Willow",
+      "16.2%",
+      "$144,000",
+      "$742,000",
+      "Birch"
+     ],
+     [
+      "Riverside Market",
+      "Essex",
+      "13.4%",
+      "$670,000",
+      "$774,000",
+      "Laurel"
+     ],
+     [
+      "Maple Bridge",
+      "Sorrel",
+      "9.4%",
+      "$266,000",
+      "$978,000",
+      "Orleans"
+     ],
+     [
+      "Lantern Orchard",
+      "Maple",
+      "16.3%",
+      "$621,000",
+      "$720,000",
+      "Willow"
+     ],
+     [
+      "Willow Clinic",
+      "Cedar",
+      "11.0%",
+      "$960,000",
+      "$571,000",
+      "Sorrel"
+     ],
+     [
+      "Maple Trail",
+      "Orleans",
+      "27.4%",
+      "$44,000",
+      "$372,000",
+      "Sorrel"
+     ],
+     [
+      "Willow Library",
+      "Tamarack",
+      "16.1%",
+      "$44,000",
+      "$524,000",
+      "Orleans"
+     ],
+     [
+      "Maple Orchard",
+      "Tamarack",
+      "10.5%",
+      "$482,000",
+      "$24,000",
+      "Orleans"
+     ]
+    ],
+    "6": [
+     [
+      "Harbor Market",
+      "Lamoille",
+      "10.3%",
+      "$81,000",
+      "$681,000",
+      "Essex"
+     ],
+     [
+      "Willow Depot",
+      "Granite",
+      "23.0%",
+      "$572,000",
+      "$533,000",
+      "Chittenden"
+     ],
+     [
+      "Harbor Orchard",
+      "Addison",
+      "21.8%",
+      "$948,000",
+      "$379,000",
+      "Birch"
+     ],
+     [
+      "Cedar Library",
+      "Lantern",
+      "3.4%",
+      "$587,000",
+      "$619,000",
+      "Hickory"
+     ],
+     [
+      "Willow Library",
+      "Orleans",
+      "21.0%",
+      "$158,000",
+      "$102,000",
+      "Aspen"
+     ],
+     [
+      "Granite Bridge",
+      "Willow",
+      "13.7%",
+      "$716,000",
+      "$736,000",
+      "Harbor"
+     ],
+     [
+      "Lantern Trail",
+      "Aspen",
+      "19.6%",
+      "$737,000",
+      "$988,000",
+      "Lantern"
+     ],
+     [
+      "Harbor Library",
+      "Harbor",
+      "30.9%",
+      "$919,000",
+      "$213,000",
+      "Willow"
+     ],
+     [
+      "Granite Orchard",
+      "Caledonia",
+      "10.6%",
+      "$113,000",
+      "$43,000",
+      "Rutland"
+     ],
+     [
+      "Riverside Trail",
+      "Orange",
+      "27.0%",
+      "$817,000",
+      "$946,000",
+      "Laurel"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": null,
+   "expect_merge": false,
+   "probes": [
+    "shape"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 6,
+    "columns_b": 6,
+    "same_signature": false,
+    "equal_positions": 4,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

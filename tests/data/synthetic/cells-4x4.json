@@ -1,0 +1,155 @@
+{
+ "id": "cells-4x4",
+ "description": "projects6: part A has 4 rows, part B has 4",
+ "tags": [
+  "family:min_cells",
+  "schema:projects6"
+ ],
+ "pages": 4,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1
+   ],
+   "columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    1
+   ],
+   "rows": {
+    "1": [
+     [
+      "Willow Depot",
+      "Rutland",
+      "$347,000",
+      "$610,000",
+      "$928,000",
+      "Laurel"
+     ],
+     [
+      "Granite Wharf",
+      "Franklin",
+      "$947,000",
+      "$437,000",
+      "$583,000",
+      "Spruce"
+     ],
+     [
+      "Riverside Depot",
+      "Maple",
+      "$723,000",
+      "$64,000",
+      "$372,000",
+      "Granite"
+     ],
+     [
+      "Harbor Bridge",
+      "Laurel",
+      "$385,000",
+      "$195,000",
+      "$830,000",
+      "Tamarack"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    4
+   ],
+   "columns": [
+    "Project Name",
+    "County Name",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    4
+   ],
+   "rows": {
+    "4": [
+     [
+      "Lantern Clinic",
+      "Granite",
+      "$195,000",
+      "$374,000",
+      "$461,000",
+      "Spruce"
+     ],
+     [
+      "Harbor Market",
+      "Poplar",
+      "$596,000",
+      "$875,000",
+      "$844,000",
+      "Tamarack"
+     ],
+     [
+      "Riverside Market",
+      "Caledonia",
+      "$760,000",
+      "$865,000",
+      "$462,000",
+      "Willow"
+     ],
+     [
+      "Willow Orchard",
+      "Orange",
+      "$689,000",
+      "$549,000",
+      "$499,000",
+      "Harbor"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": false,
+   "probes": [
+    "min_cells"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 6,
+    "columns_b": 6,
+    "same_signature": false,
+    "equal_positions": 4,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

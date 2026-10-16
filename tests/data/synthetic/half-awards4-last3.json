@@ -1,0 +1,331 @@
+{
+ "id": "half-awards4-last3",
+ "description": "awards4: 3 of 4 headers reworded (last 3)",
+ "tags": [
+  "family:half_sweep",
+  "schema:awards4"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Granite Trail",
+      "Caledonia",
+      "$648,000",
+      "52,366"
+     ],
+     [
+      "Granite Depot",
+      "Spruce",
+      "$714,000",
+      "31,269"
+     ],
+     [
+      "Willow Bridge",
+      "Hickory",
+      "$348,000",
+      "1,615"
+     ],
+     [
+      "Summit Clinic",
+      "Maple",
+      "$869,000",
+      "77,773"
+     ],
+     [
+      "Maple Orchard",
+      "Rutland",
+      "$699,000",
+      "90,726"
+     ],
+     [
+      "Summit Depot",
+      "Lamoille",
+      "$548,000",
+      "85,205"
+     ],
+     [
+      "Lantern Depot",
+      "Maple",
+      "$952,000",
+      "17,988"
+     ],
+     [
+      "Maple Orchard",
+      "Spruce",
+      "$523,000",
+      "77,231"
+     ],
+     [
+      "Lantern Market",
+      "Orleans",
+      "$230,000",
+      "33,817"
+     ],
+     [
+      "Summit Orchard",
+      "Lamoille",
+      "$147,000",
+      "3,744"
+     ]
+    ],
+    "2": [
+     [
+      "Granite Bridge",
+      "Spruce",
+      "$677,000",
+      "54,645"
+     ],
+     [
+      "Cedar Library",
+      "Bennington",
+      "$630,000",
+      "58,562"
+     ],
+     [
+      "Summit Trail",
+      "Caledonia",
+      "$522,000",
+      "72,768"
+     ],
+     [
+      "Lantern Trail",
+      "Alder",
+      "$148,000",
+      "67,361"
+     ],
+     [
+      "Granite Wharf",
+      "Rutland",
+      "$725,000",
+      "49,169"
+     ],
+     [
+      "Summit Clinic",
+      "Laurel",
+      "$395,000",
+      "95,764"
+     ],
+     [
+      "Lantern Bridge",
+      "Essex",
+      "$232,000",
+      "41,556"
+     ],
+     [
+      "Riverside Wharf",
+      "Granite",
+      "$33,000",
+      "46,730"
+     ],
+     [
+      "Willow Wharf",
+      "Rutland",
+      "$372,000",
+      "62,172"
+     ],
+     [
+      "Willow Bridge",
+      "Lantern",
+      "$180,000",
+      "80,260"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Applicant",
+    "Program Area",
+    "Awarded",
+    "Fiscal Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Cedar Market",
+      "Laurel",
+      "$642,000",
+      "63,836"
+     ],
+     [
+      "Lantern Library",
+      "Cedar",
+      "$164,000",
+      "80,328"
+     ],
+     [
+      "Harbor Trail",
+      "Laurel",
+      "$201,000",
+      "19,282"
+     ],
+     [
+      "Lantern Trail",
+      "Birch",
+      "$654,000",
+      "71,790"
+     ],
+     [
+      "Harbor Library",
+      "Maple",
+      "$398,000",
+      "60,774"
+     ],
+     [
+      "Summit Library",
+      "Harbor",
+      "$287,000",
+      "90,756"
+     ],
+     [
+      "Willow Market",
+      "Bennington",
+      "$30,000",
+      "26,721"
+     ],
+     [
+      "Granite Bridge",
+      "Orange",
+      "$270,000",
+      "21,452"
+     ],
+     [
+      "Summit Clinic",
+      "Summit",
+      "$54,000",
+      "16,236"
+     ],
+     [
+      "Riverside Market",
+      "Harbor",
+      "$854,000",
+      "40,728"
+     ]
+    ],
+    "6": [
+     [
+      "Harbor Bridge",
+      "Granite",
+      "$280,000",
+      "72,370"
+     ],
+     [
+      "Willow Market",
+      "Orange",
+      "$843,000",
+      "59,814"
+     ],
+     [
+      "Willow Trail",
+      "Chittenden",
+      "$124,000",
+      "44,954"
+     ],
+     [
+      "Riverside Bridge",
+      "Granite",
+      "$655,000",
+      "39,067"
+     ],
+     [
+      "Willow Depot",
+      "Spruce",
+      "$315,000",
+      "49,856"
+     ],
+     [
+      "Maple Wharf",
+      "Orange",
+      "$504,000",
+      "93,160"
+     ],
+     [
+      "Willow Market",
+      "Alder",
+      "$90,000",
+      "47,557"
+     ],
+     [
+      "Summit Trail",
+      "Juniper",
+      "$560,000",
+      "10,804"
+     ],
+     [
+      "Summit Wharf",
+      "Addison",
+      "$117,000",
+      "50,139"
+     ],
+     [
+      "Maple Wharf",
+      "Lamoille",
+      "$26,000",
+      "62,529"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": null,
+   "probes": [
+    "half_equal"
+   ],
+   "stage": "merge",
+   "note": "1 of 4 positions have equal words",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 4,
+    "columns_b": 4,
+    "same_signature": false,
+    "equal_positions": 1,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}

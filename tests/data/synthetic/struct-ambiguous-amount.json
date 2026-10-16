@@ -1,0 +1,331 @@
+{
+ "id": "struct-ambiguous-amount",
+ "description": "bare 'Amount' next to 'Amount Awarded' in part A",
+ "tags": [
+  "family:structure",
+  "schema:ambig4"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2
+   ],
+   "columns": [
+    "Applicant",
+    "Amount",
+    "Amount Awarded",
+    "Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Amount",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    1,
+    2
+   ],
+   "rows": {
+    "1": [
+     [
+      "Maple Library",
+      "$509,000",
+      "$766,000",
+      "8,847"
+     ],
+     [
+      "Cedar Clinic",
+      "$503,000",
+      "$437,000",
+      "60,284"
+     ],
+     [
+      "Willow Orchard",
+      "$756,000",
+      "$726,000",
+      "75,195"
+     ],
+     [
+      "Riverside Orchard",
+      "$184,000",
+      "$870,000",
+      "78,736"
+     ],
+     [
+      "Harbor Wharf",
+      "$754,000",
+      "$445,000",
+      "3,764"
+     ],
+     [
+      "Riverside Trail",
+      "$23,000",
+      "$269,000",
+      "14,797"
+     ],
+     [
+      "Riverside Orchard",
+      "$694,000",
+      "$458,000",
+      "10,579"
+     ],
+     [
+      "Granite Wharf",
+      "$257,000",
+      "$409,000",
+      "61,071"
+     ],
+     [
+      "Harbor Depot",
+      "$875,000",
+      "$74,000",
+      "13,317"
+     ],
+     [
+      "Granite Wharf",
+      "$966,000",
+      "$449,000",
+      "937"
+     ]
+    ],
+    "2": [
+     [
+      "Willow Trail",
+      "$204,000",
+      "$541,000",
+      "91,288"
+     ],
+     [
+      "Harbor Orchard",
+      "$612,000",
+      "$684,000",
+      "59,023"
+     ],
+     [
+      "Lantern Market",
+      "$46,000",
+      "$144,000",
+      "21,392"
+     ],
+     [
+      "Riverside Trail",
+      "$581,000",
+      "$860,000",
+      "83,165"
+     ],
+     [
+      "Maple Market",
+      "$106,000",
+      "$905,000",
+      "93,658"
+     ],
+     [
+      "Harbor Depot",
+      "$334,000",
+      "$212,000",
+      "26,591"
+     ],
+     [
+      "Harbor Library",
+      "$948,000",
+      "$643,000",
+      "25,190"
+     ],
+     [
+      "Maple Trail",
+      "$333,000",
+      "$387,000",
+      "42,977"
+     ],
+     [
+      "Summit Orchard",
+      "$472,000",
+      "$129,000",
+      "23,762"
+     ],
+     [
+      "Maple Depot",
+      "$921,000",
+      "$193,000",
+      "58,969"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    5,
+    6
+   ],
+   "columns": [
+    "Applicant",
+    "Amount Requested",
+    "Amount Awarded",
+    "Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Amount",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    5,
+    6
+   ],
+   "rows": {
+    "5": [
+     [
+      "Harbor Market",
+      "$973,000",
+      "$822,000",
+      "35,790"
+     ],
+     [
+      "Cedar Orchard",
+      "$68,000",
+      "$144,000",
+      "66,449"
+     ],
+     [
+      "Cedar Trail",
+      "$592,000",
+      "$637,000",
+      "57,593"
+     ],
+     [
+      "Willow Bridge",
+      "$531,000",
+      "$76,000",
+      "73,056"
+     ],
+     [
+      "Cedar Library",
+      "$381,000",
+      "$257,000",
+      "42,368"
+     ],
+     [
+      "Cedar Library",
+      "$150,000",
+      "$577,000",
+      "20,783"
+     ],
+     [
+      "Harbor Depot",
+      "$591,000",
+      "$870,000",
+      "56,026"
+     ],
+     [
+      "Riverside Orchard",
+      "$599,000",
+      "$586,000",
+      "96,726"
+     ],
+     [
+      "Willow Depot",
+      "$827,000",
+      "$973,000",
+      "10,126"
+     ],
+     [
+      "Willow Orchard",
+      "$616,000",
+      "$488,000",
+      "15,013"
+     ]
+    ],
+    "6": [
+     [
+      "Cedar Library",
+      "$964,000",
+      "$168,000",
+      "42,617"
+     ],
+     [
+      "Cedar Market",
+      "$321,000",
+      "$250,000",
+      "42,396"
+     ],
+     [
+      "Granite Wharf",
+      "$435,000",
+      "$38,000",
+      "48,910"
+     ],
+     [
+      "Cedar Library",
+      "$107,000",
+      "$608,000",
+      "19,427"
+     ],
+     [
+      "Maple Bridge",
+      "$637,000",
+      "$111,000",
+      "11,335"
+     ],
+     [
+      "Lantern Clinic",
+      "$510,000",
+      "$384,000",
+      "55,367"
+     ],
+     [
+      "Maple Library",
+      "$625,000",
+      "$777,000",
+      "22,040"
+     ],
+     [
+      "Harbor Trail",
+      "$194,000",
+      "$527,000",
+      "14,035"
+     ],
+     [
+      "Lantern Bridge",
+      "$305,000",
+      "$395,000",
+      "18,326"
+     ],
+     [
+      "Maple Trail",
+      "$411,000",
+      "$106,000",
+      "89,881"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": null,
+   "expect_merge": false,
+   "probes": [
+    "ambiguity"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": false,
+   "names_check": {
+    "columns_a": 4,
+    "columns_b": 4,
+    "same_signature": false,
+    "equal_positions": 3,
+    "compatible_all": true,
+    "cross_compatible": true
+   }
+  }
+ ]
+}

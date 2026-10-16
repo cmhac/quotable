@@ -1,0 +1,251 @@
+{
+ "id": "cells-10x10",
+ "description": "projects6: part A has 10 rows, part B has 10",
+ "tags": [
+  "family:min_cells",
+  "schema:projects6"
+ ],
+ "pages": 4,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1
+   ],
+   "columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    1
+   ],
+   "rows": {
+    "1": [
+     [
+      "Harbor Market",
+      "Grand Isle",
+      "$974,000",
+      "$495,000",
+      "$920,000",
+      "Poplar"
+     ],
+     [
+      "Lantern Clinic",
+      "Juniper",
+      "$430,000",
+      "$294,000",
+      "$590,000",
+      "Birch"
+     ],
+     [
+      "Harbor Clinic",
+      "Windham",
+      "$292,000",
+      "$596,000",
+      "$292,000",
+      "Hickory"
+     ],
+     [
+      "Riverside Orchard",
+      "Summit",
+      "$582,000",
+      "$474,000",
+      "$588,000",
+      "Windham"
+     ],
+     [
+      "Harbor Trail",
+      "Chittenden",
+      "$233,000",
+      "$606,000",
+      "$108,000",
+      "Maple"
+     ],
+     [
+      "Granite Depot",
+      "Washington",
+      "$963,000",
+      "$981,000",
+      "$480,000",
+      "Washington"
+     ],
+     [
+      "Maple Market",
+      "Poplar",
+      "$747,000",
+      "$591,000",
+      "$969,000",
+      "Lamoille"
+     ],
+     [
+      "Lantern Orchard",
+      "Harbor",
+      "$20,000",
+      "$448,000",
+      "$569,000",
+      "Orange"
+     ],
+     [
+      "Willow Market",
+      "Granite",
+      "$217,000",
+      "$684,000",
+      "$246,000",
+      "Orleans"
+     ],
+     [
+      "Riverside Market",
+      "Caledonia",
+      "$66,000",
+      "$29,000",
+      "$926,000",
+      "Maple"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    4
+   ],
+   "columns": [
+    "Project Name",
+    "County Name",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "schema_columns": [
+    "Project",
+    "County",
+    "Requested Amount",
+    "Requested Local Match",
+    "Recommended Amount",
+    "Community Benefit Rating"
+   ],
+   "header_pages": [
+    4
+   ],
+   "rows": {
+    "4": [
+     [
+      "Lantern Clinic",
+      "Sorrel",
+      "$942,000",
+      "$228,000",
+      "$371,000",
+      "Birch"
+     ],
+     [
+      "Maple Trail",
+      "Granite",
+      "$501,000",
+      "$933,000",
+      "$178,000",
+      "Addison"
+     ],
+     [
+      "Riverside Library",
+      "Lantern",
+      "$172,000",
+      "$445,000",
+      "$469,000",
+      "Sorrel"
+     ],
+     [
+      "Harbor Trail",
+      "Lantern",
+      "$896,000",
+      "$734,000",
+      "$661,000",
+      "Lantern"
+     ],
+     [
+      "Riverside Clinic",
+      "Hickory",
+      "$368,000",
+      "$745,000",
+      "$401,000",
+      "Bennington"
+     ],
+     [
+      "Cedar Depot",
+      "Windham",
+      "$206,000",
+      "$168,000",
+      "$907,000",
+      "Franklin"
+     ],
+     [
+      "Harbor Depot",
+      "Bennington",
+      "$770,000",
+      "$858,000",
+      "$324,000",
+      "Essex"
+     ],
+     [
+      "Willow Bridge",
+      "Sorrel",
+      "$721,000",
+      "$37,000",
+      "$188,000",
+      "Bennington"
+     ],
+     [
+      "Lantern Library",
+      "Orleans",
+      "$358,000",
+      "$570,000",
+      "$156,000",
+      "Orange"
+     ],
+     [
+      "Willow Orchard",
+      "Laurel",
+      "$733,000",
+      "$553,000",
+      "$348,000",
+      "Sorrel"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [
+  {
+   "a": "A",
+   "b": "B",
+   "same_table": true,
+   "expect_merge": true,
+   "probes": [
+    "min_cells"
+   ],
+   "stage": "merge",
+   "note": "",
+   "isolate": true,
+   "names_check": {
+    "columns_a": 6,
+    "columns_b": 6,
+    "same_signature": false,
+    "equal_positions": 4,
+    "compatible_all": true,
+    "cross_compatible": false
+   }
+  }
+ ]
+}
