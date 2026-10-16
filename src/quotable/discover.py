@@ -19,8 +19,16 @@ evidence), and any use of the text layer to find tables.
 import json
 from dataclasses import dataclass, field
 
+from quotable.extra_fields import ExtraFields, extras_prompt, flatten
 from quotable.llm import Image, LLMClient, Request
-from quotable.models import Column, PageTables, TableInfo, TableSchema, WindowTables
+from quotable.models import (
+    Column,
+    PageTables,
+    TableInfo,
+    TableSchema,
+    WindowTables,
+    WindowWithExtras,
+)
 from quotable.schema import ExtractionError, validate_schema
 from quotable.text import tokenize
 
@@ -84,6 +92,14 @@ class Found:
             self.rows[page] = (info.first_row, info.last_row)
 
 
+@dataclass
+class Discovery:
+    """What discovery found: the tables, and (with extra fields) each page's field values."""
+
+    tables: list[Found]
+    extras: dict[int, dict[str, str | None]] = field(default_factory=dict)  # page -> name -> value
+
+
 def signature(names: list[str]) -> tuple[str, ...]:
     """Return the column names as comparison tokens: case and punctuation do not matter."""
     return tuple(" ".join(tokenize(n)) for n in names)
@@ -127,49 +143,96 @@ def known_tables(found: list[Found]) -> str:
     return "Known tables:\n" + "\n".join(lines)
 
 
-def _retry_text(answer: WindowTables, problem: str) -> str:
+def _retry_text(answer: WindowTables, problems: list[str]) -> str:
     previous = answer.model_dump_json()
+    listed = "\n- ".join(problems)
     return (
-        f"Your previous answer was invalid:\n- {problem}\n\nPrevious output:\n{previous}\n\n"
+        f"Your previous answer was invalid:\n- {listed}\n\nPrevious output:\n{previous}\n\n"
         "Return the corrected answer, with one entry per page image."
     )
 
 
+def answer_problems(answer: WindowTables, pages: list[int], names: list[str] | None) -> list[str]:
+    """Return what is wrong with a window answer: the page count, and the extra-field names."""
+    problems: list[str] = []
+    try:
+        match_pages(answer, pages)
+    except PageCountError as err:
+        problems.append(str(err))
+    if names is not None:
+        for page, entry in zip(pages, answer.pages, strict=False):
+            got = [e.name for e in getattr(entry, "extras", [])]
+            if sorted(got) != sorted(names):
+                problems.append(
+                    f"page {page}: expected the extra fields {names}, each exactly once; got {got}"
+                )
+    return problems
+
+
+def extras_of(entry: PageTables) -> dict[str, str | None]:
+    """Return a page's field values; an empty string counts as not printed."""
+    values = getattr(entry, "extras", [])
+    return {e.name: (e.value if e.value is not None and e.value.strip() else None) for e in values}
+
+
 async def _ask_window(
-    images: list[bytes], pages: list[int], found: list[Found], client: LLMClient
+    images: list[bytes],
+    pages: list[int],
+    found: list[Found],
+    client: LLMClient,
+    extra_fields: ExtraFields | None = None,
 ) -> list[PageTables]:
     """Ask about one window; repeat once if the answer does not cover every page."""
     prompt = DISCOVER_PROMPT + (CARRY_PROMPT if found else "")
+    output: type[WindowTables] = WindowTables
+    names: list[str] | None = None
+    if extra_fields is not None:
+        prompt += "\n\n" + extras_prompt(extra_fields)
+        output = WindowWithExtras
+        names = [f.name for f, _ in flatten(extra_fields)]
     parts: list[str | Image] = [Image(images[p - 1]) for p in pages]
     if found:
         parts.append(known_tables(found))
-    answer = await client.ask(Request("schema", prompt, WindowTables, parts))
-    try:
-        return match_pages(answer, pages)
-    except PageCountError as err:
-        retry = [*parts, _retry_text(answer, str(err))]
-        answer = await client.ask(Request("schema", prompt, WindowTables, retry))
-        try:
-            return match_pages(answer, pages)
-        except PageCountError as again:
-            msg = (
-                f"pages {pages[0]}-{pages[-1]}: discovery answer still invalid after one "
-                f"retry: {again}"
-            )
-            raise ExtractionError(msg) from again
+    answer = await client.ask(Request("schema", prompt, output, parts))
+    problems = answer_problems(answer, pages, names)
+    if not problems:
+        return list(answer.pages)
+    retry = [*parts, _retry_text(answer, problems)]
+    answer = await client.ask(Request("schema", prompt, output, retry))
+    problems = answer_problems(answer, pages, names)
+    if problems:
+        msg = (
+            f"pages {pages[0]}-{pages[-1]}: discovery answer still invalid after one "
+            f"retry: {'; '.join(problems)}"
+        )
+        raise ExtractionError(msg)
+    return list(answer.pages)
 
 
 async def discover(
-    images: list[bytes], client: LLMClient, *, discovery_pages: int = DISCOVERY_PAGES
-) -> list[Found]:
-    """Return every table in the document, in order of first appearance."""
+    images: list[bytes],
+    client: LLMClient,
+    *,
+    discovery_pages: int = DISCOVERY_PAGES,
+    extra_fields: ExtraFields | None = None,
+) -> Discovery:
+    """
+    Return every table in the document, in order of first appearance.
+
+    With ``extra_fields`` the same requests also ask for those fields on each page, and
+    ``Discovery.extras`` holds the answers by page; without them the requests are unchanged.
+    """
     if discovery_pages < 1:
         msg = f"discovery_pages must be at least 1, got {discovery_pages}"
         raise ValueError(msg)
     found: list[Found] = []
+    extras: dict[int, dict[str, str | None]] = {}
     for start in range(0, len(images), discovery_pages):
         pages = list(range(start + 1, min(start + discovery_pages, len(images)) + 1))
-        for page, entry in zip(pages, await _ask_window(images, pages, found, client), strict=True):
+        entries = await _ask_window(images, pages, found, client, extra_fields)
+        for page, entry in zip(pages, entries, strict=True):
             merge(found, page, entry.tables)
+            if extra_fields is not None:
+                extras[page] = extras_of(entry)
     validate_found(found)
-    return found
+    return Discovery(found, extras)

@@ -191,6 +191,7 @@ def test_the_text_layer_check_has_no_off_switch():
         "recheck",
         "ocr",  # chooses whether bad pages are OCR'd; the text-layer check itself has no switch
         "merge_reworded",  # spec 007: the merge step's switch
+        "extra_fields",  # spec 010: values to read from outside the tables
     }
     assert set(inspect.signature(extract_tables_async).parameters) == parameters
     assert set(inspect.signature(run_pipeline).parameters) == {
@@ -199,6 +200,7 @@ def test_the_text_layer_check_has_no_off_switch():
         "discovery_pages",
         "recheck",
         "merge_reworded",
+        "extra_fields",
         "ocr",
         "ocr_config",
         "cache_dir",

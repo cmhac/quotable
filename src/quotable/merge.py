@@ -363,6 +363,9 @@ def merge_pair(a: Table, b: Table, evidence: MergeEvidence) -> Table:
         label=a.label,
         ocr_pages=tuple(sorted({*a.ocr_pages, *b.ocr_pages})),
         merged=(*a.merged, absorbed),
+        extra_fields={**a.extra_fields, **b.extra_fields},
+        extra_names=a.extra_names,
+        extra_changes={**a.extra_changes, **b.extra_changes},
     )
 
 

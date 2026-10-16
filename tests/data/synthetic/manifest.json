@@ -3292,5 +3292,207 @@
     "stage": "merge"
    }
   ]
+ },
+ {
+  "id": "extra-section-1p",
+  "description": "one section of 1 page(s)",
+  "tags": [
+   "family:extra-fields",
+   "scenario-1"
+  ],
+  "pages": 1,
+  "relations": []
+ },
+ {
+  "id": "extra-section-2p",
+  "description": "one section of 2 page(s)",
+  "tags": [
+   "family:extra-fields",
+   "scenario-1"
+  ],
+  "pages": 2,
+  "relations": []
+ },
+ {
+  "id": "extra-section-3p",
+  "description": "one section of 3 page(s)",
+  "tags": [
+   "family:extra-fields",
+   "scenario-1"
+  ],
+  "pages": 3,
+  "relations": []
+ },
+ {
+  "id": "extra-section-25p",
+  "description": "one section of 25 page(s)",
+  "tags": [
+   "family:extra-fields",
+   "scenario-1"
+  ],
+  "pages": 25,
+  "relations": []
+ },
+ {
+  "id": "extra-sections-mixed",
+  "description": "sections of 1, 3, 1, 12 and 2 pages",
+  "tags": [
+   "family:extra-fields",
+   "scenario-1"
+  ],
+  "pages": 19,
+  "relations": []
+ },
+ {
+  "id": "extra-before-first-block",
+  "description": "two table pages before the first block",
+  "tags": [
+   "family:extra-fields",
+   "scenario-2"
+  ],
+  "pages": 5,
+  "relations": []
+ },
+ {
+  "id": "extra-block-on-text-page",
+  "description": "a block on a page without a table, then table pages",
+  "tags": [
+   "family:extra-fields",
+   "scenario-3"
+  ],
+  "pages": 4,
+  "relations": []
+ },
+ {
+  "id": "extra-change-one",
+  "description": "a later block repeats the division and changes the year",
+  "tags": [
+   "family:extra-fields",
+   "scenario-4"
+  ],
+  "pages": 6,
+  "relations": []
+ },
+ {
+  "id": "extra-group-clears",
+  "description": "a later block prints only the year; the grouped division is cleared",
+  "tags": [
+   "family:extra-fields",
+   "scenario-4"
+  ],
+  "pages": 6,
+  "relations": []
+ },
+ {
+  "id": "extra-ungrouped-stale",
+  "description": "the same pages with the two fields ungrouped: the division carries (known limit)",
+  "tags": [
+   "family:extra-fields",
+   "scenario-4",
+   "stale"
+  ],
+  "pages": 6,
+  "relations": []
+ },
+ {
+  "id": "extra-group-and-free-field",
+  "description": "a field outside the group keeps carrying while the group clears",
+  "tags": [
+   "family:extra-fields",
+   "scenario-4"
+  ],
+  "pages": 6,
+  "relations": []
+ },
+ {
+  "id": "extra-same-value-twice",
+  "description": "the same division printed in two consecutive sections",
+  "tags": [
+   "family:extra-fields",
+   "scenario-5"
+  ],
+  "pages": 4,
+  "relations": []
+ },
+ {
+  "id": "extra-senate-geometry",
+  "description": "summary and detail on the block's page; continuation rows sit where the block was",
+  "tags": [
+   "family:extra-fields",
+   "scenario-6"
+  ],
+  "pages": 3,
+  "relations": []
+ },
+ {
+  "id": "extra-number-case",
+  "description": "the year 2018 is also a number in the table, and a column is named like a field",
+  "tags": [
+   "family:extra-fields",
+   "scenario-7",
+   "number-case"
+  ],
+  "pages": 3,
+  "relations": []
+ },
+ {
+  "id": "extra-wrapped-value",
+  "description": "a value that wraps over two lines",
+  "tags": [
+   "family:extra-fields",
+   "scenario-8"
+  ],
+  "pages": 3,
+  "relations": []
+ },
+ {
+  "id": "extra-moved-block",
+  "description": "the second block is printed at another place (the region check cannot see it)",
+  "tags": [
+   "family:extra-fields",
+   "scenario-9"
+  ],
+  "pages": 6,
+  "relations": []
+ },
+ {
+  "id": "extra-right-aligned",
+  "description": "blocks aligned to the right edge, with values of different length",
+  "tags": [
+   "family:extra-fields",
+   "scenario-9"
+  ],
+  "pages": 6,
+  "relations": []
+ },
+ {
+  "id": "extra-header-in-region",
+  "description": "continuation pages repeat the table header where the block was printed",
+  "tags": [
+   "family:extra-fields",
+   "scenario-10"
+  ],
+  "pages": 3,
+  "relations": []
+ },
+ {
+  "id": "extra-reworded-headers",
+  "description": "two tables with reworded headers; the fields attach by page, not by table",
+  "tags": [
+   "family:extra-fields",
+   "scenario-11"
+  ],
+  "pages": 4,
+  "relations": []
+ },
+ {
+  "id": "extra-caption-lookalike",
+  "description": "captions under the block that look like fields but are not requested",
+  "tags": [
+   "family:extra-fields",
+   "scenario-12"
+  ],
+  "pages": 3,
+  "relations": []
  }
 ]

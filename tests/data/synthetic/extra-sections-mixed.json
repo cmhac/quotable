@@ -1,0 +1,1171 @@
+{
+ "id": "extra-sections-mixed",
+ "description": "sections of 1, 3, 1, 12 and 2 pages",
+ "tags": [
+  "family:extra-fields",
+  "scenario-1"
+ ],
+ "pages": 19,
+ "parts": [
+  {
+   "id": "S0",
+   "pages": [
+    1
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    1
+   ],
+   "rows": {
+    "1": [
+     [
+      "Harbor",
+      "45,123",
+      "27.0%"
+     ],
+     [
+      "Lantern",
+      "73,082",
+      "4.9%"
+     ],
+     [
+      "Caledonia",
+      "63,269",
+      "16.6%"
+     ],
+     [
+      "Bennington",
+      "59,422",
+      "23.3%"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "S1",
+   "pages": [
+    2,
+    3,
+    4
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    2,
+    3,
+    4
+   ],
+   "rows": {
+    "2": [
+     [
+      "Granite",
+      "69,513",
+      "8.3%"
+     ],
+     [
+      "Lamoille",
+      "86,748",
+      "28.5%"
+     ],
+     [
+      "Spruce",
+      "23,518",
+      "6.9%"
+     ],
+     [
+      "Essex",
+      "62,288",
+      "26.2%"
+     ]
+    ],
+    "3": [
+     [
+      "Franklin",
+      "18,827",
+      "14.7%"
+     ],
+     [
+      "Essex",
+      "15,239",
+      "7.5%"
+     ],
+     [
+      "Aspen",
+      "79,016",
+      "11.9%"
+     ],
+     [
+      "Caledonia",
+      "11,473",
+      "26.3%"
+     ]
+    ],
+    "4": [
+     [
+      "Lamoille",
+      "79,531",
+      "30.2%"
+     ],
+     [
+      "Willow",
+      "9,821",
+      "26.7%"
+     ],
+     [
+      "Chittenden",
+      "76,339",
+      "29.9%"
+     ],
+     [
+      "Birch",
+      "54,865",
+      "23.7%"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "S2",
+   "pages": [
+    5
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    5
+   ],
+   "rows": {
+    "5": [
+     [
+      "Washington",
+      "89,075",
+      "30.4%"
+     ],
+     [
+      "Sorrel",
+      "75,711",
+      "24.2%"
+     ],
+     [
+      "Summit",
+      "44,257",
+      "20.4%"
+     ],
+     [
+      "Cedar",
+      "7,965",
+      "23.1%"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "S3",
+   "pages": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+   ],
+   "rows": {
+    "6": [
+     [
+      "Granite",
+      "615",
+      "24.6%"
+     ],
+     [
+      "Hickory",
+      "32,541",
+      "4.2%"
+     ],
+     [
+      "Tamarack",
+      "37,633",
+      "26.3%"
+     ],
+     [
+      "Spruce",
+      "12,872",
+      "23.3%"
+     ]
+    ],
+    "7": [
+     [
+      "Washington",
+      "67,043",
+      "2.1%"
+     ],
+     [
+      "Rutland",
+      "73,284",
+      "30.7%"
+     ],
+     [
+      "Willow",
+      "59,847",
+      "29.1%"
+     ],
+     [
+      "Chittenden",
+      "18,579",
+      "4.0%"
+     ]
+    ],
+    "8": [
+     [
+      "Hickory",
+      "74,872",
+      "10.1%"
+     ],
+     [
+      "Addison",
+      "22,726",
+      "10.2%"
+     ],
+     [
+      "Willow",
+      "32,374",
+      "5.2%"
+     ],
+     [
+      "Granite",
+      "90,941",
+      "24.3%"
+     ]
+    ],
+    "9": [
+     [
+      "Poplar",
+      "37,983",
+      "3.3%"
+     ],
+     [
+      "Tamarack",
+      "7,832",
+      "13.6%"
+     ],
+     [
+      "Rutland",
+      "3,613",
+      "22.5%"
+     ],
+     [
+      "Harbor",
+      "368",
+      "2.5%"
+     ]
+    ],
+    "10": [
+     [
+      "Washington",
+      "88,715",
+      "28.5%"
+     ],
+     [
+      "Cedar",
+      "2,781",
+      "28.6%"
+     ],
+     [
+      "Orleans",
+      "2,440",
+      "30.4%"
+     ],
+     [
+      "Hickory",
+      "47,008",
+      "21.0%"
+     ]
+    ],
+    "11": [
+     [
+      "Summit",
+      "26,733",
+      "26.3%"
+     ],
+     [
+      "Aspen",
+      "43,287",
+      "5.5%"
+     ],
+     [
+      "Orleans",
+      "53,999",
+      "5.1%"
+     ],
+     [
+      "Cedar",
+      "95,166",
+      "20.0%"
+     ]
+    ],
+    "12": [
+     [
+      "Poplar",
+      "1,530",
+      "7.4%"
+     ],
+     [
+      "Hickory",
+      "96,273",
+      "10.8%"
+     ],
+     [
+      "Grand Isle",
+      "81,432",
+      "5.5%"
+     ],
+     [
+      "Sorrel",
+      "35,143",
+      "17.2%"
+     ]
+    ],
+    "13": [
+     [
+      "Aspen",
+      "31,284",
+      "19.8%"
+     ],
+     [
+      "Orleans",
+      "44,456",
+      "21.5%"
+     ],
+     [
+      "Chittenden",
+      "93,751",
+      "13.7%"
+     ],
+     [
+      "Caledonia",
+      "10,068",
+      "6.9%"
+     ]
+    ],
+    "14": [
+     [
+      "Willow",
+      "86,253",
+      "13.3%"
+     ],
+     [
+      "Juniper",
+      "56,376",
+      "5.5%"
+     ],
+     [
+      "Poplar",
+      "41,163",
+      "23.1%"
+     ],
+     [
+      "Laurel",
+      "48,483",
+      "10.7%"
+     ]
+    ],
+    "15": [
+     [
+      "Summit",
+      "48,575",
+      "15.7%"
+     ],
+     [
+      "Franklin",
+      "39,379",
+      "9.0%"
+     ],
+     [
+      "Juniper",
+      "2,895",
+      "23.1%"
+     ],
+     [
+      "Summit",
+      "11,530",
+      "15.7%"
+     ]
+    ],
+    "16": [
+     [
+      "Bennington",
+      "75,370",
+      "24.5%"
+     ],
+     [
+      "Bennington",
+      "46,284",
+      "9.0%"
+     ],
+     [
+      "Lantern",
+      "86,580",
+      "7.0%"
+     ],
+     [
+      "Alder",
+      "36,408",
+      "16.3%"
+     ]
+    ],
+    "17": [
+     [
+      "Sorrel",
+      "63,417",
+      "30.4%"
+     ],
+     [
+      "Lantern",
+      "59,033",
+      "18.6%"
+     ],
+     [
+      "Sorrel",
+      "28,444",
+      "13.6%"
+     ],
+     [
+      "Alder",
+      "3,173",
+      "27.7%"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "S4",
+   "pages": [
+    18,
+    19
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    18,
+    19
+   ],
+   "rows": {
+    "18": [
+     [
+      "Grand Isle",
+      "8,958",
+      "28.2%"
+     ],
+     [
+      "Grand Isle",
+      "35,803",
+      "5.1%"
+     ],
+     [
+      "Tamarack",
+      "21,021",
+      "8.2%"
+     ],
+     [
+      "Birch",
+      "80,236",
+      "3.1%"
+     ]
+    ],
+    "19": [
+     [
+      "Sorrel",
+      "57,426",
+      "8.4%"
+     ],
+     [
+      "Addison",
+      "93,004",
+      "8.5%"
+     ],
+     [
+      "Bennington",
+      "54,427",
+      "13.0%"
+     ],
+     [
+      "Harbor",
+      "5,161",
+      "24.1%"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [],
+ "extra_fields": {
+  "fields": [
+   {
+    "name": "division",
+    "description": "The division named at the top left of the page",
+    "group": null
+   }
+  ],
+  "groups": [],
+  "printed": {
+   "1": {
+    "division": "Roads"
+   },
+   "2": {
+    "division": "Bridges"
+   },
+   "3": {
+    "division": null
+   },
+   "4": {
+    "division": null
+   },
+   "5": {
+    "division": "Parks"
+   },
+   "6": {
+    "division": "Ports"
+   },
+   "7": {
+    "division": null
+   },
+   "8": {
+    "division": null
+   },
+   "9": {
+    "division": null
+   },
+   "10": {
+    "division": null
+   },
+   "11": {
+    "division": null
+   },
+   "12": {
+    "division": null
+   },
+   "13": {
+    "division": null
+   },
+   "14": {
+    "division": null
+   },
+   "15": {
+    "division": null
+   },
+   "16": {
+    "division": null
+   },
+   "17": {
+    "division": null
+   },
+   "18": {
+    "division": "Rail"
+   },
+   "19": {
+    "division": null
+   }
+  },
+  "boxes": {
+   "1": {
+    "division": [
+     74.0,
+     49.45,
+     100.01,
+     60.25
+    ]
+   },
+   "2": {
+    "division": [
+     74.0,
+     49.45,
+     104.51,
+     60.25
+    ]
+   },
+   "5": {
+    "division": [
+     74.0,
+     49.45,
+     97.01,
+     60.25
+    ]
+   },
+   "6": {
+    "division": [
+     74.0,
+     49.45,
+     95.01,
+     60.25
+    ]
+   },
+   "18": {
+    "division": [
+     74.0,
+     49.45,
+     89.5,
+     60.25
+    ]
+   }
+  },
+  "block_boxes": {
+   "1": [
+    40.0,
+    49.45,
+    100.01,
+    60.25
+   ],
+   "2": [
+    40.0,
+    49.45,
+    104.51,
+    60.25
+   ],
+   "5": [
+    40.0,
+    49.45,
+    97.01,
+    60.25
+   ],
+   "6": [
+    40.0,
+    49.45,
+    95.01,
+    60.25
+   ],
+   "18": [
+    40.0,
+    49.45,
+    89.5,
+    60.25
+   ]
+  },
+  "table_boxes": {
+   "1": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "2": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "3": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "4": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "5": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "6": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "7": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "8": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "9": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "10": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "11": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "12": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "13": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "14": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "15": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "16": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "17": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "18": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "19": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ]
+  },
+  "expected": {
+   "plain": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Bridges",
+      "source_page": 2
+     }
+    },
+    "3": {
+     "division": null
+    },
+    "4": {
+     "division": null
+    },
+    "5": {
+     "division": {
+      "value": "Parks",
+      "source_page": 5
+     }
+    },
+    "6": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "7": {
+     "division": null
+    },
+    "8": {
+     "division": null
+    },
+    "9": {
+     "division": null
+    },
+    "10": {
+     "division": null
+    },
+    "11": {
+     "division": null
+    },
+    "12": {
+     "division": null
+    },
+    "13": {
+     "division": null
+    },
+    "14": {
+     "division": null
+    },
+    "15": {
+     "division": null
+    },
+    "16": {
+     "division": null
+    },
+    "17": {
+     "division": null
+    },
+    "18": {
+     "division": {
+      "value": "Rail",
+      "source_page": 18
+     }
+    },
+    "19": {
+     "division": null
+    }
+   },
+   "carry": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Bridges",
+      "source_page": 2
+     }
+    },
+    "3": {
+     "division": {
+      "value": "Bridges",
+      "source_page": 2
+     }
+    },
+    "4": {
+     "division": {
+      "value": "Bridges",
+      "source_page": 2
+     }
+    },
+    "5": {
+     "division": {
+      "value": "Parks",
+      "source_page": 5
+     }
+    },
+    "6": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "7": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "8": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "9": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "10": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "11": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "12": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "13": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "14": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "15": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "16": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "17": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "18": {
+     "division": {
+      "value": "Rail",
+      "source_page": 18
+     }
+    },
+    "19": {
+     "division": {
+      "value": "Rail",
+      "source_page": 18
+     }
+    }
+   },
+   "carry_ungrouped": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Bridges",
+      "source_page": 2
+     }
+    },
+    "3": {
+     "division": {
+      "value": "Bridges",
+      "source_page": 2
+     }
+    },
+    "4": {
+     "division": {
+      "value": "Bridges",
+      "source_page": 2
+     }
+    },
+    "5": {
+     "division": {
+      "value": "Parks",
+      "source_page": 5
+     }
+    },
+    "6": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "7": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "8": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "9": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "10": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "11": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "12": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "13": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "14": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "15": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "16": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "17": {
+     "division": {
+      "value": "Ports",
+      "source_page": 6
+     }
+    },
+    "18": {
+     "division": {
+      "value": "Rail",
+      "source_page": 18
+     }
+    },
+    "19": {
+     "division": {
+      "value": "Rail",
+      "source_page": 18
+     }
+    }
+   }
+  },
+  "baits": [],
+  "expect_stale": false,
+  "expect_blind": false
+ }
+}

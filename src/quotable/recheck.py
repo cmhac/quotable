@@ -19,16 +19,18 @@ accepted changes that make some other cell worse.
 
 import asyncio
 import json
+from collections.abc import Mapping, Sequence
 from dataclasses import replace
 from pathlib import Path
 
 import pymupdf
 
+from quotable.extra_fields import ExtraField, ExtraResult, ground_fields
 from quotable.grounding import SEVERITY
 from quotable.llm import Image, LLMClient, Request
-from quotable.models import PageRecheck
+from quotable.models import ExtrasRecheck, PageRecheck
 from quotable.table import PageResult, Proposal, Table, ground_document
-from quotable.text import tokenize
+from quotable.text import Layer, tokenize
 
 RECHECK_STATUSES = ("fuzzy", "misplaced", "incomplete", "ungrounded")
 RECHECK_PROMPT = (
@@ -62,7 +64,11 @@ def _rank(status: str) -> int:
 
 
 def _request(table: Table, page: int, png: bytes) -> Request:
-    flagged = [f for f in table.flagged() if f.page == page and f.status in RECHECK_STATUSES]
+    flagged = [
+        f
+        for f in table.flagged()
+        if f.page == page and f.status in RECHECK_STATUSES and not f.extra
+    ]
     rows = table.grounded[page].rows
     listing = "\n".join(
         f'- row {f.row}, column "{f.column}": previously "{rows[f.row - 1][f.column]}" '
@@ -101,7 +107,9 @@ def _regrounded(table: Table, changes: dict[Key, str]) -> Table:
 def _proposals(table: Table, answers: dict[int, PageRecheck]) -> list[Proposal]:
     """Turn the model's answers into proposals; answers for unlisted cells are dropped."""
     flagged = {
-        (f.page, f.row, f.column): f.status for f in table.flagged() if f.status in RECHECK_STATUSES
+        (f.page, f.row, f.column): f.status
+        for f in table.flagged()
+        if f.status in RECHECK_STATUSES and not f.extra
     }
     out = []
     for page, answer in answers.items():
@@ -123,7 +131,9 @@ def _proposals(table: Table, answers: dict[int, PageRecheck]) -> list[Proposal]:
 
 async def recheck_table(table: Table, pdf: Path, client: LLMClient) -> Table:
     """Ask the model about each page's flagged cells; keep the answers that ground better."""
-    pages = sorted({f.page for f in table.flagged() if f.status in RECHECK_STATUSES})
+    pages = sorted(
+        {f.page for f in table.flagged() if f.status in RECHECK_STATUSES and not f.extra}
+    )
     if not pages:
         return table
     with pymupdf.open(pdf) as document:
@@ -141,3 +151,82 @@ async def recheck_table(table: Table, pdf: Path, client: LLMClient) -> Table:
     accepted = {(p.page, p.row, p.column): p.proposed for p in proposals if p.outcome == "accepted"}
     final = _regrounded(table, accepted) if accepted else table
     return replace(final, proposals=proposals)
+
+
+EXTRAS_RECHECK_PROMPT = (
+    "You previously read some fields printed on this page, outside its tables (a page header or "
+    "caption). An automatic check compared every value you returned with the PDF's text layer, "
+    "which is an OCR of this same page, and the listed ones did not match. The whole text layer "
+    "of the page is given, one visual line per line.\n"
+    "The text layer is the reference. For EACH listed field, find its text in the text layer and "
+    "return it copied character for character, with its spelling, digits and punctuation. A "
+    "disagreement in spelling or characters is NOT a reason to keep your own value: the text "
+    "layer is more reliable than your reading of the image. Keep your own value only when the "
+    "text layer has no text for that field. A value that wraps over several lines is one value "
+    "joined with single spaces. Do not explain."
+)
+EXTRA_RECHECK_STATUSES = ("fuzzy", "ungrounded")
+
+FieldKey = tuple[int, str]  # (the page that printed the value, the field's name)
+
+
+async def recheck_fields(
+    printed: Mapping[int, Mapping[str, ExtraResult]],
+    layers: Mapping[int, Layer],
+    pngs: Sequence[bytes],
+    fields: Mapping[str, ExtraField],
+    client: LLMClient,
+) -> tuple[dict[int, dict[str, ExtraResult]], dict[FieldKey, tuple[str, str]]]:
+    """
+    Give each printing page's fuzzy or ungrounded field values one second look.
+
+    One request per page that has such values: the page image, its whole text layer and the
+    flagged fields; the model is told the text layer is the reference. An answer is kept only if
+    that field then grounds strictly better (by ``SEVERITY``); a blank answer, or one that
+    tokenizes like the original, is never applied. Returns the printed results after the
+    changes and the accepted changes, ``(page, field) -> (original, new)``.
+    """
+    flagged = {
+        page: {n: r for n, r in row.items() if r.grounding.status in EXTRA_RECHECK_STATUSES}
+        for page, row in printed.items()
+    }
+    pages = sorted(page for page, row in flagged.items() if row)
+    result = {page: dict(row) for page, row in printed.items()}
+    if not pages:
+        return result, {}
+
+    def request(page: int) -> Request:
+        listing = "\n".join(
+            f'- {name}: {fields[name].description}; previously "{r.value}" '
+            f"({RECHECK_REASONS[r.grounding.status]})"
+            for name, r in flagged[page].items()
+        )
+        parts = [
+            Image(pngs[page - 1]),
+            "Text layer of the whole page, one visual line per line:\n"
+            + "\n".join(layers[page].lines()),
+            f"Fields to re-check:\n{listing}",
+        ]
+        return Request("recheck", EXTRAS_RECHECK_PROMPT, ExtrasRecheck, parts, page)
+
+    answers = await asyncio.gather(*(client.ask(request(p)) for p in pages))
+    changes: dict[FieldKey, tuple[str, str]] = {}
+    for page, answer in zip(pages, answers, strict=True):
+        proposed = {
+            e.name: e.value
+            for e in answer.extras
+            if e.name in flagged[page]
+            and e.value is not None
+            and e.value.strip()
+            and tokenize(e.value) != tokenize(flagged[page][e.name].value)
+        }
+        if not proposed:
+            continue
+        trial = {n: proposed.get(n, r.value) for n, r in printed[page].items()}
+        grounded = ground_fields(layers[page], trial)
+        for name, new in proposed.items():
+            before = flagged[page][name]
+            if _rank(grounded[name].status) < _rank(before.grounding.status):
+                result[page][name] = ExtraResult(new, page, grounded[name])
+                changes[page, name] = (before.value, new)
+    return result, changes

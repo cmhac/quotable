@@ -60,6 +60,50 @@ class WindowTables(BaseModel):
     )
 
 
+class ExtraValue(BaseModel):
+    """The value of one extra field (spec 010) on one page."""
+
+    name: str = Field(description="The field's name exactly as listed.")
+    value: str | None = Field(
+        description=(
+            "The field's text exactly as printed on this page, or null if this page does not "
+            "print it."
+        )
+    )
+
+
+class PageWithExtras(PageTables):
+    """Every table on one page, and the page's extra fields."""
+
+    extras: list[ExtraValue] = Field(
+        description="One entry per extra field listed in the instructions, each exactly once."
+    )
+
+
+class WindowWithExtras(WindowTables):
+    """Every table and extra field on each page of a window of consecutive pages."""
+
+    pages: list[PageWithExtras] = Field(
+        description="One entry per page image, in the order the images were given."
+    )
+
+
+class PageExtras(BaseModel):
+    """The answer of the second look at a page: the extra fields asked about."""
+
+    extras: list[ExtraValue] = Field(
+        description="One entry per field asked about; null when this page does not print it."
+    )
+
+
+class ExtrasRecheck(BaseModel):
+    """The re-checked values of the listed extra fields of one page."""
+
+    extras: list[ExtraValue] = Field(
+        description="One entry per field listed; repeat the value unchanged if it was right."
+    )
+
+
 class PageRows(BaseModel):
     """Rows extracted from one page."""
 

@@ -1,0 +1,413 @@
+{
+ "id": "extra-right-aligned",
+ "description": "blocks aligned to the right edge, with values of different length",
+ "tags": [
+  "family:extra-fields",
+  "scenario-9"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2,
+    3
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    1,
+    2,
+    3
+   ],
+   "rows": {
+    "1": [
+     [
+      "Alder",
+      "57,947",
+      "11.4%"
+     ],
+     [
+      "Birch",
+      "76,848",
+      "21.3%"
+     ],
+     [
+      "Chittenden",
+      "47,014",
+      "9.6%"
+     ],
+     [
+      "Summit",
+      "90,111",
+      "14.6%"
+     ]
+    ],
+    "2": [
+     [
+      "Summit",
+      "58,224",
+      "16.1%"
+     ],
+     [
+      "Rutland",
+      "10,080",
+      "21.7%"
+     ],
+     [
+      "Lantern",
+      "29,755",
+      "10.6%"
+     ],
+     [
+      "Harbor",
+      "69,901",
+      "20.6%"
+     ]
+    ],
+    "3": [
+     [
+      "Windham",
+      "14,430",
+      "6.5%"
+     ],
+     [
+      "Summit",
+      "14,720",
+      "15.5%"
+     ],
+     [
+      "Juniper",
+      "47,484",
+      "13.1%"
+     ],
+     [
+      "Sorrel",
+      "816",
+      "11.6%"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "pages": [
+    4,
+    5,
+    6
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    4,
+    5,
+    6
+   ],
+   "rows": {
+    "4": [
+     [
+      "Willow",
+      "4,560",
+      "21.8%"
+     ],
+     [
+      "Granite",
+      "806",
+      "16.1%"
+     ],
+     [
+      "Willow",
+      "10,667",
+      "24.4%"
+     ],
+     [
+      "Birch",
+      "944",
+      "25.6%"
+     ]
+    ],
+    "5": [
+     [
+      "Lantern",
+      "34,657",
+      "28.6%"
+     ],
+     [
+      "Laurel",
+      "30,879",
+      "5.8%"
+     ],
+     [
+      "Birch",
+      "48,521",
+      "28.5%"
+     ],
+     [
+      "Caledonia",
+      "86,668",
+      "17.9%"
+     ]
+    ],
+    "6": [
+     [
+      "Granite",
+      "30,218",
+      "11.2%"
+     ],
+     [
+      "Lantern",
+      "23,515",
+      "5.1%"
+     ],
+     [
+      "Hickory",
+      "94,095",
+      "24.9%"
+     ],
+     [
+      "Granite",
+      "7,499",
+      "29.9%"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [],
+ "extra_fields": {
+  "fields": [
+   {
+    "name": "division",
+    "description": "The division named at the top left of the page",
+    "group": null
+   }
+  ],
+  "groups": [],
+  "printed": {
+   "1": {
+    "division": "Roads"
+   },
+   "2": {
+    "division": null
+   },
+   "3": {
+    "division": null
+   },
+   "4": {
+    "division": "Parks and Recreation"
+   },
+   "5": {
+    "division": null
+   },
+   "6": {
+    "division": null
+   }
+  },
+  "boxes": {
+   "1": {
+    "division": [
+     533.99,
+     49.45,
+     560.0,
+     60.25
+    ]
+   },
+   "4": {
+    "division": [
+     473.47,
+     49.45,
+     560.0,
+     60.25
+    ]
+   }
+  },
+  "block_boxes": {
+   "1": [
+    499.99,
+    49.45,
+    560.0,
+    60.25
+   ],
+   "4": [
+    439.46,
+    49.45,
+    560.0,
+    60.25
+   ]
+  },
+  "table_boxes": {
+   "1": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "2": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "3": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "4": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "5": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "6": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ]
+  },
+  "expected": {
+   "plain": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": null
+    },
+    "3": {
+     "division": null
+    },
+    "4": {
+     "division": {
+      "value": "Parks and Recreation",
+      "source_page": 4
+     }
+    },
+    "5": {
+     "division": null
+    },
+    "6": {
+     "division": null
+    }
+   },
+   "carry": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "4": {
+     "division": {
+      "value": "Parks and Recreation",
+      "source_page": 4
+     }
+    },
+    "5": {
+     "division": {
+      "value": "Parks and Recreation",
+      "source_page": 4
+     }
+    },
+    "6": {
+     "division": {
+      "value": "Parks and Recreation",
+      "source_page": 4
+     }
+    }
+   },
+   "carry_ungrouped": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "4": {
+     "division": {
+      "value": "Parks and Recreation",
+      "source_page": 4
+     }
+    },
+    "5": {
+     "division": {
+      "value": "Parks and Recreation",
+      "source_page": 4
+     }
+    },
+    "6": {
+     "division": {
+      "value": "Parks and Recreation",
+      "source_page": 4
+     }
+    }
+   }
+  },
+  "baits": [],
+  "expect_stale": false,
+  "expect_blind": true
+ }
+}

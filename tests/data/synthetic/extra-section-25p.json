@@ -1,0 +1,1327 @@
+{
+ "id": "extra-section-25p",
+ "description": "one section of 25 page(s)",
+ "tags": [
+  "family:extra-fields",
+  "scenario-1"
+ ],
+ "pages": 25,
+ "parts": [
+  {
+   "id": "S0",
+   "pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25
+   ],
+   "rows": {
+    "1": [
+     [
+      "Spruce",
+      "77,263",
+      "2.8%"
+     ],
+     [
+      "Sorrel",
+      "34,559",
+      "8.1%"
+     ],
+     [
+      "Caledonia",
+      "32,792",
+      "5.6%"
+     ],
+     [
+      "Alder",
+      "42,162",
+      "10.1%"
+     ]
+    ],
+    "2": [
+     [
+      "Grand Isle",
+      "39,288",
+      "28.8%"
+     ],
+     [
+      "Rutland",
+      "27,776",
+      "25.1%"
+     ],
+     [
+      "Tamarack",
+      "27,044",
+      "28.0%"
+     ],
+     [
+      "Summit",
+      "68,640",
+      "5.2%"
+     ]
+    ],
+    "3": [
+     [
+      "Washington",
+      "97,622",
+      "29.0%"
+     ],
+     [
+      "Juniper",
+      "42,485",
+      "13.8%"
+     ],
+     [
+      "Rutland",
+      "70,780",
+      "27.3%"
+     ],
+     [
+      "Laurel",
+      "30,962",
+      "25.3%"
+     ]
+    ],
+    "4": [
+     [
+      "Cedar",
+      "79,000",
+      "23.1%"
+     ],
+     [
+      "Orleans",
+      "67,550",
+      "20.1%"
+     ],
+     [
+      "Hickory",
+      "50,624",
+      "7.6%"
+     ],
+     [
+      "Laurel",
+      "39,838",
+      "12.5%"
+     ]
+    ],
+    "5": [
+     [
+      "Tamarack",
+      "45,816",
+      "4.9%"
+     ],
+     [
+      "Washington",
+      "2,591",
+      "5.2%"
+     ],
+     [
+      "Summit",
+      "30,621",
+      "8.5%"
+     ],
+     [
+      "Chittenden",
+      "32,204",
+      "10.6%"
+     ]
+    ],
+    "6": [
+     [
+      "Aspen",
+      "30,816",
+      "16.7%"
+     ],
+     [
+      "Juniper",
+      "74,938",
+      "23.2%"
+     ],
+     [
+      "Grand Isle",
+      "94,180",
+      "13.0%"
+     ],
+     [
+      "Rutland",
+      "7,921",
+      "21.6%"
+     ]
+    ],
+    "7": [
+     [
+      "Harbor",
+      "12,311",
+      "20.1%"
+     ],
+     [
+      "Alder",
+      "28,570",
+      "8.2%"
+     ],
+     [
+      "Tamarack",
+      "33,812",
+      "23.2%"
+     ],
+     [
+      "Laurel",
+      "85,505",
+      "29.4%"
+     ]
+    ],
+    "8": [
+     [
+      "Addison",
+      "82,537",
+      "30.4%"
+     ],
+     [
+      "Hickory",
+      "41,287",
+      "16.1%"
+     ],
+     [
+      "Chittenden",
+      "76,626",
+      "14.8%"
+     ],
+     [
+      "Maple",
+      "76,227",
+      "13.9%"
+     ]
+    ],
+    "9": [
+     [
+      "Addison",
+      "33,791",
+      "23.5%"
+     ],
+     [
+      "Laurel",
+      "22,801",
+      "16.8%"
+     ],
+     [
+      "Franklin",
+      "20,286",
+      "8.8%"
+     ],
+     [
+      "Chittenden",
+      "10,495",
+      "2.7%"
+     ]
+    ],
+    "10": [
+     [
+      "Orange",
+      "86,595",
+      "10.6%"
+     ],
+     [
+      "Sorrel",
+      "66,470",
+      "5.9%"
+     ],
+     [
+      "Maple",
+      "17,651",
+      "22.9%"
+     ],
+     [
+      "Hickory",
+      "38,318",
+      "4.5%"
+     ]
+    ],
+    "11": [
+     [
+      "Birch",
+      "87,593",
+      "15.7%"
+     ],
+     [
+      "Lantern",
+      "88,477",
+      "7.9%"
+     ],
+     [
+      "Rutland",
+      "36,982",
+      "23.6%"
+     ],
+     [
+      "Summit",
+      "17,262",
+      "2.7%"
+     ]
+    ],
+    "12": [
+     [
+      "Cedar",
+      "73,788",
+      "23.7%"
+     ],
+     [
+      "Lamoille",
+      "61,117",
+      "18.7%"
+     ],
+     [
+      "Addison",
+      "33,029",
+      "18.3%"
+     ],
+     [
+      "Tamarack",
+      "8,293",
+      "9.6%"
+     ]
+    ],
+    "13": [
+     [
+      "Harbor",
+      "78,895",
+      "24.1%"
+     ],
+     [
+      "Summit",
+      "61,979",
+      "16.3%"
+     ],
+     [
+      "Aspen",
+      "73,172",
+      "19.9%"
+     ],
+     [
+      "Hickory",
+      "15,687",
+      "3.6%"
+     ]
+    ],
+    "14": [
+     [
+      "Caledonia",
+      "31,924",
+      "24.5%"
+     ],
+     [
+      "Orleans",
+      "44,329",
+      "27.7%"
+     ],
+     [
+      "Orleans",
+      "46,363",
+      "26.2%"
+     ],
+     [
+      "Washington",
+      "17,343",
+      "24.0%"
+     ]
+    ],
+    "15": [
+     [
+      "Granite",
+      "93,588",
+      "5.2%"
+     ],
+     [
+      "Alder",
+      "80,767",
+      "14.9%"
+     ],
+     [
+      "Maple",
+      "63,016",
+      "16.6%"
+     ],
+     [
+      "Tamarack",
+      "79,540",
+      "5.5%"
+     ]
+    ],
+    "16": [
+     [
+      "Lantern",
+      "78,898",
+      "21.3%"
+     ],
+     [
+      "Tamarack",
+      "20,832",
+      "16.4%"
+     ],
+     [
+      "Summit",
+      "60,499",
+      "20.0%"
+     ],
+     [
+      "Cedar",
+      "33,696",
+      "12.2%"
+     ]
+    ],
+    "17": [
+     [
+      "Caledonia",
+      "8,164",
+      "23.2%"
+     ],
+     [
+      "Bennington",
+      "85,726",
+      "26.2%"
+     ],
+     [
+      "Addison",
+      "32,423",
+      "23.1%"
+     ],
+     [
+      "Harbor",
+      "44,409",
+      "22.6%"
+     ]
+    ],
+    "18": [
+     [
+      "Hickory",
+      "93,151",
+      "24.6%"
+     ],
+     [
+      "Birch",
+      "83,272",
+      "12.2%"
+     ],
+     [
+      "Spruce",
+      "4,055",
+      "10.0%"
+     ],
+     [
+      "Harbor",
+      "81,659",
+      "21.6%"
+     ]
+    ],
+    "19": [
+     [
+      "Maple",
+      "23,485",
+      "8.2%"
+     ],
+     [
+      "Willow",
+      "49,270",
+      "2.1%"
+     ],
+     [
+      "Aspen",
+      "63,186",
+      "5.9%"
+     ],
+     [
+      "Birch",
+      "24,872",
+      "23.0%"
+     ]
+    ],
+    "20": [
+     [
+      "Summit",
+      "58,083",
+      "3.5%"
+     ],
+     [
+      "Bennington",
+      "21,888",
+      "7.4%"
+     ],
+     [
+      "Franklin",
+      "17,932",
+      "22.5%"
+     ],
+     [
+      "Lantern",
+      "26,608",
+      "8.9%"
+     ]
+    ],
+    "21": [
+     [
+      "Tamarack",
+      "44,563",
+      "12.4%"
+     ],
+     [
+      "Hickory",
+      "42,694",
+      "30.1%"
+     ],
+     [
+      "Harbor",
+      "31,443",
+      "11.4%"
+     ],
+     [
+      "Hickory",
+      "29,509",
+      "24.8%"
+     ]
+    ],
+    "22": [
+     [
+      "Willow",
+      "81,589",
+      "17.6%"
+     ],
+     [
+      "Grand Isle",
+      "59,748",
+      "9.5%"
+     ],
+     [
+      "Harbor",
+      "53,039",
+      "2.8%"
+     ],
+     [
+      "Addison",
+      "57,880",
+      "10.3%"
+     ]
+    ],
+    "23": [
+     [
+      "Lantern",
+      "65,397",
+      "11.6%"
+     ],
+     [
+      "Birch",
+      "3,626",
+      "20.7%"
+     ],
+     [
+      "Aspen",
+      "3,889",
+      "5.8%"
+     ],
+     [
+      "Sorrel",
+      "38,400",
+      "22.9%"
+     ]
+    ],
+    "24": [
+     [
+      "Hickory",
+      "62,440",
+      "17.6%"
+     ],
+     [
+      "Rutland",
+      "5,826",
+      "13.9%"
+     ],
+     [
+      "Lamoille",
+      "88,373",
+      "11.5%"
+     ],
+     [
+      "Tamarack",
+      "3,160",
+      "8.4%"
+     ]
+    ],
+    "25": [
+     [
+      "Windham",
+      "11,924",
+      "28.6%"
+     ],
+     [
+      "Spruce",
+      "49,224",
+      "17.2%"
+     ],
+     [
+      "Orleans",
+      "36,666",
+      "19.7%"
+     ],
+     [
+      "Tamarack",
+      "97,858",
+      "8.5%"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [],
+ "extra_fields": {
+  "fields": [
+   {
+    "name": "division",
+    "description": "The division named at the top left of the page",
+    "group": null
+   }
+  ],
+  "groups": [],
+  "printed": {
+   "1": {
+    "division": "Roads"
+   },
+   "2": {
+    "division": null
+   },
+   "3": {
+    "division": null
+   },
+   "4": {
+    "division": null
+   },
+   "5": {
+    "division": null
+   },
+   "6": {
+    "division": null
+   },
+   "7": {
+    "division": null
+   },
+   "8": {
+    "division": null
+   },
+   "9": {
+    "division": null
+   },
+   "10": {
+    "division": null
+   },
+   "11": {
+    "division": null
+   },
+   "12": {
+    "division": null
+   },
+   "13": {
+    "division": null
+   },
+   "14": {
+    "division": null
+   },
+   "15": {
+    "division": null
+   },
+   "16": {
+    "division": null
+   },
+   "17": {
+    "division": null
+   },
+   "18": {
+    "division": null
+   },
+   "19": {
+    "division": null
+   },
+   "20": {
+    "division": null
+   },
+   "21": {
+    "division": null
+   },
+   "22": {
+    "division": null
+   },
+   "23": {
+    "division": null
+   },
+   "24": {
+    "division": null
+   },
+   "25": {
+    "division": null
+   }
+  },
+  "boxes": {
+   "1": {
+    "division": [
+     74.0,
+     49.45,
+     100.01,
+     60.25
+    ]
+   }
+  },
+  "block_boxes": {
+   "1": [
+    40.0,
+    49.45,
+    100.01,
+    60.25
+   ]
+  },
+  "table_boxes": {
+   "1": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "2": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "3": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "4": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "5": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "6": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "7": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "8": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "9": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "10": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "11": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "12": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "13": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "14": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "15": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "16": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "17": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "18": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "19": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "20": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "21": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "22": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "23": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "24": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "25": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ]
+  },
+  "expected": {
+   "plain": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": null
+    },
+    "3": {
+     "division": null
+    },
+    "4": {
+     "division": null
+    },
+    "5": {
+     "division": null
+    },
+    "6": {
+     "division": null
+    },
+    "7": {
+     "division": null
+    },
+    "8": {
+     "division": null
+    },
+    "9": {
+     "division": null
+    },
+    "10": {
+     "division": null
+    },
+    "11": {
+     "division": null
+    },
+    "12": {
+     "division": null
+    },
+    "13": {
+     "division": null
+    },
+    "14": {
+     "division": null
+    },
+    "15": {
+     "division": null
+    },
+    "16": {
+     "division": null
+    },
+    "17": {
+     "division": null
+    },
+    "18": {
+     "division": null
+    },
+    "19": {
+     "division": null
+    },
+    "20": {
+     "division": null
+    },
+    "21": {
+     "division": null
+    },
+    "22": {
+     "division": null
+    },
+    "23": {
+     "division": null
+    },
+    "24": {
+     "division": null
+    },
+    "25": {
+     "division": null
+    }
+   },
+   "carry": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "4": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "5": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "6": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "7": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "8": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "9": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "10": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "11": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "12": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "13": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "14": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "15": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "16": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "17": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "18": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "19": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "20": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "21": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "22": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "23": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "24": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "25": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    }
+   },
+   "carry_ungrouped": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "4": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "5": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "6": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "7": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "8": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "9": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "10": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "11": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "12": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "13": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "14": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "15": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "16": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "17": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "18": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "19": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "20": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "21": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "22": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "23": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "24": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "25": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    }
+   }
+  },
+  "baits": [],
+  "expect_stale": false,
+  "expect_blind": false
+ }
+}

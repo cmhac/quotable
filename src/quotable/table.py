@@ -1,8 +1,10 @@
 """The extracted table with the grounding verdict of every cell."""
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Literal, NamedTuple
 
+from quotable.extra_fields import ExtraResult
 from quotable.grounding import SEVERITY, UNFLAGGED, FieldGrounding, ground_rows
 from quotable.layout import PageLayout
 from quotable.position import PageGrounding, check_positions
@@ -14,12 +16,13 @@ if TYPE_CHECKING:
 
 GROUNDING_SUFFIX = "__grounding"
 COVERAGE_SUFFIX = "__coverage"
+SOURCE_PAGE_SUFFIX = "__source_page"
 
-Kind = Literal["int", "str", "float"]
+Kind = Literal["int", "str", "float", "nullable_int"]
 
 
 class OutputNames(NamedTuple):
-    """The names of the library's own columns in `Table.records()` and the DataFrames."""
+    """The names of the columns in `Table.records()` and the DataFrames (not the PDF's)."""
 
     page: str
     row: str
@@ -27,14 +30,19 @@ class OutputNames(NamedTuple):
     coverage: dict[str, str]  # PDF column -> name of its coverage column
     status: str
     changes: str
+    fields: dict[str, str]  # extra field -> name of its value column
+    field_grounding: dict[str, str]  # extra field -> name of its grounding status column
+    field_coverage: dict[str, str]  # extra field -> name of its coverage column
+    field_source: dict[str, str]  # extra field -> name of its source page column
 
 
-def output_names(columns: list[str]) -> OutputNames:
+def output_names(columns: list[str], fields: Sequence[str] = ()) -> OutputNames:
     """
     Name the library's columns so that none takes the name of a PDF column or of another one.
 
-    PDF columns are never renamed. A library column whose name is taken gets ``_`` appended
-    until it is free (spec 008). Without a collision every name is the default one.
+    PDF columns are never renamed. The extra fields' value columns come next, in the caller's
+    names; then the library's own columns. A name that is taken gets ``_`` appended until it is
+    free (spec 008, 010). Without a collision every name is the default one.
     """
     taken = set(columns)
 
@@ -44,6 +52,7 @@ def output_names(columns: list[str]) -> OutputNames:
         taken.add(name)
         return name
 
+    value_columns = {name: free(name) for name in fields}
     page = free("page")
     row = free("row")
     grounding: dict[str, str] = {}
@@ -51,8 +60,24 @@ def output_names(columns: list[str]) -> OutputNames:
     for column in columns:
         grounding[column] = free(column + GROUNDING_SUFFIX)
         coverage[column] = free(column + COVERAGE_SUFFIX)
+    field_grounding: dict[str, str] = {}
+    field_coverage: dict[str, str] = {}
+    field_source: dict[str, str] = {}
+    for name in fields:
+        field_grounding[name] = free(name + GROUNDING_SUFFIX)
+        field_coverage[name] = free(name + COVERAGE_SUFFIX)
+        field_source[name] = free(name + SOURCE_PAGE_SUFFIX)
     return OutputNames(
-        page, row, grounding, coverage, free("grounding_status"), free("recheck_changes")
+        page,
+        row,
+        grounding,
+        coverage,
+        free("grounding_status"),
+        free("recheck_changes"),
+        value_columns,
+        field_grounding,
+        field_coverage,
+        field_source,
     )
 
 
@@ -73,11 +98,14 @@ class Row:
     row: int  # 1-based within the page
     values: dict[str, str]
     cells: dict[str, FieldGrounding]
+    extra: dict[str, ExtraResult] = field(default_factory=dict)  # extra fields (spec 010)
 
     @property
     def status(self) -> str:
-        """Return the worst cell status of the row."""
-        return max((c.status for c in self.cells.values()), key=lambda s: SEVERITY.get(s, 0))
+        """Return the worst status of the row's cells and extra fields."""
+        statuses = [c.status for c in self.cells.values()]
+        statuses += [r.grounding.status for r in self.extra.values()]
+        return max(statuses, key=lambda s: SEVERITY.get(s, 0))
 
 
 @dataclass
@@ -89,6 +117,7 @@ class Flag:
     column: str
     status: str
     coverage: float | None
+    extra: bool = False  # an extra field of the page, not a cell: `column` is the field's name
 
 
 @dataclass
@@ -162,12 +191,17 @@ class Table:
     ocr_pages: tuple[int, ...] = ()
     # the parts absorbed by the merge step (spec 007), empty for a table never merged
     merged: tuple[MergedPart, ...] = ()
+    # extra fields (spec 010): each page of the table -> field name -> result; the names in column
+    # order; and the accepted rechecks, (printing page, name) -> (original, new)
+    extra_fields: dict[int, dict[str, ExtraResult]] = field(default_factory=dict)
+    extra_names: tuple[str, ...] = ()
+    extra_changes: dict[tuple[int, str], tuple[str, str]] = field(default_factory=dict)
 
     def page_rows(self, page: int) -> list[Row]:
         """Return the rows of one page (1-based)."""
         grounding = self.grounded[page]
         return [
-            Row(page, i + 1, values, cells)
+            Row(page, i + 1, values, cells, dict(self.extra_fields.get(page, {})))
             for i, (values, cells) in enumerate(zip(grounding.rows, grounding.cells, strict=True))
         ]
 
@@ -177,11 +211,13 @@ class Table:
 
     def records(self) -> list[dict[str, object]]:
         """
-        Return flat rows: page, row, the values, then each column's grounding.
+        Return flat rows: page, row, the values, the extra fields, then the groundings.
 
-        A library column whose name a PDF column already has gets a trailing ``_``.
+        Order: ``page``, ``row``, the values, the extra fields' values, each column's grounding
+        and coverage, each extra field's grounding, coverage and source page, the row's status
+        and the accepted rechecks. A library column whose name is taken gets a trailing ``_``.
         """
-        names = output_names(self.columns)
+        names = output_names(self.columns, self.extra_names)
         out: list[dict[str, object]] = []
         changes: dict[tuple[int, int], list[str]] = {}
         for p in self.proposals:
@@ -190,22 +226,40 @@ class Table:
                 changes.setdefault((p.page, p.row), []).append(text)
         for row in self.rows():
             record: dict[str, object] = {names.page: row.page, names.row: row.row, **row.values}
+            for name in self.extra_names:
+                record[names.fields[name]] = row.extra[name].value if name in row.extra else ""
             for column in self.columns:
                 cell = row.cells[column]
                 record[names.grounding[column]] = cell.status
                 record[names.coverage[column]] = cell.coverage
+            row_changes = list(changes.get((row.page, row.row), []))
+            for name in self.extra_names:
+                got = row.extra.get(name, ExtraResult())
+                record[names.field_grounding[name]] = got.grounding.status
+                record[names.field_coverage[name]] = got.grounding.coverage
+                record[names.field_source[name]] = got.source_page
+                if got.source_page is not None and (got.source_page, name) in self.extra_changes:
+                    old, new = self.extra_changes[got.source_page, name]
+                    row_changes.append(f'{name}: "{old}" -> "{new}"')
             record[names.status] = row.status
-            record[names.changes] = "; ".join(changes.get((row.page, row.row), []))
+            record[names.changes] = "; ".join(row_changes)
             out.append(record)
         return out
 
     def _frame_columns(self) -> list[tuple[str, Kind]]:
         """Return (name, kind) for every column of `records()`, in order."""
-        names = output_names(self.columns)
+        names = output_names(self.columns, self.extra_names)
         out: list[tuple[str, Kind]] = [(names.page, "int"), (names.row, "int")]
         out += [(column, "str") for column in self.columns]
+        out += [(names.fields[name], "str") for name in self.extra_names]
         for column in self.columns:
             out += [(names.grounding[column], "str"), (names.coverage[column], "float")]
+        for name in self.extra_names:
+            out += [
+                (names.field_grounding[name], "str"),
+                (names.field_coverage[name], "float"),
+                (names.field_source[name], "nullable_int"),
+            ]
         return [*out, (names.status, "str"), (names.changes, "str")]
 
     def to_pandas(self) -> "pandas.DataFrame":
@@ -213,7 +267,7 @@ class Table:
         import pandas as pd  # noqa: PLC0415
 
         columns = self._frame_columns()
-        dtypes = {"int": "int64", "str": "str", "float": "float64"}
+        dtypes = {"int": "int64", "str": "str", "float": "float64", "nullable_int": "Int64"}
         frame = pd.DataFrame(self.records(), columns=[name for name, _ in columns])
         return frame.astype({name: dtypes[kind] for name, kind in columns})
 
@@ -221,15 +275,32 @@ class Table:
         """Return `records()` as a polars DataFrame (ints, strings and a float coverage)."""
         import polars as pl  # noqa: PLC0415
 
-        dtypes = {"int": pl.Int64, "str": pl.String, "float": pl.Float64}
+        dtypes = {
+            "int": pl.Int64,
+            "str": pl.String,
+            "float": pl.Float64,
+            "nullable_int": pl.Int64,
+        }
         schema = {name: dtypes[kind] for name, kind in self._frame_columns()}
         return pl.DataFrame(self.records(), schema=schema)
 
     def flagged(self) -> list[Flag]:
-        """Return every cell whose status needs review."""
-        return [
-            Flag(row.page, row.row, column, cell.status, cell.coverage)
-            for row in self.rows()
-            for column, cell in row.cells.items()
-            if cell.status not in UNFLAGGED
-        ]
+        """
+        Return every cell, and every extra field of a row, whose status needs review.
+
+        A flag for an extra field has ``extra=True`` and the field's name in ``column``; it is
+        listed on every row that carries the value, so filtering rows by flag works as for cells.
+        """
+        flags: list[Flag] = []
+        for row in self.rows():
+            flags += [
+                Flag(row.page, row.row, column, cell.status, cell.coverage)
+                for column, cell in row.cells.items()
+                if cell.status not in UNFLAGGED
+            ]
+            flags += [
+                Flag(row.page, row.row, name, got.grounding.status, got.grounding.coverage, True)
+                for name, got in row.extra.items()
+                if got.grounding.status not in UNFLAGGED
+            ]
+        return flags

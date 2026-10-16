@@ -31,6 +31,10 @@ test *args:
 score-merge:
     uv run python -m tests.score_merge
 
+# Score the extra-fields checks on the fixture with injected faults (spec 010; no model, no cost)
+score-extra-fields:
+    uv run python -m tests.score_extra_fields
+
 # Run the live tests: calls a real model and costs money (needs OPENAI_API_KEY and QUOTABLE_LIVE_TEST_MODEL)
 test-live:
     uv run pytest -m live -rs

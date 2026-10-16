@@ -1,0 +1,302 @@
+{
+ "id": "extra-number-case",
+ "description": "the year 2018 is also a number in the table, and a column is named like a field",
+ "tags": [
+  "family:extra-fields",
+  "scenario-7",
+  "number-case"
+ ],
+ "pages": 3,
+ "parts": [
+  {
+   "id": "D",
+   "pages": [
+    1,
+    2,
+    3
+   ],
+   "columns": [
+    "Division",
+    "Year",
+    "Amount"
+   ],
+   "schema_columns": [
+    "Division",
+    "Year",
+    "Amount"
+   ],
+   "header_pages": [
+    1,
+    2,
+    3
+   ],
+   "rows": {
+    "1": [
+     [
+      "Caledonia",
+      "2018",
+      "$619,000"
+     ],
+     [
+      "Granite",
+      "2018",
+      "$166,000"
+     ],
+     [
+      "Sorrel",
+      "2018",
+      "$558,000"
+     ],
+     [
+      "Poplar",
+      "2018",
+      "$413,000"
+     ],
+     [
+      "Caledonia",
+      "2018",
+      "$36,000"
+     ],
+     [
+      "Harbor",
+      "2018",
+      "$743,000"
+     ]
+    ],
+    "2": [
+     [
+      "Caledonia",
+      "2018",
+      "$52,000"
+     ],
+     [
+      "Orleans",
+      "2018",
+      "$735,000"
+     ],
+     [
+      "Sorrel",
+      "2018",
+      "$890,000"
+     ],
+     [
+      "Lantern",
+      "2018",
+      "$492,000"
+     ],
+     [
+      "Chittenden",
+      "2018",
+      "$289,000"
+     ],
+     [
+      "Summit",
+      "2018",
+      "$748,000"
+     ]
+    ],
+    "3": [
+     [
+      "Sorrel",
+      "2018",
+      "$303,000"
+     ],
+     [
+      "Rutland",
+      "2018",
+      "$840,000"
+     ],
+     [
+      "Addison",
+      "2018",
+      "$385,000"
+     ],
+     [
+      "Harbor",
+      "2018",
+      "$865,000"
+     ],
+     [
+      "Addison",
+      "2018",
+      "$876,000"
+     ],
+     [
+      "Summit",
+      "2018",
+      "$407,000"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [],
+ "extra_fields": {
+  "fields": [
+   {
+    "name": "Division",
+    "description": "The division at the top left",
+    "group": null
+   },
+   {
+    "name": "Year",
+    "description": "The funding year",
+    "group": null
+   }
+  ],
+  "groups": [],
+  "printed": {
+   "1": {
+    "Division": "Public Works",
+    "Year": "2018"
+   },
+   "2": {
+    "Division": null,
+    "Year": null
+   },
+   "3": {
+    "Division": null,
+    "Year": null
+   }
+  },
+  "boxes": {
+   "1": {
+    "Division": [
+     40.0,
+     49.45,
+     92.51,
+     60.25
+    ],
+    "Year": [
+     96.53,
+     61.45,
+     116.54,
+     72.25
+    ]
+   }
+  },
+  "block_boxes": {
+   "1": [
+    40.0,
+    49.45,
+    116.54,
+    72.25
+   ]
+  },
+  "table_boxes": {
+   "1": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     200.5
+    ]
+   ],
+   "2": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     200.5
+    ]
+   ],
+   "3": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     200.5
+    ]
+   ]
+  },
+  "expected": {
+   "plain": {
+    "1": {
+     "Division": {
+      "value": "Public Works",
+      "source_page": 1
+     },
+     "Year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "Division": null,
+     "Year": null
+    },
+    "3": {
+     "Division": null,
+     "Year": null
+    }
+   },
+   "carry": {
+    "1": {
+     "Division": {
+      "value": "Public Works",
+      "source_page": 1
+     },
+     "Year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "Division": {
+      "value": "Public Works",
+      "source_page": 1
+     },
+     "Year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "Division": {
+      "value": "Public Works",
+      "source_page": 1
+     },
+     "Year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    }
+   },
+   "carry_ungrouped": {
+    "1": {
+     "Division": {
+      "value": "Public Works",
+      "source_page": 1
+     },
+     "Year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "Division": {
+      "value": "Public Works",
+      "source_page": 1
+     },
+     "Year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "Division": {
+      "value": "Public Works",
+      "source_page": 1
+     },
+     "Year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    }
+   }
+  },
+  "baits": [],
+  "expect_stale": false,
+  "expect_blind": false
+ }
+}

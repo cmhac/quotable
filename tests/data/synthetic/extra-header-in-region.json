@@ -1,0 +1,400 @@
+{
+ "id": "extra-header-in-region",
+ "description": "continuation pages repeat the table header where the block was printed",
+ "tags": [
+  "family:extra-fields",
+  "scenario-10"
+ ],
+ "pages": 3,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2,
+    3
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    1,
+    2,
+    3
+   ],
+   "rows": {
+    "1": [
+     [
+      "Summit",
+      "86,214",
+      "18.8%"
+     ],
+     [
+      "Aspen",
+      "45,329",
+      "3.5%"
+     ],
+     [
+      "Caledonia",
+      "11,799",
+      "6.8%"
+     ],
+     [
+      "Windham",
+      "12,515",
+      "8.6%"
+     ],
+     [
+      "Franklin",
+      "51,364",
+      "27.0%"
+     ],
+     [
+      "Hickory",
+      "45,728",
+      "17.2%"
+     ]
+    ],
+    "2": [
+     [
+      "Aspen",
+      "2,839",
+      "23.2%"
+     ],
+     [
+      "Washington",
+      "55,820",
+      "26.4%"
+     ],
+     [
+      "Rutland",
+      "94,190",
+      "16.8%"
+     ],
+     [
+      "Aspen",
+      "39,117",
+      "28.2%"
+     ],
+     [
+      "Chittenden",
+      "70,190",
+      "6.1%"
+     ],
+     [
+      "Orleans",
+      "50,972",
+      "6.7%"
+     ]
+    ],
+    "3": [
+     [
+      "Washington",
+      "32,825",
+      "12.3%"
+     ],
+     [
+      "Birch",
+      "57,391",
+      "27.9%"
+     ],
+     [
+      "Grand Isle",
+      "72,625",
+      "9.5%"
+     ],
+     [
+      "Poplar",
+      "77,117",
+      "3.0%"
+     ],
+     [
+      "Orange",
+      "44,413",
+      "8.5%"
+     ],
+     [
+      "Grand Isle",
+      "56,912",
+      "16.9%"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [],
+ "extra_fields": {
+  "fields": [
+   {
+    "name": "appropriation",
+    "description": "The appropriation label at the top left",
+    "group": null
+   },
+   {
+    "name": "year",
+    "description": "The funding year",
+    "group": null
+   },
+   {
+    "name": "title",
+    "description": "The title of the appropriation",
+    "group": null
+   },
+   {
+    "name": "account",
+    "description": "The account line under the title",
+    "group": null
+   }
+  ],
+  "groups": [],
+  "printed": {
+   "1": {
+    "appropriation": "APPROPRIATIONS",
+    "year": "2018",
+    "title": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+    "account": "Account 0100"
+   },
+   "2": {
+    "appropriation": null,
+    "year": null,
+    "title": null,
+    "account": null
+   },
+   "3": {
+    "appropriation": null,
+    "year": null,
+    "title": null,
+    "account": null
+   }
+  },
+  "boxes": {
+   "1": {
+    "appropriation": [
+     40.0,
+     49.45,
+     120.02,
+     60.25
+    ],
+    "year": [
+     96.53,
+     61.45,
+     116.54,
+     72.25
+    ],
+    "title": [
+     40.0,
+     73.45,
+     255.06,
+     84.25
+    ],
+    "account": [
+     40.0,
+     85.45,
+     95.03,
+     96.25
+    ]
+   }
+  },
+  "block_boxes": {
+   "1": [
+    40.0,
+    49.45,
+    255.06,
+    96.25
+   ]
+  },
+  "table_boxes": {
+   "1": [
+    [
+     40.0,
+     101.4,
+     560.0,
+     209.5
+    ]
+   ],
+   "2": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     200.5
+    ]
+   ],
+   "3": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     200.5
+    ]
+   ]
+  },
+  "expected": {
+   "plain": {
+    "1": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "appropriation": null,
+     "year": null,
+     "title": null,
+     "account": null
+    },
+    "3": {
+     "appropriation": null,
+     "year": null,
+     "title": null,
+     "account": null
+    }
+   },
+   "carry": {
+    "1": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    }
+   },
+   "carry_ungrouped": {
+    "1": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    }
+   }
+  },
+  "baits": [
+   {
+    "page": 2,
+    "field": "account",
+    "word": "Name"
+   },
+   {
+    "page": 3,
+    "field": "account",
+    "word": "Name"
+   }
+  ],
+  "expect_stale": false,
+  "expect_blind": false
+ }
+}

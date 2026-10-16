@@ -12,7 +12,18 @@ from collections.abc import Iterator
 from dataclasses import replace
 from pathlib import Path
 
-from tests.synthetic import Col, Doc, Gap, Part, Relation, Stack, render, validate
+from tests.synthetic import (
+    Col,
+    Doc,
+    ExtraSpec,
+    Gap,
+    HeaderBlock,
+    Part,
+    Relation,
+    Stack,
+    render,
+    validate,
+)
 
 DEFAULT_OUT = Path(__file__).parent / "data" / "synthetic"
 
@@ -662,6 +673,277 @@ def controls() -> Iterator[Doc]:
     )
 
 
+# --- extra fields (spec 010) ------------------------------------------------------------------
+DIVISION = ("division", "The division named at the top left of the page")
+YEAR = ("year", "The funding year printed at the top left of the page")
+AGENCY = ("agency", "The agency named at the top left of the page")
+DIVISIONS = ["Roads", "Bridges", "Parks", "Ports", "Rail", "Schools", "Transit"]
+DECOY3 = (
+    C("Division", "word"),
+    C("Year", "year2018"),
+    C("Amount", "currency"),
+)
+
+
+def _x(pid: str, schema: str = "tiny3", **kw) -> Part:  # noqa: ANN003
+    """Build a table part for the extra-fields documents (a few short rows per page)."""
+    kw.setdefault("rows_per_page", 4)
+    return part(pid, schema, **kw)
+
+
+def _sections(
+    id_: str,
+    desc: str,
+    tags: list[str],
+    sizes: list[int],
+    spec: ExtraSpec,
+    **kw,  # noqa: ANN003
+) -> Doc:
+    """One table in sections: each section starts with a block that names its division."""
+    items: list[Part | Gap | Stack] = []
+    blocks: dict[int, HeaderBlock] = {}
+    page = 1
+    for k, size in enumerate(sizes):
+        items.append(_x(f"S{k}", pages=size))
+        blocks[page] = HeaderBlock({"division": DIVISIONS[k]}, labels={"division": "Division"})
+        page += size
+    return Doc(id_, desc, ["family:extra-fields", *tags], items, blocks=blocks, extra=spec, **kw)
+
+
+def _four_fields() -> HeaderBlock:
+    """The block of the Senate sample, with a fourth line so that it reaches table height."""
+    return HeaderBlock(
+        {
+            "appropriation": "APPROPRIATIONS",
+            "year": "2018",
+            "title": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+            "account": "Account 0100",
+        },
+        labels={"year": "Funding Year"},
+    )
+
+
+def extra_fields() -> Iterator[Doc]:  # noqa: PLR0915
+    """Documents with header blocks: values to read from outside the tables (spec 010)."""
+    fam = "family:extra-fields"
+    one = ExtraSpec((DIVISION,))
+    for n in (1, 2, 3, 25):
+        yield _sections(
+            f"extra-section-{n}p", f"one section of {n} page(s)", ["scenario-1"], [n], one
+        )
+    yield _sections(
+        "extra-sections-mixed",
+        "sections of 1, 3, 1, 12 and 2 pages",
+        ["scenario-1"],
+        [1, 3, 1, 12, 2],
+        one,
+    )
+    yield Doc(
+        "extra-before-first-block",
+        "two table pages before the first block",
+        [fam, "scenario-2"],
+        [_x("A", pages=2), _x("B", pages=3)],
+        blocks={3: HeaderBlock({"division": "Roads"}, labels={"division": "Division"})},
+        extra=one,
+    )
+    yield Doc(
+        "extra-block-on-text-page",
+        "a block on a page without a table, then table pages",
+        [fam, "scenario-3"],
+        [Gap(1), _x("A", pages=3)],
+        blocks={1: HeaderBlock({"division": "Roads"}, labels={"division": "Division"})},
+        extra=one,
+    )
+    both = ExtraSpec((DIVISION, YEAR))
+    lab = {"division": "Division", "year": "Funding Year"}
+    yield Doc(
+        "extra-change-one",
+        "a later block repeats the division and changes the year",
+        [fam, "scenario-4"],
+        [_x("A", pages=6)],
+        blocks={
+            1: HeaderBlock({"division": "Roads", "year": "2018"}, labels=lab),
+            4: HeaderBlock({"division": "Roads", "year": "2019"}, labels=lab),
+        },
+        extra=both,
+    )
+    later = {
+        1: HeaderBlock({"division": "Roads", "year": "2018"}, labels=lab),
+        4: HeaderBlock({"division": None, "year": "2019"}, labels=lab),
+    }
+    heading = (
+        "heading",
+        "The heading block: division and year, printed together",
+        ("division", "year"),
+    )
+    yield Doc(
+        "extra-group-clears",
+        "a later block prints only the year; the grouped division is cleared",
+        [fam, "scenario-4"],
+        [_x("A", pages=6)],
+        blocks=later,
+        extra=ExtraSpec((DIVISION, YEAR), (heading,)),
+    )
+    yield Doc(
+        "extra-ungrouped-stale",
+        "the same pages with the two fields ungrouped: the division carries (known limit)",
+        [fam, "scenario-4", "stale"],
+        [_x("A", pages=6)],
+        blocks=later,
+        extra=ExtraSpec((DIVISION, YEAR), expect_stale=True),
+    )
+    three = {
+        1: HeaderBlock(
+            {"division": "Roads", "year": "2018", "agency": "Highways"},
+            labels={**lab, "agency": "Agency"},
+        ),
+        4: HeaderBlock({"division": None, "year": "2019", "agency": None}, labels=lab),
+    }
+    yield Doc(
+        "extra-group-and-free-field",
+        "a field outside the group keeps carrying while the group clears",
+        [fam, "scenario-4"],
+        [_x("A", pages=6)],
+        blocks=three,
+        extra=ExtraSpec((DIVISION, YEAR, AGENCY), (heading,)),
+    )
+    yield Doc(
+        "extra-same-value-twice",
+        "the same division printed in two consecutive sections",
+        [fam, "scenario-5"],
+        [_x("A", pages=2), _x("B", pages=2)],
+        blocks={
+            1: HeaderBlock({"division": "Roads"}, labels={"division": "Division"}),
+            3: HeaderBlock({"division": "Roads"}, labels={"division": "Division"}),
+        },
+        extra=one,
+    )
+    senate = ExtraSpec(
+        (
+            ("appropriation", "The appropriation label at the top left"),
+            ("year", "The funding year"),
+            ("title", "The title of the appropriation"),
+            ("account", "The account line under the title"),
+        )
+    )
+    yield Doc(
+        "extra-senate-geometry",
+        "summary and detail on the block's page; continuation rows sit where the block was",
+        [fam, "scenario-6"],
+        [
+            Stack(
+                _x("sum", pages=1),
+                _x(
+                    "det",
+                    "awards4",
+                    pages=3,
+                    rows_per_page=8,
+                    header="first",
+                    top={1: 100.0, 2: 100.0},
+                ),
+            )
+        ],
+        blocks={1: _four_fields()},
+        extra=senate,
+        push_tables=True,
+    )
+    decoy = Part("D", DECOY3, tuple(c.name for c in DECOY3), pages=3, rows_per_page=6)
+    yield Doc(
+        "extra-number-case",
+        "the year 2018 is also a number in the table, and a column is named like a field",
+        [fam, "scenario-7", "number-case"],
+        [decoy],
+        blocks={
+            1: HeaderBlock(
+                {"Division": "Public Works", "Year": "2018"}, labels={"Year": "Funding Year"}
+            )
+        },
+        extra=ExtraSpec(
+            (("Division", "The division at the top left"), ("Year", "The funding year"))
+        ),
+    )
+    yield Doc(
+        "extra-wrapped-value",
+        "a value that wraps over two lines",
+        [fam, "scenario-8"],
+        [_x("A", pages=3)],
+        blocks={
+            1: HeaderBlock(
+                {"division": "Department of Roads and Public Works"},
+                labels={"division": "Division"},
+                wrap=("division",),
+            )
+        },
+        extra=one,
+    )
+    yield Doc(
+        "extra-moved-block",
+        "the second block is printed at another place (the region check cannot see it)",
+        [fam, "scenario-9"],
+        [_x("A", pages=3), _x("B", pages=3)],
+        blocks={
+            1: HeaderBlock({"division": "Roads"}, labels={"division": "Division"}),
+            4: HeaderBlock({"division": "Bridges"}, labels={"division": "Division"}, x=330.0),
+        },
+        extra=ExtraSpec((DIVISION,), expect_blind=True),
+    )
+    yield Doc(
+        "extra-right-aligned",
+        "blocks aligned to the right edge, with values of different length",
+        [fam, "scenario-9"],
+        [_x("A", pages=3), _x("B", pages=3)],
+        blocks={
+            1: HeaderBlock(
+                {"division": "Roads"}, labels={"division": "Division"}, x=560.0, align="r"
+            ),
+            4: HeaderBlock(
+                {"division": "Parks and Recreation"},
+                labels={"division": "Division"},
+                x=560.0,
+                align="r",
+            ),
+        },
+        extra=ExtraSpec((DIVISION,), expect_blind=True),
+    )
+    yield Doc(
+        "extra-header-in-region",
+        "continuation pages repeat the table header where the block was printed",
+        [fam, "scenario-10"],
+        [_x("A", pages=3, rows_per_page=6)],
+        blocks={1: _four_fields()},
+        extra=senate,
+        push_tables=True,
+    )
+    yield Doc(
+        "extra-reworded-headers",
+        "two tables with reworded headers; the fields attach by page, not by table",
+        [fam, "scenario-11"],
+        [
+            part("A", "projects6", pages=2, rows_per_page=4),
+            part("B", "projects6", reword("projects6", [2, 3]), pages=2, rows_per_page=4),
+        ],
+        blocks={
+            1: HeaderBlock({"division": "Roads"}, labels={"division": "Division"}),
+            3: HeaderBlock({"division": "Bridges"}, labels={"division": "Division"}),
+        },
+        extra=one,
+    )
+    yield Doc(
+        "extra-caption-lookalike",
+        "captions under the block that look like fields but are not requested",
+        [fam, "scenario-12"],
+        [_x("A", pages=3)],
+        blocks={
+            1: HeaderBlock(
+                {"division": "Roads"},
+                labels={"division": "Division"},
+                captions=("Prepared by the Finance Office", "Draft of the 2018 budget"),
+            )
+        },
+        extra=one,
+    )
+
+
 def all_docs() -> list[Doc]:
     """Return every document of the fixture."""
     families = (
@@ -675,6 +957,7 @@ def all_docs() -> list[Doc]:
         residual_risk,
         pipeline,
         controls,
+        extra_fields,
     )
     docs = [d for family in families for d in family()]
     ids = [d.id for d in docs]

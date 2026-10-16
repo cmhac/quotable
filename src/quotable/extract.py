@@ -26,6 +26,8 @@ The pipeline: text-layer check, table discovery, per-page extraction, grounding,
 
 import asyncio
 import json
+import logging
+from collections.abc import Mapping, Sequence
 from dataclasses import replace
 from pathlib import Path
 from typing import Any
@@ -36,14 +38,26 @@ from pydantic_ai.models import Model
 from quotable._model import PydanticAIClient
 from quotable._paddle import PaddleEngine
 from quotable.cache import resolve_cache_dir
-from quotable.discover import DISCOVERY_PAGES, Found, discover
+from quotable.discover import DISCOVERY_PAGES, Discovery, Found, discover
+from quotable.extra_fields import (
+    ExtraField,
+    ExtraFields,
+    ExtraResult,
+    find_suspects,
+    flatten,
+    ground_fields,
+    propagate,
+    second_look,
+    table_bands,
+    validate_extra_fields,
+)
 from quotable.layout import page_layouts
 from quotable.llm import CachedClient, Image, LLMClient, Request
 from quotable.merge import merge_tables
 from quotable.models import PageRows, TableSchema
 from quotable.ocr import OcrConfig, OcrEngine
 from quotable.ocr_pages import ocr_pages
-from quotable.recheck import recheck_table
+from quotable.recheck import recheck_fields, recheck_table
 from quotable.regions import table_layers
 from quotable.schema import ExtractionError
 from quotable.table import PageResult, Table, ground_document
@@ -56,6 +70,7 @@ from quotable.textcheck import (
 )
 
 DPI = 150
+log = logging.getLogger("quotable")
 MAX_CONCURRENT_REQUESTS = 4
 MAX_PROBLEMS = 30
 MAX_PREVIOUS_OUTPUT_CHARS = 20_000  # truncation of the output echoed on retry
@@ -204,6 +219,82 @@ async def usable_layers(
     return merged, before.bad_pages
 
 
+Printed = dict[int, dict[str, ExtraResult]]  # page -> field -> what the page prints
+
+
+def printed_fields(
+    extras: Mapping[int, Mapping[str, str | None]], layers: Mapping[int, Layer]
+) -> Printed:
+    """Ground what discovery read on each page; a field the page does not print is left out."""
+    out: Printed = {}
+    for page, values in extras.items():
+        grounded = ground_fields(layers[page], values)
+        out[page] = {
+            name: ExtraResult(value, page, grounded[name])
+            for name, value in values.items()
+            if value is not None
+        }
+    return out
+
+
+async def resolve_extra_fields(  # noqa: PLR0913
+    extra_fields: ExtraFields,
+    discovery: Discovery,
+    layers: Mapping[int, Layer],
+    pngs: Sequence[bytes],
+    client: LLMClient,
+    *,
+    recheck: bool,
+) -> tuple[Printed, dict[tuple[int, str], tuple[str, str]], int]:
+    """
+    Run the steps of requirement 13 up to the carry; return the pages' printed fields.
+
+    Grounding, the recheck of fuzzy and ungrounded values, the missed-header check with its
+    second look. Returns what each page prints, the accepted rechecks, and the number of suspect
+    pages. The carry rule is applied by the caller (``propagate``).
+    """
+    fields = {f.name: f for f, _ in flatten(extra_fields)}
+    printed = printed_fields(discovery.extras, layers)
+    changes: dict[tuple[int, str], tuple[str, str]] = {}
+    if recheck:
+        printed, changes = await recheck_fields(printed, layers, pngs, fields, client)
+    rows_by_page: dict[int, list[tuple[str, str]]] = {}
+    for found in discovery.tables:
+        for page, rows in found.rows.items():
+            rows_by_page.setdefault(page, []).append(rows)
+    bands = {p: table_bands(layers[p], rows) for p, rows in rows_by_page.items()}
+    suspects = find_suspects(
+        layers, {p: {n: r.grounding for n, r in row.items()} for p, row in printed.items()}, bands
+    )
+    gate = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
+
+    async def look(page: int, evidence: dict[str, list[str]]) -> dict[str, ExtraResult]:
+        asked: dict[str, ExtraField] = {name: fields[name] for name in evidence}
+        async with gate:
+            return await second_look(page, pngs[page - 1], layers[page], asked, evidence, client)
+
+    answers = await asyncio.gather(*(look(p, ev) for p, ev in suspects.items()))
+    for page, found_here in zip(suspects, answers, strict=True):
+        printed.setdefault(page, {}).update(found_here)
+    return printed, changes, len(suspects)
+
+
+def attach_extra_fields(
+    tables: list[Table],
+    by_page: Mapping[int, Mapping[str, ExtraResult]],
+    names: tuple[str, ...],
+    changes: Mapping[tuple[int, str], tuple[str, str]],
+) -> list[Table]:
+    """Give each table the results of its own pages (a page two tables share goes to both)."""
+    out = []
+    for table in tables:
+        mine = {r.page: dict(by_page[r.page]) for r in table.pages}
+        used = {(r.source_page, n) for row in mine.values() for n, r in row.items()}
+        kept = {key: value for key, value in changes.items() if key in used}
+        out.append(replace(table, extra_fields=mine, extra_names=names, extra_changes=kept))
+    return out
+
+
 async def run_pipeline(  # noqa: PLR0913
     pdf: Path,
     client: LLMClient,
@@ -214,9 +305,15 @@ async def run_pipeline(  # noqa: PLR0913
     ocr: OcrEngine | None = None,
     ocr_config: OcrConfig | None = None,
     cache_dir: Path | None = None,
+    extra_fields: ExtraFields | None = None,
 ) -> list[Table]:
     """
     Run the whole pipeline on one PDF with an already-built client (internal; tests use it).
+
+    ``extra_fields`` (spec 010) are checked first, before any request. In the order of the spec:
+    discovery also reads the fields, they are grounded, fuzzy and ungrounded values are rechecked,
+    pages that may hold a missed header get a second look, the carry rule runs, and the results
+    are attached to the tables before the merge step.
 
     ``merge_reworded`` joins tables whose headers are worded differently on different pages
     when every check of spec 007 passes (``quotable.merge``); it runs after extraction and
@@ -226,6 +323,8 @@ async def run_pipeline(  # noqa: PLR0913
     OCR, such a document is rejected); ``ocr_config`` its settings; ``cache_dir`` where the
     OCR results are cached.
     """
+    if extra_fields is not None:
+        validate_extra_fields(extra_fields)
     with pymupdf.open(pdf) as document:
         layers: dict[int, Layer] = {i + 1: load_layer(p) for i, p in enumerate(document)}
     # before rendering or any request; cannot be skipped
@@ -233,7 +332,10 @@ async def run_pipeline(  # noqa: PLR0913
     with pymupdf.open(pdf) as document:
         pngs = [render_png(p) for p in document]
 
-    found = await discover(pngs, client, discovery_pages=discovery_pages)
+    discovery = await discover(
+        pngs, client, discovery_pages=discovery_pages, extra_fields=extra_fields
+    )
+    found = discovery.tables
     table_layers_by_page = table_page_layers(found, layers)  # may reject a page before extracting
     layouts = [
         page_layouts(f.columns, [layers[p] for p in f.pages]) for f in found
@@ -278,6 +380,26 @@ async def run_pipeline(  # noqa: PLR0913
                 ocr_pages=tuple(r.page for r in pages if r.page in ocr_done),
             )
         )
+    if extra_fields is not None:
+        printed, changes, suspect_pages = await resolve_extra_fields(
+            extra_fields, discovery, layers, pngs, client, recheck=recheck
+        )
+        flat = flatten(extra_fields)
+        by_page = propagate(sorted(layers), printed, flat, carry_forward=extra_fields.carry_forward)
+        names = tuple(f.name for f, _ in flat)
+        tables = attach_extra_fields(tables, by_page, names, changes)
+        log.info(
+            "extra fields: %d read on %d page(s); %d page(s) carry a value from an earlier page; "
+            "%d suspect page(s) (second looks)",
+            len(names),
+            sum(1 for row in printed.values() if row),
+            sum(
+                1
+                for page, row in by_page.items()
+                if any(r.source_page not in (None, page) for r in row.values())
+            ),
+            suspect_pages,
+        )
     if merge_reworded:
         tables = merge_tables(tables)
     if recheck:
@@ -306,6 +428,7 @@ async def extract_tables_async(  # noqa: PLR0913
     recheck: bool = True,
     ocr: OcrConfig | bool = True,
     merge_reworded: bool = True,
+    extra_fields: ExtraFields | None = None,
 ) -> list[Table]:
     """
     Run the whole pipeline on one PDF; return one ``Table`` per table in it.
@@ -330,6 +453,13 @@ async def extract_tables_async(  # noqa: PLR0913
     of value in every column, and exactly one possible partner. Any doubt leaves the tables
     apart. ``Table.merged`` lists what was joined; ``False`` turns the step off. It makes no
     model request.
+
+    ``extra_fields`` (an ``ExtraFields``) names values to read from outside the tables, such as
+    a page header. Each becomes a column on every row of every table, graded against the text
+    layer like any other value, with the page that printed it in ``<name>__source_page``.
+    Discovery reads them page by page; a page that prints a field uses it, and with
+    ``carry_forward=True`` a page that does not takes the nearest earlier page's value.
+    Pages that may hold a header the model missed get a second look. Without it nothing changes.
     """
     config = _ocr_config(ocr)
     directory = resolve_cache_dir(cache_dir)
@@ -342,6 +472,7 @@ async def extract_tables_async(  # noqa: PLR0913
         discovery_pages=discovery_pages,
         recheck=recheck,
         merge_reworded=merge_reworded,
+        extra_fields=extra_fields,
         ocr=None if config is None else PaddleEngine(config),
         ocr_config=config,
         cache_dir=directory,
@@ -359,6 +490,7 @@ def extract_tables(  # noqa: PLR0913
     recheck: bool = True,
     ocr: OcrConfig | bool = True,
     merge_reworded: bool = True,
+    extra_fields: ExtraFields | None = None,
 ) -> list[Table]:
     """Run the whole pipeline on one PDF (synchronous wrapper); one ``Table`` per table."""
     return asyncio.run(
@@ -372,5 +504,6 @@ def extract_tables(  # noqa: PLR0913
             recheck=recheck,
             ocr=ocr,
             merge_reworded=merge_reworded,
+            extra_fields=extra_fields,
         )
     )

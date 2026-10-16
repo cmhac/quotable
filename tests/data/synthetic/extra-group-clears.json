@@ -1,0 +1,474 @@
+{
+ "id": "extra-group-clears",
+ "description": "a later block prints only the year; the grouped division is cleared",
+ "tags": [
+  "family:extra-fields",
+  "scenario-4"
+ ],
+ "pages": 6,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "rows": {
+    "1": [
+     [
+      "Orange",
+      "15,039",
+      "16.5%"
+     ],
+     [
+      "Franklin",
+      "78,151",
+      "23.3%"
+     ],
+     [
+      "Windham",
+      "67,041",
+      "22.5%"
+     ],
+     [
+      "Birch",
+      "70,941",
+      "9.6%"
+     ]
+    ],
+    "2": [
+     [
+      "Harbor",
+      "19,154",
+      "21.4%"
+     ],
+     [
+      "Washington",
+      "62,921",
+      "4.2%"
+     ],
+     [
+      "Sorrel",
+      "72,009",
+      "29.6%"
+     ],
+     [
+      "Essex",
+      "8,901",
+      "13.9%"
+     ]
+    ],
+    "3": [
+     [
+      "Washington",
+      "15,356",
+      "9.3%"
+     ],
+     [
+      "Sorrel",
+      "72,168",
+      "10.9%"
+     ],
+     [
+      "Maple",
+      "30,844",
+      "25.1%"
+     ],
+     [
+      "Alder",
+      "14,954",
+      "7.9%"
+     ]
+    ],
+    "4": [
+     [
+      "Birch",
+      "46,270",
+      "21.9%"
+     ],
+     [
+      "Rutland",
+      "56,057",
+      "24.1%"
+     ],
+     [
+      "Spruce",
+      "56,712",
+      "6.8%"
+     ],
+     [
+      "Orleans",
+      "70,280",
+      "19.5%"
+     ]
+    ],
+    "5": [
+     [
+      "Laurel",
+      "97,366",
+      "8.2%"
+     ],
+     [
+      "Alder",
+      "68,060",
+      "19.2%"
+     ],
+     [
+      "Washington",
+      "64,146",
+      "17.3%"
+     ],
+     [
+      "Cedar",
+      "89,608",
+      "15.8%"
+     ]
+    ],
+    "6": [
+     [
+      "Sorrel",
+      "28,318",
+      "16.1%"
+     ],
+     [
+      "Grand Isle",
+      "70,317",
+      "30.4%"
+     ],
+     [
+      "Summit",
+      "56,479",
+      "18.1%"
+     ],
+     [
+      "Laurel",
+      "79,780",
+      "18.2%"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [],
+ "extra_fields": {
+  "fields": [
+   {
+    "name": "division",
+    "description": "The division named at the top left of the page",
+    "group": "heading"
+   },
+   {
+    "name": "year",
+    "description": "The funding year printed at the top left of the page",
+    "group": "heading"
+   }
+  ],
+  "groups": [
+   {
+    "name": "heading",
+    "description": "The heading block: division and year, printed together",
+    "fields": [
+     "division",
+     "year"
+    ]
+   }
+  ],
+  "printed": {
+   "1": {
+    "division": "Roads",
+    "year": "2018"
+   },
+   "2": {
+    "division": null,
+    "year": null
+   },
+   "3": {
+    "division": null,
+    "year": null
+   },
+   "4": {
+    "division": null,
+    "year": "2019"
+   },
+   "5": {
+    "division": null,
+    "year": null
+   },
+   "6": {
+    "division": null,
+    "year": null
+   }
+  },
+  "boxes": {
+   "1": {
+    "division": [
+     74.0,
+     49.45,
+     100.01,
+     60.25
+    ],
+    "year": [
+     96.53,
+     61.45,
+     116.54,
+     72.25
+    ]
+   },
+   "4": {
+    "year": [
+     96.53,
+     49.45,
+     116.54,
+     60.25
+    ]
+   }
+  },
+  "block_boxes": {
+   "1": [
+    40.0,
+    49.45,
+    116.54,
+    72.25
+   ],
+   "4": [
+    40.0,
+    49.45,
+    116.54,
+    60.25
+   ]
+  },
+  "table_boxes": {
+   "1": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "2": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "3": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "4": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "5": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "6": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ]
+  },
+  "expected": {
+   "plain": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": null,
+     "year": null
+    },
+    "3": {
+     "division": null,
+     "year": null
+    },
+    "4": {
+     "division": null,
+     "year": {
+      "value": "2019",
+      "source_page": 4
+     }
+    },
+    "5": {
+     "division": null,
+     "year": null
+    },
+    "6": {
+     "division": null,
+     "year": null
+    }
+   },
+   "carry": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    },
+    "4": {
+     "division": null,
+     "year": {
+      "value": "2019",
+      "source_page": 4
+     }
+    },
+    "5": {
+     "division": null,
+     "year": {
+      "value": "2019",
+      "source_page": 4
+     }
+    },
+    "6": {
+     "division": null,
+     "year": {
+      "value": "2019",
+      "source_page": 4
+     }
+    }
+   },
+   "carry_ungrouped": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     }
+    },
+    "4": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2019",
+      "source_page": 4
+     }
+    },
+    "5": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2019",
+      "source_page": 4
+     }
+    },
+    "6": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2019",
+      "source_page": 4
+     }
+    }
+   }
+  },
+  "baits": [
+   {
+    "page": 4,
+    "field": "division",
+    "word": "Year"
+   }
+  ],
+  "expect_stale": false,
+  "expect_blind": false
+ }
+}

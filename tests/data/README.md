@@ -59,3 +59,26 @@ and that a page takes seconds, not about a minute as on a CPU. Then record:
 | Date | Card | Driver | CUDA wheel | PaddlePaddle | Result | Seconds per page |
 |---|---|---|---|---|---|---|
 | | | | | | | |
+
+## `synthetic/`: the extra-fields documents (`extra-*`)
+
+Twenty of the generated PDFs (ids `extra-...`, made by `tests/synthetic_cases.py::extra_fields`,
+drawn by `tests/synthetic.py`) carry a header block: lines of text at the top left of a page
+(a label and a value per line, like the Senate sample) whose values are the extra fields of
+spec 010. Their truth files have an `extra_fields` object:
+
+- `fields` (name, description, group) and `groups` as the caller would declare them;
+- `printed`: page -> field -> the value printed on that page, or `null`; `boxes`: the drawn box
+  of each printed value; `block_boxes` and `table_boxes`: where the blocks and the tables are;
+- `expected`: page -> field -> `{value, source_page}` or `null`, three ways: `plain` (a page has
+  only what it prints, the default), `carry` (carried forward, groups clear) and
+  `carry_ungrouped` (carried forward, no groups). The generator computes them with its own loop,
+  which imports nothing from the library;
+- `baits`: the (page, field) pairs where the missed-header check should fire (words in a field's
+  region outside the tables' rows), computed from the PDF's words;
+- `expect_stale` (an ungrouped field keeps a value a page dropped: the documented limit) and
+  `expect_blind` (a block that moves or is right-aligned: the check cannot see it).
+
+Each document is tagged `scenario-N` for the scenarios of the spec (1 to 12). The 154 documents
+of the merge fixture are unchanged. `tests/test_synthetic.py` checks the family; `just
+score-extra-fields` injects faults into what a fake model reads and prints how the checks do.

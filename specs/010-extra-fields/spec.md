@@ -420,6 +420,37 @@ sentences, "Not handled". `AGENTS.md`: project state, file tree (`extra_fields.p
 `score_extra_fields.py`), the recipe, the test count. Status set to implemented only after the
 user approves the change.
 
+## Offline scoring
+
+`just score-extra-fields` (`tests/score_extra_fields.py`; a fake model answering from the truth
+files, one injected fault at a time, the second look and the recheck answered faithfully, so it
+measures the library's checks and says nothing about any real model). Documents marked
+`expect_stale` or `expect_blind` are left out. Run on the 17 other `extra-*` documents, with
+`carry_forward=True` and the groups of each truth file:
+
+| Fault | Runs | Right | Wrong but flagged | Wrong and silent | Missed headers caught | False-alarm second looks | Second looks per 100 pages |
+|---|---|---|---|---|---|---|---|
+| none (faithful model) | 17 | 17 | 0 | 0 | - | 4 | 4.0 |
+| a block missed, another page prints the same fields | 13 | 13 | 0 | 0 | 13 of 13 | 0 | 9.6 |
+| a block missed, a field printed nowhere else | 13 | 0 | 0 | 13 | 2 (of 13) | 0 | 3.0 |
+| a value invented on a page that prints none | 16 | 0 | 16 | 0 | - | 3 | 4.0 |
+| a block value misread (one character) | 26 | 26 | 0 | 0 | - | 4 | 3.0 |
+| a block value reported one page early | 8 | 0 | 8 | 0 | - | 0 | 10.1 |
+
+What the numbers say. A missed header is recovered every time the check has a place to look
+(the field is printed on another page); when a field is printed nowhere else the check has no
+region and the header stays missing, silently: this is the design limit named under "Not
+handled", not a defect to tune away. An invented or misplaced value is never silent: it is
+`ungrounded`, so it shows in `flagged()`, on every row that carries it (it is not removed, and
+with the carry it is carried until the next block). A one-character misread is corrected by the
+field recheck. The four false-alarm second looks of a faithful model are on three documents:
+`extra-header-in-region` (built to cause them: a table header printed where the block was; pages
+2 and 3) and the two group documents, where a later block drops a line and the line above or
+below it, 12 pt away, falls inside the dropped field's region (page 4). Each costs one request and
+changes nothing. The second-look
+rate depends on the fixture's mix of documents and says nothing about a real report: the live run
+measures that.
+
 ## Open questions
 
 Settled by the user: the name "extra fields"; fields are on every `Row` and in every output;

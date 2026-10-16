@@ -1,0 +1,492 @@
+{
+ "id": "extra-senate-geometry",
+ "description": "summary and detail on the block's page; continuation rows sit where the block was",
+ "tags": [
+  "family:extra-fields",
+  "scenario-6"
+ ],
+ "pages": 3,
+ "parts": [
+  {
+   "id": "sum",
+   "pages": [
+    1
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    1
+   ],
+   "rows": {
+    "1": [
+     [
+      "Bennington",
+      "31,757",
+      "11.5%"
+     ],
+     [
+      "Grand Isle",
+      "56,422",
+      "26.6%"
+     ],
+     [
+      "Alder",
+      "45,363",
+      "17.9%"
+     ],
+     [
+      "Franklin",
+      "52,251",
+      "14.4%"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "det",
+   "pages": [
+    1,
+    2,
+    3
+   ],
+   "columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "schema_columns": [
+    "Applicant",
+    "Program",
+    "Amount Awarded",
+    "Year"
+   ],
+   "header_pages": [
+    1
+   ],
+   "rows": {
+    "1": [
+     [
+      "Willow Trail",
+      "Juniper",
+      "$909,000",
+      "59,875"
+     ],
+     [
+      "Cedar Library",
+      "Willow",
+      "$330,000",
+      "22,247"
+     ],
+     [
+      "Willow Trail",
+      "Summit",
+      "$574,000",
+      "9,023"
+     ],
+     [
+      "Riverside Wharf",
+      "Willow",
+      "$309,000",
+      "63,928"
+     ],
+     [
+      "Riverside Depot",
+      "Poplar",
+      "$688,000",
+      "91,962"
+     ],
+     [
+      "Lantern Bridge",
+      "Rutland",
+      "$662,000",
+      "93,661"
+     ],
+     [
+      "Summit Clinic",
+      "Cedar",
+      "$625,000",
+      "2,330"
+     ],
+     [
+      "Lantern Market",
+      "Willow",
+      "$758,000",
+      "69,415"
+     ]
+    ],
+    "2": [
+     [
+      "Cedar Orchard",
+      "Windham",
+      "$352,000",
+      "23,639"
+     ],
+     [
+      "Willow Depot",
+      "Juniper",
+      "$521,000",
+      "25,054"
+     ],
+     [
+      "Riverside Depot",
+      "Laurel",
+      "$464,000",
+      "660"
+     ],
+     [
+      "Summit Clinic",
+      "Tamarack",
+      "$933,000",
+      "80,189"
+     ],
+     [
+      "Willow Market",
+      "Poplar",
+      "$564,000",
+      "84,650"
+     ],
+     [
+      "Harbor Trail",
+      "Cedar",
+      "$837,000",
+      "1,402"
+     ],
+     [
+      "Granite Trail",
+      "Bennington",
+      "$50,000",
+      "96,300"
+     ],
+     [
+      "Willow Wharf",
+      "Maple",
+      "$697,000",
+      "30,229"
+     ]
+    ],
+    "3": [
+     [
+      "Riverside Bridge",
+      "Lantern",
+      "$801,000",
+      "20,152"
+     ],
+     [
+      "Granite Orchard",
+      "Birch",
+      "$858,000",
+      "8,108"
+     ],
+     [
+      "Maple Depot",
+      "Addison",
+      "$223,000",
+      "94,683"
+     ],
+     [
+      "Riverside Market",
+      "Aspen",
+      "$503,000",
+      "18,707"
+     ],
+     [
+      "Willow Trail",
+      "Willow",
+      "$514,000",
+      "60,708"
+     ],
+     [
+      "Cedar Bridge",
+      "Sorrel",
+      "$799,000",
+      "11,700"
+     ],
+     [
+      "Willow Trail",
+      "Orange",
+      "$689,000",
+      "41,884"
+     ],
+     [
+      "Maple Depot",
+      "Spruce",
+      "$877,000",
+      "11,195"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [],
+ "extra_fields": {
+  "fields": [
+   {
+    "name": "appropriation",
+    "description": "The appropriation label at the top left",
+    "group": null
+   },
+   {
+    "name": "year",
+    "description": "The funding year",
+    "group": null
+   },
+   {
+    "name": "title",
+    "description": "The title of the appropriation",
+    "group": null
+   },
+   {
+    "name": "account",
+    "description": "The account line under the title",
+    "group": null
+   }
+  ],
+  "groups": [],
+  "printed": {
+   "1": {
+    "appropriation": "APPROPRIATIONS",
+    "year": "2018",
+    "title": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+    "account": "Account 0100"
+   },
+   "2": {
+    "appropriation": null,
+    "year": null,
+    "title": null,
+    "account": null
+   },
+   "3": {
+    "appropriation": null,
+    "year": null,
+    "title": null,
+    "account": null
+   }
+  },
+  "boxes": {
+   "1": {
+    "appropriation": [
+     40.0,
+     49.45,
+     120.02,
+     60.25
+    ],
+    "year": [
+     96.53,
+     61.45,
+     116.54,
+     72.25
+    ],
+    "title": [
+     40.0,
+     73.45,
+     255.06,
+     84.25
+    ],
+    "account": [
+     40.0,
+     85.45,
+     95.03,
+     96.25
+    ]
+   }
+  },
+  "block_boxes": {
+   "1": [
+    40.0,
+    49.45,
+    255.06,
+    96.25
+   ]
+  },
+  "table_boxes": {
+   "1": [
+    [
+     40.0,
+     101.4,
+     560.0,
+     177.5
+    ],
+    [
+     40.0,
+     401.4,
+     560.0,
+     541.5
+    ]
+   ],
+   "2": [
+    [
+     40.0,
+     92.0,
+     560.0,
+     214.0
+    ]
+   ],
+   "3": [
+    [
+     40.0,
+     92.0,
+     560.0,
+     214.0
+    ]
+   ]
+  },
+  "expected": {
+   "plain": {
+    "1": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "appropriation": null,
+     "year": null,
+     "title": null,
+     "account": null
+    },
+    "3": {
+     "appropriation": null,
+     "year": null,
+     "title": null,
+     "account": null
+    }
+   },
+   "carry": {
+    "1": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    }
+   },
+   "carry_ungrouped": {
+    "1": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "appropriation": {
+      "value": "APPROPRIATIONS",
+      "source_page": 1
+     },
+     "year": {
+      "value": "2018",
+      "source_page": 1
+     },
+     "title": {
+      "value": "SALARIES, OFFICERS AND EMPLOYEES, SENATE",
+      "source_page": 1
+     },
+     "account": {
+      "value": "Account 0100",
+      "source_page": 1
+     }
+    }
+   }
+  },
+  "baits": [],
+  "expect_stale": false,
+  "expect_blind": false
+ }
+}

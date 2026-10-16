@@ -65,6 +65,65 @@ each other ("Population" and "Population 2020" in two sections): the golden fixt
 its 5 such cases. Look at `Table.merged` if your documents are like that, or turn the step off.
 `just score-merge` shows how each rule and threshold did on the fixture.
 
+### Values printed outside the tables (extra fields)
+
+A page header such as a fiscal year or a section name is not in any table, but it often belongs
+on every row. Name the values to read and `extract_tables` adds them as columns:
+
+```python
+from quotable import ExtraField, ExtraFields, FieldGroup, extract_tables
+
+tables = extract_tables(
+    "report.pdf",
+    model="openai:<model-name>",
+    extra_fields=ExtraFields(
+        [
+            # fields printed together in one block go in a group; the description goes to the model
+            FieldGroup(
+                "heading",
+                "The block of lines at the top left of a page that starts a section",
+                [
+                    ExtraField("year", "The funding year, from the second line of the block"),
+                    ExtraField("title", "The title of the section, from the third line"),
+                ],
+            ),
+            ExtraField("agency", "The agency named in the footer"),  # a field on its own
+        ],
+        prompt="",  # optional free text for the model, e.g. where the blocks are
+        carry_forward=True,  # off unless asked for (see below)
+    ),
+)
+```
+
+Describe where a field is and what it is, not what it says: the description goes to the model,
+and a word of the header in it biases the reading.
+
+- **Columns.** After the table's own value columns, `records()` and both frames have one column
+  per field, named as you named it, then for each field `<name>__grounding`, `<name>__coverage`
+  and `<name>__source_page` (the page that printed the value; a nullable integer, `Int64` in
+  pandas). Each `Row` has `Row.extra` and each `Table` has `Table.extra_fields` (page -> field ->
+  `ExtraResult`). If a field has the name of a PDF column it gets a trailing `_`; the library's
+  own columns give way to a field called `page`, so the page number becomes `page_`.
+- **Checked like any other text.** Each value is looked up in the page's whole text layer
+  (`exact`, `fuzzy`, `ungrounded`, `untokenized`; `empty` when nothing was printed). A field value
+  counts in `Row.status`, `grounding_status` and `Table.flagged()` (flags with `extra=True`), and
+  a `fuzzy` or `ungrounded` value gets one second look with the text layer, kept only if it grounds
+  strictly better, and shown in `recheck_changes` (`recheck=False` turns it off).
+- **Carrying forward.** By default (`carry_forward=False`) a page has exactly what it prints, so
+  the continuation pages of a section have empty fields. With `carry_forward=True` a page that
+  prints nothing takes the nearest earlier page's value (never a later one), with its grounding
+  and `__source_page`. A field in a `FieldGroup` is also cleared on a page that prints some other
+  field of its group (grounded `exact` or `fuzzy`) and not this one, because a block that drops a
+  line has dropped it. A field in no group is never cleared.
+- **Missed headers.** Discovery's `null` is the only evidence that a page prints no header. After
+  it, for each field, the text layer is searched where the field is printed on other pages (plus
+  6 pt), outside every table's band; a page with words there gets one second look at that page,
+  and the answer counts only if it grounds. This runs whether or not the carry is on, and costs
+  one request per suspect page (counted by `max_requests`).
+- Nothing changes without `extra_fields`: the requests, and so the cache keys, are the same.
+
+`just score-extra-fields` shows how the checks do with injected faults (no model, no cost).
+
 ## The text layer, and OCR
 
 Every value is checked against the PDF's text layer, and grounding cannot be turned off.
@@ -172,6 +231,7 @@ it, and works without the OCR extra installed.
 | Grounding | `grounding` | Each value is looked up in the table's text layer (the page's, or on a page with several tables only the band between the table's first and last row, found with `regions`): exact token match, else a fuzzy longest-common-subsequence match. Statuses: `exact`, `fuzzy`, `ungrounded`, `untokenized`, `empty`, `not_on_page`. |
 | Position check | `position` | A value must sit in its own row and column (row windows from uniquely-occurring values, column bands pooled over the document). Values found elsewhere become `misplaced`. |
 | Merge | `merge` | Two tables that are really one but whose headers are worded differently on different pages are joined when every check passes (see "Headers worded differently"); any doubt leaves them apart. Switch off with `merge_reworded=False`. |
+| Extra fields | `extra_fields` | Optional (see "Values printed outside the tables"). Discovery also reads the requested fields on each page; they are grounded in the page's whole text layer, rechecked if fuzzy or ungrounded, checked for missed headers (a second look at pages with unexplained words where the header is printed elsewhere), carried forward on request and attached to every row. |
 | Recheck | `recheck` | Flagged cells go back to the model once with their reason, the page image and the page's whole text layer; the model is told to copy the text layer's reading. An answer is kept only if grounding of that cell strictly improves. Because the text layer wins, OCR errors in it (for example thousands commas read as periods) can pass into the output. |
 
 Model requests are always cached on disk (see "The cache" above), by a hash of everything that
@@ -187,7 +247,13 @@ decides the answer, and `max_requests` caps how many new requests one run may ma
   "Headers worded differently on different pages". Names that share no words ("Amount" and
   "Funding"), a different column count and more than one possible partner stay separate tables;
   two real tables with the same columns are returned as one.
-- Titles and captions printed outside a table (a fiscal year, a section name) are not captured.
+- Titles and captions printed outside a table are captured only if you name them as extra fields.
+  For those: a header that starts a new section halfway down a page (scope is per page); a header
+  that clears a field by leaving it out, for a field in no group (it keeps the old value: put
+  fields that are printed together in a `FieldGroup`); a section with no printed marker at all;
+  a header printed at a different place on different pages, or right-aligned or centred with a
+  changing length (the missed-header check does not see it; only the model's reading does);
+  values that depend on a table's rows (that is a column); pages not in reading order.
 - Page orientation in scans: OCR does not rotate or unwarp pages, so a sideways scan with no
   `/Rotate` flag stays sideways and is rejected after OCR.
 
@@ -212,10 +278,14 @@ just check       # hooks, then tests
   against real sample PDFs (`tests/data/`), so the whole pipeline is exercised without
   any API call. Several tests corrupt the recorded rows (a swapped value, a typo) to
   check that the position check and the recheck catch it.
-- `tests/data/synthetic/` is a golden fixture for the merge step: 154 generated PDFs with a
-  real text layer and a truth file each (`just synthetic` regenerates it byte for byte;
-  `just score-merge` scores the merge rules on it, with no model). The live test
-  `tests/live/test_live_merge.py` runs its pipeline cases through a real model.
+- `tests/data/synthetic/` is a golden fixture: 154 generated PDFs for the merge step and 20
+  `extra-*` ones for extra fields, each with a real text layer and a truth file (`just synthetic`
+  regenerates it byte for byte; `just score-merge` and `just score-extra-fields` score the merge
+  rules and the extra-field checks on it, with no model). The live tests
+  `tests/live/test_live_merge.py` and `tests/live/test_live_extra_fields.py` run their cases
+  through a real model; the second describes each field by its position only, so the request
+  never prints a word of the header it asks about (`tests/test_extra_fields_live_prompts.py`
+  checks that offline).
 - `tests/ocr/` runs the real PaddleOCR models on the CPU (`just test-ocr`). Deselected by
   default; it takes minutes, downloads the models on first use, and calls no model API.
 - `tests/live/` calls a real model. These tests are deselected by default and skip

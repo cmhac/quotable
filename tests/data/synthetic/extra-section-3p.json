@@ -1,0 +1,227 @@
+{
+ "id": "extra-section-3p",
+ "description": "one section of 3 page(s)",
+ "tags": [
+  "family:extra-fields",
+  "scenario-1"
+ ],
+ "pages": 3,
+ "parts": [
+  {
+   "id": "S0",
+   "pages": [
+    1,
+    2,
+    3
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    1,
+    2,
+    3
+   ],
+   "rows": {
+    "1": [
+     [
+      "Lamoille",
+      "34,337",
+      "27.9%"
+     ],
+     [
+      "Granite",
+      "42,107",
+      "26.6%"
+     ],
+     [
+      "Tamarack",
+      "69,592",
+      "29.7%"
+     ],
+     [
+      "Windham",
+      "45,713",
+      "5.6%"
+     ]
+    ],
+    "2": [
+     [
+      "Alder",
+      "61,644",
+      "14.2%"
+     ],
+     [
+      "Granite",
+      "80,299",
+      "9.8%"
+     ],
+     [
+      "Orleans",
+      "60,246",
+      "11.1%"
+     ],
+     [
+      "Poplar",
+      "79,592",
+      "14.9%"
+     ]
+    ],
+    "3": [
+     [
+      "Hickory",
+      "1,516",
+      "20.3%"
+     ],
+     [
+      "Maple",
+      "91,235",
+      "25.0%"
+     ],
+     [
+      "Poplar",
+      "13,304",
+      "6.3%"
+     ],
+     [
+      "Washington",
+      "28,840",
+      "5.6%"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [],
+ "extra_fields": {
+  "fields": [
+   {
+    "name": "division",
+    "description": "The division named at the top left of the page",
+    "group": null
+   }
+  ],
+  "groups": [],
+  "printed": {
+   "1": {
+    "division": "Roads"
+   },
+   "2": {
+    "division": null
+   },
+   "3": {
+    "division": null
+   }
+  },
+  "boxes": {
+   "1": {
+    "division": [
+     74.0,
+     49.45,
+     100.01,
+     60.25
+    ]
+   }
+  },
+  "block_boxes": {
+   "1": [
+    40.0,
+    49.45,
+    100.01,
+    60.25
+   ]
+  },
+  "table_boxes": {
+   "1": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "2": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "3": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ]
+  },
+  "expected": {
+   "plain": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": null
+    },
+    "3": {
+     "division": null
+    }
+   },
+   "carry": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    }
+   },
+   "carry_ungrouped": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    }
+   }
+  },
+  "baits": [],
+  "expect_stale": false,
+  "expect_blind": false
+ }
+}

@@ -1,0 +1,245 @@
+{
+ "id": "extra-block-on-text-page",
+ "description": "a block on a page without a table, then table pages",
+ "tags": [
+  "family:extra-fields",
+  "scenario-3"
+ ],
+ "pages": 4,
+ "parts": [
+  {
+   "id": "A",
+   "pages": [
+    2,
+    3,
+    4
+   ],
+   "columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "schema_columns": [
+    "Name",
+    "Count",
+    "Share"
+   ],
+   "header_pages": [
+    2,
+    3,
+    4
+   ],
+   "rows": {
+    "2": [
+     [
+      "Maple",
+      "46,364",
+      "8.0%"
+     ],
+     [
+      "Spruce",
+      "29,028",
+      "19.9%"
+     ],
+     [
+      "Poplar",
+      "32,968",
+      "15.6%"
+     ],
+     [
+      "Spruce",
+      "42,921",
+      "17.5%"
+     ]
+    ],
+    "3": [
+     [
+      "Grand Isle",
+      "75,927",
+      "13.2%"
+     ],
+     [
+      "Sorrel",
+      "1,154",
+      "29.7%"
+     ],
+     [
+      "Rutland",
+      "88,199",
+      "24.9%"
+     ],
+     [
+      "Essex",
+      "50,448",
+      "31.0%"
+     ]
+    ],
+    "4": [
+     [
+      "Laurel",
+      "3,146",
+      "7.3%"
+     ],
+     [
+      "Spruce",
+      "95,180",
+      "13.0%"
+     ],
+     [
+      "Essex",
+      "18,822",
+      "10.8%"
+     ],
+     [
+      "Spruce",
+      "70,632",
+      "5.1%"
+     ]
+    ]
+   }
+  }
+ ],
+ "relations": [],
+ "extra_fields": {
+  "fields": [
+   {
+    "name": "division",
+    "description": "The division named at the top left of the page",
+    "group": null
+   }
+  ],
+  "groups": [],
+  "printed": {
+   "1": {
+    "division": "Roads"
+   },
+   "2": {
+    "division": null
+   },
+   "3": {
+    "division": null
+   },
+   "4": {
+    "division": null
+   }
+  },
+  "boxes": {
+   "1": {
+    "division": [
+     74.0,
+     49.45,
+     100.01,
+     60.25
+    ]
+   }
+  },
+  "block_boxes": {
+   "1": [
+    40.0,
+    49.45,
+    100.01,
+    60.25
+   ]
+  },
+  "table_boxes": {
+   "2": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "3": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ],
+   "4": [
+    [
+     40.0,
+     92.4,
+     560.0,
+     168.5
+    ]
+   ]
+  },
+  "expected": {
+   "plain": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": null
+    },
+    "3": {
+     "division": null
+    },
+    "4": {
+     "division": null
+    }
+   },
+   "carry": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "4": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    }
+   },
+   "carry_ungrouped": {
+    "1": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "2": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "3": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    },
+    "4": {
+     "division": {
+      "value": "Roads",
+      "source_page": 1
+     }
+    }
+   }
+  },
+  "baits": [],
+  "expect_stale": false,
+  "expect_blind": false
+ }
+}
