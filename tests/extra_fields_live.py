@@ -29,6 +29,23 @@ STOPWORDS = frozenset(
 SENATE_HEADER_BOX = (0.0, 0.0, 215.0, 112.0)  # top left of the sample's page 1 (pt)
 
 
+DEFAULT_LIVE_RUNS = 3
+
+
+def live_runs(value: str | None) -> tuple[int, ...]:
+    """
+    Return the run numbers of a live case from ``QUOTABLE_LIVE_RUNS`` (unset or blank: three).
+
+    One run is the cheap first look; the default of three is what shows run-to-run flakiness.
+    """
+    text = (value or "").strip()
+    if not text:
+        return tuple(range(1, DEFAULT_LIVE_RUNS + 1))
+    if not text.isascii() or not text.isdigit() or int(text) < 1:
+        raise ValueError(f"QUOTABLE_LIVE_RUNS must be a positive whole number, not {value!r}")
+    return tuple(range(1, int(text) + 1))
+
+
 def field_description(line: int) -> str:
     """Describe a field by its position only: no word of any header may appear here."""
     return (

@@ -11,6 +11,7 @@ from tests.extra_fields_live import (
     SENATE_HEADER_BOX,
     field_description,
     header_words,
+    live_runs,
     neutral_fields,
     neutral_request,
     overlap,
@@ -109,3 +110,18 @@ def test_the_live_report_counts_false_alarms():
     assert found["false_alarm_pages"] == [2, 3]
     assert found["missed_before_the_region_check"] == []
     assert found["second_looks_per_100_pages"] == pytest.approx(66.7)
+
+
+# --- how many times a live case runs (QUOTABLE_LIVE_RUNS) ---------------------------------------
+@pytest.mark.parametrize(
+    ("value", "runs"),
+    [(None, (1, 2, 3)), ("", (1, 2, 3)), ("1", (1,)), ("2", (1, 2)), (" 5 ", (1, 2, 3, 4, 5))],
+)
+def test_live_runs_defaults_to_three_and_takes_a_count(value, runs):
+    assert live_runs(value) == runs
+
+
+@pytest.mark.parametrize("value", ["0", "-1", "two", "1.5"])
+def test_live_runs_rejects_anything_but_a_positive_whole_number(value):
+    with pytest.raises(ValueError, match="QUOTABLE_LIVE_RUNS"):
+        live_runs(value)

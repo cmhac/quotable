@@ -35,9 +35,11 @@ score-merge:
 score-extra-fields:
     uv run python -m tests.score_extra_fields
 
-# Run the live tests: calls a real model and costs money (needs OPENAI_API_KEY and QUOTABLE_LIVE_TEST_MODEL)
-test-live:
-    uv run pytest -m live -rs
+# Run the live tests: calls a real model and costs money (needs OPENAI_API_KEY and QUOTABLE_LIVE_TEST_MODEL).
+# Pass pytest args, e.g. `just test-live -n 4 tests/live/test_live_extra_fields.py`;
+# QUOTABLE_LIVE_RUNS=1 runs each spec 010 case once instead of three times.
+test-live *args:
+    uv run pytest -m live -rs {{ args }}
 
 # Run the real-OCR tests: real PaddleOCR models on the CPU (slow, downloads ~140 MB of models on first use, no API cost)
 test-ocr:

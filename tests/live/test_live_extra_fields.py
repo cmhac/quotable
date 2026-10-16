@@ -20,6 +20,12 @@ kept in ``tests/live/.cache/extra/report-*.json``. Each case runs three times in
 directories, so each run asks the model again. A difference is a finding to report, not a
 test to loosen.
 
+To go faster, add ``-n 4`` (pytest-xdist): the cases are independent, each with its own cache
+directory and report file, so they run side by side. Each worker keeps up to 4 requests in
+flight, so ``-n 4`` can mean 16 at once; lower it if the provider answers with rate-limit
+errors. ``QUOTABLE_LIVE_RUNS=1`` runs each case once instead of three times (a first look; it
+cannot show run-to-run differences).
+
 The real slice also needs ``QUOTABLE_LIVE_EXTRA_LABEL`` (text printed on exactly the pages that
 start a section). It takes ``QUOTABLE_LIVE_EXTRA_FIRST_PAGE`` (default 1),
 ``QUOTABLE_LIVE_EXTRA_LINES`` (how many lines the header block has, default 3) and
@@ -52,6 +58,7 @@ from quotable.text import load_layer, tokenize
 from tests.conftest import DATA as SAMPLES
 from tests.extra_fields_live import (
     header_words,
+    live_runs,
     neutral_fields,
     neutral_request,
     overlap,
@@ -70,7 +77,7 @@ pytestmark = [
 ]
 
 CACHE = Path(__file__).parent / ".cache" / "extra"
-RUNS = (1, 2, 3)
+RUNS = live_runs(os.environ.get("QUOTABLE_LIVE_RUNS"))
 EXTRA_IDS = [i for i in doc_ids() if i.startswith("extra-")]
 SENATE = SAMPLES / "senate_expenditures_paddleocr.pdf"
 # documents with no header at all: the request must not change their tables
@@ -83,7 +90,8 @@ REGRESSION_FIXTURE = [
 
 
 STARTED = time.monotonic()
-REQUESTS = [0]  # new model requests (the paid ones; cached answers are not counted) this session
+REQUESTS = [0]  # new model requests (the paid ones; cached answers are not counted) in this process
+# (under ``-n`` each worker counts its own, and every progress line names its worker)
 CONFIG: list[pytest.Config] = []
 
 
@@ -95,7 +103,9 @@ def progress(message: str) -> None:
     without ``-s``; the capture manager is told to step aside for the one line.
     """
     elapsed = int(time.monotonic() - STARTED)
-    line = f"[live {elapsed // 60:02d}:{elapsed % 60:02d}] {message}\n"
+    worker = os.environ.get("PYTEST_XDIST_WORKER")  # "gw0", "gw1", ... under ``-n``
+    tag = f"live {elapsed // 60:02d}:{elapsed % 60:02d}" + (f" {worker}" if worker else "")
+    line = f"[{tag}] {message}\n"
     manager = CONFIG[0].pluginmanager.getplugin("capturemanager") if CONFIG else None
     if manager is None:
         sys.stderr.write(line)

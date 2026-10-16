@@ -296,6 +296,9 @@ just check       # hooks, then tests
   ```
 
   Their answers are cached in `tests/live/.cache`, and each run is capped at a few requests.
+  To speed up the spec 010 live file, add `-n 4` (pytest-xdist; each worker keeps up to 4
+  requests in flight, so lower it on rate-limit errors) and/or set `QUOTABLE_LIVE_RUNS=1` to run
+  each case once instead of three times.
 
 ## Not carried over yet
 
