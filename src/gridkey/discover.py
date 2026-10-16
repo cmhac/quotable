@@ -12,7 +12,8 @@ invents columns, so it is told to reuse the known column names for a page that
 continues a known table and never to invent columns for a header it cannot see.
 
 Deliberately left out: merging tables whose column names drift between pages beyond
-case and punctuation, and any use of the text layer to find tables.
+case and punctuation (``gridkey.merge`` does that after extraction, from independent
+evidence), and any use of the text layer to find tables.
 """
 
 import json

@@ -80,6 +80,26 @@ def ground_document(
     return grounded, position
 
 
+@dataclass(frozen=True)
+class MergeEvidence:
+    """What the merge step measured when it joined two parts (all per column position)."""
+
+    token_sets: tuple[tuple[tuple[str, ...], tuple[str, ...]], ...] = ()  # (A's, B's), sorted
+    equal_positions: int = 0  # positions where both token sets are equal
+    max_x_difference: float = 0.0  # points, largest gap between the two grids
+    shapes: tuple[str, ...] = ()  # the dominant value shape of each column
+    cells: tuple[tuple[int, int], ...] = ()  # qualifying cells (A's, B's) of each column
+
+
+@dataclass(frozen=True)
+class MergedPart:
+    """One part of a table that the merge step absorbed into another (spec 007)."""
+
+    pages: tuple[int, ...]  # the pages the absorbed part had
+    columns: tuple[str, ...]  # its column names before they were renamed to the table's
+    evidence: MergeEvidence
+
+
 @dataclass
 class Table:
     """Everything the pipeline produced for one table of a PDF (``pages`` are its pages only)."""
@@ -95,6 +115,8 @@ class Table:
     # pages of this table whose text layer came from OCR (grounding against OCR text can pass
     # OCR errors into the output, so review these more carefully)
     ocr_pages: tuple[int, ...] = ()
+    # the parts absorbed by the merge step (spec 007), empty for a table never merged
+    merged: tuple[MergedPart, ...] = ()
 
     def page_rows(self, page: int) -> list[Row]:
         """Return the rows of one page (1-based)."""

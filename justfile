@@ -27,6 +27,10 @@ typecheck:
 test *args:
     uv run pytest {{ args }}
 
+# Score the merge rules on the golden fixture (spec 007; no model, no cost)
+score-merge:
+    uv run python -m tests.score_merge
+
 # Run the live tests: calls a real model and costs money (needs OPENAI_API_KEY and GRIDKEY_LIVE_TEST_MODEL)
 test-live:
     uv run pytest -m live -rs

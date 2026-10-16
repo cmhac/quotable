@@ -39,6 +39,7 @@ from gridkey.cache import resolve_cache_dir
 from gridkey.discover import DISCOVERY_PAGES, Found, discover
 from gridkey.layout import page_layouts
 from gridkey.llm import CachedClient, Image, LLMClient, Request
+from gridkey.merge import merge_tables
 from gridkey.models import PageRows, TableSchema
 from gridkey.ocr import OcrConfig, OcrEngine
 from gridkey.ocr_pages import ocr_pages
@@ -204,12 +205,17 @@ async def run_pipeline(  # noqa: PLR0913
     *,
     discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
+    merge_reworded: bool = True,
     ocr: OcrEngine | None = None,
     ocr_config: OcrConfig | None = None,
     cache_dir: Path | None = None,
 ) -> list[Table]:
     """
     Run the whole pipeline on one PDF with an already-built client (internal; tests use it).
+
+    ``merge_reworded`` joins tables whose headers are worded differently on different pages
+    when every check of spec 007 passes (``gridkey.merge``); it runs after extraction and
+    before the recheck.
 
     ``ocr`` is the engine used for pages with a garbled or missing text layer (``None``: no
     OCR, such a document is rejected); ``ocr_config`` its settings; ``cache_dir`` where the
@@ -267,6 +273,8 @@ async def run_pipeline(  # noqa: PLR0913
                 ocr_pages=tuple(r.page for r in pages if r.page in ocr_done),
             )
         )
+    if merge_reworded:
+        tables = merge_tables(tables)
     if recheck:
         tables = list(await asyncio.gather(*(recheck_table(t, pdf, client) for t in tables)))
     return tables
@@ -292,6 +300,7 @@ async def extract_tables_async(  # noqa: PLR0913
     discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
     ocr: OcrConfig | bool = True,
+    merge_reworded: bool = True,
 ) -> list[Table]:
     """
     Run the whole pipeline on one PDF; return one ``Table`` per table in it.
@@ -308,6 +317,14 @@ async def extract_tables_async(  # noqa: PLR0913
     configures that, and ``False`` rejects such a PDF with ``TextLayerError``. OCR results are
     cached next to the model answers. Either way the text layer is checked before any model
     request.
+
+    ``merge_reworded`` (default on) joins two tables that are really one but whose column names
+    are worded differently on different pages ("Requested Local Match" on some pages,
+    "Requested Match" on others), when every check of ``gridkey.merge`` passes: the same
+    column count, each name's words containing the other's, the same x positions, the same kind
+    of value in every column, and exactly one possible partner. Any doubt leaves the tables
+    apart. ``Table.merged`` lists what was joined; ``False`` turns the step off. It makes no
+    model request.
     """
     config = _ocr_config(ocr)
     directory = resolve_cache_dir(cache_dir)
@@ -319,6 +336,7 @@ async def extract_tables_async(  # noqa: PLR0913
         client,
         discovery_pages=discovery_pages,
         recheck=recheck,
+        merge_reworded=merge_reworded,
         ocr=None if config is None else PaddleEngine(config),
         ocr_config=config,
         cache_dir=directory,
@@ -335,6 +353,7 @@ def extract_tables(  # noqa: PLR0913
     discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
     ocr: OcrConfig | bool = True,
+    merge_reworded: bool = True,
 ) -> list[Table]:
     """Run the whole pipeline on one PDF (synchronous wrapper); one ``Table`` per table."""
     return asyncio.run(
@@ -347,5 +366,6 @@ def extract_tables(  # noqa: PLR0913
             discovery_pages=discovery_pages,
             recheck=recheck,
             ocr=ocr,
+            merge_reworded=merge_reworded,
         )
     )

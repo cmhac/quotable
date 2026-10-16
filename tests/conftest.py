@@ -21,12 +21,19 @@ Word = tuple[float, float, str]  # x, y (baseline), text
 
 
 def extract_tables(
-    pdf: Path, client: LLMClient, *, discovery_pages: int | None = None, recheck: bool = True
+    pdf: Path,
+    client: LLMClient,
+    *,
+    discovery_pages: int | None = None,
+    recheck: bool = True,
+    merge_reworded: bool | None = None,
 ) -> list[Table]:
     """Run the pipeline with a fake client (the public function takes a model instead)."""
     options: dict[str, Any] = (
         {} if discovery_pages is None else {"discovery_pages": discovery_pages}
     )
+    if merge_reworded is not None:
+        options["merge_reworded"] = merge_reworded
     return asyncio.run(run_pipeline(Path(pdf), client, recheck=recheck, **options))
 
 

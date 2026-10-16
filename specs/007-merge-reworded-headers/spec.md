@@ -1,7 +1,7 @@
 # 007 - Merge the parts of a table whose header is reworded
 
-Status: draft; open questions resolved; tasks written (`tasks/001` to `007`), awaiting approval.
-The golden fixture (`tests/data/synthetic/`) exists; no `src/` code yet.
+Status: implemented; offline suite and live check pass (see "Results on the golden fixture"
+and "Live results").
 
 ## Summary
 
@@ -55,11 +55,11 @@ reach is names that differ in wording.
    sets of A's and B's column name i (`gridkey.text.tokenize`, multi-level names `x.y` just
    contribute both parts' tokens). Position i is compatible when `a` and `b` are both non-empty
    and `a <= b` or `b <= a`. Every position must be compatible. No synonym lists, no fuzzy or
-   embedding similarity. **Provisional (the "half-equal rule"):** in addition, at least half of
-   the positions (rounded up) must have `a == b`. The user is not sure this rule is right. It
-   stays in the first implementation only if the golden fixture shows it removes harmful merges
-   without losing too many correct ones (see "Golden synthetic fixture / How rules are
-   chosen"); otherwise it is dropped or replaced by what the fixture supports.
+   embedding similarity. **The half-equal rule is dropped** (decided on the golden fixture, see
+   "Results on the golden fixture"): it removed no harmful merge and cost 27 correct ones. The
+   code keeps it as a setting, `Rules.equal_share` (the share of positions that must have equal
+   token sets, rounded up), default 0 = off, so the sweep that justified dropping it can be
+   reproduced with `just score-merge`.
 6. **No ambiguity inside the pair.** For every i != j, column i of A must not be compatible
    (per 5) with column j of B, and column j of A must not be compatible with column i of B.
 7. **Same physical grid.** For each column, take the cells that are non-empty and grounded
@@ -68,10 +68,13 @@ reach is names that differ in wording.
    A and B differ by at most `GRID_TOLERANCE` (initial value 10 pt; tuned by the negative tests,
    below). The order of the columns by position must also be the same on both sides.
 8. **Same kind of value in every column.** For each column and side, classify the cells of 7 by
-   shape: `currency`, `percent`, `integer`, `decimal`, `date`, `word` (one token, letters) or
-   `text` (two or more tokens), plus a catch-all `other`. The dominant shape is the one holding
-   at least 80% of the cells; with none at 80%, the column is unknown (see 9). The dominant
-   shapes of A and B must be equal for every column.
+   shape: `currency`, `percent`, `integer`, `decimal`, `date`, `text` (letters, one or more
+   words) or a catch-all `other`. The dominant shape is the one holding at least 80% of the
+   cells; with none at 80%, the column is unknown (see 9). The dominant shapes of A and B must
+   be equal for every column. (A one-word value is `text` too: the fixture showed that
+   telling `word` from `text` leaves free-text columns, whose values mix one and two words,
+   with no dominant shape and breaks three required results. `Rules.word_text_apart` brings the
+   distinction back for the sweep.)
 9. **Unknown always means no merge** (decided by the user). A column that has fewer than
    `MIN_CELLS` (initial 5) qualifying cells (7) on either side, or no dominant shape (8), makes
    the pair fail. So does a table with no pages, or a column that is empty throughout.
@@ -97,9 +100,9 @@ reach is names that differ in wording.
     keyword-only `merge_reworded: bool = True` (name chosen by me; any name is cheap to change
     before implementation). With `False`, `merge_tables` is not called: the result is exactly
     what the pipeline returned before this spec, and every `Table.merged` is empty.
-14. **Thresholds are module constants** (`GRID_TOLERANCE`, `MIN_CELLS`, `SHAPE_SHARE`) with the
-    starting values below; the implementation tunes them against the golden fixture and records
-    the final values and the evidence in this spec.
+14. **Thresholds are module constants** (`GRID_TOLERANCE` 10 pt, `MIN_CELLS` 5, `SHAPE_SHARE`
+    0.8). The golden fixture confirmed the starting values (see "Results on the golden
+    fixture").
 
 ## Design
 
@@ -168,7 +171,7 @@ and every row's values per page (the rows a perfect model would extract).
 Families (a parameter sweep for each rule, positive and negative):
 
 - Half-equal sweep: 5 schemas (3, 4, 6, 8 and 10 columns), k = 1..n columns reworded (by adding
-  or dropping a word), first-k and last-k. Only the half-equal rule can decide these.
+  or dropping a word), first-k and last-k. Only the half-equal rule can decide these (labelled `expect_merge: null`).
 - Word order only ("Amount Requested" vs "Requested Amount"): equal token sets.
 - Grid: whole-table shifts of 0 to 40 pt (both directions) and a single column drifting; the
   band around the tolerance is `expect_merge: null`.
@@ -198,6 +201,71 @@ The fixture is scored by running each candidate rule set over the `stage: merge`
    compared. A rule that removes no harmful merge but misses more is dropped.
 4. The half-equal rule is kept, changed or dropped on this score. The result and the final
    threshold values are written back into this spec.
+
+### Results on the golden fixture
+
+`just score-merge` (`tests/score_merge.py`) runs `mergeable_pairs` (the pair checks plus
+mutual uniqueness, over the tables as discovery groups them) on the 152 relations with `stage:
+merge` (`tests/fixture_tables.py` builds the tables from the truth rows and the real text
+layers; no model). The best variants, one setting changed at a time from the final rules:
+
+| rules | harmful (outside `residual_risk`) | harmful `residual_risk` | required results broken | missed |
+| --- | --- | --- | --- | --- |
+| **final: no half-equal rule, tolerance 10, 5 cells, 80%, word+text together** | 0 | 4 of 5 | 0 | 39 |
+| half-equal at 1/3 of positions | 0 | 4 | 0 | 58 |
+| half-equal at 1/2 (the draft rule) | 0 | 4 | 0 | 66 |
+| half-equal at 2/3 | 0 | 3 | 0 | 78 |
+| word and text told apart (the draft shapes) | 0 | 4 | 3 | 52 |
+| tolerance 5 / 15 / 20 | 0 | 4 | 6 / 2 / 4 | 46 / 33 / 31 |
+| 3 / 4 / 6 / 8 minimum cells | 0 | 4 | 9 / 6 / 4 / 6 | 30 / 33 / 43 / 45 |
+| shape share 0.7 / 0.75 / 0.9 | 0 | 4 | 3 / 1 / 3 | 36 / 38 / 42 |
+
+What decided each choice:
+
+- **Half-equal rule: dropped.** No variant has a harmful merge outside `residual_risk`, with or
+  without it, so by the scoring rules it removes nothing and only misses more (27 more correct
+  merges at one half). On the four `residual_risk` pairs that merge, 2 of 3, 2 of 3, 2 of 4
+  and 3 of 4 positions have equal words, so the rule at one half stops none of them; a
+  threshold of 2/3 stops one (the 2-of-4 pair), at a cost of 12 more missed merges. Caveat: the fixture
+  labels every reworded-but-contained pair of its `half_sweep` family as the same table, so it
+  can show that the rule hurts, but not what harm it prevents beyond the `residual_risk` cases.
+  If the user wants it back, it is one setting (`Rules.equal_share`) and one default.
+- **Word and text together** (a finding the draft shapes missed): free-text columns such as
+  Notes mix one-word and two-word values, so "word" and "text" never reach 80% alone. With
+  them together the three `cells-notes` cases pass. The `shape` family still separates
+  currency, percent, integer, decimal and date columns.
+- **`MIN_CELLS` = 5 and `SHAPE_SHARE` = 0.8** are pinned by required results: 3 or 4 merge the
+  tables with 3 or 4 cells in a column, which must be refused; 6 refuses the 5-cell tables,
+  which must merge; 0.75 merges a column at 75%, which must be refused, and 0.85 refuses one at
+  80%, which must merge.
+- **`GRID_TOLERANCE` = 10 pt**: anything from 8 to 13 passes every required result; 5 refuses
+  shifts of 6 and 8 pt that are measurement noise, and 15 merges the 14 pt shifts that the
+  spec requires refusing. The fixture cannot place the value inside that window (all its shifted
+  pairs are the same table); 10 is kept because it is the user's starting value, in the middle
+  of the window, and the stricter end wins a tie.
+- **Known misses, accepted:** numbers aligned left in one part and right in the other (a 47 pt
+  shift of the cell centres; 2 cases), a single column drifting by 14 pt or more, shifts above
+  the tolerance, and anything with fewer than 5 cells in a column, as the spec requires.
+- **Residual risk, measured:** 4 of the 5 `residual_risk` pairs (a table and its "2020" or
+  "total" twin on the same template) merge; the fifth, with a shifted grid, is refused. These are
+  the cases the `merged` audit field and the off switch are for.
+
+### Live results
+
+`tests/live/test_live_merge.py`, real model `openai:gpt-6-luna`, 3 runs per case, a separate
+cache per run; 45 of 45 passed.
+
+| cases | result on every run |
+| --- | --- |
+| `pipe-reworded-gap{0,1,4,9,20}`, `-headerless`, `-lookalike`, `pipe-long-parts` | one `Table`, one entry in `merged`, at least 95% of the truth rows back exactly; with `merge_reworded=False` (from the cache, no new request) two `Table`s and `merged == ()` |
+| `pipe-exact-gap{0,4,20}`, `pipe-caps`, `ctrl-single-table` | one `Table`, `merged == ()` |
+| `ctrl-unrelated` | two `Table`s, nothing merged |
+| `struct-interleaved` (A, other table X, A reworded) | two `Table`s: A and its reworded part joined, X alone |
+
+This turns the motivating defect (3 of 3 runs split) into 3 of 3 merged. The ad-hoc cases
+`multilevel_gap` and `caps_flat_drift` are not covered: the generator draws single-row headers,
+so there is no fixture document for them. `caps_reworded`, `headerless_long_gap`,
+`lookalike_prose_gap`, `long_gap_20` and `interleaved_two_tables` map to the documents above.
 
 ### Module and code
 
@@ -236,7 +304,7 @@ with the live test only.
 Offline, one or more tests for each of:
 
 - The checks as pure functions: token compatibility (subset, equal, disjoint, empty), the
-  half-equal rule, cross-compatibility, grid positions and tolerance edge, shape classification
+  half-equal setting (off by default), cross-compatibility, grid positions and tolerance edge, shape classification
   and the 80% rule, `MIN_CELLS` edge.
 - Must merge: the reworded two-column case; "Amount Requested" vs "Requested Amount".
 - Must not merge (one test each): shared page; different column count; headers contained but
@@ -271,7 +339,7 @@ the `merged` field), `AGENTS.md` (project state, file tree: `merge.py`, `tests/s
 
 1. Resolved (user): on by default, not opt-in (requirement 13).
 2. Resolved (user): unknown (too few cells) always means no merge (requirement 9).
-3. Resolved (user): the half-equal rule is provisional. It stays or goes on the golden fixture's
+3. Resolved (user, then by the fixture): the half-equal rule was provisional. It goes on the golden fixture's
    evidence (requirement 5, "How rules are chosen").
 4. Resolved (user): `GRID_TOLERANCE` 10 pt, `MIN_CELLS` 5 and the 80% shape share are the
    starting values; tuning them against the fixture is part of the implementation (requirement

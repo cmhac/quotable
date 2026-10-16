@@ -94,6 +94,8 @@ def test_the_public_names_are_the_entrypoint_and_its_results():
             "BudgetExceededError",
             "ExtractionError",
             "Flag",
+            "MergeEvidence",
+            "MergedPart",
             "OcrConfig",
             "OcrUnavailableError",
             "Row",

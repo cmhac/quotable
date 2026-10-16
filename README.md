@@ -33,6 +33,32 @@ xAI. `model_settings=` is passed to pydantic-ai. `extract_tables_async` takes th
 A PDF with one table returns a list of one. Pages are shown to the model `discovery_pages`
 at a time (default 4; pass `discovery_pages=` to change it).
 
+### Headers worded differently on different pages
+
+Discovery joins pages whose column names match (case and punctuation ignored). If a table is
+headed "Requested Local Match" on some pages and "Requested Match" on others, those are two
+tables to discovery. After extraction, and before the recheck, gridkey joins two tables only
+when all of these hold, and otherwise leaves them apart (no model request is made):
+
+- they share no page and have the same number of columns;
+- at every position one column name's words contain the other's ("Requested Match" in
+  "Requested Local Match"; word order does not matter), and no column also fits a different
+  position of the other table (a bare "Amount" next to "Requested Amount" and "Recommended
+  Amount" is ambiguous);
+- the columns sit at the same x positions (within 10 pt) and in the same order;
+- every column holds the same kind of value on both sides (currency, percent, integer,
+  decimal, date or text; at least 80% of its cells), judged from at least 5 grounded cells
+  per column and side. Too little data to judge means no merge;
+- each table has exactly one possible partner.
+
+The merged table uses the earlier part's column names; `Table.merged` lists each absorbed part
+(`MergedPart`: its pages, its original column names, and the evidence: word sets, grid
+difference, shapes and cell counts). `extract_tables(..., merge_reworded=False)` turns the step
+off. The residual risk is two different tables that share a template and whose names contain
+each other ("Population" and "Population 2020" in two sections): the golden fixture merges 4 of
+its 5 such cases. Look at `Table.merged` if your documents are like that, or turn the step off.
+`just score-merge` shows how each rule and threshold did on the fixture.
+
 ## The text layer, and OCR
 
 Every value is checked against the PDF's text layer, and grounding cannot be turned off.
@@ -139,6 +165,7 @@ it, and works without the OCR extra installed.
 | Extraction | `extract` | One request per table and page returns its rows. On a page with several tables the request names the other tables and asks for this one only. Rows with wrong keys are sent back once. |
 | Grounding | `grounding` | Each value is looked up in the table's text layer (the page's, or on a page with several tables only the band between the table's first and last row, found with `regions`): exact token match, else a fuzzy longest-common-subsequence match. Statuses: `exact`, `fuzzy`, `ungrounded`, `untokenized`, `empty`, `not_on_page`. |
 | Position check | `position` | A value must sit in its own row and column (row windows from uniquely-occurring values, column bands pooled over the document). Values found elsewhere become `misplaced`. |
+| Merge | `merge` | Two tables that are really one but whose headers are worded differently on different pages are joined when every check passes (see "Headers worded differently"); any doubt leaves them apart. Switch off with `merge_reworded=False`. |
 | Recheck | `recheck` | Flagged cells go back to the model once with their reason, the page image and the page's whole text layer; the model is told to copy the text layer's reading. An answer is kept only if grounding of that cell strictly improves. Because the text layer wins, OCR errors in it (for example thousands commas read as periods) can pass into the output. |
 
 Model requests are always cached on disk (see "The cache" above), by a hash of everything that
@@ -150,8 +177,10 @@ decides the answer, and `max_requests` caps how many new requests one run may ma
 - Tables side by side on a page. Tables are separated by a vertical band only; if two bands
   overlap, or a table's first or last row cannot be found in the text layer, the run raises
   `ExtractionError`.
-- Tables whose column names change between pages beyond case and punctuation are returned as
-  separate tables; two real tables with the same columns are returned as one.
+- Tables whose column names change between pages are merged only in the cases described under
+  "Headers worded differently on different pages". Names that share no words ("Amount" and
+  "Funding"), a different column count and more than one possible partner stay separate tables;
+  two real tables with the same columns are returned as one.
 - Titles and captions printed outside a table (a fiscal year, a section name) are not captured.
 - Page orientation in scans: OCR does not rotate or unwarp pages, so a sideways scan with no
   `/Rotate` flag stays sideways and is rejected after OCR.
@@ -177,6 +206,10 @@ just check       # hooks, then tests
   against real sample PDFs (`tests/data/`), so the whole pipeline is exercised without
   any API call. Several tests corrupt the recorded rows (a swapped value, a typo) to
   check that the position check and the recheck catch it.
+- `tests/data/synthetic/` is a golden fixture for the merge step: 154 generated PDFs with a
+  real text layer and a truth file each (`just synthetic` regenerates it byte for byte;
+  `just score-merge` scores the merge rules on it, with no model). The live test
+  `tests/live/test_live_merge.py` runs its pipeline cases through a real model.
 - `tests/ocr/` runs the real PaddleOCR models on the CPU (`just test-ocr`). Deselected by
   default; it takes minutes, downloads the models on first use, and calls no model API.
 - `tests/live/` calls a real model. These tests are deselected by default and skip

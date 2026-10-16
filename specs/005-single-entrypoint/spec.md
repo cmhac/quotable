@@ -54,7 +54,8 @@ tables = extract_tables(
    - `max_requests: int | None = None`: cap on new (uncached) model requests; exceeding it
      raises `BudgetExceededError`. Applies with or without a cache.
    - `model_settings: dict | None = None`: passed to pydantic-ai, and part of the cache key.
-   - `discovery_pages` and `recheck`: unchanged.
+   - `discovery_pages` and `recheck`: unchanged. (Spec 007 later added the keyword-only
+     `merge_reworded: bool = True`.)
 4. **`pdf` accepts `str | Path`.** (Today `extract_tables` wraps in `Path`, but the annotation says
    `Path`.)
 5. **Public names after the change** (`gridkey.__all__`): `extract_tables`,
