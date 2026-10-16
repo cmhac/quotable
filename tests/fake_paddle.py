@@ -12,7 +12,7 @@ import cv2
 import numpy
 import pytest
 
-from gridkey import ocr_device
+from quotable import ocr_device
 
 
 def png(width: int = 8, height: int = 8) -> bytes:

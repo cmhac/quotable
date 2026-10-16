@@ -2,8 +2,8 @@
 
 import pytest
 
-from gridkey import merge
-from gridkey.merge import (
+from quotable import merge
+from quotable.merge import (
     DEFAULT_RULES,
     GRID_TOLERANCE,
     MIN_CELLS,
@@ -20,7 +20,7 @@ from gridkey.merge import (
     name_tokens,
     pair_verdict,
 )
-from gridkey.table import Table
+from quotable.table import Table
 from tests.table_builder import build_table
 
 XS = [60.0, 200.0, 340.0]
@@ -353,6 +353,6 @@ def test_a_table_with_no_pages_fails(tmp_path):
 
 
 def test_the_module_imports_nothing_from_extract():
-    assert "gridkey.extract" not in {
+    assert "quotable.extract" not in {
         getattr(v, "__module__", "") for v in vars(merge).values() if callable(v)
     }

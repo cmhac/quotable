@@ -1,11 +1,11 @@
 """Extract tables from PDFs with a vision LLM and check every value against the text layer."""
 
-from gridkey.extract import extract_tables, extract_tables_async
-from gridkey.llm import BudgetExceededError
-from gridkey.ocr import OcrConfig, OcrUnavailableError
-from gridkey.schema import ExtractionError
-from gridkey.table import Flag, MergedPart, MergeEvidence, Row, Table
-from gridkey.textcheck import TextLayerError
+from quotable.extract import extract_tables, extract_tables_async
+from quotable.llm import BudgetExceededError
+from quotable.ocr import OcrConfig, OcrUnavailableError
+from quotable.schema import ExtractionError
+from quotable.table import Flag, MergedPart, MergeEvidence, Row, Table
+from quotable.textcheck import TextLayerError
 
 __all__ = [
     "BudgetExceededError",

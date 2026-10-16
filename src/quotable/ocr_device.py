@@ -13,11 +13,11 @@ import shutil
 from dataclasses import dataclass
 from pathlib import Path
 
-from gridkey.ocr import OcrUnavailableError
+from quotable.ocr import OcrUnavailableError
 
 PADDLE_ENGINES = (None, "paddle", "paddle_static", "paddle_dynamic")  # run on PaddlePaddle
 GPU_INSTALL = (
-    "To use the GPU, install `gridkey[ocr-core]` and a GPU build of PaddlePaddle "
+    "To use the GPU, install `quotable[ocr-core]` and a GPU build of PaddlePaddle "
     "(see 'OCR on an NVIDIA GPU' in the README)."
 )
 

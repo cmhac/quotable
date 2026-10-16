@@ -1,6 +1,6 @@
 """The error raised when the model's output cannot become a table, and the column checks."""
 
-from gridkey.models import TableSchema
+from quotable.models import TableSchema
 
 
 class ExtractionError(RuntimeError):

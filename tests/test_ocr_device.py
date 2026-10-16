@@ -6,9 +6,9 @@ from pathlib import Path
 
 import pytest
 
-from gridkey import ocr_device
-from gridkey.ocr import OcrUnavailableError
-from gridkey.ocr_device import Capabilities, choose_device, detect_capabilities
+from quotable import ocr_device
+from quotable.ocr import OcrUnavailableError
+from quotable.ocr_device import Capabilities, choose_device, detect_capabilities
 
 NOTHING = Capabilities(False, False, 0, False)
 CPU_BUILD = Capabilities(True, False, 0, False)
@@ -44,7 +44,7 @@ def test_the_warning_for_a_cpu_build_names_the_cause_and_the_install():
     assert warning is not None
     assert "NVIDIA GPU was found" in warning
     assert "CPU-only build" in warning
-    assert "gridkey[ocr-core]" in warning
+    assert "quotable[ocr-core]" in warning
     assert "README" in warning
 
 
@@ -52,7 +52,7 @@ def test_the_warning_for_a_cuda_build_without_a_device_names_that_cause():
     warning = choose_device("auto", None, CUDA_WITHOUT_DEVICE).warning
     assert warning is not None
     assert "cannot see a CUDA device" in warning
-    assert "gridkey[ocr-core]" in warning
+    assert "quotable[ocr-core]" in warning
 
 
 @pytest.mark.parametrize("caps", [NOTHING, CPU_BUILD, CUDA_WITH_DEVICE])
@@ -80,7 +80,7 @@ def test_an_explicit_gpu_with_a_cuda_build_is_returned_as_given(requested):
 def test_an_impossible_explicit_gpu_raises_and_says_why(caps, cause):
     with pytest.raises(OcrUnavailableError, match=cause) as error:
         choose_device("gpu", None, caps)
-    assert "gridkey[ocr-core]" in str(error.value)
+    assert "quotable[ocr-core]" in str(error.value)
 
 
 @pytest.mark.parametrize("engine", [None, "paddle", "paddle_static", "paddle_dynamic"])

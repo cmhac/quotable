@@ -9,10 +9,10 @@ from typing import Any
 import pymupdf
 import pytest
 
-from gridkey.extract import run_pipeline
-from gridkey.llm import Image, LLMClient, Request
-from gridkey.models import Column, PageRows, PageTables, TableInfo, WindowTables
-from gridkey.table import Table
+from quotable.extract import run_pipeline
+from quotable.llm import Image, LLMClient, Request
+from quotable.models import Column, PageRows, PageTables, TableInfo, WindowTables
+from quotable.table import Table
 
 DATA = Path(__file__).parent / "data"
 SAMPLES = ["fy22_milcon_house_original", "fy24_milcon_house_original", "fy22_ag_house_original"]
@@ -39,7 +39,7 @@ def extract_tables(
 
 @pytest.fixture(autouse=True)
 def _run_in_a_temp_working_directory(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Run every test in an empty working directory, so no test writes ``.gridkey/`` here."""
+    """Run every test in an empty working directory, so no test writes ``.quotable/`` here."""
     work = tmp_path / "cwd"
     work.mkdir()
     monkeypatch.chdir(work)

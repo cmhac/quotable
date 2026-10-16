@@ -14,7 +14,7 @@ import argparse
 from collections import Counter
 from dataclasses import dataclass, field, replace
 
-from gridkey.merge import DEFAULT_RULES, Rules, mergeable_pairs
+from quotable.merge import DEFAULT_RULES, Rules, mergeable_pairs
 from tests.fixture_tables import discovered, doc_ids, load_doc
 
 _CACHE: dict[str, tuple[list, dict[str, int]]] = {}

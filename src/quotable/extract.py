@@ -2,17 +2,17 @@
 The pipeline: text-layer check, table discovery, per-page extraction, grounding, position check.
 
 0. Text-layer check: before anything is rendered or sent to a model, the PDF's text layer
-   must be readable (see :mod:`gridkey.textcheck`). If it is garbled or missing, the bad pages
-   are OCR'd (see :mod:`gridkey.ocr_pages`) and the merged layers are checked again; a layer
+   must be readable (see :mod:`quotable.textcheck`). If it is garbled or missing, the bad pages
+   are OCR'd (see :mod:`quotable.ocr_pages`) and the merged layers are checked again; a layer
    that is still unreadable, or OCR that is off or not installed, raises ``TextLayerError``
    having made no request, because values could not be verified. There is no option to skip
    the check.
 1. Table discovery: every page image goes to the model, ``discovery_pages`` at a time,
    and the model lists the tables on each page with their columns (multi-level headers
    are written ``<level1>.<level2>``). Tables with the same columns on different pages
-   are one table (see :mod:`gridkey.discover`). Everything below runs once per table.
+   are one table (see :mod:`quotable.discover`). Everything below runs once per table.
 2. Page layouts: each page's columns come from its printed header (see
-   :mod:`gridkey.layout`), so a column printed on some pages only is asked
+   :mod:`quotable.layout`), so a column printed on some pages only is asked
    for only on those.
 3. Page extraction: one request per table and page (page image + columns) returns one
    object per row. On a page with several tables the request names the other tables and
@@ -20,7 +20,7 @@ The pipeline: text-layer check, table discovery, per-page extraction, grounding,
    problems found; a second failure aborts the run.
 4. Grounding and position check: every value is looked up in the table's text layer (the
    whole page, or on a page with several tables only that table's band, see
-   :mod:`gridkey.regions`), then required to sit in its own row and column (see
+   :mod:`quotable.regions`), then required to sit in its own row and column (see
    ``grounding`` and ``position``).
 """
 
@@ -33,22 +33,27 @@ from typing import Any
 import pymupdf
 from pydantic_ai.models import Model
 
-from gridkey._model import PydanticAIClient
-from gridkey._paddle import PaddleEngine
-from gridkey.cache import resolve_cache_dir
-from gridkey.discover import DISCOVERY_PAGES, Found, discover
-from gridkey.layout import page_layouts
-from gridkey.llm import CachedClient, Image, LLMClient, Request
-from gridkey.merge import merge_tables
-from gridkey.models import PageRows, TableSchema
-from gridkey.ocr import OcrConfig, OcrEngine
-from gridkey.ocr_pages import ocr_pages
-from gridkey.recheck import recheck_table
-from gridkey.regions import table_layers
-from gridkey.schema import ExtractionError
-from gridkey.table import PageResult, Table, ground_document
-from gridkey.text import Layer, load_layer
-from gridkey.textcheck import REMEDY_OCR_OFF, TextLayerError, assess_text_layers, ocr_failed_message
+from quotable._model import PydanticAIClient
+from quotable._paddle import PaddleEngine
+from quotable.cache import resolve_cache_dir
+from quotable.discover import DISCOVERY_PAGES, Found, discover
+from quotable.layout import page_layouts
+from quotable.llm import CachedClient, Image, LLMClient, Request
+from quotable.merge import merge_tables
+from quotable.models import PageRows, TableSchema
+from quotable.ocr import OcrConfig, OcrEngine
+from quotable.ocr_pages import ocr_pages
+from quotable.recheck import recheck_table
+from quotable.regions import table_layers
+from quotable.schema import ExtractionError
+from quotable.table import PageResult, Table, ground_document
+from quotable.text import Layer, load_layer
+from quotable.textcheck import (
+    REMEDY_OCR_OFF,
+    TextLayerError,
+    assess_text_layers,
+    ocr_failed_message,
+)
 
 DPI = 150
 MAX_CONCURRENT_REQUESTS = 4
@@ -214,7 +219,7 @@ async def run_pipeline(  # noqa: PLR0913
     Run the whole pipeline on one PDF with an already-built client (internal; tests use it).
 
     ``merge_reworded`` joins tables whose headers are worded differently on different pages
-    when every check of spec 007 passes (``gridkey.merge``); it runs after extraction and
+    when every check of spec 007 passes (``quotable.merge``); it runs after extraction and
     before the recheck.
 
     ``ocr`` is the engine used for pages with a garbled or missing text layer (``None``: no
@@ -307,7 +312,7 @@ async def extract_tables_async(  # noqa: PLR0913
 
     ``model`` is required: a pydantic-ai ``"provider:model-name"`` string (the provider's API
     key comes from the environment, as pydantic-ai documents) or a pydantic-ai ``Model``
-    instance. Model answers are always cached on disk, in ``cache_dir`` or else in ``.gridkey/``
+    instance. Model answers are always cached on disk, in ``cache_dir`` or else in ``.quotable/``
     in the current directory (created if missing, with a ``.gitignore`` of its own);
     ``max_requests`` caps the new (uncached) requests and raises ``BudgetExceededError``
     beyond it.
@@ -320,7 +325,7 @@ async def extract_tables_async(  # noqa: PLR0913
 
     ``merge_reworded`` (default on) joins two tables that are really one but whose column names
     are worded differently on different pages ("Requested Local Match" on some pages,
-    "Requested Match" on others), when every check of ``gridkey.merge`` passes: the same
+    "Requested Match" on others), when every check of ``quotable.merge`` passes: the same
     column count, each name's words containing the other's, the same x positions, the same kind
     of value in every column, and exactly one possible partner. Any doubt leaves the tables
     apart. ``Table.merged`` lists what was joined; ``False`` turns the step off. It makes no

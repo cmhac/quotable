@@ -10,12 +10,12 @@ from pathlib import Path
 import pymupdf
 import pytest
 
-from gridkey import OcrConfig, OcrUnavailableError, TextLayerError, extract_tables_async
-from gridkey import extract_tables as public_extract_tables
-from gridkey._paddle import PaddleEngine
-from gridkey.extract import run_pipeline, usable_layers
-from gridkey.ocr import OcrWord
-from gridkey.text import load_layer
+from quotable import OcrConfig, OcrUnavailableError, TextLayerError, extract_tables_async
+from quotable import extract_tables as public_extract_tables
+from quotable._paddle import PaddleEngine
+from quotable.extract import run_pipeline, usable_layers
+from quotable.ocr import OcrWord
+from quotable.text import load_layer
 from tests.conftest import DATA, FakeClient, extract_tables
 from tests.fake_ocr import ExplodingEngine, FakeEngine, native_as_ocr
 from tests.fake_paddle import install
@@ -133,9 +133,10 @@ def test_an_accepted_pdf_never_calls_the_engine_or_imports_paddleocr(tmp_path):
     assert not (tmp_path / "cache").exists()  # no OCR folder either
 
 
-def test_importing_gridkey_does_not_import_paddleocr():
+def test_importing_quotable_does_not_import_paddleocr():
     code = (
-        "import gridkey, sys; assert 'paddleocr' not in sys.modules and 'paddle' not in sys.modules"
+        "import quotable, sys; "
+        "assert 'paddleocr' not in sys.modules and 'paddle' not in sys.modules"
     )
     subprocess.run([sys.executable, "-c", code], check=True)  # noqa: S603
 
@@ -146,7 +147,7 @@ def test_ocr_that_returns_noise_is_rejected_naming_the_ocr_before_any_request(tm
     with pytest.raises(TextLayerError) as error:
         run(GARBLED, client, engine, tmp_path)
     message = str(error.value)
-    assert "gridkey OCR'd page(s) 1, 2, 3" in message
+    assert "quotable OCR'd page(s) 1, 2, 3" in message
     assert "still not usable" in message
     assert "dpi" in message
     assert not isinstance(error.value, OcrUnavailableError)
@@ -182,7 +183,7 @@ def test_paddleocr_not_importable_gives_unavailable_with_the_install_command(mon
     with pytest.raises(OcrUnavailableError) as error:
         public_extract_tables(GARBLED, calls.model())
     assert isinstance(error.value, TextLayerError)
-    assert 'pip install "gridkey[ocr]"' in str(error.value)
+    assert 'pip install "quotable[ocr]"' in str(error.value)
     assert calls.count == 0
 
 

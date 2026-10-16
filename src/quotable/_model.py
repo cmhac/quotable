@@ -12,7 +12,7 @@ from typing import Any
 from pydantic_ai import Agent, BinaryContent
 from pydantic_ai.models import Model
 
-from gridkey.llm import Image, Request
+from quotable.llm import Image, Request
 
 
 def model_name(model: Model | str) -> str:

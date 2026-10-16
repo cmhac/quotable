@@ -1,7 +1,7 @@
 import pymupdf
 
-from gridkey.layout import find_header, page_layouts
-from gridkey.text import load_layer
+from quotable.layout import find_header, page_layouts
+from quotable.text import load_layer
 
 COLUMNS = ["Account", "Location", "Project", "Amount"]
 

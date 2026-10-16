@@ -45,9 +45,9 @@ uv run --no-sync pytest -m ocr -rs --durations=0               # device="auto" m
 uv run --no-sync python -c "
 import logging; logging.basicConfig(level=logging.INFO)
 from pathlib import Path
-from gridkey import OcrConfig
-from gridkey._paddle import PaddleEngine
-from gridkey.ocr_pages import ocr_pages
+from quotable import OcrConfig
+from quotable._paddle import PaddleEngine
+from quotable.ocr_pages import ocr_pages
 config = OcrConfig(device='gpu')
 ocr_pages(Path('tests/data/senate_expenditures_garbled.pdf'), [1], config, PaddleEngine(config), Path('gk-cache'))
 "

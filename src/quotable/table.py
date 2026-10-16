@@ -3,10 +3,10 @@
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Literal, NamedTuple
 
-from gridkey.grounding import SEVERITY, UNFLAGGED, FieldGrounding, ground_rows
-from gridkey.layout import PageLayout
-from gridkey.position import PageGrounding, check_positions
-from gridkey.text import Layer
+from quotable.grounding import SEVERITY, UNFLAGGED, FieldGrounding, ground_rows
+from quotable.layout import PageLayout
+from quotable.position import PageGrounding, check_positions
+from quotable.text import Layer
 
 if TYPE_CHECKING:
     import pandas

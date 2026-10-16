@@ -1,7 +1,7 @@
 """
 ``ocr_pages``: OCR the bad pages of a PDF, reading the OCR cache before anything else.
 
-For each page asked for, the cache (see :mod:`gridkey.ocr_cache`) is read first; only a miss
+For each page asked for, the cache (see :mod:`quotable.ocr_cache`) is read first; only a miss
 renders the page at ``config.dpi`` and calls the engine, and the result is written to the
 cache before it is used. This is blocking work: the async entrypoint runs it in a thread.
 """
@@ -13,11 +13,11 @@ from pathlib import Path
 
 import pymupdf
 
-from gridkey.ocr import OcrConfig, OcrEngine, words_to_layer
-from gridkey.ocr_cache import file_sha256, fingerprint, ocr_key, read_page, write_page
-from gridkey.text import Layer
+from quotable.ocr import OcrConfig, OcrEngine, words_to_layer
+from quotable.ocr_cache import file_sha256, fingerprint, ocr_key, read_page, write_page
+from quotable.text import Layer
 
-log = logging.getLogger("gridkey.ocr")
+log = logging.getLogger("quotable.ocr")
 
 
 def ocr_pages(

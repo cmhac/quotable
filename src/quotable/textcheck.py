@@ -5,7 +5,7 @@ Grounding compares every extracted value with the text layer, so a garbled layer
 font encoding, bad OCR) or a missing one (a scan without OCR) makes verification
 impossible. Each page's letters are scored against an English character-trigram model; the
 document is rejected when too many scorable pages look like noise. A rejected document has
-its bad pages OCR'd and is checked again (:func:`gridkey.extract.usable_layers`); it is
+its bad pages OCR'd and is checked again (:func:`quotable.extract.usable_layers`); it is
 rejected for good only if OCR is off, unavailable or does not help. There is no way to turn
 this check off.
 """
@@ -16,8 +16,8 @@ from dataclasses import dataclass
 from functools import cache
 from typing import Literal
 
-from gridkey.ngrams import letter_runs, load_counts, trigrams
-from gridkey.text import Layer
+from quotable.ngrams import letter_runs, load_counts, trigrams
+from quotable.text import Layer
 
 # Calibrated on real pages (tests/test_textcheck_calibration.py): the legitimate House
 # appropriations tables score -2.60 or higher, the garbled Senate pages -4.77 or lower; the
@@ -168,6 +168,6 @@ def ocr_failed_message(
     """
     listed = _page_list(list(pages))
     return (
-        f"{before.reason} gridkey OCR'd page(s) {listed} with {by}, but the text layer is "
+        f"{before.reason} quotable OCR'd page(s) {listed} with {by}, but the text layer is "
         f"still not usable: {after.reason} {REMEDY_OCR_FAILED}"
     )

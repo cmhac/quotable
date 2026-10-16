@@ -8,8 +8,8 @@ from pydantic_ai import BinaryContent
 from pydantic_ai.messages import ModelMessage, ModelResponse, ToolCallPart
 from pydantic_ai.models.function import AgentInfo, FunctionModel
 
-from gridkey._model import PydanticAIClient
-from gridkey.llm import Image, Request
+from quotable._model import PydanticAIClient
+from quotable.llm import Image, Request
 
 
 class Answer(BaseModel):

@@ -6,8 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from gridkey import extract_tables
-from gridkey.cache import resolve_cache_dir, write_atomic
+from quotable import extract_tables
+from quotable.cache import resolve_cache_dir, write_atomic
 from tests.test_entrypoint import PDF, Calls
 
 
@@ -15,13 +15,13 @@ def names(folder: Path) -> list[str]:
     return sorted(p.name for p in folder.iterdir())
 
 
-def test_the_default_location_is_dot_gridkey_in_the_working_directory():
+def test_the_default_location_is_dot_quotable_in_the_working_directory():
     extract_tables(PDF, Calls().model(), recheck=False)
-    cache = Path.cwd() / ".gridkey"
+    cache = Path.cwd() / ".quotable"
     assert (cache / ".gitignore").read_text() == "*\n"
     answers = [n for n in names(cache) if n.endswith(".json")]
     assert len(answers) == 2  # discovery and the one page
-    assert names(Path.cwd()) == [".gridkey"]
+    assert names(Path.cwd()) == [".quotable"]
 
 
 def test_a_named_cache_dir_gets_the_files_and_nothing_is_created_in_the_working_directory(
@@ -34,10 +34,10 @@ def test_a_named_cache_dir_gets_the_files_and_nothing_is_created_in_the_working_
     assert names(Path.cwd()) == []
 
 
-def test_an_existing_dot_gridkey_is_not_given_a_gitignore():
-    (Path.cwd() / ".gridkey").mkdir()
+def test_an_existing_dot_quotable_is_not_given_a_gitignore():
+    (Path.cwd() / ".quotable").mkdir()
     resolve_cache_dir(None)
-    assert names(Path.cwd() / ".gridkey") == []
+    assert names(Path.cwd() / ".quotable") == []
 
 
 def test_the_default_directory_is_the_working_directory_at_the_time_of_the_call(
@@ -46,7 +46,7 @@ def test_the_default_directory_is_the_working_directory_at_the_time_of_the_call(
     elsewhere = tmp_path / "elsewhere"
     elsewhere.mkdir()
     monkeypatch.chdir(elsewhere)
-    assert resolve_cache_dir(None) == elsewhere / ".gridkey"
+    assert resolve_cache_dir(None) == elsewhere / ".quotable"
 
 
 def test_a_relative_cache_dir_resolves_against_the_working_directory():

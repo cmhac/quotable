@@ -4,10 +4,10 @@ The model boundary: a request, a client protocol and a disk cache.
 Everything that talks to a model goes through ``LLMClient.ask``; the pipeline never
 imports a vendor SDK. Any object with an ``identity`` string and an async ``ask``
 works, which is how the offline tests run the whole pipeline with a fake model. This
-module is internal: users call ``gridkey.extract_tables`` with a model.
+module is internal: users call ``quotable.extract_tables`` with a model.
 
 ``CachedClient`` wraps any client with a cap on new requests and an on-disk request cache
-(always on, see :mod:`gridkey.cache`). The key covers the client's identity, the
+(always on, see :mod:`quotable.cache`). The key covers the client's identity, the
 instructions, the output schema and every prompt part (text and image bytes), so a re-run
 never pays twice for the same request.
 
@@ -24,7 +24,7 @@ from typing import Any, Protocol
 
 from pydantic import BaseModel, ValidationError
 
-from gridkey.cache import write_atomic
+from quotable.cache import write_atomic
 
 
 class BudgetExceededError(RuntimeError):

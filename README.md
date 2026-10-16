@@ -1,19 +1,16 @@
-# gridkey
+# quotable
 
 Extract tables from PDFs with a vision LLM, then check every value against the PDF's
 own text layer. A barebones starting point, distilled from the extraction pipeline of
 the VRA community-projects analysis.
 
-The name is a play on words: tables in PDFs are grids that are locked on the page, and
-this is the key that unlocks them.
-
 ```python
-from gridkey import extract_tables
+from quotable import extract_tables
 
 tables = extract_tables(
     "tables.pdf",
     model="openai:<model-name>",  # required; a pydantic-ai model string or Model instance
-    cache_dir="cache",  # optional: where answers and OCR results are cached (default .gridkey/)
+    cache_dir="cache",  # optional: where answers and OCR results are cached (default .quotable/)
     max_requests=100,  # optional: cap on new (uncached) model requests
 )  # one Table per table in the PDF
 
@@ -32,11 +29,11 @@ environment, as pydantic-ai documents it (for example `OPENAI_API_KEY`). The ins
 SDKs for Anthropic, Bedrock, Cohere, Google, Groq, Hugging Face, Mistral, OpenAI, OpenRouter and
 xAI. `model_settings=` is passed to pydantic-ai. `extract_tables_async` takes the same arguments.
 
-pandas and polars are installed with gridkey. The frames have the columns of `records()`: `page`,
+pandas and polars are installed with quotable. The frames have the columns of `records()`: `page`,
 `row`, the PDF's columns (strings, exactly as extracted), then for each of them its `__grounding`
 status and `__coverage` (a float, missing when the cell was never looked up), then
 `grounding_status` and `recheck_changes`. A PDF column is never renamed: if it already has the name
-of one of those columns (a PDF column called `page`, say), the gridkey column gets a trailing `_`
+of one of those columns (a PDF column called `page`, say), the quotable column gets a trailing `_`
 (`page_`). Write a CSV with `table.to_polars().write_csv(path)`.
 
 A PDF with one table returns a list of one. Pages are shown to the model `discovery_pages`
@@ -46,7 +43,7 @@ at a time (default 4; pass `discovery_pages=` to change it).
 
 Discovery joins pages whose column names match (case and punctuation ignored). If a table is
 headed "Requested Local Match" on some pages and "Requested Match" on others, those are two
-tables to discovery. After extraction, and before the recheck, gridkey joins two tables only
+tables to discovery. After extraction, and before the recheck, quotable joins two tables only
 when all of these hold, and otherwise leaves them apart (no model request is made):
 
 - they share no page and have the same number of columns;
@@ -73,7 +70,7 @@ its 5 such cases. Look at `Table.merged` if your documents are like that, or tur
 Every value is checked against the PDF's text layer, and grounding cannot be turned off.
 Before any model request, the text layer is scored with English character trigrams. A page
 whose layer is garbled (a broken font encoding, bad OCR) or missing (a scan with no OCR) is
-a bad page. If too many pages are bad, gridkey OCRs the bad pages (only those) with
+a bad page. If too many pages are bad, quotable OCRs the bad pages (only those) with
 [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR), builds a text layer from the result,
 checks again, and carries on. If the OCR'd text is still unreadable, or OCR is not installed,
 the run stops with `TextLayerError`, still before any model request. The check is English and
@@ -81,7 +78,7 @@ Latin-script only. A document with text but too few letters to score (only numbe
 accepted.
 
 ```python
-from gridkey import OcrConfig, extract_tables
+from quotable import OcrConfig, extract_tables
 
 extract_tables("scan.pdf", model=...)  # ocr=True: OCR bad pages with the defaults
 extract_tables("scan.pdf", model=..., ocr=OcrConfig(dpi=200, device="cpu"))  # configured
@@ -94,14 +91,14 @@ comma as a period: `68.027.74`) can pass into the output; review those pages wit
 
 ### Installing OCR
 
-OCR is an optional extra, so a plain `pip install gridkey` stays small. If you are sure your
+OCR is an optional extra, so a plain `pip install quotable` stays small. If you are sure your
 PDFs have good text layers you never need it. If a PDF needs OCR and PaddleOCR is not
-installed, gridkey raises `OcrUnavailableError` (a `TextLayerError`) saying so, before any
+installed, quotable raises `OcrUnavailableError` (a `TextLayerError`) saying so, before any
 model request, so the only cost is installing and running again.
 
 ```bash
 # CPU (macOS Apple Silicon, Linux x86_64, Windows x86_64; Python 3.11 to 3.13): one command
-pip install "gridkey[ocr]"
+pip install "quotable[ocr]"
 ```
 
 The extra installs `paddleocr` and the CPU build of `paddlepaddle` (about 100 to 200 MB, plus
@@ -121,7 +118,7 @@ Paddle's own index, not PyPI, so there is no `gpu` extra. Install the core extra
 build:
 
 ```bash
-pip install "gridkey[ocr-core]"
+pip install "quotable[ocr-core]"
 pip install paddlepaddle-gpu==3.3.1 \
   --extra-index-url https://www.paddlepaddle.org.cn/packages/stable/cu126/
 # cu126 needs an NVIDIA driver >= 550.54.14; cu118 (use .../cu118/) needs >= 450.80.02 on Linux.
@@ -129,12 +126,12 @@ pip install paddlepaddle-gpu==3.3.1 \
 # on Windows needs the special wheels listed in PaddleOCR's install guide.
 
 # with uv
-uv pip install "gridkey[ocr-core]"
+uv pip install "quotable[ocr-core]"
 uv pip install paddlepaddle-gpu==3.3.1 \
   --extra-index-url https://www.paddlepaddle.org.cn/packages/stable/cu126/
 ```
 
-Do not install `gridkey[ocr]` in the same environment: it brings the CPU build, which would
+Do not install `quotable[ocr]` in the same environment: it brings the CPU build, which would
 overwrite the GPU one. The GPU path is untested on real hardware (the development machine has
 no NVIDIA GPU); `tests/data/README.md` has a manual checklist. The `uv` line and
 `--extra-index-url` were checked to resolve, not to install.
@@ -156,8 +153,8 @@ that folder's model subfolders and pass `OcrConfig(model_dir=<folder>)`.
 
 ### The cache
 
-Model answers and OCR results are always cached on disk, in `.gridkey/` in the current working
-directory unless you pass `cache_dir`. gridkey creates the folder and, for the default one,
+Model answers and OCR results are always cached on disk, in `.quotable/` in the current working
+directory unless you pass `cache_dir`. quotable creates the folder and, for the default one,
 puts a `.gitignore` containing `*` in it. There is no in-memory mode, and nothing is ever
 deleted: remove the folder to start over. It holds content derived from your PDF (the model's
 extracted values and the OCR'd text), so delete it if the data is sensitive. A run that cannot
@@ -222,10 +219,10 @@ just check       # hooks, then tests
 - `tests/ocr/` runs the real PaddleOCR models on the CPU (`just test-ocr`). Deselected by
   default; it takes minutes, downloads the models on first use, and calls no model API.
 - `tests/live/` calls a real model. These tests are deselected by default and skip
-  themselves unless `OPENAI_API_KEY` and `GRIDKEY_LIVE_TEST_MODEL` are set:
+  themselves unless `OPENAI_API_KEY` and `QUOTABLE_LIVE_TEST_MODEL` are set:
 
   ```bash
-  GRIDKEY_LIVE_TEST_MODEL="openai:<model-name>" uv run pytest -m live
+  QUOTABLE_LIVE_TEST_MODEL="openai:<model-name>" uv run pytest -m live
   ```
 
   Their answers are cached in `tests/live/.cache`, and each run is capped at a few requests.

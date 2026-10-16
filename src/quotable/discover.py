@@ -12,17 +12,17 @@ invents columns, so it is told to reuse the known column names for a page that
 continues a known table and never to invent columns for a header it cannot see.
 
 Deliberately left out: merging tables whose column names drift between pages beyond
-case and punctuation (``gridkey.merge`` does that after extraction, from independent
+case and punctuation (``quotable.merge`` does that after extraction, from independent
 evidence), and any use of the text layer to find tables.
 """
 
 import json
 from dataclasses import dataclass, field
 
-from gridkey.llm import Image, LLMClient, Request
-from gridkey.models import Column, PageTables, TableInfo, TableSchema, WindowTables
-from gridkey.schema import ExtractionError, validate_schema
-from gridkey.text import tokenize
+from quotable.llm import Image, LLMClient, Request
+from quotable.models import Column, PageTables, TableInfo, TableSchema, WindowTables
+from quotable.schema import ExtractionError, validate_schema
+from quotable.text import tokenize
 
 DISCOVERY_PAGES = 4  # how many consecutive pages go in one discovery request
 DISCOVER_PROMPT = (

@@ -8,9 +8,9 @@ import inspect
 
 import pytest
 
-import gridkey
-from gridkey import extract, merge
-from gridkey.models import Column, PageRecheck, PageRows, PageTables, TableInfo
+import quotable
+from quotable import extract, merge
+from quotable.models import Column, PageRecheck, PageRows, PageTables, TableInfo
 from tests.conftest import FakeClient, extract_tables, window_of
 from tests.fixture_tables import DATA, load_doc
 
@@ -131,7 +131,7 @@ def test_the_recheck_runs_after_the_merge_and_fixes_a_cell_of_the_second_part():
 
 
 def test_the_argument_is_keyword_only_and_on_by_default():
-    for function in (gridkey.extract_tables, gridkey.extract_tables_async):
+    for function in (quotable.extract_tables, quotable.extract_tables_async):
         parameter = inspect.signature(function).parameters["merge_reworded"]
         assert parameter.default is True
         assert parameter.kind is inspect.Parameter.KEYWORD_ONLY

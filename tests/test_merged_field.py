@@ -4,8 +4,8 @@ import dataclasses
 
 import pytest
 
-import gridkey
-from gridkey.table import MergedPart, MergeEvidence, PageResult, Table
+import quotable
+from quotable.table import MergedPart, MergeEvidence, PageResult, Table
 
 
 def _table() -> Table:
@@ -39,9 +39,9 @@ def test_replace_and_equality_keep_working_with_a_merged_part():
 
 
 def test_merged_part_is_exported():
-    assert gridkey.MergedPart is MergedPart
-    assert gridkey.MergeEvidence is MergeEvidence
-    assert "MergedPart" in gridkey.__all__
+    assert quotable.MergedPart is MergedPart
+    assert quotable.MergeEvidence is MergeEvidence
+    assert "MergedPart" in quotable.__all__
 
 
 def test_the_evidence_is_typed_and_frozen_so_the_audit_record_is_hashable():

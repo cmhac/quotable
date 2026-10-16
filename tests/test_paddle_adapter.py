@@ -4,9 +4,9 @@ import logging
 
 import pytest
 
-from gridkey import _paddle
-from gridkey._paddle import PaddleEngine, result_words
-from gridkey.ocr import OcrConfig, OcrUnavailableError, OcrWord
+from quotable import _paddle
+from quotable._paddle import PaddleEngine, result_words
+from quotable.ocr import OcrConfig, OcrUnavailableError, OcrWord
 from tests.fake_paddle import FakePaddleOCR, install, png, result
 
 LINE = [("NET FUNDS", 0.9, (10, 20, 100, 40))]
@@ -148,7 +148,7 @@ def test_paddleocr_not_importable_gives_unavailable_with_the_install_command(mon
     with pytest.raises(OcrUnavailableError) as error:
         PaddleEngine(OcrConfig()).recognize(png())
     message = str(error.value)
-    assert 'pip install "gridkey[ocr]"' in message
+    assert 'pip install "quotable[ocr]"' in message
     assert "NVIDIA" in message
     assert isinstance(error.value.__cause__, ImportError)
 
@@ -188,7 +188,7 @@ def test_paddleocr_without_paddlepaddle_names_the_missing_package(monkeypatch):
     install(monkeypatch, paddle=False)
     with pytest.raises(OcrUnavailableError, match="PaddlePaddle") as error:
         PaddleEngine(OcrConfig()).recognize(png())
-    assert "gridkey[ocr-core]" in str(error.value)
+    assert "quotable[ocr-core]" in str(error.value)
     assert FakePaddleOCR.instances == []
 
 
@@ -202,7 +202,7 @@ def test_another_engine_does_not_need_paddlepaddle(monkeypatch):
 def test_the_device_choice_is_logged_and_the_gpu_warning_too(monkeypatch, caplog):
     install(monkeypatch, cuda=False, nvidia=True)
     answers(result(LINE))
-    with caplog.at_level(logging.INFO, logger="gridkey.ocr"):
+    with caplog.at_level(logging.INFO, logger="quotable.ocr"):
         PaddleEngine(OcrConfig()).recognize(png())
     messages = [(r.levelno, r.getMessage()) for r in caplog.records]
     assert any(level == logging.INFO and "OCR device: cpu" in text for level, text in messages)
@@ -227,7 +227,7 @@ def test_an_auto_gpu_that_fails_to_build_falls_back_to_the_cpu_once(monkeypatch,
 
     FakePaddleOCR.build_error = staticmethod(build_error)
     answers(result(LINE))
-    with caplog.at_level(logging.WARNING, logger="gridkey.ocr"):
+    with caplog.at_level(logging.WARNING, logger="quotable.ocr"):
         words = PaddleEngine(OcrConfig()).recognize(png())
     assert [w.text for w in words] == ["NET", "FUNDS"]
     assert [i.kwargs["device"] for i in FakePaddleOCR.instances] == ["cpu"]

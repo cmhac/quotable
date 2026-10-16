@@ -3,7 +3,7 @@ import asyncio
 import pytest
 from pydantic import BaseModel
 
-from gridkey.llm import (
+from quotable.llm import (
     BudgetExceededError,
     CachedClient,
     Image,

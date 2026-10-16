@@ -1,7 +1,7 @@
 """
 The PaddleOCR adapter: the only module that imports ``paddleocr``.
 
-``PaddleEngine`` implements :class:`gridkey.ocr.OcrEngine`. Building it imports nothing; the
+``PaddleEngine`` implements :class:`quotable.ocr.OcrEngine`. Building it imports nothing; the
 first ``recognize`` does the work (import PaddleOCR, detect the hardware, choose the device,
 build the pipeline), so a run whose pages are all in the OCR cache never gets here. An
 automatically chosen GPU that fails on the first page is replaced by the CPU, once; an
@@ -14,13 +14,13 @@ import sys
 from pathlib import Path
 from typing import Any, NoReturn
 
-from gridkey import ocr_device
-from gridkey.ocr import TEXTLINE_ORIENTATION_MODEL, OcrConfig, OcrUnavailableError, OcrWord
-from gridkey.ocr_device import Choice
+from quotable import ocr_device
+from quotable.ocr import TEXTLINE_ORIENTATION_MODEL, OcrConfig, OcrUnavailableError, OcrWord
+from quotable.ocr_device import Choice
 
-log = logging.getLogger("gridkey.ocr")
+log = logging.getLogger("quotable.ocr")
 
-INSTALL = 'pip install "gridkey[ocr]"'
+INSTALL = 'pip install "quotable[ocr]"'
 README_GPU = "for an NVIDIA GPU see 'OCR on an NVIDIA GPU' in the README"
 OCR_YOURSELF = "OCR the PDF yourself (for example `ocrmypdf --force-ocr`) and try again"
 
@@ -58,7 +58,7 @@ def _not_installed() -> OcrUnavailableError:
 def _no_paddlepaddle() -> OcrUnavailableError:
     msg = (
         "This document needs OCR, but PaddlePaddle (the inference engine) is not installed: "
-        "the `gridkey[ocr-core]` extra installs PaddleOCR only. Install a PaddlePaddle build "
+        "the `quotable[ocr-core]` extra installs PaddleOCR only. Install a PaddlePaddle build "
         f"({README_GPU}), or use `{INSTALL}` for the CPU build."
     )
     return OcrUnavailableError(msg)

@@ -1,16 +1,16 @@
 """
-Where gridkey keeps what it has already computed, and how it writes it.
+Where quotable keeps what it has already computed, and how it writes it.
 
 Model answers and OCR results are always cached on disk. The directory is the ``cache_dir``
-the caller passes, or else ``.gridkey/`` in the current working directory. There is no
-in-memory mode: ``None`` means "use the default". gridkey never expires or deletes cache
+the caller passes, or else ``.quotable/`` in the current working directory. There is no
+in-memory mode: ``None`` means "use the default". quotable never expires or deletes cache
 files; deleting the folder starts over.
 """
 
 import uuid
 from pathlib import Path
 
-DEFAULT_DIR_NAME = ".gridkey"
+DEFAULT_DIR_NAME = ".quotable"
 IGNORE_ALL = "*\n"
 
 
@@ -29,10 +29,10 @@ def resolve_cache_dir(cache_dir: str | Path | None) -> Path:
     """
     Return the cache directory, creating it if it is missing.
 
-    ``cache_dir`` if given, otherwise ``.gridkey/`` in the current working directory. When
-    gridkey creates the default folder itself it also writes ``.gridkey/.gitignore``
+    ``cache_dir`` if given, otherwise ``.quotable/`` in the current working directory. When
+    quotable creates the default folder itself it also writes ``.quotable/.gitignore``
     containing ``*``, so the cache (which holds content derived from the PDF) is never
-    committed by accident. A folder the caller named, or an existing ``.gridkey/``, is left
+    committed by accident. A folder the caller named, or an existing ``.quotable/``, is left
     as it is. Raises ``OSError`` naming the path if the folder cannot be created or written.
     """
     default = cache_dir is None
@@ -47,7 +47,7 @@ def resolve_cache_dir(cache_dir: str | Path | None) -> Path:
         probe.unlink()
     except OSError as err:
         msg = (
-            f"cannot use {str(path)!r} as the gridkey cache directory ({err}); "
+            f"cannot use {str(path)!r} as the quotable cache directory ({err}); "
             "pass cache_dir=<a writable folder>"
         )
         raise OSError(msg) from err

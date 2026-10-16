@@ -5,7 +5,7 @@ Adapted from google/langextract's resolver (Apache-2.0): an exact token match
 first, then a fuzzy match by longest common subsequence that must cover enough of
 the value (``FUZZY_THRESHOLD``) in a dense enough span (``FUZZY_MIN_DENSITY``).
 Grounding only says *whether* a value is printed on the page; where it sits is the
-job of :mod:`gridkey.position`.
+job of :mod:`quotable.position`.
 """
 
 import math
@@ -13,7 +13,7 @@ import statistics
 from dataclasses import dataclass, field
 from typing import NamedTuple
 
-from gridkey.text import Bbox, Layer, tokenize
+from quotable.text import Bbox, Layer, tokenize
 
 FUZZY_THRESHOLD = 0.75  # langextract _FUZZY_ALIGNMENT_MIN_THRESHOLD
 FUZZY_MIN_DENSITY = 1 / 3  # langextract _FUZZY_ALIGNMENT_MIN_DENSITY

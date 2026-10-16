@@ -2,8 +2,8 @@ import json
 
 import pymupdf
 
-from gridkey.grounding import ground_rows
-from gridkey.text import load_layer
+from quotable.grounding import ground_rows
+from quotable.text import load_layer
 from tests.conftest import DATA
 
 

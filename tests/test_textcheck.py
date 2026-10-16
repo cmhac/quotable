@@ -3,8 +3,8 @@ import string
 
 import pytest
 
-from gridkey.text import Layer
-from gridkey.textcheck import (
+from quotable.text import Layer
+from quotable.textcheck import (
     MAX_GARBLED_PAGE_SHARE,
     MIN_LETTERS,
     TextLayerError,

@@ -7,8 +7,8 @@ from dataclasses import replace
 
 import pytest
 
-from gridkey.ocr import OcrConfig, OcrWord
-from gridkey.ocr_cache import file_sha256, fingerprint, ocr_key, read_page, write_page
+from quotable.ocr import OcrConfig, OcrWord
+from quotable.ocr_cache import file_sha256, fingerprint, ocr_key, read_page, write_page
 
 WORDS = [
     OcrWord("Hello", (1.0, 2.0, 30.5, 40.0), 0.97),

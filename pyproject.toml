@@ -1,5 +1,5 @@
 [project]
-name = "gridkey"
+name = "quotable"
 version = "0.1.0"
 description = "Extract tables from PDFs with a vision LLM, then check every value against the PDF's text layer."
 readme = "README.md"
@@ -12,7 +12,7 @@ dependencies = [
     "pymupdf==1.28.2",
     # Every provider SDK pydantic-ai supports, except the extras that pull in PyTorch.
     "pydantic-ai-slim[anthropic,bedrock,cohere,google,groq,huggingface,mistral,openai,openrouter,xai]==2.54.0",
-    # Ranges, not pins: gridkey is installed into its own environment (spec 008).
+    # Ranges, not pins: quotable is installed into its own environment (spec 008).
     "pandas>=3,<4",
     "polars>=2,<3",
 ]

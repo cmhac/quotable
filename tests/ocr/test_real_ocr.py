@@ -14,13 +14,13 @@ from pathlib import Path
 import pymupdf
 import pytest
 
-from gridkey import OcrConfig
-from gridkey._paddle import PaddleEngine, _constructor_arguments, _decode, result_words
-from gridkey.extract import run_pipeline, usable_layers
-from gridkey.models import WindowTables
-from gridkey.ocr import OcrWord
-from gridkey.ocr_pages import ocr_pages
-from gridkey.text import load_layer
+from quotable import OcrConfig
+from quotable._paddle import PaddleEngine, _constructor_arguments, _decode, result_words
+from quotable.extract import run_pipeline, usable_layers
+from quotable.models import WindowTables
+from quotable.ocr import OcrWord
+from quotable.ocr_pages import ocr_pages
+from quotable.text import load_layer
 from tests.conftest import DATA, FakeClient, replay
 from tests.fake_ocr import ExplodingEngine
 from tests.test_senate_tables import RECORDED
@@ -168,7 +168,7 @@ TOLERANCE = 3.0
 
 @pytest.fixture(scope="module")
 def strip_result():
-    """A real PaddleOCR result for the top strip of a page, with the same arguments gridkey uses."""
+    """A real PaddleOCR result for the top strip of a page, with the arguments quotable uses."""
     from paddleocr import PaddleOCR  # noqa: PLC0415
 
     with pymupdf.open(GARBLED) as document:

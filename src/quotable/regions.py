@@ -11,9 +11,9 @@ overlap and the page is rejected) and any fallback to the whole page when a band
 isolated.
 """
 
-from gridkey.grounding import find_candidates
-from gridkey.schema import ExtractionError
-from gridkey.text import Layer, tokenize
+from quotable.grounding import find_candidates
+from quotable.schema import ExtractionError
+from quotable.text import Layer, tokenize
 
 BAND_MARGIN = 4.0  # pt added above the first row and below the last row
 WHOLE_WIDTH = 1e9

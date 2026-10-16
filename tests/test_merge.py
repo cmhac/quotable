@@ -2,8 +2,8 @@
 
 import pytest
 
-from gridkey.merge import DEFAULT_RULES, Rules, merge_tables, mergeable_pairs
-from gridkey.table import MergedPart
+from quotable.merge import DEFAULT_RULES, Rules, merge_tables, mergeable_pairs
+from quotable.table import MergedPart
 from tests.fixture_tables import discovered, doc_ids, load_doc
 from tests.test_merge_checks import A_COLUMNS, B_COLUMNS, table
 

@@ -7,9 +7,9 @@ from pydantic_ai import BinaryContent
 from pydantic_ai.messages import ModelMessage, ModelResponse, ToolCallPart, UserPromptPart
 from pydantic_ai.models.function import AgentInfo, FunctionModel
 
-import gridkey
-from gridkey import BudgetExceededError, extract_tables, extract_tables_async
-from gridkey.extract import run_pipeline
+import quotable
+from quotable import BudgetExceededError, extract_tables, extract_tables_async
+from quotable.extract import run_pipeline
 from tests.conftest import load_sample, one_table, replay
 
 SAMPLE = load_sample("fy22_milcon_house_original")  # one page
@@ -40,7 +40,7 @@ class Calls:
 
 
 def test_a_model_is_required_and_no_environment_variable_supplies_it(monkeypatch):
-    for name in ("GRIDKEY_MODEL", "GRIDKEY_LIVE_TEST_MODEL", "OPENAI_MODEL", "MODEL"):
+    for name in ("QUOTABLE_MODEL", "QUOTABLE_LIVE_TEST_MODEL", "OPENAI_MODEL", "MODEL"):
         monkeypatch.setenv(name, "openai:some-model")
     with pytest.raises(TypeError, match="model"):
         extract_tables(PDF)  # ty: ignore[missing-argument]
@@ -89,7 +89,7 @@ def test_max_requests_caps_new_requests_with_the_default_or_an_explicit_director
 
 
 def test_the_public_names_are_the_entrypoint_and_its_results():
-    assert sorted(gridkey.__all__) == sorted(
+    assert sorted(quotable.__all__) == sorted(
         [
             "BudgetExceededError",
             "ExtractionError",
@@ -106,4 +106,4 @@ def test_the_public_names_are_the_entrypoint_and_its_results():
         ]
     )
     for removed in ("CachedClient", "LLMClient", "Request", "Image", "PydanticAIClient"):
-        assert not hasattr(gridkey, removed)
+        assert not hasattr(quotable, removed)

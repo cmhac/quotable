@@ -32,5 +32,5 @@ def trigrams(run: str) -> list[str]:
 @cache
 def load_counts() -> dict[str, int]:
     """Return the shipped English trigram counts (see ``scripts/build_trigrams.py``)."""
-    path = resources.files("gridkey").joinpath("data", "trigram_counts.json")
+    path = resources.files("quotable").joinpath("data", "trigram_counts.json")
     return json.loads(path.read_text(encoding="utf-8"))["trigrams"]

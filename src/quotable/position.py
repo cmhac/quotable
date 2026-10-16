@@ -27,8 +27,8 @@ import math
 import statistics
 from dataclasses import dataclass
 
-from gridkey.grounding import Candidate, FieldGrounding, find_candidates
-from gridkey.text import Bbox, Layer, tokenize
+from quotable.grounding import Candidate, FieldGrounding, find_candidates
+from quotable.text import Bbox, Layer, tokenize
 
 Window = tuple[float, float]
 

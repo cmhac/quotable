@@ -5,8 +5,8 @@ from typing import Any
 import pymupdf
 import pytest
 
-from gridkey.ocr import OcrConfig, OcrUnavailableError, OcrWord, words_to_layer
-from gridkey.textcheck import TextLayerError
+from quotable.ocr import OcrConfig, OcrUnavailableError, OcrWord, words_to_layer
+from quotable.textcheck import TextLayerError
 
 PAGE = (612.0, 792.0)
 

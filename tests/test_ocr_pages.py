@@ -5,9 +5,9 @@ from dataclasses import replace
 import pymupdf
 import pytest
 
-from gridkey.ocr import OcrConfig, OcrWord
-from gridkey.ocr_pages import ocr_pages
-from gridkey.text import load_layer
+from quotable.ocr import OcrConfig, OcrWord
+from quotable.ocr_pages import ocr_pages
+from quotable.text import load_layer
 from tests.conftest import DATA
 from tests.fake_ocr import FakeEngine, native_as_ocr
 

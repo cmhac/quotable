@@ -31,7 +31,7 @@ test *args:
 score-merge:
     uv run python -m tests.score_merge
 
-# Run the live tests: calls a real model and costs money (needs OPENAI_API_KEY and GRIDKEY_LIVE_TEST_MODEL)
+# Run the live tests: calls a real model and costs money (needs OPENAI_API_KEY and QUOTABLE_LIVE_TEST_MODEL)
 test-live:
     uv run pytest -m live -rs
 

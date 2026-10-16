@@ -2,7 +2,7 @@
 
 import json
 
-from gridkey.models import PageRows, WindowTables
+from quotable.models import PageRows, WindowTables
 from tests.conftest import DATA, FakeClient, extract_tables
 
 PDF = DATA / "senate_expenditures_paddleocr.pdf"

@@ -2,7 +2,7 @@ import asyncio
 
 import pytest
 
-from gridkey.discover import (
+from quotable.discover import (
     CARRY_PROMPT,
     DISCOVER_PROMPT,
     DISCOVERY_PAGES,
@@ -13,9 +13,9 @@ from gridkey.discover import (
     signature,
     validate_found,
 )
-from gridkey.llm import Image, Request
-from gridkey.models import Column, PageTables, TableInfo, WindowTables
-from gridkey.schema import ExtractionError
+from quotable.llm import Image, Request
+from quotable.models import Column, PageTables, TableInfo, WindowTables
+from quotable.schema import ExtractionError
 
 
 def info(columns, label="t", first="", last=""):

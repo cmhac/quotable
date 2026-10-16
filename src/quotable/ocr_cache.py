@@ -21,8 +21,8 @@ from importlib import metadata
 from pathlib import Path
 from typing import Any
 
-from gridkey.cache import write_atomic
-from gridkey.ocr import OcrConfig, OcrWord
+from quotable.cache import write_atomic
+from quotable.ocr import OcrConfig, OcrWord
 
 FORMAT = 1
 SUBDIR = "ocr"

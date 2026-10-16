@@ -4,8 +4,8 @@ OCR for pages whose text layer is garbled or missing: configuration, words, and 
 This module holds the parts that need no OCR engine: ``OcrConfig``, the ``OcrWord`` an engine
 returns, the ``OcrEngine`` protocol, the conversion of OCR words (pixels of a rendered page)
 into a ``Layer`` (points, upright page space, the units ``load_layer`` produces).
-:mod:`gridkey.ocr_pages` runs it over a PDF's bad pages with the OCR cache, and PaddleOCR
-itself is only touched by :mod:`gridkey._paddle`.
+:mod:`quotable.ocr_pages` runs it over a PDF's bad pages with the OCR cache, and PaddleOCR
+itself is only touched by :mod:`quotable._paddle`.
 """
 
 import logging
@@ -14,10 +14,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol
 
-from gridkey.text import Bbox, Layer
-from gridkey.textcheck import TextLayerError
+from quotable.text import Bbox, Layer
+from quotable.textcheck import TextLayerError
 
-log = logging.getLogger("gridkey.ocr")
+log = logging.getLogger("quotable.ocr")
 
 POINTS_PER_INCH = 72
 MIN_DPI = 72
@@ -47,7 +47,7 @@ OWNED_BY_FIELD = {
     "text_detection_model_dir": "model_dir",
     "text_recognition_model_dir": "model_dir",
     "textline_orientation_model_dir": "model_dir",
-    "return_word_box": "(always on: gridkey needs word boxes)",
+    "return_word_box": "(always on: quotable needs word boxes)",
 }
 # These change the image geometry, so OCR boxes would not match the page the model sees.
 GEOMETRY_OPTIONS = ("use_doc_orientation_classify", "use_doc_unwarping")
@@ -131,7 +131,7 @@ class OcrConfig:
                 "model_dir, text_detection_model and text_recognition_model need both model "
                 "names: set text_detection_model and text_recognition_model "
                 f"(lang={self.lang!r}, ocr_version={self.ocr_version!r} has no default names "
-                "gridkey knows)"
+                "quotable knows)"
             )
             raise ValueError(msg)
 

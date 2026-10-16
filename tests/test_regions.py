@@ -1,9 +1,9 @@
 import pymupdf
 import pytest
 
-from gridkey.regions import locate, table_layers
-from gridkey.schema import ExtractionError
-from gridkey.text import load_layer
+from quotable.regions import locate, table_layers
+from quotable.schema import ExtractionError
+from quotable.text import load_layer
 
 # Two stacked tables that share the header word "Amount" and the amount "$100".
 TITLE = [(72, 40, "Quarterly"), (160, 40, "Report")]

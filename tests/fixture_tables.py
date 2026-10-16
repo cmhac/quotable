@@ -14,11 +14,11 @@ from typing import Any
 
 import pymupdf
 
-from gridkey.discover import signature
-from gridkey.layout import page_layouts
-from gridkey.regions import table_layers
-from gridkey.table import PageResult, Table, ground_document
-from gridkey.text import Layer, load_layer
+from quotable.discover import signature
+from quotable.layout import page_layouts
+from quotable.regions import table_layers
+from quotable.table import PageResult, Table, ground_document
+from quotable.text import Layer, load_layer
 
 DATA = Path(__file__).parent / "data" / "synthetic"
 

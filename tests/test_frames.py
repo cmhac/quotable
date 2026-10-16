@@ -8,8 +8,8 @@ import pandas as pd
 import polars as pl
 import pytest
 
-import gridkey
-from gridkey.table import Table
+import quotable
+from quotable.table import Table
 from tests.conftest import extract_tables, load_sample, replay
 from tests.table_builder import build_table
 
@@ -218,12 +218,12 @@ def test_the_sample_frames_agree_with_each_other():
 
 
 def test_the_public_names_are_unchanged():
-    assert "Table" in gridkey.__all__
-    assert not {"pandas", "polars", "to_pandas", "to_polars"} & set(gridkey.__all__)
+    assert "Table" in quotable.__all__
+    assert not {"pandas", "polars", "to_pandas", "to_polars"} & set(quotable.__all__)
 
 
-def test_importing_gridkey_does_not_import_pandas_or_polars():
-    code = "import sys, gridkey; print('pandas' in sys.modules, 'polars' in sys.modules)"
+def test_importing_quotable_does_not_import_pandas_or_polars():
+    code = "import sys, quotable; print('pandas' in sys.modules, 'polars' in sys.modules)"
     out = subprocess.run(  # noqa: S603
         [sys.executable, "-c", code], capture_output=True, text=True, check=True
     )

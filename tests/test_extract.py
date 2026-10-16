@@ -4,11 +4,11 @@ import json
 
 import pytest
 
-from gridkey import ExtractionError, TextLayerError, extract_tables_async
-from gridkey import extract_tables as public_extract_tables
-from gridkey.extract import run_pipeline
-from gridkey.llm import Image
-from gridkey.models import PageRows
+from quotable import ExtractionError, TextLayerError, extract_tables_async
+from quotable import extract_tables as public_extract_tables
+from quotable.extract import run_pipeline
+from quotable.llm import Image
+from quotable.models import PageRows
 from tests.conftest import (
     DATA,
     FakeClient,

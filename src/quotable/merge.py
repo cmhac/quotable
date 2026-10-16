@@ -21,10 +21,10 @@ import re
 import statistics
 from dataclasses import dataclass
 
-from gridkey.grounding import FieldGrounding
-from gridkey.layout import PageLayout
-from gridkey.table import MergedPart, MergeEvidence, PageResult, Table, ground_document
-from gridkey.text import Bbox, tokenize
+from quotable.grounding import FieldGrounding
+from quotable.layout import PageLayout
+from quotable.table import MergedPart, MergeEvidence, PageResult, Table, ground_document
+from quotable.text import Bbox, tokenize
 
 GRID_TOLERANCE = 10.0  # points: how far apart the same column may sit on the two sides
 MIN_CELLS = 5  # qualifying cells a column needs on each side
