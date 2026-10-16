@@ -1,6 +1,7 @@
 # 007 - Merge the parts of a table whose header is reworded
 
-Status: draft, open questions pending
+Status: draft; open questions resolved; tasks written (`tasks/001` to `007`), awaiting approval.
+The golden fixture (`tests/data/synthetic/`) exists; no `src/` code yet.
 
 ## Summary
 
