@@ -81,3 +81,16 @@ words. The position-only fields stay for the real-report slice, where there is n
 - `extra-block-on-text-page`: final values are judged only on pages that hold a table.
 - Result, 3 runs: all 60 fixture accuracy runs passed, including the two group documents.
   The only failures left are the Senate regression (OCR amounts differ between two reads).
+
+## Senate regression: comma and period read as the same
+
+Six cached Senate reads (3 without extra fields, 3 with) differ as much between two runs
+without them as between a run with and one without, so the difference is the model's reading
+of a scan, not the extra fields. The scan's comma is ambiguous (the PDF's own text layer has
+both `LAISCH. MARK` and `6,941,271.74` / `6.941.271.74` for the same print). The regression
+comparison now reads a comma as a period (`rows_of`); nothing else is loosened.
+
+Result, 3 runs: 13 of 15 regression runs pass. Still failing, with different causes:
+- run 2: the headings read in Title Case instead of upper case (shape), plus two cut or
+  changed names (`GALLEGO`/`GALLEGOS`, `LAISCH, MARK` / `LAISCH, MARK P`);
+- run 3: `STAFF` against `PROFESSIONAL STAFF`.

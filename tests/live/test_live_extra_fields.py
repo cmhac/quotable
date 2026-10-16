@@ -162,7 +162,14 @@ def run_pipeline_live(pdf: Path, request: ExtraFields, cache: Path, cap: int):
 
 
 def rows_of(tables: list[Table]) -> list[tuple[str, ...]]:
-    return [tuple(r.values.values()) for t in tables for r in t.rows()]
+    """
+    Return every row's values, with a comma read as a period.
+
+    On a scan the two are hard to tell apart (the PDF's own text layer has both for the same
+    printed comma), so the model's reading of one flips from run to run. Nothing else is
+    loosened: a different letter, word or case still differs.
+    """
+    return [tuple(v.replace(",", ".") for v in r.values.values()) for t in tables for r in t.rows()]
 
 
 def shape_of(tables: list[Table]) -> list[tuple]:
