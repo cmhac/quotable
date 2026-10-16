@@ -13,6 +13,7 @@ offline over the whole fixture and the Senate sample, so a description that leak
 """
 
 from collections.abc import Iterable, Sequence
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,7 @@ import pymupdf
 
 from quotable.extra_fields import ExtraField, ExtraFields, FieldGroup, extras_prompt
 from quotable.text import tokenize
+from tests.extra_fields_model import request_for
 
 # Function words that no header is expected to be about; everything else must not overlap.
 STOPWORDS = frozenset(
@@ -63,7 +65,7 @@ def field_description(line: int, label: bool | None = None, span: int = 1) -> st
     if span > 1:
         where += (
             f"The value is printed over {span} lines, lines {line} to {line + span - 1}: "
-            "give all of them as one text. "
+            "give all of them on one line, joined by single spaces. "
         )
     if label is True:
         return where + "The first line starts with a label: leave the label out of the value."
@@ -200,3 +202,44 @@ def overlap(header: set[str], request: ExtraFields, *, library: bool = True) -> 
     """
     text = caller_text(request) + ("\n" + extras_prompt(request) if library else "")
     return (header - STOPWORDS) & set(tokenize(text))
+
+
+def label_hint(label: bool, lines: int) -> str:
+    """Return what a caller adds to a description about the label and the lines of a value."""
+    text = (
+        "Leave the label printed before the value out of it."
+        if label
+        else "The value is the whole line, from its first word: keep every word."
+    )
+    if lines > 1:
+        text += (
+            f" The value is printed over {lines} lines: give all of them on one line,"
+            " joined by single spaces."
+        )
+    return text
+
+
+def described_request(truth: dict[str, Any], pdf: Path, *, carry: bool) -> ExtraFields:
+    """
+    Return the request a caller would write for a fixture document: the truth's own names and
+    descriptions (which name what each field is), plus a sentence about its label.
+    """
+    base = request_for(truth, carry=carry)
+    facts = dict(zip((f["name"] for f in truth["fields"]), value_lines(pdf, truth), strict=True))
+
+    def hinted(field: ExtraField) -> ExtraField:
+        label, lines = facts[field.name]
+        hint = label_hint(label, lines)
+        return ExtraField(
+            field.name,
+            f"{field.description}. The title printed at the very top of every page is not part "
+            f"of any header block. {hint}",
+        )
+
+    items: list[ExtraField | FieldGroup] = []
+    for item in base.fields:
+        if isinstance(item, FieldGroup):
+            items.append(FieldGroup(item.name, item.description, [hinted(f) for f in item.fields]))
+        else:
+            items.append(hinted(item))
+    return replace(base, fields=items)

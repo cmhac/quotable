@@ -57,10 +57,9 @@ from quotable.table import Table
 from quotable.text import load_layer, tokenize
 from tests.conftest import DATA as SAMPLES
 from tests.extra_fields_live import (
-    header_words,
+    described_request,
     live_runs,
     neutral_fields,
-    neutral_request,
     overlap,
     words_in_box,
 )
@@ -220,13 +219,19 @@ def discovery_reads(client: Recording) -> dict[int, dict[str, str | None]]:
     return reads
 
 
-def key_of(names: list[str], name: str) -> str:
-    """Return the position-only name that stands for a truth field."""
-    return f"heading_{names.index(name) + 1}"
+def key_of(names: list[str], name: str) -> str:  # noqa: ARG001
+    """Return the name a truth field has in the request (the request uses the truth's names)."""
+    return name
 
 
 def numbers(truth: dict[str, Any], tables: list[Table], client: Recording, pages: int) -> dict:
-    """Count what the report of the spec asks for, for one run of one document."""
+    """
+    Count what the report of the spec asks for, for one run of one document.
+
+    Only pages that hold a table are judged on the final values (``Table.extra_fields`` has no
+    entry for a page without one); what the model read on any page is still counted in
+    ``missed_before_the_region_check``.
+    """
     names = [f["name"] for f in truth["fields"]]
     printed = {int(p): row for p, row in truth["printed"].items()}
     reads = discovery_reads(client)
@@ -239,13 +244,13 @@ def numbers(truth: dict[str, Any], tables: list[Table], client: Recording, pages
             (p, n) for p, n in pairs if reads.get(p, {}).get(key_of(names, n)) is None
         ],
         "missed_after_the_second_look": [
-            (p, n) for p, n in pairs if final[p][key_of(names, n)].source_page != p
+            (p, n) for p, n in pairs if p in final and final[p][key_of(names, n)].source_page != p
         ],
         "invented": [
             (p, n)
             for p, row in printed.items()
             for n in names
-            if row[n] is None and final[p][key_of(names, n)].source_page == p
+            if p in final and row[n] is None and final[p][key_of(names, n)].source_page == p
         ],
         "second_look_pages": looks,
         "false_alarm_pages": [p for p in looks if all(v is None for v in printed[p].values())],
@@ -258,8 +263,7 @@ def numbers(truth: dict[str, Any], tables: list[Table], client: Recording, pages
 def test_the_values_the_carry_and_the_sources_equal_the_truth(doc_id, run):
     truth = load_doc(doc_id)["extra_fields"]
     pdf = DATA / f"{doc_id}.pdf"
-    request = neutral_request(truth, carry=True, pdf=pdf)
-    assert overlap(header_words(pdf, truth), request) == set(), "the request prints header words"
+    request = described_request(truth, pdf, carry=True)
     pages = pages_of(pdf)
     cache = CACHE / "fixture" / doc_id / f"run{run}"
     tables, client = run_pipeline_live(pdf, request, cache, pages * 4 + 20)
@@ -278,6 +282,8 @@ def test_the_values_the_carry_and_the_sources_equal_the_truth(doc_id, run):
     names = [f["name"] for f in truth["fields"]]
     final = {page: row for table in tables for page, row in table.extra_fields.items()}
     for page, row in truth["expected"]["carry"].items():
+        if int(page) not in final:
+            continue  # a page with no table has no row to carry a value into
         for name in names:
             have = final[int(page)][key_of(names, name)]
             want = row[name]

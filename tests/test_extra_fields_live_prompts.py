@@ -9,6 +9,7 @@ from quotable.text import tokenize
 from tests.conftest import DATA
 from tests.extra_fields_live import (
     SENATE_HEADER_BOX,
+    described_request,
     field_description,
     header_words,
     label_marks,
@@ -115,9 +116,8 @@ def _live_run(case_id, **faults):
     from tests.live.test_live_extra_fields import Recording, numbers  # noqa: PLC0415
 
     truth = truth_of(case_id)
-    request = neutral_request(truth, carry=True)
-    rename = {f["name"]: f"heading_{k + 1}" for k, f in enumerate(truth["fields"])}
-    fake = truth_model(case_id, rename=rename, **faults)
+    request = described_request(truth, FIXTURE / f"{case_id}.pdf", carry=True)
+    fake = truth_model(case_id, **faults)
     client = Recording(fake)
     tables = asyncio.run(
         run_pipeline(FIXTURE / f"{case_id}.pdf", client, extra_fields=request, recheck=False)
@@ -130,7 +130,7 @@ def test_the_live_report_counts_a_missed_header_before_and_after_the_second_look
     found, _ = _live_run(
         "extra-sections-mixed",
         read={5: {"division": None}},
-        second=lambda page, names: {"heading_1": "Parks"} if page == 5 else {},
+        second=lambda page, names: {"division": "Parks"} if page == 5 else {},
     )
     assert found["missed_before_the_region_check"] == [(5, "division")]
     assert found["missed_after_the_second_look"] == []
@@ -190,3 +190,14 @@ def test_the_field_description_says_to_leave_a_label_out_of_the_value():
     text = field_description(1)
     assert "leave the label out" in text
     assert "no label" in text  # a line without one is given whole
+
+
+def test_a_described_request_names_each_field_and_says_what_to_do_with_its_label():
+    case_id = "extra-senate-geometry"
+    request = described_request(truth_of(case_id), FIXTURE / f"{case_id}.pdf", carry=True)
+    by_name = {f.name: f.description for f in request.fields}
+    assert list(by_name) == ["appropriation", "year", "title", "account"]
+    assert by_name["year"].startswith("The funding year.")  # the fixture's own description
+    assert "Leave the label" in by_name["year"]  # "<label> 2018": the value is what follows
+    assert "keep every word" in by_name["account"]  # the account line is kept whole
+    assert all("title printed at the very top of every page" in d for d in by_name.values())

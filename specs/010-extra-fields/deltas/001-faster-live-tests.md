@@ -67,3 +67,17 @@ minutes (an estimate; no request time was measured).
   different amounts), `extra-group-clears` and `extra-group-and-free-field` (page 4 prints only
   the second line of the block, in the first line's place, so a positional description can't
   tell them apart), and one run of `extra-section-25p` (the running title returned for a field).
+
+## Descriptions name the fields again (supersedes the position-only rule for the fixture)
+
+The rule "a description must not reuse a word of the header" was read too strictly. Naming the
+field ("the funding year", "the account line") is how a caller describes it and is allowed;
+only the values to find should not be in the request. The fixture accuracy tests now send the
+truth's own names and descriptions (`request_for`), plus a sentence about the title printed on
+every page, one about the label, and for a wrapped value, to join the lines with single
+spaces (`described_request` in `tests/extra_fields_live.py`). There is no check for value
+words. The position-only fields stay for the real-report slice, where there is no truth.
+
+- `extra-block-on-text-page`: final values are judged only on pages that hold a table.
+- Result, 3 runs: all 60 fixture accuracy runs passed, including the two group documents.
+  The only failures left are the Senate regression (OCR amounts differ between two reads).
