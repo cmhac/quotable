@@ -258,7 +258,7 @@ def numbers(truth: dict[str, Any], tables: list[Table], client: Recording, pages
 def test_the_values_the_carry_and_the_sources_equal_the_truth(doc_id, run):
     truth = load_doc(doc_id)["extra_fields"]
     pdf = DATA / f"{doc_id}.pdf"
-    request = neutral_request(truth, carry=True)
+    request = neutral_request(truth, carry=True, pdf=pdf)
     assert overlap(header_words(pdf, truth), request) == set(), "the request prints header words"
     pages = pages_of(pdf)
     cache = CACHE / "fixture" / doc_id / f"run{run}"

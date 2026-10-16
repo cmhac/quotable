@@ -19,6 +19,18 @@ minutes (an estimate; no request time was measured).
    the lines reached stderr.
 4. **`just test-live`** takes pytest arguments, like `just test`.
 
+## Found by the first live run (1 run per case, `-n 4`)
+
+5. **Field wording.** Every fixture page is topped by a title line printed on every page
+   (`Annual Funding Report  |  Section N`, `tests/synthetic.py`), above the header block. The
+   position-only description "line k of the block at the top left" let the model count that
+   title as line 1, so 16 of 17 failing accuracy tests read the title as the first field. The
+   description now says to count from the first line below any title printed at the top of every
+   page. Offline tests pin that every fixture page has such a title and that the description says
+   so. Not yet re-run live: whether the model now reads the right line is unmeasured.
+   Still open from that run: `extra-block-on-text-page` (the test looks up a page that has no
+   table) and one differing amount in the Senate regression.
+
 ## Not changed
 
 - The library's `MAX_CONCURRENT_REQUESTS = 4` and discovery's one-window-after-another order.
@@ -38,3 +50,20 @@ minutes (an estimate; no request time was measured).
 - `pytest -m live --collect-only` lists 3 runs per case by default and 1 with
   `QUOTABLE_LIVE_RUNS=1`.
 - No live test was run.
+
+## Label handling (live findings)
+
+- With the library prompt as it was, a printed "label value" line came back whole (12 of 12
+  samples). Added a sentence to `EXTRAS_PROMPT`: report only the value unless the field's
+  description asks for the whole line or the label. Alone, with position-only test descriptions,
+  it did not help (14 of 15 still wrong): "line 1" gives the model no way to tell where a label
+  ends.
+- The test descriptions now say, per field, what the line is, read from the fixture's geometry
+  (`value_lines` in `tests/extra_fields_live.py`): it starts with a label to leave out, or the
+  value is the whole line, and how many lines a wrapped value covers. No header word is printed.
+  `ExtraField` docs and the README tell callers to say the same in their descriptions.
+- Result, 3 runs per document: 62 passed and 13 failed. The remaining failures are not label
+  errors: `extra-block-on-text-page` (harness `KeyError`), the Senate regression (OCR noise, two
+  different amounts), `extra-group-clears` and `extra-group-and-free-field` (page 4 prints only
+  the second line of the block, in the first line's place, so a positional description can't
+  tell them apart), and one run of `extra-section-25p` (the running title returned for a field).

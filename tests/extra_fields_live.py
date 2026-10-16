@@ -12,7 +12,7 @@ offline over the whole fixture and the Senate sample, so a description that leak
 ``just test`` before any money is spent.
 """
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -46,29 +46,103 @@ def live_runs(value: str | None) -> tuple[int, ...]:
     return tuple(range(1, int(text) + 1))
 
 
-def field_description(line: int) -> str:
-    """Describe a field by its position only: no word of any header may appear here."""
-    return (
+def field_description(line: int, label: bool | None = None, span: int = 1) -> str:
+    """
+    Describe a field by its position only: no word of any header may appear here.
+
+    ``label`` says whether the line starts with a label that is not part of the value: ``True``
+    (leave it out), ``False`` (the value is the whole line), ``None`` (not known: the model is
+    told to decide). A caller who wants the label in the value has to say so, as the real
+    ``ExtraField`` docs advise. ``span`` is the number of lines the value is printed over.
+    """
+    where = (
         f"The text on line {line} of the block of lines printed at the top left of the page, "
-        "above the tables. If the line starts with a label followed by a value, give only the "
-        "value."
+        "above the tables. Count the lines from the first line below any title that is printed "
+        "at the very top of every page; that title is not a line of the block. "
+    )
+    if span > 1:
+        where += (
+            f"The value is printed over {span} lines, lines {line} to {line + span - 1}: "
+            "give all of them as one text. "
+        )
+    if label is True:
+        return where + "The first line starts with a label: leave the label out of the value."
+    if label is False:
+        return where + (
+            "The value starts at the first word of the line, even if that word looks like a "
+            "label: keep every word."
+        )
+    return where + (
+        "If the line starts with a label, leave the label out of the value; "
+        "if the line has no label, give it whole."
     )
 
 
-def neutral_fields(count: int) -> list[ExtraField]:
+def neutral_fields(
+    count: int,
+    labels: Sequence[bool | None] | None = None,
+    spans: Sequence[int] | None = None,
+) -> list[ExtraField]:
     """Return ``count`` position-only fields, ``heading_1`` to ``heading_<count>``."""
-    return [ExtraField(f"heading_{k}", field_description(k)) for k in range(1, count + 1)]
+    marks = list(labels) if labels is not None else [None] * count
+    sizes = list(spans) if spans is not None else [1] * count
+    fields: list[ExtraField] = []
+    line = 1
+    for k in range(count):
+        fields.append(ExtraField(f"heading_{k + 1}", field_description(line, marks[k], sizes[k])))
+        line += sizes[k]
+    return fields
 
 
-def neutral_request(truth: dict[str, Any], *, carry: bool) -> ExtraFields:
+def value_lines(pdf: Path, truth: dict[str, Any]) -> list[tuple[bool, int]]:
+    """
+    Return, per field of the truth, (starts with a label, number of lines it is printed over).
+
+    Read from the fixture, on the first page that prints the field. A line starts with a label
+    when the leftmost word on the top line of the value's box is not the first word of the
+    value. The number of lines is the number of distinct line tops inside the box (a value
+    that wraps has a box over several lines; only its top line can start with a label).
+    """
+    page = min(int(p) for p in truth["boxes"])
+    with pymupdf.open(pdf) as document:
+        words = document[page - 1].get_text("words")
+    facts: list[tuple[bool, int]] = []
+    for field in truth["fields"]:
+        name = field["name"]
+        x0, y0, x1, y1 = truth["boxes"][str(page)][name]
+        inside = [
+            w
+            for w in words
+            if x0 - 60 <= (w[0] + w[2]) / 2 <= x1 + 2 and y0 - 2 <= (w[1] + w[3]) / 2 <= y1 + 2
+        ]
+        tops = sorted({round(w[1]) for w in inside})
+        lines = 1 + sum(1 for a, b in zip(tops, tops[1:], strict=False) if b - a > 4)
+        first = sorted(
+            (w for w in inside if abs(w[1] - min(w[1] for w in inside)) < 2), key=lambda w: w[0]
+        )
+        first_word = truth["printed"][str(page)][name].split()[0]
+        facts.append((first[0][4] != first_word, lines))
+    return facts
+
+
+def label_marks(pdf: Path, truth: dict[str, Any]) -> list[bool]:
+    """Return, per field of the truth, whether its line starts with words not in the value."""
+    return [label for label, _ in value_lines(pdf, truth)]
+
+
+def neutral_request(truth: dict[str, Any], *, carry: bool, pdf: Path | None = None) -> ExtraFields:
     """
     Return the request for a fixture document's truth, with positional names and descriptions.
 
     The k-th field of the truth is the k-th line of its block; a group of the truth is a group
-    here, described by position only.
+    here, described by position only. With ``pdf``, each description also says whether the
+    line starts with a label to leave out (``label_marks``).
     """
     names = [f["name"] for f in truth["fields"]]
-    neutral = dict(zip(names, neutral_fields(len(names)), strict=True))
+    facts = value_lines(pdf, truth) if pdf is not None else None
+    marks = [label for label, _ in facts] if facts else None
+    spans = [lines for _, lines in facts] if facts else None
+    neutral = dict(zip(names, neutral_fields(len(names), marks, spans), strict=True))
     items: list[ExtraField | FieldGroup] = []
     placed: set[str] = set()
     for f in truth["fields"]:

@@ -98,6 +98,13 @@ tables = extract_tables(
 Describe where a field is and what it is, not what it says: the description goes to the model,
 and a word of the header in it biases the reading.
 
+When a printed line is a label followed by its value (`Year 2018`), the model reports only the
+value by default. Say in the description what you want when it differs or the line is
+ambiguous: "the account line, label included" keeps the whole line, and "the name that follows
+the label at the start of the second line" leaves the label out. The model cannot tell from the
+page alone where a label ends, so a description that says nothing about it gets inconsistent
+answers.
+
 - **Columns.** After the table's own value columns, `records()` and both frames have one column
   per field, named as you named it, then for each field `<name>__grounding`, `<name>__coverage`
   and `<name>__source_page` (the page that printed the value; a nullable integer, `Int64` in

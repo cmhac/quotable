@@ -21,7 +21,13 @@ from quotable.text import Bbox, Layer, tokenize
 
 @dataclass(frozen=True)
 class ExtraField:
-    """One value to read from each page: its column name and what it is (shown to the model)."""
+    """
+    One value to read from each page: its column name and what it is (shown to the model).
+
+    When a printed line is a label followed by its value, the model is told to report only the
+    value. If you want the label kept (or a label that is hard to tell from the value left
+    out), say so in ``description``: "the account line, label included".
+    """
 
     name: str
     description: str
@@ -64,7 +70,10 @@ EXTRAS_PROMPT = (
     "page titles and captions that were to be ignored above are exactly what to report here. "
     "Judge each page on its own. Report a field only if it is printed on that page; never infer "
     "it from another page of this window or from the known tables. Copy its value exactly as "
-    "printed, without reformatting. If the page does not print the field, its value is null. "
+    "printed, without reformatting. When a printed line is a label followed by its value, report "
+    "only the value, unless the field's description asks for the whole line or for the label. "
+    "A field's name and description say what its label would stand for. "
+    "If the page does not print the field, its value is null. "
     "Text inside a table's cells is not an extra field unless the field's description says so. "
     "In each page's extras give one entry per field, named exactly as listed, once each."
 )
