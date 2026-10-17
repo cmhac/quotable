@@ -1,6 +1,6 @@
 # 011 - Cost tracking and `quotable cost-report`
 
-Status: draft; all open questions answered by the user; waiting for the user's review of the spec.
+Status: approved by the user; split into tasks (see tasks/); waiting for the user's review of the tasks.
 
 ## Summary
 
@@ -67,7 +67,7 @@ nothing.
    share on its own. (`.quotable/.gitignore` still keeps it out of git when quotable made the
    folder.)
 4. **Price source: pydantic-ai's own cost tracking.** Each request's tokens come from the
-   pydantic-ai run result (`result.usage()`) and its price from `result.response.cost()`, which
+   pydantic-ai run result (`result.usage`) and its price from `result.response.cost()`, which
    pydantic-ai computes with `genai-prices`. There is no new dependency and no price table in
    quotable. The cost of each request is calculated and stored when that request's record is
    written, so a later price update never rewrites history. **The report only sums the stored
@@ -130,7 +130,7 @@ nothing.
   - `summarize(path) -> CostSummary` and `format_report(summary, path) -> str`, so the report is
     a pure function of the records and can be tested without a terminal.
 - **Getting the usage out of the model.** `LLMClient.ask` returns only the answer, and nothing
-  above the model knows the tokens. The pydantic-ai client already holds `result.usage()` and
+  above the model knows the tokens. The pydantic-ai client already holds `result.usage` and
   `result.response.cost()` for each request, so it is the one place to read them. Design: the
   `PydanticAIClient` takes an optional `on_usage` callback, called once per request with the
   request, its usage and its cost (`None` if the price lookup raises `LookupError` or the usage
@@ -140,7 +140,7 @@ nothing.
   change. Because `CachedClient` calls the inner client only on a miss, requirement 6 holds
   without any extra code.
 - **Request retries.** pydantic-ai retries a model answer that fails output validation inside one
-  `agent.run`; `result.usage()` sums those, so one record holds the cost of the whole `ask`,
+  `agent.run`; `result.usage` sums those, so one record holds the cost of the whole `ask`,
   retries included.
 - **`src/quotable/cli.py` (new).** `main(argv=None) -> int` with an `argparse` sub-command
   `cost-report` and `--dir`. `src/quotable/__main__.py` calls it.
