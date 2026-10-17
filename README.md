@@ -10,7 +10,7 @@ from quotable import extract_tables
 tables = extract_tables(
     "tables.pdf",
     model="openai:<model-name>",  # required; a pydantic-ai model string or Model instance
-    cache_dir="cache",  # optional: where answers and OCR results are cached (default .quotable/)
+    cache_dir="cache",  # optional: where answers and OCR results are cached (default .quotable/cache/)
     max_requests=100,  # optional: cap on new (uncached) model requests
 )  # one Table per table in the PDF
 
@@ -219,13 +219,47 @@ that folder's model subfolders and pass `OcrConfig(model_dir=<folder>)`.
 
 ### The cache
 
-Model answers and OCR results are always cached on disk, in `.quotable/` in the current working
-directory unless you pass `cache_dir`. quotable creates the folder and, for the default one,
-puts a `.gitignore` containing `*` in it. There is no in-memory mode, and nothing is ever
-deleted: remove the folder to start over. It holds content derived from your PDF (the model's
+Model answers and OCR results are always cached on disk, in `.quotable/cache/` in the current
+working directory unless you pass `cache_dir` (which is used as you give it). quotable creates
+the folder and, when it makes `.quotable/` itself, puts a `.gitignore` containing `*` in it. A
+cache that an earlier version left loose in `.quotable/` is moved into `cache/` the first time.
+There is no in-memory mode, and nothing is ever deleted: remove `.quotable/cache/` to start
+over. It holds content derived from your PDF (the model's
 extracted values and the OCR'd text), so delete it if the data is sensitive. A run that cannot
 write the folder raises an `OSError` naming it. A cached OCR page is reused whatever device made
 it, and works without the OCR extra installed.
+
+### Cost
+
+Every request that reaches a model is recorded in `.quotable/cost/requests.jsonl`, in the
+project's `.quotable/` folder even when you pass a `cache_dir`. It is kept apart from the cache,
+so clearing the cache (`rm -rf .quotable/cache`) leaves the costs alone. A record holds the time,
+a run id, the stage, the model, the token counts and the price; it never holds a prompt, an
+answer or a path. Answers served from the cache cost nothing and are not recorded. The price is
+an estimate from the price data that comes with pydantic-ai (genai-prices), worked out when the
+request was made and stored; a model with no known price is recorded with no price and left out
+of the total. If `cache_dir` points at `.quotable` itself, the cache and the cost folder share
+it, so clear it with care.
+
+`quotable cost-report` adds the records up. It makes no model request and needs no API key:
+
+```console
+$ quotable cost-report
+Cost report for .quotable/cost/requests.jsonl
+
+Runs:      7
+Requests:  412 paid, 0 unpriced
+Tokens:    3,204,118 in, 188,430 out
+Total:     $9.87
+
+By model            Requests      In tokens    Out tokens        Cost
+openai:gpt-5.1           400      3,100,000       180,000       $9.40
+openai:gpt-5-mini         12        104,118         8,430       $0.47
+```
+
+`--dir PATH` reads another project's `.quotable/` folder. "Requests" counts every request that
+reached a model and "unpriced" says how many of those had no price. A line that cannot be read
+is skipped and counted. With no records it says so and exits 0; an unreadable cost file exits 1.
 
 ## What it does
 
@@ -320,7 +354,7 @@ Deliberately omitted from this first cut; the original code is the reference for
   between unbanded columns.
 - **Recheck:** splitting pages with many flagged cells over several requests, capping the size
   of the text layer sent, and undoing accepted changes that make another cell worse.
-- **Cost:** dollar pricing and a dollar cap (only a request-count cap exists), usage ledger,
-  and the run-metadata sidecar.
-- **Output:** no CSV/sidecar writer or CLI yet; `Table.records()`, `Table.to_pandas()` and
+- **Cost:** a dollar cap (only a request-count cap exists) and the run-metadata sidecar.
+  Per-request cost is recorded and summed by `quotable cost-report` (see "Cost").
+- **Output:** no CSV/sidecar writer or extraction CLI yet; `Table.records()`, `Table.to_pandas()` and
   `Table.to_polars()` are the interface.

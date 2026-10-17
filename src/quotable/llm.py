@@ -11,8 +11,10 @@ module is internal: users call ``quotable.extract_tables`` with a model.
 instructions, the output schema and every prompt part (text and image bytes), so a re-run
 never pays twice for the same request.
 
-Deliberately left out (see the original project): dollar pricing and a cost cap
-(``max_requests`` caps new calls instead) and request concurrency limits.
+Deliberately left out (see the original project): a dollar cost cap (``max_requests`` caps new
+calls instead) and request concurrency limits. What each new request cost is recorded by the
+client that makes it (see :mod:`quotable.costs`); the cache hands back answers for free and
+records nothing.
 """
 
 import hashlib
