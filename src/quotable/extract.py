@@ -38,6 +38,7 @@ from pydantic_ai.models import Model
 from quotable._model import PydanticAIClient
 from quotable._paddle import PaddleEngine
 from quotable.cache import resolve_cache_dir
+from quotable.costs import CostLog
 from quotable.discover import DISCOVERY_PAGES, Discovery, Found, discover
 from quotable.extra_fields import (
     ExtraField,
@@ -439,7 +440,8 @@ async def extract_tables_async(  # noqa: PLR0913
     ``.quotable/cache/`` in the current directory (``.quotable/`` is created if missing, with a
     ``.gitignore`` of its own);
     ``max_requests`` caps the new (uncached) requests and raises ``BudgetExceededError``
-    beyond it.
+    beyond it. Each new request is recorded (tokens and price) in ``.quotable/cost/``, apart
+    from the cache; ``quotable cost-report`` adds the records up.
 
     ``ocr`` says what to do when the PDF's text layer is garbled or missing: ``True`` (the
     default) OCRs the bad pages with PaddleOCR using ``OcrConfig()``, an ``OcrConfig``
@@ -464,8 +466,11 @@ async def extract_tables_async(  # noqa: PLR0913
     """
     config = _ocr_config(ocr)
     directory = resolve_cache_dir(cache_dir)
+    costs = CostLog()  # costs go to the project's .quotable/cost/, not into a named cache_dir
     client = CachedClient(
-        PydanticAIClient(model, model_settings=model_settings), directory, max_requests
+        PydanticAIClient(model, model_settings=model_settings, on_usage=costs.record_usage),
+        directory,
+        max_requests,
     )
     return await run_pipeline(
         Path(pdf),

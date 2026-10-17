@@ -19,6 +19,7 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
+from typing import Any
 
 from quotable.cache import COST_DIR_NAME, resolve_project_dir
 
@@ -115,6 +116,27 @@ class CostLog:
             self._append(entry.to_line())
         except OSError as err:
             self._warn_once(f"could not record the cost of a request ({err})")
+
+    def record_usage(self, request: Any, model: str, usage: Any, cost: Decimal | None) -> None:  # noqa: ANN401
+        """Record one ``PydanticAIClient`` request (the client's ``on_usage`` callback)."""
+        counts = (
+            usage.input_tokens,
+            usage.output_tokens,
+            usage.cache_read_tokens,
+            usage.cache_write_tokens,
+        )
+        if not any(counts):
+            self.skip("the model reported no usage")
+            return
+        self.record(
+            request.stage,
+            model,
+            input_tokens=counts[0],
+            output_tokens=counts[1],
+            cache_read_tokens=counts[2],
+            cache_write_tokens=counts[3],
+            cost=cost,
+        )
 
     def skip(self, reason: str) -> None:
         """Say once that a request's cost was not recorded, and why."""

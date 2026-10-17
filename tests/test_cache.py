@@ -19,20 +19,19 @@ def test_the_default_location_is_dot_quotable_cache_in_the_working_directory():
     extract_tables(PDF, Calls().model(), recheck=False)
     project = Path.cwd() / ".quotable"
     assert (project / ".gitignore").read_text() == "*\n"
-    assert names(project) == [".gitignore", "cache"]
+    assert names(project) == [".gitignore", "cache", "cost"]
     answers = [n for n in names(project / "cache") if n.endswith(".json")]
     assert len(answers) == 2  # discovery and the one page
     assert names(Path.cwd()) == [".quotable"]
 
 
-def test_a_named_cache_dir_gets_the_files_and_nothing_is_created_in_the_working_directory(
-    tmp_path,
-):
+def test_a_named_cache_dir_gets_the_files_and_the_working_directory_only_the_cost_log(tmp_path):
     cache = tmp_path / "named"
     extract_tables(PDF, Calls().model(), cache_dir=cache, recheck=False)
     assert len([n for n in names(cache) if n.endswith(".json")]) == 2
     assert ".gitignore" not in names(cache)
-    assert names(Path.cwd()) == []
+    assert names(Path.cwd()) == [".quotable"]
+    assert names(Path.cwd() / ".quotable") == [".gitignore", "cost"]  # no cache/ there
 
 
 def test_an_existing_dot_quotable_is_not_given_a_gitignore():

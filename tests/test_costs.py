@@ -2,12 +2,21 @@
 
 import asyncio
 import json
+import shutil
 import threading
 from decimal import Decimal
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
+from pydantic import BaseModel
+from pydantic_ai.messages import ModelResponse
+from pydantic_ai.models.function import FunctionModel
+from pydantic_ai.models.test import TestModel
+from pydantic_ai.usage import RequestUsage
 
+from quotable import BudgetExceededError, extract_tables
+from quotable._model import PydanticAIClient, _price
 from quotable.costs import (
     CostLog,
     CostRecord,
@@ -16,6 +25,8 @@ from quotable.costs import (
     format_report,
     summarize,
 )
+from quotable.llm import Request, request_key
+from tests.test_entrypoint import PDF, Calls
 
 FIELDS = [
     "v",
@@ -394,3 +405,150 @@ def test_only_damaged_lines_is_not_no_records(tmp_path):
     assert text.startswith("Cost report for ")
     assert "Requests:  0 paid, 0 unpriced" in text
     assert text.endswith("Skipped 1 unreadable line.\n")
+
+
+# --- recording requests -------------------------------------------------------------------
+
+
+class Answer(BaseModel):
+    x: int
+
+
+def make_request(stage: str = "extract") -> Request:
+    return Request(stage=stage, instructions="Read it.", output_type=Answer, parts=["page"])
+
+
+def test_the_request_cache_key_is_unchanged():
+    # Computed with the code as it was before spec 011; a change here would orphan every cache.
+    key = request_key("openai:gpt-test:{}", make_request())
+    assert key == "a653881a7d523b5d03f0e828f96bf253fb454d0d5cde7e24d92690ee01004354"
+
+
+def test_the_callback_is_not_part_of_the_identity():
+    plain = PydanticAIClient(TestModel())
+    watched = PydanticAIClient(TestModel(), on_usage=lambda *args: None)
+    assert plain.identity == watched.identity
+
+
+def test_the_client_reports_each_ask_once_with_the_model_usage_and_an_unpriced_cost():
+    seen = []
+    client = PydanticAIClient(TestModel(), on_usage=lambda *args: seen.append(args))
+    request = make_request("recheck")
+    asyncio.run(client.ask(request))
+    ((got_request, model, usage, cost),) = seen
+    assert got_request is request
+    assert model == "test:test"
+    assert usage.input_tokens > 0
+    assert cost is None  # genai-prices does not know the "test" provider
+
+
+def test_a_known_price_is_passed_on(monkeypatch):
+    monkeypatch.setattr("quotable._model._price", lambda result: Decimal("0.5"))
+    seen = []
+    asyncio.run(
+        PydanticAIClient(TestModel(), on_usage=lambda *args: seen.append(args)).ask(make_request())
+    )
+    assert seen[0][3] == Decimal("0.5")
+
+
+def test_a_client_without_a_callback_just_answers():
+    answer = asyncio.run(PydanticAIClient(TestModel()).ask(make_request()))
+    assert isinstance(answer, Answer)
+
+
+def test_the_cost_log_writes_what_the_client_reports(monkeypatch):
+    monkeypatch.setattr("quotable._model._price", lambda result: Decimal("0.0125"))
+    log = CostLog(run_id="r")
+    asyncio.run(
+        PydanticAIClient(TestModel(), on_usage=log.record_usage).ask(make_request("schema"))
+    )
+    (written,) = records()
+    assert (written["run"], written["stage"], written["model"]) == ("r", "schema", "test:test")
+    assert written["cost_usd"] == 0.0125
+    assert written["input_tokens"] > 0
+    assert written["output_tokens"] > 0
+
+
+def test_an_unpriced_model_is_recorded_with_a_null_cost():
+    log = CostLog()
+    asyncio.run(PydanticAIClient(TestModel(), on_usage=log.record_usage).ask(make_request()))
+    assert records()[0]["cost_usd"] is None
+
+
+def test_a_request_that_fails_writes_nothing():
+    def explode(messages, info):
+        msg = "provider down"
+        raise RuntimeError(msg)
+
+    log = CostLog()
+    client = PydanticAIClient(FunctionModel(explode), on_usage=log.record_usage)
+    with pytest.raises(RuntimeError, match="provider down"):
+        asyncio.run(client.ask(make_request()))
+    assert not cost_file().exists()
+
+
+def test_a_model_that_reports_no_usage_writes_nothing_and_warns_once(capsys):
+    nothing = SimpleNamespace(
+        input_tokens=0, output_tokens=0, cache_read_tokens=0, cache_write_tokens=0
+    )
+    log = CostLog()
+    log.record_usage(make_request(), "m", nothing, None)
+    log.record_usage(make_request(), "m", nothing, None)
+    assert not cost_file().exists()
+    assert capsys.readouterr().err.count("\n") == 1
+
+
+def test_every_paid_request_of_a_run_is_recorded_and_cache_hits_are_not():
+    extract_tables(PDF, Calls().model(), recheck=False)
+    first = records()
+    assert len(first) == 2  # discovery, then the one page
+    assert {r["stage"] for r in first} <= {"schema", "extract", "recheck"}
+    assert len({r["run"] for r in first}) == 1
+    assert {r["model"] for r in first} == {"function:entrypoint-test"}
+
+    extract_tables(PDF, Calls().model(), recheck=False)  # all cache hits
+    assert len(records()) == 2
+
+
+def test_clearing_the_cache_keeps_the_costs_and_the_next_run_adds_to_them():
+    extract_tables(PDF, Calls().model(), recheck=False)
+    shutil.rmtree(Path.cwd() / ".quotable" / "cache")
+    extract_tables(PDF, Calls().model(), recheck=False)
+    written = records()
+    assert len(written) == 4
+    assert len({r["run"] for r in written}) == 2
+
+
+def test_a_named_cache_dir_holds_no_costs(tmp_path):
+    named = tmp_path / "named"
+    extract_tables(PDF, Calls().model(), cache_dir=named, recheck=False)
+    assert len(records()) == 2
+    assert not any("cost" in p.name or p.suffix == ".jsonl" for p in named.rglob("*"))
+
+
+def test_an_unwritable_cost_folder_does_not_stop_the_extraction(capsys):
+    project = Path.cwd() / ".quotable"
+    project.mkdir()
+    (project / "cost").write_text("in the way")
+    (table,) = extract_tables(PDF, Calls().model(), recheck=False)
+    assert table.columns
+    warnings = [x for x in capsys.readouterr().err.splitlines() if "cost" in x]
+    assert len(warnings) == 1
+
+
+def test_a_refused_request_over_the_cap_writes_no_record():
+    with pytest.raises(BudgetExceededError):
+        extract_tables(PDF, Calls().model(), max_requests=1, recheck=False)
+    assert len(records()) == 1
+
+
+def test_the_price_of_a_known_model_comes_from_genai_prices():
+    response = ModelResponse(
+        parts=[],
+        usage=RequestUsage(input_tokens=1_000_000, output_tokens=0),
+        model_name="gpt-4o",
+        provider_name="openai",
+    )
+    price = _price(SimpleNamespace(response=response))  # ty: ignore[invalid-argument-type]
+    assert isinstance(price, Decimal)
+    assert price > 0
