@@ -8,7 +8,14 @@ from pathlib import Path
 
 import pytest
 
-from quotable.costs import CostLog, CostRecord
+from quotable.costs import (
+    CostLog,
+    CostRecord,
+    CostSummary,
+    ModelTotals,
+    format_report,
+    summarize,
+)
 
 FIELDS = [
     "v",
@@ -217,3 +224,173 @@ def test_two_logs_writing_from_threads_leave_whole_lines():
     written = records()
     assert len(written) == 200
     assert {r["run"] for r in written} == {first.run_id, second.run_id}
+
+
+# --- summarize and format_report ----------------------------------------------------------
+
+
+def write_lines(tmp_path: Path, *lines: str) -> Path:
+    path = tmp_path / "requests.jsonl"
+    path.write_text("".join(f"{text}\n" for text in lines), encoding="utf-8")
+    return path
+
+
+def test_the_totals_are_the_sum_of_the_stored_costs_by_model(tmp_path):
+    path = write_lines(
+        tmp_path,
+        line(run="a", model="m1", cost_usd=0.25, input_tokens=100, output_tokens=10),
+        line(run="a", model="m2", cost_usd=1.5, input_tokens=200, output_tokens=20),
+        line(run="b", model="m1", cost_usd=0.25, input_tokens=300, output_tokens=30),
+    )
+    summary = summarize(path)
+    assert (summary.runs, summary.requests, summary.unpriced, summary.skipped) == (2, 3, 0, 0)
+    assert (summary.input_tokens, summary.output_tokens) == (600, 60)
+    assert summary.total == Decimal("2.0")
+    assert [m.model for m in summary.models] == ["m2", "m1"]  # most expensive first
+    m2, m1 = summary.models
+    assert (m1.requests, m1.input_tokens, m1.output_tokens, m1.cost) == (2, 400, 40, Decimal("0.5"))
+    assert (m2.requests, m2.cost) == (1, Decimal("1.5"))
+
+
+def test_many_small_costs_add_up_without_float_drift(tmp_path):
+    path = write_lines(tmp_path, *[line(cost_usd=0.1) for _ in range(1000)])
+    assert summarize(path).total == Decimal(100)  # float addition would give 99.9999999999986
+
+
+def test_models_with_the_same_cost_are_ordered_by_name(tmp_path):
+    path = write_lines(tmp_path, line(model="b", cost_usd=1), line(model="a", cost_usd=1))
+    assert [m.model for m in summarize(path).models] == ["a", "b"]
+
+
+def test_unpriced_requests_count_but_add_nothing(tmp_path):
+    path = write_lines(tmp_path, line(cost_usd=None), line(cost_usd=2.0))
+    summary = summarize(path)
+    assert (summary.requests, summary.unpriced, summary.total) == (2, 1, Decimal("2.0"))
+
+
+def test_a_missing_file_and_an_empty_file_are_both_an_empty_summary(tmp_path):
+    for summary in (summarize(tmp_path / "nope.jsonl"), summarize(write_lines(tmp_path))):
+        assert (summary.requests, summary.skipped, summary.models) == (0, 0, ())
+        assert summary.total == 0
+
+
+def test_a_damaged_line_is_counted_and_the_others_still_sum(tmp_path):
+    path = write_lines(tmp_path, line(cost_usd=1.0), "{not json", "", line(v=9), line(cost_usd=2.0))
+    path.write_bytes(path.read_bytes() + b"\xff\xfe broken bytes\n")
+    summary = summarize(path)
+    assert (summary.requests, summary.skipped, summary.total) == (2, 3, Decimal("3.0"))
+
+
+def test_a_directory_in_the_way_raises_oserror(tmp_path):
+    folder = tmp_path / "requests.jsonl"
+    folder.mkdir()
+    with pytest.raises(OSError, match="requests.jsonl"):
+        summarize(folder)
+
+
+def test_summarize_never_creates_anything(tmp_path):
+    summarize(tmp_path / "missing" / "requests.jsonl")
+    assert not (tmp_path / "missing").exists()
+
+
+EXAMPLE = """\
+Cost report for .quotable/cost/requests.jsonl
+
+Runs:      7
+Requests:  412 paid, 0 unpriced
+Tokens:    3,204,118 in, 188,430 out
+Total:     $9.87
+
+By model            Requests      In tokens    Out tokens        Cost
+openai:gpt-5.1           400      3,100,000       180,000       $9.40
+openai:gpt-5-mini         12        104,118         8,430       $0.47
+"""
+
+
+def example_summary() -> CostSummary:
+    return CostSummary(
+        runs=7,
+        requests=412,
+        unpriced=0,
+        input_tokens=3_204_118,
+        output_tokens=188_430,
+        total=Decimal("9.87"),
+        models=(
+            ModelTotals("openai:gpt-5.1", 400, 3_100_000, 180_000, Decimal("9.40")),
+            ModelTotals("openai:gpt-5-mini", 12, 104_118, 8_430, Decimal("0.47")),
+        ),
+        skipped=0,
+    )
+
+
+def test_the_report_matches_the_example_in_the_spec():
+    path = Path(".quotable/cost/requests.jsonl")
+    assert format_report(example_summary(), path) == EXAMPLE
+
+
+def test_the_example_comes_out_of_a_real_file(tmp_path):
+    rows = [
+        line(run=str(n), model="openai:gpt-5.1", cost_usd=1.0, input_tokens=1000) for n in range(3)
+    ]
+    path = write_lines(tmp_path, *rows)
+    text = format_report(summarize(path), path)
+    assert "Requests:  3 paid, 0 unpriced" in text
+    assert "$3.00" in text
+
+
+def test_a_path_inside_the_working_directory_is_shown_relative():
+    inside = Path.cwd() / ".quotable" / "cost" / "requests.jsonl"
+    assert format_report(example_summary(), inside).startswith(
+        "Cost report for .quotable/cost/requests.jsonl\n"
+    )
+
+
+@pytest.mark.parametrize(
+    ("total", "shown"),
+    [
+        ("1.00", "$1.00"),
+        ("0.9999", "$0.9999"),
+        ("0.99995", "$1.0000"),
+        ("1234.565", "$1,234.57"),
+        ("0", "$0.0000"),
+    ],
+)
+def test_money_has_two_decimals_from_a_dollar_and_four_below(total, shown):
+    summary = CostSummary(1, 1, 0, 0, 0, Decimal(total), (), 0)
+    assert f"Total:     {shown}\n" in format_report(summary, Path("x"))
+
+
+def test_the_rows_use_the_precision_of_the_total():
+    summary = CostSummary(
+        1, 2, 0, 0, 0, Decimal("0.0030"),
+        (ModelTotals("m", 2, 0, 0, Decimal("0.0030")),), 0,
+    )  # fmt: skip
+    text = format_report(summary, Path("x"))
+    assert "$0.0030" in text.splitlines()[-1]
+
+
+def test_unpriced_requests_and_damaged_lines_are_reported():
+    summary = CostSummary(1, 5, 2, 10, 10, Decimal("1.5"), (), 3)
+    text = format_report(summary, Path("x"))
+    assert "Requests:  5 paid, 2 unpriced" in text
+    assert "Total leaves out 2 unpriced requests." in text
+    assert text.endswith("Skipped 3 unreadable lines.\n")
+    one = CostSummary(1, 5, 1, 10, 10, Decimal("1.5"), (), 1)
+    assert "Total leaves out 1 unpriced request." in format_report(one, Path("x"))
+    assert format_report(one, Path("x")).endswith("Skipped 1 unreadable line.\n")
+
+
+def test_no_records_prints_the_one_line_message():
+    empty = summarize(Path("/does/not/exist/requests.jsonl"))
+    assert format_report(empty, Path(".quotable/cost/requests.jsonl")) == (
+        "No cost records found in .quotable/cost/requests.jsonl. "
+        "Costs are recorded when quotable sends a request to a model.\n"
+    )
+
+
+def test_only_damaged_lines_is_not_no_records(tmp_path):
+    path = write_lines(tmp_path, "{broken")
+    text = format_report(summarize(path), path)
+    assert text.startswith("Cost report for ")
+    assert "Requests:  0 paid, 0 unpriced" in text
+    assert text.endswith("Skipped 1 unreadable line.\n")
