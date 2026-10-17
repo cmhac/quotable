@@ -17,6 +17,9 @@ dependencies = [
     "polars>=2,<3",
 ]
 
+[project.scripts]
+quotable = "quotable.cli:main"
+
 [project.optional-dependencies]
 # OCR for pages whose text layer is garbled or missing (spec 006). ``ocr`` is complete on the
 # CPU; ``ocr-core`` is for NVIDIA users, who install a GPU build of PaddlePaddle themselves.
