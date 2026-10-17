@@ -435,8 +435,9 @@ async def extract_tables_async(  # noqa: PLR0913
 
     ``model`` is required: a pydantic-ai ``"provider:model-name"`` string (the provider's API
     key comes from the environment, as pydantic-ai documents) or a pydantic-ai ``Model``
-    instance. Model answers are always cached on disk, in ``cache_dir`` or else in ``.quotable/``
-    in the current directory (created if missing, with a ``.gitignore`` of its own);
+    instance. Model answers are always cached on disk, in ``cache_dir`` or else in
+    ``.quotable/cache/`` in the current directory (``.quotable/`` is created if missing, with a
+    ``.gitignore`` of its own);
     ``max_requests`` caps the new (uncached) requests and raises ``BudgetExceededError``
     beyond it.
 
