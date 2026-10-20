@@ -312,6 +312,11 @@ class DraftStore:
         with self._lock:
             return self._read().get(key)
 
+    def all(self) -> dict[Key, Draft]:
+        """Return every draft, by key."""
+        with self._lock:
+            return self._read()
+
     def put(self, key: Key, note: str, value: str | None, category: str | None) -> Draft:
         """Save the draft of ``key`` and return it; ``OSError`` if the file cannot be written."""
         draft = Draft(note, value, category, _now())

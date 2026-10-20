@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 import quotable.review
-from quotable.review.routing import BadRequest, NotFound, Request, Route
+from quotable.review.routing import BadRequest, NotFound, Raw, Request, Route
 from quotable.review.server import API_ROUTES, make_server
 
 CSP = (
@@ -41,6 +41,10 @@ def explode(request: Request):
     raise RuntimeError(msg)
 
 
+def raw(request: Request):
+    return Raw(b"a,b\r\n1,2\r\n", "text/csv; charset=utf-8", {"Content-Disposition": "attachment"})
+
+
 ROUTES = [
     Route("GET", r"/api/echo/([a-z]+)/(\d+)", echo),
     Route("POST", r"/api/echo", echo),
@@ -48,6 +52,7 @@ ROUTES = [
     Route("GET", r"/api/missing", missing),
     Route("GET", r"/api/refuse", refuse),
     Route("GET", r"/api/explode", explode),
+    Route("GET", r"/api/raw", raw),
 ]
 
 
@@ -295,6 +300,18 @@ def test_a_route_gets_unquoted_groups_the_query_and_the_project_dir(server, tmp_
         "body": None,
         "project": str(tmp_path / ".quotable"),
     }
+
+
+def test_a_raw_response_is_sent_as_it_is_with_its_headers_and_the_security_headers(server):
+    status, response, body = call(server, "/api/raw")
+    assert status == 200
+    assert body == b"a,b\r\n1,2\r\n"
+    assert response.getheader("Content-Type") == "text/csv; charset=utf-8"
+    assert response.getheader("Content-Disposition") == "attachment"
+    assert response.getheader("Content-Length") == str(len(body))
+    assert response.getheader("Cache-Control") == "no-store"
+    assert response.getheader("Content-Security-Policy") == CSP
+    assert response.getheader("X-Content-Type-Options") == "nosniff"
 
 
 def test_the_whole_path_must_match_a_route(server):

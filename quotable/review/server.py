@@ -5,7 +5,8 @@ The review app's HTTP server (spec 013, section B): standard library only, 127.0
 and ``server_close()`` when done. It serves ``GET /`` and ``GET /static/<name>`` (files of
 ``quotable/review/static/``, by name only) and dispatches ``/api/...`` requests through a route
 table. To add an endpoint, write ``func(request: Request) -> JSON-able`` in its own module
-(raise :class:`NotFound` or :class:`BadRequest`, see :mod:`quotable.review.routing`) and add
+(raise :class:`NotFound` or :class:`BadRequest`, see :mod:`quotable.review.routing`; return a
+:class:`Raw` for CSV, an image or a file) and add
 ``Route(method, pattern, func)`` to :data:`API_ROUTES`. The pattern is a regular expression
 matched against the whole path; its groups reach ``request.params`` unquoted.
 
@@ -26,19 +27,21 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlsplit
 
-from quotable.review.routing import BadRequest, NotFound, Request, Route
+from quotable.review.browse import ROUTES as BROWSE_ROUTES
+from quotable.review.routing import BadRequest, NotFound, Raw, Request, Route
 
 __all__ = [
     "API_ROUTES",
     "BadRequest",
     "NotFound",
+    "Raw",
     "Request",
     "ReviewServer",
     "Route",
     "make_server",
 ]
 
-API_ROUTES: list[Route] = []
+API_ROUTES: list[Route] = [*BROWSE_ROUTES]
 
 MAX_BODY = 64 * 1024
 _DRAIN_LIMIT = 1024 * 1024
@@ -192,7 +195,11 @@ class _Handler(BaseHTTPRequestHandler):
             raise NotFound("not found")
         body = self._read_body() if method in _BODY_METHODS else None
         request = Request(self.server.project_dir, found[1], query, body)
-        self._send_json(HTTPStatus.OK, found[0].func(request))
+        result = found[0].func(request)
+        if isinstance(result, Raw):
+            self._send(HTTPStatus.OK, result.body, result.content_type, result.headers)
+        else:
+            self._send_json(HTTPStatus.OK, result)
 
     def _read_body(self) -> Any:
         if self.headers.get("Origin") is None:
@@ -232,13 +239,18 @@ class _Handler(BaseHTTPRequestHandler):
     def _send_json(self, status: int, data: Any) -> None:
         self._send(status, json.dumps(data).encode(), "json")
 
-    def _send(self, status: int, body: bytes, kind: str) -> None:
+    def _send(
+        self, status: int, body: bytes, kind: str, extra: dict[str, str] | None = None
+    ) -> None:
         self.send_response(status)
         if kind == "json":
             self.send_header("Content-Type", "application/json")
-            self.send_header("Cache-Control", "no-store")
         else:
             self.send_header("Content-Type", kind)
+        if kind == "json" or extra is not None:
+            self.send_header("Cache-Control", "no-store")
+        for name, value in (extra or {}).items():
+            self.send_header(name, value)
         for name, value in _SECURITY_HEADERS.items():
             self.send_header(name, value)
         self.send_header("Content-Length", str(len(body)))

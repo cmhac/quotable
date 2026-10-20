@@ -16,6 +16,15 @@ class BadRequest(Exception):  # noqa: N818
 
 
 @dataclass(frozen=True)
+class Raw:
+    """A non-JSON answer (CSV, PNG, PDF): the bytes, their ``Content-Type`` and extra headers."""
+
+    body: bytes
+    content_type: str
+    headers: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
 class Request:
     """A checked request: ``params`` are the route's groups, ``body`` the JSON or ``None``."""
 
