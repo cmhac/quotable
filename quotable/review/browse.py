@@ -714,7 +714,8 @@ def table_csv(request: Request) -> Raw:
 
 
 # --- the endpoints: a cell ---------------------------------------------------------------------
-def _verdict_json(found: Verdict) -> dict[str, Any]:
+def verdict_json(found: Verdict) -> dict[str, Any]:
+    """Return a stored verdict as the cell screen and the verdict endpoint show it."""
     return {
         "verdict": found.verdict,
         "time": found.time,
@@ -733,7 +734,7 @@ def _review_json(ctx: _Ctx, cell: _Cell) -> dict[str, Any]:
     draft = ctx.drafts.get(key) if key is not None else None
     return {
         "state": cell.state,
-        "verdict": None if found is None else _verdict_json(found),
+        "verdict": None if found is None else verdict_json(found),
         "draft": None
         if draft is None
         else {

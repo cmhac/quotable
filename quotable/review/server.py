@@ -5,7 +5,8 @@ The review app's HTTP server (spec 013, section B): standard library only, 127.0
 and ``server_close()`` when done. It serves ``GET /`` and ``GET /static/<name>`` (files of
 ``quotable/review/static/``, by name only) and dispatches ``/api/...`` requests through a route
 table. To add an endpoint, write ``func(request: Request) -> JSON-able`` in its own module
-(raise :class:`NotFound` or :class:`BadRequest`, see :mod:`quotable.review.routing`; return a
+(raise :class:`NotFound`, :class:`BadRequest` or :class:`ServerError`, see
+:mod:`quotable.review.routing`; return a
 :class:`Raw` for CSV, an image or a file) and add
 ``Route(method, pattern, func)`` to :data:`API_ROUTES`. The pattern is a regular expression
 matched against the whole path; its groups reach ``request.params`` unquoted.
@@ -28,7 +29,8 @@ from typing import Any
 from urllib.parse import parse_qs, unquote, urlsplit
 
 from quotable.review.browse import ROUTES as BROWSE_ROUTES
-from quotable.review.routing import BadRequest, NotFound, Raw, Request, Route
+from quotable.review.review import ROUTES as REVIEW_ROUTES
+from quotable.review.routing import BadRequest, NotFound, Raw, Request, Route, ServerError
 
 __all__ = [
     "API_ROUTES",
@@ -38,10 +40,11 @@ __all__ = [
     "Request",
     "ReviewServer",
     "Route",
+    "ServerError",
     "make_server",
 ]
 
-API_ROUTES: list[Route] = [*BROWSE_ROUTES]
+API_ROUTES: list[Route] = [*BROWSE_ROUTES, *REVIEW_ROUTES]
 
 MAX_BODY = 64 * 1024
 _DRAIN_LIMIT = 1024 * 1024
@@ -160,6 +163,8 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(HTTPStatus.NOT_FOUND, {"error": str(err)})
         except BadRequest as err:
             self._send_json(HTTPStatus.BAD_REQUEST, {"error": str(err)})
+        except ServerError as err:
+            self._send_json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": str(err)})
         except Exception as err:  # noqa: BLE001
             print(f"quotable: internal error on {method} {self.path}: {err!r}", file=sys.stderr)
             self._send_json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": "internal error"})

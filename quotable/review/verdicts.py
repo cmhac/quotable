@@ -111,7 +111,8 @@ def key_from_json(data: object) -> Key:
     return CellKey(sha, tuple(columns), page, row, column)
 
 
-def _now() -> str:
+def now() -> str:
+    """Return the current UTC time as ISO 8601 with a trailing Z, to the second."""
     return datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
@@ -319,7 +320,7 @@ class DraftStore:
 
     def put(self, key: Key, note: str, value: str | None, category: str | None) -> Draft:
         """Save the draft of ``key`` and return it; ``OSError`` if the file cannot be written."""
-        draft = Draft(note, value, category, _now())
+        draft = Draft(note, value, category, now())
         with self._lock:
             drafts = self._read()
             drafts[key] = draft

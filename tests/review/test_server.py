@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 import quotable.review
-from quotable.review.routing import BadRequest, NotFound, Raw, Request, Route
+from quotable.review.routing import BadRequest, NotFound, Raw, Request, Route, ServerError
 from quotable.review.server import API_ROUTES, make_server
 
 CSP = (
@@ -36,6 +36,10 @@ def refuse(request: Request):
     raise BadRequest("that is wrong")
 
 
+def fail(request: Request):
+    raise ServerError("the disk is full")
+
+
 def explode(request: Request):
     msg = "secret internal detail"
     raise RuntimeError(msg)
@@ -52,6 +56,7 @@ ROUTES = [
     Route("GET", r"/api/missing", missing),
     Route("GET", r"/api/refuse", refuse),
     Route("GET", r"/api/explode", explode),
+    Route("GET", r"/api/fail", fail),
     Route("GET", r"/api/raw", raw),
 ]
 
@@ -326,6 +331,13 @@ def test_not_found_and_bad_request_become_json_errors(server):
     assert response.getheader("Cache-Control") == "no-store"
     status, _, body = call(server, "/api/refuse")
     assert (status, error_of(body)) == (400, "that is wrong")
+
+
+def test_a_server_error_is_a_500_with_its_own_message(server):
+    status, response, body = call(server, "/api/fail")
+    assert (status, error_of(body)) == (500, "the disk is full")
+    assert response.getheader("Content-Security-Policy") == CSP
+    assert response.getheader("Cache-Control") == "no-store"
 
 
 def test_an_unexpected_error_is_a_500_without_a_trace(server, capsys):

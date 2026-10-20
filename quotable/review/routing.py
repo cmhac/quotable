@@ -15,6 +15,10 @@ class BadRequest(Exception):  # noqa: N818
     """Raised by an API function for a request it cannot use (HTTP 400)."""
 
 
+class ServerError(Exception):  # noqa: N818
+    """Raised by an API function that failed for a reason the user should read (HTTP 500)."""
+
+
 @dataclass(frozen=True)
 class Raw:
     """A non-JSON answer (CSV, PNG, PDF): the bytes, their ``Content-Type`` and extra headers."""
