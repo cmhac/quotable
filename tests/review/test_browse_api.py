@@ -1317,6 +1317,16 @@ def test_a_page_has_its_size_words_and_the_tables_on_it(app):
     assert [(t["index"], t["band"]) for t in only["tables"]] == [(1, None)]
 
 
+def test_a_page_gives_each_tables_row_windows_and_column_ranges(app):
+    data = app.json(f"{app.run('senate')}/pages/1")
+    stored = load_run(app.project, app.id["senate"])
+    for shown, table in zip(data["tables"], stored.tables, strict=True):
+        areas = table.areas[1]
+        assert shown["rows"] == {str(n): w for n, w in areas.rows.items()}
+        assert shown["columns"] == areas.columns
+        assert shown["rows"]
+
+
 @pytest.mark.parametrize("page", ["0", "4", "99", "x", "-1", "1.5"])
 def test_a_page_the_run_does_not_hold_is_404(app, page):
     assert app.error(f"{app.run('senate')}/pages/{page}")

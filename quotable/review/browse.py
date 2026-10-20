@@ -928,7 +928,7 @@ def extra_cell(request: Request) -> dict[str, Any]:
 
 # --- the endpoints: pages and the PDF ----------------------------------------------------------
 def page_data(request: Request) -> dict[str, Any]:
-    """``GET /api/runs/<id>/pages/<page>``: the page's size, words and the tables on it."""
+    """``GET /api/runs/<id>/pages/<page>``: size, words, each table's bands and areas."""
     run = sources.load(request.project_dir, request.params[0])
     page = _digits(request.params[1], "page")
     stored = run.pages.get(page)
@@ -945,9 +945,12 @@ def page_data(request: Request) -> dict[str, Any]:
                 "number": t.index + 1,
                 "band": t.bands.get(page),
                 "header": next((x["header"] for x in t.layouts if x["page"] == page), None),
+                "rows": {str(n): w for n, w in areas.rows.items()} if areas else {},
+                "columns": dict(areas.columns) if areas else {},
             }
             for t in run.tables
             if page in t.pages
+            for areas in [t.areas.get(page)]
         ],
     }
 

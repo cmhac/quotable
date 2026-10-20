@@ -1,6 +1,7 @@
 // The app: reads the hash, asks a screen to show it, draws the header and the screen.
 
 import { ApiError, getJson } from "./api.js";
+import * as cell from "./cell.js";
 import { alertBox, failureView, header } from "./chrome.js";
 import { el } from "./dom.js";
 import { hashFor, parseHash } from "./route.js";
@@ -8,10 +9,18 @@ import * as run from "./run.js";
 import * as runs from "./runs.js";
 import * as table from "./table.js";
 
-const SCREENS = { runs: runs.show, run: run.show, table: table.show };
+const SCREENS = {
+  runs: runs.show,
+  run: run.show,
+  table: table.show,
+  cell: cell.show,
+};
 const ctx = {
   getJson,
   replace: (route) => history.replaceState(null, "", hashFor(route)),
+  go: (route) => {
+    location.hash = hashFor(route);
+  },
 };
 
 function unavailable(route) {
@@ -53,15 +62,13 @@ async function show() {
   }
   if (mine !== latest) return;
   const main = document.getElementById("main");
-  document
-    .getElementById("chrome")
-    .replaceChildren(
-      header({
-        crumbs: view.crumbs,
-        project: view.project,
-        address: location.host,
-      }),
-    );
+  document.getElementById("chrome").replaceChildren(
+    header({
+      crumbs: view.crumbs,
+      project: view.project,
+      address: location.host,
+    }),
+  );
   main.replaceChildren(view.content);
   document.title = `${view.title} · quotable review`;
   window.scrollTo(0, 0);
