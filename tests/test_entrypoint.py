@@ -9,7 +9,7 @@ from pydantic_ai.models.function import AgentInfo, FunctionModel
 
 import quotable
 from quotable import BudgetExceededError, extract_tables, extract_tables_async
-from quotable.extract import run_pipeline
+from quotable.pipeline import run_pipeline
 from tests.conftest import load_sample, one_table, replay
 
 SAMPLE = load_sample("fy22_milcon_house_original")  # one page

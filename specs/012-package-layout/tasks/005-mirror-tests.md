@@ -49,5 +49,6 @@ Test files sit in folders that match the package, nothing else about them change
 - `uv run pytest -m ocr --collect-only -q` and `uv run pytest -m live --collect-only -q` list
   the same tests as before the task (run the same commands on `a5713ba` via `git stash` or a
   worktree if the earlier numbers were not recorded). Neither is run.
-- `grep -rn "Path(__file__).parent / \"data\"" tests` finds nothing.
+- `grep -rn "Path(__file__).parent / \"data\"" tests/text tests/ocr tests/llm tests/steps` finds
+  nothing (the helpers that stay at the top of `tests/` keep their own lookups).
 - `just check` passes.

@@ -3,10 +3,10 @@
 import pytest
 
 from quotable import BudgetExceededError, ExtractionError
-from quotable.discover import DISCOVER_PROMPT
-from quotable.extract import EXTRACT_PROMPT, MULTI_TABLE_SENTENCE
-from quotable.llm import CachedClient, Image
-from quotable.models import CellRecheck, Column, PageRecheck, PageRows, PageTables, TableInfo
+from quotable.llm.answers import CellRecheck, Column, PageRecheck, PageRows, PageTables, TableInfo
+from quotable.llm.client import CachedClient, Image
+from quotable.steps.discover import DISCOVER_PROMPT
+from quotable.steps.extract import EXTRACT_PROMPT, MULTI_TABLE_SENTENCE
 from tests.conftest import FakeClient, extract_tables, window_of
 
 HEADER_B = [(72, 60, "Name"), (182, 60, "Amount"), (292, 60, "Note")]

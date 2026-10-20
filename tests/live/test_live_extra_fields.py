@@ -46,15 +46,14 @@ import pymupdf
 import pytest
 
 from quotable import extract_tables
-from quotable._model import PydanticAIClient
-from quotable.cache import resolve_cache_dir
-from quotable.extra_fields import ExtraFields
-from quotable.extract import run_pipeline
-from quotable.grounding import find_candidates
-from quotable.llm import CachedClient, Image, LLMClient, Request
-from quotable.models import WindowWithExtras
+from quotable.llm.answers import WindowWithExtras
+from quotable.llm.client import CachedClient, Image, LLMClient, PydanticAIClient, Request
+from quotable.pipeline import run_pipeline
+from quotable.steps.extra_fields import ExtraFields
+from quotable.steps.grounding import find_candidates
+from quotable.storage import resolve_cache_dir
 from quotable.table import Table
-from quotable.text import load_layer, tokenize
+from quotable.text.layer import load_layer, tokenize
 from tests.conftest import DATA as SAMPLES
 from tests.extra_fields_live import (
     described_request,

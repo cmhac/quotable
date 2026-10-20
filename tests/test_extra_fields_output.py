@@ -8,9 +8,9 @@ import pandas as pd
 import polars as pl
 import pytest
 
-from quotable.extra_fields import ExtraResult
-from quotable.grounding import FieldGrounding
-from quotable.recheck import recheck_table
+from quotable.steps.extra_fields import ExtraResult
+from quotable.steps.grounding import FieldGrounding
+from quotable.steps.recheck import recheck_table
 from quotable.table import Table, output_names
 from tests.conftest import FakeClient
 from tests.table_builder import build_table
@@ -217,7 +217,7 @@ def test_an_accepted_change_is_in_recheck_changes_of_each_row_that_carries_it(tm
 
 
 def test_a_merged_table_has_the_fields_of_the_pages_of_both_parts(tmp_path):
-    from quotable.merge import merge_pair  # noqa: PLC0415
+    from quotable.steps.merge import merge_pair  # noqa: PLC0415
     from quotable.table import MergeEvidence  # noqa: PLC0415
 
     one = build_table(tmp_path, ["Item", "Amount"], ROWS, xs=XS, name="a")

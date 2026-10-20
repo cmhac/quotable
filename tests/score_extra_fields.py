@@ -32,8 +32,8 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
-from quotable.extract import run_pipeline
-from quotable.grounding import UNFLAGGED
+from quotable.pipeline import run_pipeline
+from quotable.steps.grounding import UNFLAGGED
 from tests.extra_fields_model import request_for, truth_model
 from tests.fixture_tables import DATA, doc_ids
 

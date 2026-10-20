@@ -9,8 +9,9 @@ import inspect
 import pytest
 
 import quotable
-from quotable import extract, merge
-from quotable.models import Column, PageRecheck, PageRows, PageTables, TableInfo
+from quotable import pipeline
+from quotable.llm.answers import Column, PageRecheck, PageRows, PageTables, TableInfo
+from quotable.steps import merge
 from tests.conftest import FakeClient, extract_tables, window_of
 from tests.fixture_tables import DATA, load_doc
 
@@ -89,7 +90,7 @@ def test_switched_off_gives_two_tables_and_never_calls_the_merge(monkeypatch):
     def forbidden(*args, **kwargs):
         raise AssertionError("merge_tables was called")
 
-    monkeypatch.setattr(extract, "merge_tables", forbidden)
+    monkeypatch.setattr(pipeline, "merge_tables", forbidden)
     tables, truth = run("pipe-reworded-gap1", merge_reworded=False)
     assert [t.columns for t in tables] == [p["columns"] for p in truth["parts"]]
     assert all(t.merged == () for t in tables)
@@ -97,7 +98,7 @@ def test_switched_off_gives_two_tables_and_never_calls_the_merge(monkeypatch):
 
 def test_the_off_switch_gives_what_the_pipeline_gave_before_the_step(monkeypatch):
     off, _ = run("pipe-reworded-gap1", merge_reworded=False)
-    monkeypatch.setattr(extract, "merge_tables", lambda tables, **_: tables)
+    monkeypatch.setattr(pipeline, "merge_tables", lambda tables, **_: tables)
     never, _ = run("pipe-reworded-gap1")
     assert off == never
 
@@ -135,5 +136,5 @@ def test_the_argument_is_keyword_only_and_on_by_default():
         parameter = inspect.signature(function).parameters["merge_reworded"]
         assert parameter.default is True
         assert parameter.kind is inspect.Parameter.KEYWORD_ONLY
-    assert "merge_reworded" in inspect.signature(extract.run_pipeline).parameters
-    assert merge.merge_tables is extract.merge_tables
+    assert "merge_reworded" in inspect.signature(pipeline.run_pipeline).parameters
+    assert merge.merge_tables is pipeline.merge_tables

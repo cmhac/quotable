@@ -6,9 +6,9 @@ import pytest
 
 from quotable import ExtractionError, TextLayerError, extract_tables_async
 from quotable import extract_tables as public_extract_tables
-from quotable.extract import run_pipeline
-from quotable.llm import Image
-from quotable.models import PageRows
+from quotable.llm.answers import PageRows
+from quotable.llm.client import Image
+from quotable.pipeline import run_pipeline
 from tests.conftest import (
     DATA,
     FakeClient,

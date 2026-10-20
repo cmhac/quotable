@@ -5,7 +5,7 @@ import json
 import pymupdf
 import pytest
 
-from quotable.text import tokenize
+from quotable.text.layer import tokenize
 from tests.conftest import DATA
 from tests.extra_fields_live import (
     SENATE_HEADER_BOX,
@@ -86,7 +86,7 @@ def test_the_senate_header_is_not_in_what_the_live_tests_send():
 
 
 def test_the_check_catches_a_description_that_prints_a_header_word():
-    from quotable.extra_fields import ExtraField, ExtraFields  # noqa: PLC0415
+    from quotable.steps.extra_fields import ExtraField, ExtraFields  # noqa: PLC0415
 
     leaky = ExtraFields([ExtraField("year", "The funding year printed at the top")])
     assert overlap({"funding", "year", "2018"}, leaky) == {"funding", "year"}
@@ -113,7 +113,7 @@ def test_the_fixture_blocks_hold_real_header_words():
 def _live_run(case_id, **faults):
     import asyncio  # noqa: PLC0415
 
-    from quotable.extract import run_pipeline  # noqa: PLC0415
+    from quotable.pipeline import run_pipeline  # noqa: PLC0415
     from tests.extra_fields_model import truth_model  # noqa: PLC0415
     from tests.live.test_live_extra_fields import Recording, numbers  # noqa: PLC0415
 

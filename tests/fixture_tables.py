@@ -14,11 +14,10 @@ from typing import Any
 
 import pymupdf
 
-from quotable.discover import signature
-from quotable.layout import page_layouts
-from quotable.regions import table_layers
+from quotable.steps.discover import signature
+from quotable.steps.layout import page_layouts, table_layers
 from quotable.table import PageResult, Table, ground_document
-from quotable.text import Layer, load_layer
+from quotable.text.layer import Layer, load_layer
 
 DATA = Path(__file__).parent / "data" / "synthetic"
 

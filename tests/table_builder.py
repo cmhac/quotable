@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pymupdf
 
-from quotable.layout import page_layouts
+from quotable.steps.layout import page_layouts
 from quotable.table import PageResult, Table, ground_document
-from quotable.text import load_layer
+from quotable.text.layer import load_layer
 
 ROW_STEP = 14.0
 FIRST_ROW_Y = 120.0

@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [project.scripts]
-quotable = "quotable.cli:main"
+quotable = "quotable.__main__:main"
 
 [project.optional-dependencies]
 # OCR for pages whose text layer is garbled or missing (spec 006). ``ocr`` is complete on the
@@ -40,6 +40,9 @@ dev = [
 [build-system]
 requires = ["uv_build>=0.9.15,<0.10.0"]
 build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

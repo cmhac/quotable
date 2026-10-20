@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pymupdf
 
-from quotable.ocr import OcrWord
-from quotable.text import load_layer
+from quotable.ocr.config import OcrWord
+from quotable.text.layer import load_layer
 
 
 class FakeEngine:

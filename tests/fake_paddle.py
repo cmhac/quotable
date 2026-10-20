@@ -12,7 +12,7 @@ import cv2
 import numpy
 import pytest
 
-from quotable import ocr_device
+from quotable.ocr import paddle as ocr_paddle
 
 
 def png(width: int = 8, height: int = 8) -> bytes:
@@ -132,7 +132,7 @@ def install(  # noqa: PLR0913
             monkeypatch.setitem(sys.modules, name, None)  # import raises ImportError
     monkeypatch.setattr(sys, "meta_path", [finder, *sys.meta_path])
     monkeypatch.setattr(
-        ocr_device, "nvidia_device_files", lambda: [Path("/dev/nvidia0")] if nvidia else []
+        ocr_paddle, "nvidia_device_files", lambda: [Path("/dev/nvidia0")] if nvidia else []
     )
-    monkeypatch.setattr(ocr_device.shutil, "which", lambda name: None)
+    monkeypatch.setattr(ocr_paddle.shutil, "which", lambda name: None)
     return finder

@@ -8,8 +8,8 @@ from pathlib import Path
 import pymupdf
 import pytest
 
-from quotable.grounding import find_candidates
-from quotable.text import load_layer, tokenize
+from quotable.steps.grounding import find_candidates
+from quotable.text.layer import load_layer, tokenize
 from tests.synthetic import names_check, validate
 from tests.synthetic_cases import DEFAULT_OUT, all_docs, write_all
 

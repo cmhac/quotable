@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from quotable import extract_tables
-from quotable.cache import resolve_cache_dir, resolve_project_dir, write_atomic
+from quotable.storage import resolve_cache_dir, resolve_project_dir, write_atomic
 from tests.test_entrypoint import PDF, Calls
 
 

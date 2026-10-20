@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 import quotable
-from quotable.cli import main
+from quotable.__main__ import main
 from tests.test_costs import line, write_lines
 
 SRC = Path(quotable.__file__).parent
@@ -108,7 +108,14 @@ def test_the_public_api_is_unchanged():
     assert not any("cost" in name.lower() or "cli" in name.lower() for name in quotable.__all__)
 
 
-@pytest.mark.parametrize("module", ["cli.py", "costs.py", "__main__.py"])
+@pytest.mark.parametrize(
+    "module",
+    [
+        pytest.param("__main__.py", id="cli.py"),
+        pytest.param("storage.py", id="costs.py"),
+        "__main__.py",
+    ],
+)
 def test_the_report_modules_import_only_the_standard_library_and_quotable(module):
     tree = ast.parse((SRC / module).read_text())
     roots = set()

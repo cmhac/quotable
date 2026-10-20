@@ -15,12 +15,12 @@ import pymupdf
 import pytest
 
 from quotable import OcrConfig
-from quotable._paddle import PaddleEngine, _constructor_arguments, _decode, result_words
-from quotable.extract import run_pipeline, usable_layers
-from quotable.models import WindowTables
-from quotable.ocr import OcrWord
-from quotable.ocr_pages import ocr_pages
-from quotable.text import load_layer
+from quotable.llm.answers import WindowTables
+from quotable.ocr.config import OcrWord
+from quotable.ocr.paddle import PaddleEngine, _constructor_arguments, _decode, result_words
+from quotable.ocr.pages import ocr_pages
+from quotable.pipeline import run_pipeline, usable_layers
+from quotable.text.layer import load_layer
 from tests.conftest import DATA, FakeClient, replay
 from tests.fake_ocr import ExplodingEngine
 from tests.test_senate_tables import RECORDED

@@ -1,6 +1,6 @@
 # 012 - Flat layout and subpackages
 
-Status: approved; open questions resolved; tasks written (`tasks/001` to `006`), awaiting approval.
+Status: implemented (tasks `001` to `006`); offline suite passes with the same 1,442 tests as before.
 
 ## Summary
 

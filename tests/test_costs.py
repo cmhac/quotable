@@ -16,8 +16,8 @@ from pydantic_ai.models.test import TestModel
 from pydantic_ai.usage import RequestUsage
 
 from quotable import BudgetExceededError, extract_tables
-from quotable._model import PydanticAIClient, _price
-from quotable.costs import (
+from quotable.llm.client import PydanticAIClient, Request, _price, request_key
+from quotable.storage import (
     CostLog,
     CostRecord,
     CostSummary,
@@ -25,7 +25,6 @@ from quotable.costs import (
     format_report,
     summarize,
 )
-from quotable.llm import Request, request_key
 from tests.test_entrypoint import PDF, Calls
 
 FIELDS = [
@@ -443,7 +442,7 @@ def test_the_client_reports_each_ask_once_with_the_model_usage_and_an_unpriced_c
 
 
 def test_a_known_price_is_passed_on(monkeypatch):
-    monkeypatch.setattr("quotable._model._price", lambda result: Decimal("0.5"))
+    monkeypatch.setattr("quotable.llm.client._price", lambda result: Decimal("0.5"))
     seen = []
     asyncio.run(
         PydanticAIClient(TestModel(), on_usage=lambda *args: seen.append(args)).ask(make_request())
@@ -457,7 +456,7 @@ def test_a_client_without_a_callback_just_answers():
 
 
 def test_the_cost_log_writes_what_the_client_reports(monkeypatch):
-    monkeypatch.setattr("quotable._model._price", lambda result: Decimal("0.0125"))
+    monkeypatch.setattr("quotable.llm.client._price", lambda result: Decimal("0.0125"))
     log = CostLog(run_id="r")
     asyncio.run(
         PydanticAIClient(TestModel(), on_usage=log.record_usage).ask(make_request("schema"))

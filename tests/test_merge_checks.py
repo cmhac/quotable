@@ -2,8 +2,8 @@
 
 import pytest
 
-from quotable import merge
-from quotable.merge import (
+from quotable.steps import merge
+from quotable.steps.merge import (
     DEFAULT_RULES,
     GRID_TOLERANCE,
     MIN_CELLS,
@@ -353,6 +353,7 @@ def test_a_table_with_no_pages_fails(tmp_path):
 
 
 def test_the_module_imports_nothing_from_extract():
-    assert "quotable.extract" not in {
-        getattr(v, "__module__", "") for v in vars(merge).values() if callable(v)
-    }
+    forbidden = {"quotable.pipeline", "quotable.steps.extract"}
+    assert forbidden.isdisjoint(
+        {getattr(v, "__module__", "") for v in vars(merge).values() if callable(v)}
+    )

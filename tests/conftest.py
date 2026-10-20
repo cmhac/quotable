@@ -9,9 +9,9 @@ from typing import Any
 import pymupdf
 import pytest
 
-from quotable.extract import run_pipeline
-from quotable.llm import Image, LLMClient, Request
-from quotable.models import Column, PageRows, PageTables, TableInfo, WindowTables
+from quotable.llm.answers import Column, PageRows, PageTables, TableInfo, WindowTables
+from quotable.llm.client import Image, LLMClient, Request
+from quotable.pipeline import run_pipeline
 from quotable.table import Table
 
 DATA = Path(__file__).parent / "data"

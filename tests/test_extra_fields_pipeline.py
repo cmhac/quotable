@@ -7,10 +7,11 @@ from pathlib import Path
 
 import pytest
 
-from quotable.extra_fields import ExtraField, ExtraFields, FieldGroup
-from quotable.extract import run_pipeline
-from quotable.llm import BudgetExceededError, CachedClient
-from quotable.models import WindowWithExtras
+from quotable.errors import BudgetExceededError
+from quotable.llm.answers import WindowWithExtras
+from quotable.llm.client import CachedClient
+from quotable.pipeline import run_pipeline
+from quotable.steps.extra_fields import ExtraField, ExtraFields, FieldGroup
 from tests.conftest import DATA, FakeClient, extract_tables
 from tests.extra_fields_model import request_for, truth_model
 from tests.fixture_tables import DATA as FIXTURE
@@ -256,7 +257,7 @@ def test_without_the_recheck_the_misread_value_stays_and_is_flagged():
 
 
 def test_fields_on_ocrd_pages_are_grounded_against_the_ocr_text(tmp_path):
-    from quotable.ocr import OcrConfig  # noqa: PLC0415
+    from quotable.ocr.config import OcrConfig  # noqa: PLC0415
     from tests.fake_ocr import FakeEngine, native_as_ocr  # noqa: PLC0415
 
     garbled = DATA / "senate_expenditures_garbled.pdf"

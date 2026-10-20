@@ -10,9 +10,7 @@ look. Faults are injected by overriding what it reads (``read``), what a second 
 from collections.abc import Callable
 from typing import Any
 
-from quotable.extra_fields import ExtraField, ExtraFields, FieldGroup
-from quotable.llm import Image, Request
-from quotable.models import (
+from quotable.llm.answers import (
     Column,
     ExtrasRecheck,
     ExtraValue,
@@ -23,6 +21,8 @@ from quotable.models import (
     WindowTables,
     WindowWithExtras,
 )
+from quotable.llm.client import Image, Request
+from quotable.steps.extra_fields import ExtraField, ExtraFields, FieldGroup
 from tests.conftest import FakeClient
 from tests.fixture_tables import load_doc
 

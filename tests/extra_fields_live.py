@@ -20,8 +20,8 @@ from typing import Any
 
 import pymupdf
 
-from quotable.extra_fields import ExtraField, ExtraFields, FieldGroup, extras_prompt
-from quotable.text import tokenize
+from quotable.steps.extra_fields import ExtraField, ExtraFields, FieldGroup, extras_prompt
+from quotable.text.layer import tokenize
 from tests.extra_fields_model import request_for
 
 # Function words that no header is expected to be about; everything else must not overlap.

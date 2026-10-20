@@ -12,10 +12,10 @@ import pytest
 
 from quotable import OcrConfig, OcrUnavailableError, TextLayerError, extract_tables_async
 from quotable import extract_tables as public_extract_tables
-from quotable._paddle import PaddleEngine
-from quotable.extract import run_pipeline, usable_layers
-from quotable.ocr import OcrWord
-from quotable.text import load_layer
+from quotable.ocr.config import OcrWord
+from quotable.ocr.paddle import PaddleEngine
+from quotable.pipeline import run_pipeline, usable_layers
+from quotable.text.layer import load_layer
 from tests.conftest import DATA, FakeClient, extract_tables
 from tests.fake_ocr import ExplodingEngine, FakeEngine, native_as_ocr
 from tests.fake_paddle import install

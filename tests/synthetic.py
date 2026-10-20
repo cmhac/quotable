@@ -20,9 +20,9 @@ from typing import Any
 
 import pymupdf
 
-from quotable.grounding import ground_rows
-from quotable.text import load_layer, tokenize
-from quotable.textcheck import assess_text_layers
+from quotable.steps.grounding import ground_rows
+from quotable.text.layer import load_layer, tokenize
+from quotable.text.quality import assess_text_layers
 
 PAGE_W = 612.0
 LEFT, WIDTH = 40.0, 520.0
