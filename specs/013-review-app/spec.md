@@ -1,7 +1,7 @@
 # 013 - Review app: browse extracted tables and review the grounding
 
-Status: draft with visual design, open questions answered; waiting for the user's approval
-before it is split into tasks.
+Status: approved by the user; split into tasks (see tasks/); waiting for the user's review of
+the tasks.
 The design is the mockup file [quotable review app.html](quotable%20review%20app.html) in this
 folder, described in "Visual design".
 
