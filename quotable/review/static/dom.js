@@ -17,7 +17,8 @@ export function el(tag, attrs, ...children) {
 function setAttribute(node, name, given) {
   if (given === null || given === undefined || given === false) return;
   if (name === "style") {
-    for (const [property, text] of Object.entries(given)) node.style.setProperty(property, String(text));
+    for (const [property, text] of Object.entries(given))
+      node.style.setProperty(property, String(text));
   } else if (name.startsWith("on") && typeof given === "function") {
     node.addEventListener(name.slice(2), given);
   } else if ((name === "href" || name === "src") && !OWN_PAGES.test(given)) {
@@ -31,7 +32,8 @@ function append(node, children) {
   for (const child of children) {
     if (child === null || child === undefined || child === false) continue;
     if (Array.isArray(child)) append(node, child);
-    else if (typeof child === "object" && child.nodeType) node.appendChild(child);
+    else if (typeof child === "object" && child.nodeType)
+      node.appendChild(child);
     else node.appendChild(document.createTextNode(String(child)));
   }
 }

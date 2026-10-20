@@ -16,12 +16,23 @@ import {
 } from "./format.js";
 import { hashFor } from "./route.js";
 
-const SETTINGS = ["discovery_pages", "recheck", "ocr", "merge_reworded", "max_requests"];
-const CANT_SHOW = "Page images can’t be shown. Values, statuses and text still can.";
+const SETTINGS = [
+  "discovery_pages",
+  "recheck",
+  "ocr",
+  "merge_reworded",
+  "max_requests",
+];
+const CANT_SHOW =
+  "Page images can’t be shown. Values, statuses and text still can.";
 
 export function pdfAlert(pdf) {
   if (pdf.status === "missing") {
-    return alertBox({ headline: "The PDF is missing.", text: CANT_SHOW, detail: `not found: ${pdf.path}` });
+    return alertBox({
+      headline: "The PDF is missing.",
+      text: CANT_SHOW,
+      detail: `not found: ${pdf.path}`,
+    });
   }
   if (pdf.status === "changed") {
     return alertBox({
@@ -34,7 +45,8 @@ export function pdfAlert(pdf) {
 }
 
 function facts(run, now) {
-  const cost = run.cost.kind === "unknown" ? "cost unknown" : costText(run.cost);
+  const cost =
+    run.cost.kind === "unknown" ? "cost unknown" : costText(run.cost);
   return [
     formatSpan(run.started, run.ended, now),
     run.model,
@@ -45,10 +57,19 @@ function facts(run, now) {
   ].join(" · ");
 }
 
-const pair = (term, value, attrs) => [el("dt", null, term), el("dd", attrs, value)];
+const pair = (term, value, attrs) => [
+  el("dt", null, term),
+  el("dd", attrs, value),
+];
 
 function settings(run) {
-  const chips = SETTINGS.map((name) => el("span", { class: "chip mono" }, `${name}=${settingValue(run.settings[name])}`));
+  const chips = SETTINGS.map((name) =>
+    el(
+      "span",
+      { class: "chip mono" },
+      `${name}=${settingValue(run.settings[name])}`,
+    ),
+  );
   const extra = run.settings.extra_fields?.fields ?? [];
   return [
     el("h3", { class: "label" }, "Settings that change results"),
@@ -59,7 +80,11 @@ function settings(run) {
         { class: "extra-field" },
         el("span", { class: "chip mono" }, "extra_fields"),
         el("span", { class: "mono" }, field.name),
-        el("span", { class: "desc" }, `— “${field.description}”${field.group ? ` · group ${field.group}` : ""}`),
+        el(
+          "span",
+          { class: "desc" },
+          `— “${field.description}”${field.group ? ` · group ${field.group}` : ""}`,
+        ),
       ),
     ),
   ];
@@ -74,7 +99,9 @@ function runCard(run) {
       "dl",
       { class: "kv" },
       pair("Run id", run.id, { class: "mono" }),
-      pair("Started · ended", utcSpan(run.started, run.ended), { class: "mono" }),
+      pair("Started · ended", utcSpan(run.started, run.ended), {
+        class: "mono",
+      }),
       pair("Model", run.model, { class: "mono" }),
       pair("quotable", run.quotable, { class: "mono" }),
       pair("Format", `run format ${run.format}`, { class: "mono" }),
@@ -93,22 +120,43 @@ function documentCard(doc) {
       { class: "kv" },
       pair("File", doc.name, { class: "mono" }),
       pair("Path", doc.path, { class: "mono path" }),
-      pair("Size · pages", `${sizeText(doc.size)} · ${plural(doc.pages, "page")}`, { class: "mono" }),
-      pair("SHA-256", shortSha(doc.sha256, 10, 8), { class: "mono", title: doc.sha256 }),
+      pair(
+        "Size · pages",
+        `${sizeText(doc.size)} · ${plural(doc.pages, "page")}`,
+        { class: "mono" },
+      ),
+      pair("SHA-256", shortSha(doc.sha256, 10, 8), {
+        class: "mono",
+        title: doc.sha256,
+      }),
     ),
   );
 }
 
-const stat = (name, value) => el("div", { class: "stat" }, el("span", { class: "k" }, name), el("span", { class: "v mono" }, value));
+const stat = (name, value) =>
+  el(
+    "div",
+    { class: "stat" },
+    el("span", { class: "k" }, name),
+    el("span", { class: "v mono" }, value),
+  );
 
 function tableCard(run, table) {
   const extra = table.extra_names.map((name) => `${name} (extra)`);
-  const columns = table.columns.join(" · ") + (extra.length ? ` + ${extra.join(" · ")}` : "");
-  const ocr = table.ocr_pages.length ? `${number(table.ocr_pages.length)} (${pagesAbbr(table.ocr_pages)})` : "0";
-  const where = [`Table ${table.number}`, pagesText(table.pages)].filter(Boolean).join(" · ");
+  const columns =
+    table.columns.join(" · ") + (extra.length ? ` + ${extra.join(" · ")}` : "");
+  const ocr = table.ocr_pages.length
+    ? `${number(table.ocr_pages.length)} (${pagesAbbr(table.ocr_pages)})`
+    : "0";
+  const where = [`Table ${table.number}`, pagesText(table.pages)]
+    .filter(Boolean)
+    .join(" · ");
   return el(
     "a",
-    { class: "card table-card", href: hashFor({ name: "table", run: run.id, table: table.index }) },
+    {
+      class: "card table-card",
+      href: hashFor({ name: "table", run: run.id, table: table.index }),
+    },
     el(
       "div",
       { class: "info" },
@@ -124,7 +172,13 @@ function tableCard(run, table) {
       stat("Merged parts", number(table.merged)),
       stat("OCR pages", ocr),
     ),
-    table.note.length ? el("div", { class: "table-note" }, table.note.map((n) => el("div", null, n.text))) : null,
+    table.note.length
+      ? el(
+          "div",
+          { class: "table-note" },
+          table.note.map((n) => el("div", null, n.text)),
+        )
+      : null,
   );
 }
 
@@ -145,7 +199,10 @@ export function runView(run, now = new Date()) {
       ),
       el(
         "a",
-        { class: "btn primary", href: hashFor({ name: "queue", query: { run: run.id } }) },
+        {
+          class: "btn primary",
+          href: hashFor({ name: "queue", query: { run: run.id } }),
+        },
         `Review this run · ${number(reviewed)} / ${number(flagged)}`,
       ),
     ),
@@ -154,7 +211,12 @@ export function runView(run, now = new Date()) {
     el(
       "section",
       { class: "tables" },
-      el("h2", { class: "section-title" }, el("b", null, "Tables"), el("span", null, "· in the order extract_tables returned them")),
+      el(
+        "h2",
+        { class: "section-title" },
+        el("b", null, "Tables"),
+        el("span", null, "· in the order extract_tables returned them"),
+      ),
       run.tables.map((table) => tableCard(run, table)),
     ),
   );
@@ -164,7 +226,10 @@ export async function show(route, ctx) {
   const run = await ctx.getJson(`/api/runs/${encodeURIComponent(route.run)}`);
   return {
     title: `${run.document.name} · run ${run.short_id}`,
-    crumbs: [{ text: "Runs", href: "#/" }, { text: run.document.name, sub: run.short_id }],
+    crumbs: [
+      { text: "Runs", href: "#/" },
+      { text: run.document.name, sub: run.short_id },
+    ],
     content: el("div", { class: "page" }, runView(run)),
   };
 }

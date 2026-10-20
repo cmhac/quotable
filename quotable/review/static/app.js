@@ -6,8 +6,9 @@ import { el } from "./dom.js";
 import { hashFor, parseHash } from "./route.js";
 import * as run from "./run.js";
 import * as runs from "./runs.js";
+import * as table from "./table.js";
 
-const SCREENS = { runs: runs.show, run: run.show };
+const SCREENS = { runs: runs.show, run: run.show, table: table.show };
 const ctx = {
   getJson,
   replace: (route) => history.replaceState(null, "", hashFor(route)),
@@ -19,12 +20,18 @@ function unavailable(route) {
     "div",
     { class: "page" },
     alertBox({
-      headline: missing ? "There is no such page." : "This screen is not available yet.",
+      headline: missing
+        ? "There is no such page."
+        : "This screen is not available yet.",
       text: missing ? route.hash : null,
     }),
     el("p", null, el("a", { href: "#/" }, "Back to the runs list")),
   );
-  return { title: "Not available", crumbs: [{ text: "Runs", href: "#/" }], content };
+  return {
+    title: "Not available",
+    crumbs: [{ text: "Runs", href: "#/" }],
+    content,
+  };
 }
 
 let latest = 0;
@@ -38,13 +45,23 @@ async function show() {
     view = await (SCREENS[route.name] ?? unavailable)(route, ctx);
   } catch (error) {
     if (!(error instanceof ApiError)) console.error(error);
-    view = { title: "Error", crumbs: [{ text: "Runs", href: "#/" }], content: failureView(error) };
+    view = {
+      title: "Error",
+      crumbs: [{ text: "Runs", href: "#/" }],
+      content: failureView(error),
+    };
   }
   if (mine !== latest) return;
   const main = document.getElementById("main");
-  document.getElementById("chrome").replaceChildren(
-    header({ crumbs: view.crumbs, project: view.project, address: location.host }),
-  );
+  document
+    .getElementById("chrome")
+    .replaceChildren(
+      header({
+        crumbs: view.crumbs,
+        project: view.project,
+        address: location.host,
+      }),
+    );
   main.replaceChildren(view.content);
   document.title = `${view.title} · quotable review`;
   window.scrollTo(0, 0);

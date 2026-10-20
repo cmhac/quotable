@@ -9,7 +9,10 @@ const { el } = await import("../../../quotable/review/static/dom.js");
 const PAYLOAD = "<img src=x onerror=alert(1)>";
 
 test("strings and numbers become text nodes, null and false are skipped", () => {
-  const node = el("p", { class: "x" }, "a", 1, null, false, undefined, ["b", ["c"]]);
+  const node = el("p", { class: "x" }, "a", 1, null, false, undefined, [
+    "b",
+    ["c"],
+  ]);
   assert.equal(node.tagName, "P");
   assert.equal(node.getAttribute("class"), "x");
   assert.equal(node.textContent, "a1bc");
@@ -65,9 +68,20 @@ test("a value is set after the children, so a select can pick its option", () =>
 });
 
 test("a link goes only to the app's own pages", () => {
-  assert.equal(el("a", { href: "#/run/abc" }).getAttribute("href"), "#/run/abc");
-  assert.equal(el("a", { href: "/api/runs/abc/pdf" }).getAttribute("href"), "/api/runs/abc/pdf");
-  for (const bad of ["javascript:alert(1)", "//evil.example/x", "data:text/html,x", "https:x"]) {
+  assert.equal(
+    el("a", { href: "#/run/abc" }).getAttribute("href"),
+    "#/run/abc",
+  );
+  assert.equal(
+    el("a", { href: "/api/runs/abc/pdf" }).getAttribute("href"),
+    "/api/runs/abc/pdf",
+  );
+  for (const bad of [
+    "javascript:alert(1)",
+    "//evil.example/x",
+    "data:text/html,x",
+    "https:x",
+  ]) {
     assert.throws(() => el("a", { href: bad }), /unsafe href/);
   }
 });

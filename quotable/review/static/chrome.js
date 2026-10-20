@@ -5,7 +5,14 @@ import { el } from "./dom.js";
 const WARNING = "\u26A0\uFE0E";
 
 function crumb(item, last) {
-  if (item.href && !last) return el("a", { href: item.href }, item.text);
+  if (item.href && !last) {
+    return el(
+      "a",
+      { href: item.href },
+      item.text,
+      item.sub ? el("span", { class: "sub" }, `· ${item.sub}`) : null,
+    );
+  }
   return el(
     "span",
     { class: "current", "aria-current": last ? "page" : null },
@@ -18,7 +25,12 @@ export function header({ crumbs, project, address }) {
   return el(
     "header",
     { class: "bar" },
-    el("div", { class: "brand" }, el("span", null, "quotable"), el("span", { class: "accent" }, "review")),
+    el(
+      "div",
+      { class: "brand" },
+      el("span", null, "quotable"),
+      el("span", { class: "accent" }, "review"),
+    ),
     el(
       "nav",
       { class: "crumbs", "aria-label": "Breadcrumb" },
@@ -27,7 +39,11 @@ export function header({ crumbs, project, address }) {
         crumb(item, i === crumbs.length - 1),
       ]),
     ),
-    el("span", { class: "addr" }, project ? `${project} · ${address}` : address),
+    el(
+      "span",
+      { class: "addr" },
+      project ? `${project} · ${address}` : address,
+    ),
   );
 }
 
@@ -49,7 +65,10 @@ export function failureView(error) {
   return el(
     "div",
     { class: "page" },
-    alertBox({ headline: "This screen could not be loaded.", text: error.message }),
+    alertBox({
+      headline: "This screen could not be loaded.",
+      text: error.message,
+    }),
     el("p", null, el("a", { href: "#/" }, "Back to the runs list")),
   );
 }

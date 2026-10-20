@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-const { apiUrl, getJson, ApiError } = await import("../../../quotable/review/static/api.js");
+const { apiUrl, getJson, ApiError } =
+  await import("../../../quotable/review/static/api.js");
 
 function stubFetch(response) {
   const calls = [];
@@ -24,7 +25,10 @@ const reply = (status, body) => ({
 
 test("apiUrl adds the non-empty query values", () => {
   assert.equal(apiUrl("/api/runs"), "/api/runs");
-  assert.equal(apiUrl("/api/runs", { document: "a b", model: "", x: null }), "/api/runs?document=a+b");
+  assert.equal(
+    apiUrl("/api/runs", { document: "a b", model: "", x: null }),
+    "/api/runs?document=a+b",
+  );
 });
 
 test("getJson returns the JSON of an answer", async () => {
@@ -50,7 +54,10 @@ test("an error answer without a message says the status", async () => {
 
 test("a server that cannot be reached is explained", async () => {
   stubFetch(new TypeError("Failed to fetch"));
-  await assert.rejects(getJson("/api/runs"), /could not reach the review server/i);
+  await assert.rejects(
+    getJson("/api/runs"),
+    /could not reach the review server/i,
+  );
 });
 
 test("an answer that is not JSON is an error", async () => {

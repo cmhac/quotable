@@ -64,3 +64,9 @@ def test_every_module_a_script_imports_exists(path: Path):
     for reference in IMPORT.findall(path.read_text(encoding="utf-8")):
         assert "/" not in local_name(reference), f"{path.name} imports {reference} from a subfolder"
         assert (STATIC / local_name(reference)).is_file(), f"{path.name} imports {reference}"
+
+
+@pytest.mark.parametrize("route", ["runs", "run", "table"])
+def test_app_registers_the_screens_built_so_far(route: str):
+    app = (STATIC / "app.js").read_text(encoding="utf-8")
+    assert re.search(rf"\b{route}:\s*\w+\.show\b", app), f"app.js has no screen for {route}"

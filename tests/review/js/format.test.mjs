@@ -21,18 +21,27 @@ test("times are Today, then month and day", () => {
   const now = new Date("2026-10-20T15:00:00Z");
   assert.equal(f.formatTime("2026-10-20T10:14:00Z", now), "Today 10:14");
   assert.equal(f.formatTime("2026-10-19T16:40:00Z", now), "Oct 19, 16:40");
-  assert.equal(f.formatTime("2025-10-19T16:40:00Z", now), "Oct 19, 2025, 16:40");
+  assert.equal(
+    f.formatTime("2025-10-19T16:40:00Z", now),
+    "Oct 19, 2025, 16:40",
+  );
   assert.equal(f.formatTime("2026-01-02T09:05:00Z", now), "Jan 2, 09:05");
 });
 
 test("a span has the end as a clock time when it is the same day", () => {
   const now = new Date("2026-10-20T15:00:00Z");
-  assert.equal(f.formatSpan("2026-10-20T10:14:00Z", "2026-10-20T10:31:00Z", now), "Today 10:14–10:31");
+  assert.equal(
+    f.formatSpan("2026-10-20T10:14:00Z", "2026-10-20T10:31:00Z", now),
+    "Today 10:14–10:31",
+  );
   assert.equal(
     f.formatSpan("2026-10-19T23:50:00Z", "2026-10-20T00:10:00Z", now),
     "Oct 19, 23:50–Today 00:10",
   );
-  assert.equal(f.formatSpan("2026-10-19T16:40:00Z", "2026-10-19T16:41:00Z", now), "Oct 19, 16:40–16:41");
+  assert.equal(
+    f.formatSpan("2026-10-19T16:40:00Z", "2026-10-19T16:41:00Z", now),
+    "Oct 19, 16:40–16:41",
+  );
 });
 
 test("UTC stamps for the run card", () => {
@@ -64,14 +73,18 @@ test("sizes", () => {
 });
 
 test("a SHA-256 is shortened to its ends", () => {
-  const sha = "9c1e07b3d2aa11bb22cc33dd44ee55ff66778899aabbccddeeff00112233f5a14a7b";
+  const sha =
+    "9c1e07b3d2aa11bb22cc33dd44ee55ff66778899aabbccddeeff00112233f5a14a7b";
   assert.equal(f.shortSha(sha, 10, 8), "9c1e07b3d2…f5a14a7b");
   assert.equal(f.shortSha(sha, 4, 4), "9c1e…4a7b");
 });
 
 test("page lists collapse into ranges", () => {
   assert.equal(f.pagesText([3, 4, 5, 41]), "pages 3–5, 41");
-  assert.equal(f.pagesText(Array.from({ length: 39 }, (_, i) => i + 3)), "pages 3–41");
+  assert.equal(
+    f.pagesText(Array.from({ length: 39 }, (_, i) => i + 3)),
+    "pages 3–41",
+  );
   assert.equal(f.pagesText([5]), "page 5");
   assert.equal(f.pagesText([1, 2, 3, 5]), "pages 1–3, 5");
   assert.equal(f.pagesText([2, 1]), "pages 1–2");
@@ -90,11 +103,14 @@ test("settings are shown the way Python writes them", () => {
 });
 
 test("flagged counts come in the order of the statuses, zeros left out", () => {
-  assert.deepEqual(f.flaggedParts({ ungrounded: 4, fuzzy: 29, misplaced: 6, untokenized: 0 }), [
-    ["fuzzy", 29],
-    ["misplaced", 6],
-    ["ungrounded", 4],
-  ]);
+  assert.deepEqual(
+    f.flaggedParts({ ungrounded: 4, fuzzy: 29, misplaced: 6, untokenized: 0 }),
+    [
+      ["fuzzy", 29],
+      ["misplaced", 6],
+      ["ungrounded", 4],
+    ],
+  );
   assert.deepEqual(f.flaggedParts({}), []);
   assert.deepEqual(f.flaggedParts({ odd: 2, fuzzy: 1 }), [
     ["fuzzy", 1],

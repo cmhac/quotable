@@ -14,9 +14,11 @@ const { badge } = await import(`${STATIC}status.js`);
 const NOW = new Date("2026-10-20T15:00:00Z");
 const PAYLOAD = "<img src=x onerror=alert(1)>";
 const ID = "7f3a29c15d0e4b8a9e210c6f3b7d12aa";
-const SHA = "9c1e07b3d2aa11bb22cc33dd44ee55ff66778899aabbccddeeff00112233f5a14a7b";
+const SHA =
+  "9c1e07b3d2aa11bb22cc33dd44ee55ff66778899aabbccddeeff00112233f5a14a7b";
 
-const noImages = (node) => assert.equal(findAll(node, (e) => e.tagName === "IMG").length, 0);
+const noImages = (node) =>
+  assert.equal(findAll(node, (e) => e.tagName === "IMG").length, 0);
 
 // The words a reader gets: neighbouring elements are separated by a space, text runs on.
 function words(node) {
@@ -88,7 +90,14 @@ function runsData(over = {}) {
         size: 3_800_000,
         runs: [runLine(), second],
       },
-      { name: "permits.pdf", sha256: "ab".repeat(32), sha_short: "abab…abab", pages: 214, size: 41_200_000, runs: [third] },
+      {
+        name: "permits.pdf",
+        sha256: "ab".repeat(32),
+        sha_short: "abab…abab",
+        pages: 214,
+        size: 41_200_000,
+        runs: [third],
+      },
     ],
     ...over,
   };
@@ -110,7 +119,13 @@ function runData(over = {}) {
       merge_reworded: true,
       max_requests: 400,
       extra_fields: {
-        fields: [{ name: "fiscal_year", description: "Fiscal year printed in the page header", group: null }],
+        fields: [
+          {
+            name: "fiscal_year",
+            description: "Fiscal year printed in the page header",
+            group: null,
+          },
+        ],
         prompt: "",
         carry_forward: true,
       },
@@ -124,7 +139,14 @@ function runData(over = {}) {
       pages: 62,
     },
     pdf: { status: "ok", path: "/Users/you/county/county_budget_fy2026.pdf" },
-    summary: { tables: 3, rows: 1488, cells: 7440, flagged: {}, flagged_total: 1846, ocr_pages: [17, 18] },
+    summary: {
+      tables: 3,
+      rows: 1488,
+      cells: 7440,
+      flagged: {},
+      flagged_total: 1846,
+      ocr_pages: [17, 18],
+    },
     cost: { kind: "usd", usd: 4.82 },
     review: { reviewed: 37, flagged: 1846, done: false },
     tables: [
@@ -141,7 +163,10 @@ function runData(over = {}) {
         merged: 1,
         ocr_pages: [17, 18],
         note: [
-          { kind: "merged", text: "Merged part: pp. 22–24, columns Dept · Fund" },
+          {
+            kind: "merged",
+            text: "Merged part: pp. 22–24, columns Dept · Fund",
+          },
           { kind: "changes", text: "57 recheck changes accepted" },
         ],
       },
@@ -167,11 +192,17 @@ function runData(over = {}) {
 // --- the header and the failure page ---------------------------------------------------------
 test("the header shows the name, the crumbs, the project and the address", () => {
   const node = header({
-    crumbs: [{ text: "Runs", href: "#/" }, { text: "a.pdf", sub: "7f3a29c1" }],
+    crumbs: [
+      { text: "Runs", href: "#/" },
+      { text: "a.pdf", sub: "7f3a29c1" },
+    ],
     project: "/p/.quotable",
     address: "127.0.0.1:8765",
   });
-  assert.equal(text(node), "quotable review Runs / a.pdf · 7f3a29c1 /p/.quotable · 127.0.0.1:8765");
+  assert.equal(
+    text(node),
+    "quotable review Runs / a.pdf · 7f3a29c1 /p/.quotable · 127.0.0.1:8765",
+  );
   const [link] = byTag(node, "a");
   assert.equal(link.getAttribute("href"), "#/");
   const current = byClass(node, "current");
@@ -180,7 +211,10 @@ test("the header shows the name, the crumbs, the project and the address", () =>
 });
 
 test("the header shows only the address when there is no project", () => {
-  const node = header({ crumbs: [{ text: "Runs" }], address: "127.0.0.1:8765" });
+  const node = header({
+    crumbs: [{ text: "Runs" }],
+    address: "127.0.0.1:8765",
+  });
   assert.equal(text(node), "quotable review Runs 127.0.0.1:8765");
 });
 
@@ -200,7 +234,9 @@ test("a badge is glyph, word and count, never colour alone", () => {
   assert.equal(text(badge("ungrounded")), "× ungrounded");
   assert.equal(text(badge("untokenized")), "# untokenized");
   assert.equal(text(badge("empty")), "∅ empty");
-  assert.ok(badge("fuzzy").getAttribute("class").split(" ").includes("s-fuzzy"));
+  assert.ok(
+    badge("fuzzy").getAttribute("class").split(" ").includes("s-fuzzy"),
+  );
 });
 
 // --- the runs list ---------------------------------------------------------------------------
@@ -209,15 +245,26 @@ test("the intro counts what is shown", () => {
     text(introView(runsData())),
     "4 runs of 2 documents in .quotable/runs/, newest first. Re-runs of the same PDF are grouped.",
   );
-  assert.match(text(introView(runsData({ runs: 1, documents: [runsData().documents[1]] }))), /^1 run of 1 document /);
+  assert.match(
+    text(
+      introView(runsData({ runs: 1, documents: [runsData().documents[1]] })),
+    ),
+    /^1 run of 1 document /,
+  );
 });
 
 test("one group a document, with its facts and run count", () => {
   const node = groupsView(runsData(), NOW);
   const groups = byClass(node, "group");
   assert.equal(groups.length, 2);
-  assert.match(text(byClass(groups[0], "group-head")[0]), /county_budget_fy2026\.pdf sha256 9c1e…4a7b · 62 pages · 3\.8 MB 2 runs/);
-  assert.match(text(byClass(groups[1], "group-head")[0]), /permits\.pdf .* 214 pages · 41\.2 MB 1 run$/);
+  assert.match(
+    text(byClass(groups[0], "group-head")[0]),
+    /county_budget_fy2026\.pdf sha256 9c1e…4a7b · 62 pages · 3\.8 MB 2 runs/,
+  );
+  assert.match(
+    text(byClass(groups[1], "group-head")[0]),
+    /permits\.pdf .* 214 pages · 41\.2 MB 1 run$/,
+  );
 });
 
 test("a run line has every figure of the board", () => {
@@ -228,7 +275,10 @@ test("a run line has every figure of the board", () => {
   assert.equal(cells[1], "Today 10:14");
   assert.equal(cells[2], "claude-sonnet-4-5");
   assert.deepEqual(cells.slice(3, 6), ["3", "1,488", "7,440"]);
-  assert.equal(cells[6], "≈ fuzzy 1,102 ⇄ misplaced 388 × ungrounded 291 # untokenized 65 = 1,846");
+  assert.equal(
+    cells[6],
+    "≈ fuzzy 1,102 ⇄ misplaced 388 × ungrounded 291 # untokenized 65 = 1,846",
+  );
   assert.deepEqual(cells.slice(7), ["2", "$4.82", "37 / 1,846"]);
   const [link] = byTag(row, "a");
   assert.equal(link.getAttribute("href"), `#/run/${ID}`);
@@ -252,13 +302,19 @@ test("the progress bar has its width and a text equivalent", () => {
   const node = groupsView(runsData(), NOW);
   const [bar] = byClass(node, "progress");
   assert.equal(bar.getAttribute("role"), "img");
-  assert.equal(bar.getAttribute("aria-label"), "37 of 1,846 flagged cells reviewed");
+  assert.equal(
+    bar.getAttribute("aria-label"),
+    "37 of 1,846 flagged cells reviewed",
+  );
   assert.equal(byClass(bar, "fill")[0].styles.width, "2%");
 });
 
 test("the note under the list explains cost", () => {
   const node = groupsView(runsData(), NOW);
-  assert.match(text(byClass(node, "note")[0]), /^Cost is the sum of the run’s records in \.quotable\/cost\/\. “free” = every answer came from the cache; “unknown” = a record has no price\.$/);
+  assert.match(
+    text(byClass(node, "note")[0]),
+    /^Cost is the sum of the run’s records in \.quotable\/cost\/\. “free” = every answer came from the cache; “unknown” = a record has no price\.$/,
+  );
 });
 
 test("untrusted text in the runs list is text", () => {
@@ -271,21 +327,37 @@ test("untrusted text in the runs list is text", () => {
 });
 
 test("no runs yet says how to make one", () => {
-  const node = emptyView({ total_runs: 0, runs: 0, documents: [], unreadable: 0 });
+  const node = emptyView({
+    total_runs: 0,
+    runs: 0,
+    documents: [],
+    unreadable: 0,
+  });
   assert.match(text(node), /No runs yet/);
   assert.match(text(node), /extract_tables/);
   assert.match(text(node), /\.quotable\/runs\//);
 });
 
 test("filters that match nothing are not 'no runs yet'", () => {
-  const node = emptyView({ total_runs: 5, runs: 0, documents: [], unreadable: 0 });
+  const node = emptyView({
+    total_runs: 5,
+    runs: 0,
+    documents: [],
+    unreadable: 0,
+  });
   assert.match(text(node), /No runs match/);
   assert.doesNotMatch(text(node), /No runs yet/);
 });
 
 test("run folders that cannot be read are mentioned", () => {
-  assert.match(text(groupsView(runsData({ unreadable: 2 }), NOW)), /2 run folders could not be read/);
-  assert.match(text(groupsView(runsData({ unreadable: 1 }), NOW)), /1 run folder could not be read/);
+  assert.match(
+    text(groupsView(runsData({ unreadable: 2 }), NOW)),
+    /2 run folders could not be read/,
+  );
+  assert.match(
+    text(groupsView(runsData({ unreadable: 1 }), NOW)),
+    /1 run folder could not be read/,
+  );
   assert.doesNotMatch(text(groupsView(runsData(), NOW)), /could not be read/);
 });
 
@@ -323,7 +395,10 @@ test("the run card lists its facts and the settings that change results", () => 
     "merge_reworded=True",
     "max_requests=400",
   ]);
-  assert.match(run, /extra_fields fiscal_year — “Fiscal year printed in the page header”/);
+  assert.match(
+    run,
+    /extra_fields fiscal_year — “Fiscal year printed in the page header”/,
+  );
 });
 
 test("without extra fields there is no extra-fields line, and unset limits are None", () => {
@@ -350,24 +425,44 @@ test("one card a table, each linking to its table screen, in order", () => {
   assert.equal(cards.length, 2);
   assert.equal(cards[0].getAttribute("href"), `#/run/${ID}/table/0`);
   assert.equal(cards[1].getAttribute("href"), `#/run/${ID}/table/1`);
-  assert.match(text(byClass(cards[0], "where")[0]), /^Table 1 · pages 3–5, 41$/);
-  assert.equal(text(byClass(cards[0], "title")[0]), "General Fund Expenditures by Department");
-  assert.equal(text(byClass(cards[0], "columns")[0]), "Department · Fund · FY2025 Actual + fiscal_year (extra)");
+  assert.match(
+    text(byClass(cards[0], "where")[0]),
+    /^Table 1 · pages 3–5, 41$/,
+  );
+  assert.equal(
+    text(byClass(cards[0], "title")[0]),
+    "General Fund Expenditures by Department",
+  );
+  assert.equal(
+    text(byClass(cards[0], "columns")[0]),
+    "Department · Fund · FY2025 Actual + fiscal_year (extra)",
+  );
   const numbers = byClass(cards[0], "stat").map(text);
-  assert.deepEqual(numbers, ["Rows 1,214", "Flagged 1,512", "Merged parts 1", "OCR pages 2 (pp. 17–18)"]);
+  assert.deepEqual(numbers, [
+    "Rows 1,214",
+    "Flagged 1,512",
+    "Merged parts 1",
+    "OCR pages 2 (pp. 17–18)",
+  ]);
 });
 
 test("a table without a label is only 'Table N'", () => {
   const [, second] = byClass(runView(runData(), NOW), "table-card");
   assert.equal(text(byClass(second, "title")[0]), "Table 2");
   assert.equal(byClass(second, "table-note").length, 0);
-  assert.deepEqual(byClass(second, "stat").map(text).slice(2), ["Merged parts 0", "OCR pages 0"]);
+  assert.deepEqual(byClass(second, "stat").map(text).slice(2), [
+    "Merged parts 0",
+    "OCR pages 0",
+  ]);
 });
 
 test("the note under a table's numbers lists each fact", () => {
   const [first] = byClass(runView(runData(), NOW), "table-card");
   const lines = byClass(first, "table-note")[0].childNodes.map(text);
-  assert.deepEqual(lines, ["Merged part: pp. 22–24, columns Dept · Fund", "57 recheck changes accepted"]);
+  assert.deepEqual(lines, [
+    "Merged part: pp. 22–24, columns Dept · Fund",
+    "57 recheck changes accepted",
+  ]);
 });
 
 test("a PDF that is fine has no alert", () => {
@@ -385,8 +480,16 @@ test("a missing PDF is an alert with the path", () => {
 });
 
 test("a changed PDF is an alert with both SHA-256s", () => {
-  const node = pdfAlert({ status: "changed", path: "/x.pdf", expected: "3b70…e019", found: "22f8…01d6" });
-  assert.match(text(node), /The PDF’s SHA-256 no longer matches\. Page images can’t be shown\. Values, statuses and text still can\./);
+  const node = pdfAlert({
+    status: "changed",
+    path: "/x.pdf",
+    expected: "3b70…e019",
+    found: "22f8…01d6",
+  });
+  assert.match(
+    text(node),
+    /The PDF’s SHA-256 no longer matches\. Page images can’t be shown\. Values, statuses and text still can\./,
+  );
   assert.match(text(node), /expected 3b70…e019 · found 22f8…01d6$/);
 });
 

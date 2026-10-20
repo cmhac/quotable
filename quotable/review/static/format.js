@@ -1,6 +1,19 @@
 // Plain functions that turn the API's numbers and timestamps into the words the screens show.
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 const FLAGGED_ORDER = ["fuzzy", "misplaced", "ungrounded", "untokenized"];
 const pad = (n) => String(n).padStart(2, "0");
 
@@ -10,12 +23,15 @@ export const plural = (n, word) => `${number(n)} ${word}${n === 1 ? "" : "s"}`;
 
 const clock = (d) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 const sameDay = (a, b) =>
-  a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate();
 
 export function formatTime(iso, now = new Date()) {
   const d = new Date(iso);
   if (sameDay(d, now)) return `Today ${clock(d)}`;
-  const year = d.getFullYear() === now.getFullYear() ? "" : `${d.getFullYear()}, `;
+  const year =
+    d.getFullYear() === now.getFullYear() ? "" : `${d.getFullYear()}, `;
   return `${MONTHS[d.getMonth()]} ${d.getDate()}, ${year}${clock(d)}`;
 }
 
@@ -31,15 +47,19 @@ export function utcSpan(started, ended) {
 }
 
 export function costText(cost) {
-  if (cost.kind === "usd") return `$${cost.usd > 0 && cost.usd < 0.1 ? cost.usd.toFixed(4) : cost.usd.toFixed(2)}`;
+  if (cost.kind === "usd")
+    return `$${cost.usd > 0 && cost.usd < 0.1 ? cost.usd.toFixed(4) : cost.usd.toFixed(2)}`;
   return cost.kind;
 }
 
 export function sizeText(bytes) {
-  return bytes >= 100_000 ? `${(bytes / 1e6).toFixed(1)} MB` : `${(bytes / 1e3).toFixed(1)} KB`;
+  return bytes >= 100_000
+    ? `${(bytes / 1e6).toFixed(1)} MB`
+    : `${(bytes / 1e3).toFixed(1)} KB`;
 }
 
-export const shortSha = (sha, head = 4, tail = 4) => `${sha.slice(0, head)}…${sha.slice(-tail)}`;
+export const shortSha = (sha, head = 4, tail = 4) =>
+  `${sha.slice(0, head)}…${sha.slice(-tail)}`;
 
 function pageRanges(pages) {
   const ranges = [];
@@ -69,7 +89,12 @@ export function settingValue(value) {
 }
 
 export function flaggedParts(flagged) {
-  const keys = [...FLAGGED_ORDER, ...Object.keys(flagged).filter((k) => !FLAGGED_ORDER.includes(k)).sort()];
+  const keys = [
+    ...FLAGGED_ORDER,
+    ...Object.keys(flagged)
+      .filter((k) => !FLAGGED_ORDER.includes(k))
+      .sort(),
+  ];
   return keys.filter((k) => flagged[k] > 0).map((k) => [k, flagged[k]]);
 }
 

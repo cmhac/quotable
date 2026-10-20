@@ -2,7 +2,15 @@
 
 import { alertBox } from "./chrome.js";
 import { el } from "./dom.js";
-import { costText, flaggedParts, formatTime, number, plural, progressWidth, sizeText } from "./format.js";
+import {
+  costText,
+  flaggedParts,
+  formatTime,
+  number,
+  plural,
+  progressWidth,
+  sizeText,
+} from "./format.js";
 import { hashFor } from "./route.js";
 import { badge } from "./status.js";
 
@@ -32,7 +40,11 @@ export function introView(data) {
 function unreadableNote(data) {
   if (!data.unreadable) return null;
   const folders = data.unreadable === 1 ? "run folder" : "run folders";
-  return el("p", { class: "unreadable" }, `${number(data.unreadable)} ${folders} could not be read and ${data.unreadable === 1 ? "is" : "are"} not listed.`);
+  return el(
+    "p",
+    { class: "unreadable" },
+    `${number(data.unreadable)} ${folders} could not be read and ${data.unreadable === 1 ? "is" : "are"} not listed.`,
+  );
 }
 
 export function emptyView(data) {
@@ -87,21 +99,38 @@ function reviewCell(review) {
       { class: "review" },
       el(
         "span",
-        { class: review.done ? "progress done" : "progress", role: "img", "aria-label": label },
+        {
+          class: review.done ? "progress done" : "progress",
+          role: "img",
+          "aria-label": label,
+        },
         el("span", { class: "fill", style: { width: progressWidth(review) } }),
       ),
-      el("span", { class: "count" }, `${number(review.reviewed)} / ${number(review.flagged)}`),
+      el(
+        "span",
+        { class: "count" },
+        `${number(review.reviewed)} / ${number(review.flagged)}`,
+      ),
       review.done ? el("span", { class: "done" }, "· done") : null,
     ),
   );
 }
 
 function runRow(run, now) {
-  const costClass = run.cost.kind === "usd" ? "num" : `num cost-${run.cost.kind}`;
+  const costClass =
+    run.cost.kind === "usd" ? "num" : `num cost-${run.cost.kind}`;
   return el(
     "tr",
     null,
-    el("td", null, el("a", { class: "mono", href: hashFor({ name: "run", run: run.id }) }, run.short_id)),
+    el(
+      "td",
+      null,
+      el(
+        "a",
+        { class: "mono", href: hashFor({ name: "run", run: run.id }) },
+        run.short_id,
+      ),
+    ),
     el("td", null, formatTime(run.started, now)),
     el("td", { class: "mono model" }, run.model),
     el("td", { class: "num" }, number(run.tables)),
@@ -124,7 +153,11 @@ function group(doc, now) {
       el("span", { class: "doc-icon", "aria-hidden": "true" }),
       el("h2", { class: "name" }, doc.name),
       el("span", { class: "sha mono" }, `sha256 ${doc.sha_short}`),
-      el("span", { class: "facts" }, `· ${plural(doc.pages, "page")} · ${sizeText(doc.size)}`),
+      el(
+        "span",
+        { class: "facts" },
+        `· ${plural(doc.pages, "page")} · ${sizeText(doc.size)}`,
+      ),
       el("span", { class: "count" }, plural(doc.runs.length, "run")),
     ),
     el(
@@ -133,17 +166,27 @@ function group(doc, now) {
       el(
         "table",
         { class: "runs" },
-        el("colgroup", null, COLUMNS.map(([key]) => el("col", { class: `c-${key}` }))),
+        el(
+          "colgroup",
+          null,
+          COLUMNS.map(([key]) => el("col", { class: `c-${key}` })),
+        ),
         el(
           "thead",
           null,
           el(
             "tr",
             null,
-            COLUMNS.map(([, title, numeric]) => el("th", { scope: "col", class: numeric ? "num" : null }, title)),
+            COLUMNS.map(([, title, numeric]) =>
+              el("th", { scope: "col", class: numeric ? "num" : null }, title),
+            ),
           ),
         ),
-        el("tbody", null, doc.runs.map((run) => runRow(run, now))),
+        el(
+          "tbody",
+          null,
+          doc.runs.map((run) => runRow(run, now)),
+        ),
       ),
     ),
   );
@@ -167,13 +210,21 @@ export function groupsView(data, now = new Date()) {
 
 function paint(data, intro, results) {
   intro.replaceChildren(introView(data));
-  results.replaceChildren(data.documents.length ? groupsView(data) : emptyView(data));
+  results.replaceChildren(
+    data.documents.length ? groupsView(data) : emptyView(data),
+  );
 }
 
 export async function show(route, ctx) {
-  let filters = { document: route.query.document ?? "", model: route.query.model ?? "" };
+  let filters = {
+    document: route.query.document ?? "",
+    model: route.query.model ?? "",
+  };
   const first = await ctx.getJson("/api/runs", filters);
-  const models = first.models.includes(filters.model) || !filters.model ? first.models : [...first.models, filters.model];
+  const models =
+    first.models.includes(filters.model) || !filters.model
+      ? first.models
+      : [...first.models, filters.model];
   const intro = el("div", { class: "intro" });
   const results = el("div", { class: "results" });
   paint(first, intro, results);
@@ -188,7 +239,12 @@ export async function show(route, ctx) {
       if (mine === latest) paint(data, intro, results);
     } catch (error) {
       if (mine === latest) {
-        results.replaceChildren(alertBox({ headline: "The list could not be updated.", text: error.message }));
+        results.replaceChildren(
+          alertBox({
+            headline: "The list could not be updated.",
+            text: error.message,
+          }),
+        );
       }
     }
   };
@@ -226,11 +282,21 @@ export async function show(route, ctx) {
       el(
         "div",
         { class: "filters" },
-        el("label", { class: "field" }, el("span", null, "Document"), documentInput),
+        el(
+          "label",
+          { class: "field" },
+          el("span", null, "Document"),
+          documentInput,
+        ),
         el("label", { class: "field" }, el("span", null, "Model"), modelSelect),
       ),
     ),
     results,
   );
-  return { title: "Runs", crumbs: [{ text: "Runs" }], project: first.project, content };
+  return {
+    title: "Runs",
+    crumbs: [{ text: "Runs" }],
+    project: first.project,
+    content,
+  };
 }

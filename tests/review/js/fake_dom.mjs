@@ -12,7 +12,8 @@ class FakeNode {
 
   replaceChildren(...nodes) {
     this.childNodes = [];
-    for (const node of nodes) this.appendChild(node);
+    for (const node of nodes)
+      this.appendChild(typeof node === "string" ? new FakeText(node) : node);
   }
 }
 
@@ -41,6 +42,10 @@ class FakeElement extends FakeNode {
 
   setAttribute(name, value) {
     this.attributes[name] = String(value);
+  }
+
+  removeAttribute(name) {
+    delete this.attributes[name];
   }
 
   getAttribute(name) {
@@ -77,6 +82,7 @@ export function findAll(node, predicate, found = []) {
   return found;
 }
 
-export const byTag = (node, tag) => findAll(node, (e) => e.tagName === tag.toUpperCase());
+export const byTag = (node, tag) =>
+  findAll(node, (e) => e.tagName === tag.toUpperCase());
 export const byClass = (node, name) =>
   findAll(node, (e) => (e.attributes.class ?? "").split(" ").includes(name));
