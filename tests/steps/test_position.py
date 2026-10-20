@@ -1,10 +1,17 @@
 import copy
+import hashlib
+import json
+from pathlib import Path
 
 import pymupdf
+import pytest
 
 from quotable.steps.grounding import ground_rows
 from quotable.steps.position import PageGrounding, check_positions
 from quotable.text.layer import load_layer
+from tests.fixture_tables import doc_ids, tables_of
+
+IDS = doc_ids()
 
 
 def _ground_document(pdf, columns, pages):
@@ -87,3 +94,72 @@ def test_cells_that_cannot_be_judged_are_counted_not_flagged(make_pdf):
     counts = check_positions(["A", "B"], grounded)
     assert counts["unchecked"] == 2
     assert counts["misplaced"] == 0
+
+
+BASELINE = Path(__file__).parent / "position_baseline.json"
+
+
+def _outcome(doc_id):
+    """Position counts and a digest of every cell's status, per part of a fixture document."""
+    out = {}
+    for part_id, table in sorted(tables_of(doc_id).items()):
+        statuses = [
+            f"{page}:{i}:{c}:{g.status}"
+            for page, grounded in sorted(table.grounded.items())
+            for i, cells in enumerate(grounded.cells)
+            for c, g in cells.items()
+        ]
+        digest = hashlib.sha1("\n".join(statuses).encode()).hexdigest()
+        out[part_id] = {"position": table.position, "statuses": digest}
+    return out
+
+
+@pytest.mark.parametrize("doc_id", IDS)
+def test_every_row_with_an_anchor_has_a_window_and_every_banded_column_a_range(doc_id):
+    for table in tables_of(doc_id).values():
+        for grounded in table.grounded.values():
+            assert set(grounded.row_windows) <= set(range(len(grounded.rows)))
+            for low, high in grounded.row_windows.values():
+                assert low < high
+            for low, high in grounded.column_ranges.values():
+                assert low < high
+            assert set(grounded.column_ranges) <= set(table.columns)
+
+
+def test_a_page_with_evidence_has_windows_for_all_rows_and_ranges_for_banded_columns():
+    table = tables_of("struct-shared-page")["A"]
+    for grounded in table.grounded.values():
+        assert sorted(grounded.row_windows) == list(range(len(grounded.rows)))
+    assert any(g.column_ranges for g in table.grounded.values())
+
+
+def test_a_page_without_evidence_has_no_ranges(make_pdf):
+    path = make_pdf([[(72, 100, "Alpha"), (200, 100, "Beta")]])
+    grounded = _ground_document(path, ["A", "B"], {1: [{"A": "Alpha", "B": "Beta"}]})
+    check_positions(["A", "B"], grounded)
+    assert grounded[0].column_ranges == {}
+
+
+def test_the_windows_of_a_page_are_the_fitted_ones(sample):
+    grounded = _ground_document(sample["pdf"], sample["columns"], sample["pages"])
+    check_positions(sample["columns"], grounded)
+    for page in grounded:
+        assert page.row_windows
+        ordered = [page.row_windows[i] for i in sorted(page.row_windows)]
+        assert all(a[0] <= b[0] for a, b in zip(ordered, ordered[1:], strict=False))
+        assert page.column_ranges
+        assert set(page.column_ranges) <= set(sample["columns"])
+        for low, high in page.column_ranges.values():
+            assert low < high
+
+
+def test_a_page_not_yet_checked_has_no_areas(sample):
+    (page, *_) = _ground_document(sample["pdf"], sample["columns"], sample["pages"])
+    assert page.row_windows == {}
+    assert page.column_ranges == {}
+
+
+@pytest.mark.parametrize("doc_id", IDS)
+def test_statuses_and_counts_of_the_fixture_are_unchanged(doc_id):
+    baseline = json.loads(BASELINE.read_text())
+    assert _outcome(doc_id) == baseline[doc_id]

@@ -1,0 +1,2730 @@
+{
+ "align-font10_0": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "align-font9_0": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "align-lr": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "align-rl": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "align-rr": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "cells-10x10": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "440156a86b4e855ad163126e9c242c3f2d36a680"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "8845424c8b801d04fbbd8a178d24e31420066cb0"
+  }
+ },
+ "cells-12x3": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "2625ac795df99d5f7888a95e454c5148fac072c3"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 18
+   },
+   "statuses": "ca57e48744a900144a7fa6c128053bd8c04a0041"
+  }
+ },
+ "cells-20x4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "359cbc4632b63d9d1e5f2a2c0fc0c257b8af6453"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 24
+   },
+   "statuses": "e688dbb13110a02d4f872907a69377e53e5b0aee"
+  }
+ },
+ "cells-20x5": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "359cbc4632b63d9d1e5f2a2c0fc0c257b8af6453"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "536956252c65b1582f874290a6f75da4d329dcae"
+  }
+ },
+ "cells-2x2": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 12
+   },
+   "statuses": "acc86bcf5d890f134ba2566fbc6b64d2a8c61ca7"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 12
+   },
+   "statuses": "04275b3795676655b6e8545294512b3d04e84cf9"
+  }
+ },
+ "cells-3x3": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 18
+   },
+   "statuses": "bdea6fe80a3ef78296fe35d98a260a72d0eb1879"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 18
+   },
+   "statuses": "ca57e48744a900144a7fa6c128053bd8c04a0041"
+  }
+ },
+ "cells-4x20": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 24
+   },
+   "statuses": "9379205a45489d71bb73cb376729d5f4627a2a8a"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "2825307f22bf1f8402c1a066c3ec826d7db3c73d"
+  }
+ },
+ "cells-4x4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 24
+   },
+   "statuses": "9379205a45489d71bb73cb376729d5f4627a2a8a"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 24
+   },
+   "statuses": "e688dbb13110a02d4f872907a69377e53e5b0aee"
+  }
+ },
+ "cells-5x20": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 10
+   },
+   "statuses": "e6ae4650ba6dbebb3d16bbe631400776285de914"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "2825307f22bf1f8402c1a066c3ec826d7db3c73d"
+  }
+ },
+ "cells-5x5": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "e6ae4650ba6dbebb3d16bbe631400776285de914"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 10
+   },
+   "statuses": "536956252c65b1582f874290a6f75da4d329dcae"
+  }
+ },
+ "cells-6x6": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "24838d67c8d8570687ba46eacdb9a96517b7fbca"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "82cdb72b9daac4464697523b29266ad7d6e24202"
+  }
+ },
+ "cells-notes-0x0": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "cb253b9cadd7db2a84fe7289997d6832fd2b2cef"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "7fb92b035f0e52cc171b015cab4c36114acf03b6"
+  }
+ },
+ "cells-notes-10x10": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "c5d0ca744e8dd7c9bece905257d8b89c81f26dca"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "17f9b1eda95bc2fdeb42179e953485e173a2fa2b"
+  }
+ },
+ "cells-notes-10x4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "6946f4c86adf4651de3baa2e3f3efd379b2adbaf"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 4
+   },
+   "statuses": "722bf753402fe0f74b90530c7cd583423002fc49"
+  }
+ },
+ "cells-notes-3x3": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 3
+   },
+   "statuses": "0ddfb78096fa6e5e9bf6253d381f5b21ba21d4fe"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 3
+   },
+   "statuses": "0c19456ec8ed6848d89c7bcf06e891ec4bfd4158"
+  }
+ },
+ "cells-notes-4x10": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 4
+   },
+   "statuses": "6d58419ed401fa261155ca1110c91cf63c5eba08"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "8555fe2ca4cc8a0e0b1b95b060afe199b4f953bf"
+  }
+ },
+ "cells-notes-4x4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 4
+   },
+   "statuses": "68da87b67d43cd992a6d15108f4f61678acee418"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 4
+   },
+   "statuses": "c061c6cd7e066fae5097b76753c50ea11b321b0b"
+  }
+ },
+ "cells-notes-5x5": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "15d116966e066c9dc32ec8fabb0069a824955057"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "580db8383f98961464967fef41445466eaf30671"
+  }
+ },
+ "cells-notes-6x6": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "d6c918a12ddd51fde134e028cdfeaa4c7d484224"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "8187151d4fdc28d9cdf83aebb91a758e44e32049"
+  }
+ },
+ "ctrl-single-table": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "1c1e6eec1371fa899f2df13fbbe4c6256591a377"
+  }
+ },
+ "ctrl-unrelated": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "86d34da4c8dbc43a23ae7dca20778ff682d3dbb1"
+  }
+ },
+ "extra-before-first-block": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "4790cf9290ce2cdda519ebc087b657e3c36084ae"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "43113f0bd4db95730ba603c8d0f082d21be78a39"
+  }
+ },
+ "extra-block-on-text-page": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "12687872934638f772c8d37bd53b9300276fe7d4"
+  }
+ },
+ "extra-caption-lookalike": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "85febbe457c7f8b441fa9c2b897cc800bc335ea7"
+  }
+ },
+ "extra-change-one": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "86f1eab5aa7bf7fa0c90ee53a734896037ea1d9a"
+  }
+ },
+ "extra-group-and-free-field": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "86f1eab5aa7bf7fa0c90ee53a734896037ea1d9a"
+  }
+ },
+ "extra-group-clears": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "86f1eab5aa7bf7fa0c90ee53a734896037ea1d9a"
+  }
+ },
+ "extra-header-in-region": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "071808e81a1ba89799e2351ee9890c687e465dc7"
+  }
+ },
+ "extra-moved-block": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "85febbe457c7f8b441fa9c2b897cc800bc335ea7"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "a2f9ba10c7cbd57fb7d40baa816fe503ffc1737f"
+  }
+ },
+ "extra-number-case": {
+  "D": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "0a62f98037f20610b2722643e1458f852ce4866c"
+  }
+ },
+ "extra-reworded-headers": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "081b04b8d2654bc738d5d3201034ddff9c089693"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "7f5574ac1f3f6a6270c42680e65441490a280ea2"
+  }
+ },
+ "extra-right-aligned": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "85febbe457c7f8b441fa9c2b897cc800bc335ea7"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "a2f9ba10c7cbd57fb7d40baa816fe503ffc1737f"
+  }
+ },
+ "extra-same-value-twice": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "4790cf9290ce2cdda519ebc087b657e3c36084ae"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "2eb779a0e9037a3e2212f49277ecc96ffaccb016"
+  }
+ },
+ "extra-section-1p": {
+  "S0": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 12
+   },
+   "statuses": "6584e9dabf2a0cbbc208e0ae06b99015c9454b33"
+  }
+ },
+ "extra-section-25p": {
+  "S0": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "f47402a152aad59ae088edea9491203b9c8216fb"
+  }
+ },
+ "extra-section-2p": {
+  "S0": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "4790cf9290ce2cdda519ebc087b657e3c36084ae"
+  }
+ },
+ "extra-section-3p": {
+  "S0": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "85febbe457c7f8b441fa9c2b897cc800bc335ea7"
+  }
+ },
+ "extra-sections-mixed": {
+  "S0": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 12
+   },
+   "statuses": "6584e9dabf2a0cbbc208e0ae06b99015c9454b33"
+  },
+  "S1": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "12687872934638f772c8d37bd53b9300276fe7d4"
+  },
+  "S2": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 12
+   },
+   "statuses": "39ba711624fc05e62199eaa3c6602fda4a7fc6af"
+  },
+  "S3": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "e75589e7fea77078a185ea9e0d881c0bb27ce287"
+  },
+  "S4": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "25cd844f61f526e51450a4121cc84d2bae6e581e"
+  }
+ },
+ "extra-senate-geometry": {
+  "det": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "b1914211248a86a2b312d2f7d7c46da07567bfee"
+  },
+  "sum": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 12
+   },
+   "statuses": "6584e9dabf2a0cbbc208e0ae06b99015c9454b33"
+  }
+ },
+ "extra-ungrouped-stale": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "86f1eab5aa7bf7fa0c90ee53a734896037ea1d9a"
+  }
+ },
+ "extra-wrapped-value": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "85febbe457c7f8b441fa9c2b897cc800bc335ea7"
+  }
+ },
+ "grid-drift14": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "grid-drift24": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "grid-drift6": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "grid-drift8": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftm16": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftm6": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp0": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp10": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp11": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp12": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp14": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp16": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp2": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp20": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp24": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp30": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp40": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp6": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp8": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "gridmshiftp9": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "half-awards4-first1": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "61a7cd97e195bf515bbd1c1f7bc5a4eaa6558fd5"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "12679f4219494378ddb99ba1f2c980228ba275e7"
+  }
+ },
+ "half-awards4-first2": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "61a7cd97e195bf515bbd1c1f7bc5a4eaa6558fd5"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "a1c09c44f1c5ed849143fc19a446e5964c23ce7c"
+  }
+ },
+ "half-awards4-first3": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "61a7cd97e195bf515bbd1c1f7bc5a4eaa6558fd5"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "5e396d11c3c36f8b096ed27c1c4e50ab03e7c24a"
+  }
+ },
+ "half-awards4-first4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "61a7cd97e195bf515bbd1c1f7bc5a4eaa6558fd5"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "dacbe96293c98f9bd2a46a984991463ddb9c763e"
+  }
+ },
+ "half-awards4-last1": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "61a7cd97e195bf515bbd1c1f7bc5a4eaa6558fd5"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "e35ff7c90fcce327a566ab041d4fc4ba8044ecb9"
+  }
+ },
+ "half-awards4-last2": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "61a7cd97e195bf515bbd1c1f7bc5a4eaa6558fd5"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "1e728dc4d742ebd147b56df82dacebfa904973fb"
+  }
+ },
+ "half-awards4-last3": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "61a7cd97e195bf515bbd1c1f7bc5a4eaa6558fd5"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "47e45632a82860d4d8b6ceae43f8d373aa29960d"
+  }
+ },
+ "half-census8-first1": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "9fa442caa7b6a587eff032b58bf3984d30c0a973"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "cfa52016a5c53602ea6b6f8b0f720f10435c3afb"
+  }
+ },
+ "half-census8-first2": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "2dd5471f9e712c3e332c3487fa40ed5522adbbf4"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "6e711a4ead9da6ab9941b071efbe4dbd68bd2832"
+  }
+ },
+ "half-census8-first3": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "d51bc4e0b059a53457baebad7f23a86c48a5c086"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "a5a0df7e02f2d4a939e4252c6977020b8e65f6b0"
+  }
+ },
+ "half-census8-first4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "05ca51eea36cd071383ccbd8736e841074469cc6"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "6461d03884c46608049f582ce3baaf21eb862dfb"
+  }
+ },
+ "half-census8-first5": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "e28912790fa3e39dc3045a0685402655f4b1cdf6"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "0a9d29e8ff4ac8324fae2eaf786bd258e03a3dfb"
+  }
+ },
+ "half-census8-first6": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "2645bf6e5ac61da3a3d9377ac3a460bfb9eec6dd"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "3d4e95479ad164b98e2ae33f7718f903ba88bd31"
+  }
+ },
+ "half-census8-first7": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "b0483d5db8857e42ba5e8bd5c7b96cf3e69fb0ce"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "fe13174631cde1c6a41c2dca15b43c1e69612252"
+  }
+ },
+ "half-census8-first8": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "3596fe30faf7451cdc453ec01614e10bb9cde61c"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "e6dcc4decc701ea46037079102dceda3fb7b6a8a"
+  }
+ },
+ "half-census8-last1": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "7352850ece3d3655a9282fd4f6386264a7050b3c"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "e5ad850a6dec0dd1e1a64239829704552111f7f0"
+  }
+ },
+ "half-census8-last2": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "51e98b55373c3bf476c79eb724308fde461115c9"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "3677b817355528f5f3a0d3fd16cf4eb16dc38928"
+  }
+ },
+ "half-census8-last3": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "332f50b4d9d23691608e59b261b52b8bfa22b3d7"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "3650c81406796e98889ac01969fef805c848bc37"
+  }
+ },
+ "half-census8-last4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "2732385820e9af2737b765cfd6051074672091db"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "b0f693b5cb16e9e34bd4d149cf1d471f457738c1"
+  }
+ },
+ "half-census8-last5": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "f7abdaebe3c35673c42ab0fc5bcf6163bfb2870c"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "1303c743e85c8191513836a451378b3026418d32"
+  }
+ },
+ "half-census8-last6": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "5c36cc98247259ebe1f5f901087ab6471320225f"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "fefbf6444ae24236ab4aae89fa86244095a218d7"
+  }
+ },
+ "half-census8-last7": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "32891eced8e5d5365c1f3ac75a5b84ee0f36ef12"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "9ebe7699c048bb86a201a3d57ec5edb20e27cd11"
+  }
+ },
+ "half-projects6-first1": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "09008e295f2842208d7f79580d6af39498881586"
+  }
+ },
+ "half-projects6-first2": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "half-projects6-first3": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "1e0d7819c998dac8fad692e4ec64bc3d12f7e592"
+  }
+ },
+ "half-projects6-first4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "745dad54c142d7556ce1adf20752790c00d6d430"
+  }
+ },
+ "half-projects6-first5": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "c4f2f1881c4a9d8d630c6663a20f9c28d779ec44"
+  }
+ },
+ "half-projects6-first6": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "d50947352d6b0aff8abb9afb21916da4d8421013"
+  }
+ },
+ "half-projects6-last1": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "5c30c28632d854b59ae66f846330a0db7decd37b"
+  }
+ },
+ "half-projects6-last2": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "5b0bb272eee96efd3f4093a584af7a3ae25b9196"
+  }
+ },
+ "half-projects6-last3": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "9c8577bbab6e556569fef85b2fb630f3c19302e8"
+  }
+ },
+ "half-projects6-last4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "3de6a4bd303ac966113ee05a8f47c4046fcb33a0"
+  }
+ },
+ "half-projects6-last5": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "1ab978d07c2f8dd07fcbd8aca1c2005b0a5d95d4"
+  }
+ },
+ "half-tiny3-first1": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ac82784a17bdf5d68a16ddc1f396a578a3caff27"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "38d550bf7fa232487ada8fa84d145bc1c612ee1f"
+  }
+ },
+ "half-tiny3-first2": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ac82784a17bdf5d68a16ddc1f396a578a3caff27"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "33d2ca328bc1265029d79cb3e87e6690a730f40b"
+  }
+ },
+ "half-tiny3-first3": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ac82784a17bdf5d68a16ddc1f396a578a3caff27"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "b3655881cccbac366e4e280db2bab5d641cec8ab"
+  }
+ },
+ "half-tiny3-last1": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ac82784a17bdf5d68a16ddc1f396a578a3caff27"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "5d3adab74fea476c646a369ecc34c3b88fc4093e"
+  }
+ },
+ "half-tiny3-last2": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ac82784a17bdf5d68a16ddc1f396a578a3caff27"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "bbee0bccd1e1fd9f6d4ce635fb982dc9a524996a"
+  }
+ },
+ "half-wide10-first1": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "b2277fafdd83d1b401e97bc7eb77a325123e2844"
+  }
+ },
+ "half-wide10-first10": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "e56ffccae12fc03f830ff15c125bd121cedd87f8"
+  }
+ },
+ "half-wide10-first2": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "168efa8e9ea49aee3d01730b4dec9c3be26791c6"
+  }
+ },
+ "half-wide10-first3": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "2a42523d604a4b23b35fc041ebe1b9e3a18cdabb"
+  }
+ },
+ "half-wide10-first4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ddc670e98a36c4e34bb72f2d61e9f8aef0edc590"
+  }
+ },
+ "half-wide10-first5": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "e9e2d7c09755f20764cb51f1c39c27bec6709110"
+  }
+ },
+ "half-wide10-first6": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ec674b98e07bf0d52318a6cb89e0872202851878"
+  }
+ },
+ "half-wide10-first7": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "3772ead9f229e29f5f2b4b0d33f6b2a210b28bca"
+  }
+ },
+ "half-wide10-first8": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "f70bccef8a0bedb0b2927c0759d098819487fc76"
+  }
+ },
+ "half-wide10-first9": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "46180a303e04813dd576b97f30702b0ffa2dc324"
+  }
+ },
+ "half-wide10-last1": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "dc8bbfa88a5695245c1e02ce45ff5877348c83ef"
+  }
+ },
+ "half-wide10-last2": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "465221098073560151d17d521b219e0cd8ff824b"
+  }
+ },
+ "half-wide10-last3": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "02cfaac5e22bfaefcf8ad71c73fa82adf362c94b"
+  }
+ },
+ "half-wide10-last4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "1cd5d31e7d3715eec25fa1a3ca18971baf98d58a"
+  }
+ },
+ "half-wide10-last5": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "d860f66493b34ccc761e8b7d566b4f39bbb04021"
+  }
+ },
+ "half-wide10-last6": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "7a8c2815bdc24218a8568c48daab4eb6ae27bea2"
+  }
+ },
+ "half-wide10-last7": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "4d23776a11f68e55fdb2f289238346c7ae378989"
+  }
+ },
+ "half-wide10-last8": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "4ceeec3da2083a7ca0bf92b9fb4f8b097f49345e"
+  }
+ },
+ "half-wide10-last9": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "633c4c131c842cce91539363b760e5a25ca14b22"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "0e15a00d287d8283c6665f014fca692fcab98fde"
+  }
+ },
+ "order-awards4-all": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "61a7cd97e195bf515bbd1c1f7bc5a4eaa6558fd5"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "a31af811ae510c156bcf6842f70894b2859a0154"
+  }
+ },
+ "order-projects6-all": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "1156baf02240cd18ce813c14441c7cd22cfc6039"
+  }
+ },
+ "order-projects6-plus-reword": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "c0a98d7aade4fd47cf941c3a668947bb94a87208"
+  }
+ },
+ "pipe-caps": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "b464ffda40a1676f30bdfe31a17f06851c2bc97a"
+  }
+ },
+ "pipe-exact-gap0": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "20f747d1b6433558549920bee8524c4c9649ffb5"
+  }
+ },
+ "pipe-exact-gap1": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "8158a9ee5d30f85416d872e7a0f3b53c49740f0e"
+  }
+ },
+ "pipe-exact-gap20": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "7fc17c255714567ed2cf6334a38b1b13b875097e"
+  }
+ },
+ "pipe-exact-gap4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "b3c6647bfa0aed0b4812f89f0569bc5719bd9cb0"
+  }
+ },
+ "pipe-exact-gap9": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "afbf7690f216627d661de64d620231e19b8d27f6"
+  }
+ },
+ "pipe-long-parts": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "63b9216aa70f7fb632e1863c17ffccf15712848a"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "c1f389dbf40202b01f100c7e442e13d9fcc33d03"
+  }
+ },
+ "pipe-reworded-gap0": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "2298aab467510e1b02b4673b07fa682ebead7b1c"
+  }
+ },
+ "pipe-reworded-gap1": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "82c8fb0f4c95f120ee9a881828744dca8db636b3"
+  }
+ },
+ "pipe-reworded-gap20": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "3ca3189ec6e197498e91fc1fc450baa328b6c13e"
+  }
+ },
+ "pipe-reworded-gap4": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "eeb15de2b5b8c8951a2aaac6f425744f366c8aaf"
+  }
+ },
+ "pipe-reworded-gap9": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "0b4b66a94b71705b3083c012460158712fc13053"
+  }
+ },
+ "pipe-reworded-headerless": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "b3f4685187841b20e7b35b9791aa4abad96a20c3"
+  }
+ },
+ "pipe-reworded-lookalike": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "f1ad840398162ce6d84ef3555f4a97b8c069981b"
+  }
+ },
+ "risk-tiny3-count": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ac82784a17bdf5d68a16ddc1f396a578a3caff27"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "fbdca9384e16f86f2bf215f5d16f43d3ae467aeb"
+  }
+ },
+ "risk-tiny3-share": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ac82784a17bdf5d68a16ddc1f396a578a3caff27"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "5d3adab74fea476c646a369ecc34c3b88fc4093e"
+  }
+ },
+ "risk-town4-both": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "46730eb0679306f693dbb778e904f1c2098c884b"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "fa4e36f3c35d2ff75e46af26a427546a3c54d978"
+  }
+ },
+ "risk-town4-one": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "46730eb0679306f693dbb778e904f1c2098c884b"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "03a5486e766cc43f55ef3cf393e83e6271a6c687"
+  }
+ },
+ "risk-town4-shifted": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "46730eb0679306f693dbb778e904f1c2098c884b"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "fa4e36f3c35d2ff75e46af26a427546a3c54d978"
+  }
+ },
+ "shape-asym100-70": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-asym100-85": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-asym70-100": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-asym90-60": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-kind-date": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-kind-decimal": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-kind-integer": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-kind-percent": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-kind-text": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-kind-word": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-share100": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-share50": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-share60": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-share75": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-share80": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-share85": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "shape-share90": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  }
+ },
+ "struct-abbreviation": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "f650af3134cbb8443d7a17850f81e064e2458f10"
+  }
+ },
+ "struct-ambiguous-amount": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "196ab1292e67beb4e8a1bf089e90df60c091532c"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "639edb51443cc47b105941069ee9b5f1d45061e9"
+  }
+ },
+ "struct-dropped-column": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "85a4e01d927e6a2960d03574ec0c82ba9ccaa285"
+  }
+ },
+ "struct-extra-column": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "f7ccff204c9bd10f0479b63428a9830b85506e2c"
+  }
+ },
+ "struct-interleaved": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "f1ad840398162ce6d84ef3555f4a97b8c069981b"
+  },
+  "X": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "3d037e58e5a5da0221256324410075478cede918"
+  }
+ },
+ "struct-shared-page": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "b6acbc2e994568cc2ac389067c3bbe218440a7aa"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "1270b5a758ea9636ce472f19ecde3f1e4a847f4a"
+  }
+ },
+ "struct-swapped-columns": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "dcdcd3d9eb3eb458d2b1616ff32a8a3da95a42ea"
+  }
+ },
+ "struct-three-parts-one-wording": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  },
+  "C": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "47634453d51bdc0546b091121f72c6ea7b7a3b79"
+  }
+ },
+ "struct-three-parts-two-wordings": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "661c2d5700f82b3b3ea31e9f23757eecb7d7c12d"
+  },
+  "C": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "b50ba3545a7a6f2379a4dc30d0d4c20e4e426fe2"
+  }
+ },
+ "struct-two-tables-one-template": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "61a7cd97e195bf515bbd1c1f7bc5a4eaa6558fd5"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "dde04e60ce12e2ddd3ed69936447e7c4dc7769cc"
+  }
+ },
+ "struct-unrelated-wording": {
+  "A": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "ab5d30e9f2d2d72974390ca5cfb102869233f3ab"
+  },
+  "B": {
+   "position": {
+    "misplaced": 0,
+    "unchecked": 0
+   },
+   "statuses": "8883f344e136a2146e338ef27a759d4f55c6d65f"
+  }
+ }
+}

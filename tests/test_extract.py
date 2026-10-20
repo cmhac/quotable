@@ -204,4 +204,5 @@ def test_the_text_layer_check_has_no_off_switch():
         "ocr",
         "ocr_config",
         "cache_dir",
+        "trace",  # spec 013: what saving the run needs
     }

@@ -33,6 +33,8 @@ from typing import Any
 DEFAULT_DIR_NAME = ".quotable"
 CACHE_DIR_NAME = "cache"
 COST_DIR_NAME = "cost"
+RUNS_DIR_NAME = "runs"
+REVIEW_DIR_NAME = "review"
 IGNORE_ALL = "*\n"
 _OCR_DIR_NAME = "ocr"
 _ANSWER_FILE = re.compile(r"[0-9a-f]{64}\.json")
@@ -263,6 +265,16 @@ class CostLog:
 def cost_file(project_dir: Path) -> Path:
     """Return where the cost records of the project folder ``project_dir`` are kept."""
     return project_dir / COST_DIR_NAME / COST_FILE_NAME
+
+
+def runs_dir(project_dir: Path) -> Path:
+    """Return the folder holding the saved runs of the project folder ``project_dir``."""
+    return project_dir / RUNS_DIR_NAME
+
+
+def review_dir(project_dir: Path) -> Path:
+    """Return the folder holding the verdicts and drafts of the project folder ``project_dir``."""
+    return project_dir / REVIEW_DIR_NAME
 
 
 @dataclass(frozen=True)

@@ -25,7 +25,7 @@ space between unbanded columns.
 
 import math
 import statistics
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from quotable.steps.grounding import Candidate, FieldGrounding, find_candidates
 from quotable.text.layer import Bbox, Layer, tokenize
@@ -46,6 +46,9 @@ class PageGrounding:
     rows: list[dict[str, str]]
     cells: list[dict[str, FieldGrounding]]
     layer: Layer
+    # fitted by check_positions: row index -> (y0, y1), column -> (x0, x1) (open at the edges)
+    row_windows: dict[int, Window] = field(default_factory=dict)
+    column_ranges: dict[str, Window] = field(default_factory=dict)
 
 
 def _centre(box: Bbox) -> float:
@@ -264,6 +267,9 @@ def check_positions(columns: list[str], pages: list[PageGrounding]) -> dict[str,
     fitted = [_row_windows(p, columns) for p in pages]
     bands = _fit_bands(pages, [w for _, w in fitted], columns)
     counts = {"misplaced": 0, "unchecked": 0}
+    regions = _regions(bands)
     for page, fit in zip(pages, fitted, strict=True):
+        page.row_windows = fit[1]
+        page.column_ranges = dict(regions)
         _judge_page(page, columns, fit, bands, counts)
     return counts

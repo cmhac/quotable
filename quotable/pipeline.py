@@ -25,9 +25,13 @@ The pipeline: text-layer check, table discovery, per-page extraction, grounding,
 """
 
 import asyncio
+import hashlib
+import importlib.metadata
 import logging
+import sys
 from collections.abc import Mapping, Sequence
-from dataclasses import replace
+from dataclasses import dataclass, field, replace
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -35,10 +39,11 @@ import pymupdf
 from pydantic_ai.models import Model
 
 from quotable.errors import TextLayerError
-from quotable.llm.client import CachedClient, LLMClient, PydanticAIClient
+from quotable.llm.client import CachedClient, LLMClient, PydanticAIClient, model_name
 from quotable.ocr.config import OcrConfig, OcrEngine
 from quotable.ocr.paddle import PaddleEngine
 from quotable.ocr.pages import ocr_pages
+from quotable.runs import RunInfo, write_run
 from quotable.steps.discover import DISCOVERY_PAGES, Discovery, Found, discover
 from quotable.steps.extra_fields import (
     ExtraField,
@@ -53,10 +58,16 @@ from quotable.steps.extra_fields import (
     validate_extra_fields,
 )
 from quotable.steps.extract import extract_page, page_schema, render_png
-from quotable.steps.layout import page_layouts, table_layers
+from quotable.steps.layout import Header, find_header, page_layouts, shared_bands, table_layers
 from quotable.steps.merge import merge_tables
 from quotable.steps.recheck import recheck_fields, recheck_table
-from quotable.storage import CostLog, resolve_cache_dir
+from quotable.storage import (
+    DEFAULT_DIR_NAME,
+    RUNS_DIR_NAME,
+    CostLog,
+    resolve_cache_dir,
+    resolve_project_dir,
+)
 from quotable.table import PageResult, Table, ground_document
 from quotable.text.layer import Layer, load_layer
 from quotable.text.quality import (
@@ -69,20 +80,71 @@ log = logging.getLogger("quotable")
 MAX_CONCURRENT_REQUESTS = 4
 
 
-def table_page_layers(found: list[Found], layers: dict[int, Layer]) -> list[dict[int, Layer]]:
+Band = tuple[float, float]
+
+
+@dataclass
+class RunTrace:
+    """What ``run_pipeline`` leaves for saving the run (spec 013): filled in when one is given."""
+
+    layers: dict[int, Layer] = field(default_factory=dict)  # whole pages, after OCR
+    # shared page -> (the table's cropped layer, its band), one per table on that page
+    bands: dict[int, list[tuple[Layer, Band]]] = field(default_factory=dict)
+
+
+def table_page_layers(
+    found: list[Found], layers: dict[int, Layer], trace: RunTrace | None = None
+) -> list[dict[int, Layer]]:
     """
     Return, per table, the text layer of each page it is on.
 
     A page with one table keeps the whole layer; on a page with several, each table gets
-    its own band (``ExtractionError`` if one cannot be isolated).
+    its own band (``ExtractionError`` if one cannot be isolated), which ``trace`` also records.
     """
     out: list[dict[int, Layer]] = [{} for _ in found]
     for page in sorted({p for f in found for p in f.rows}):
         on_page = [i for i, f in enumerate(found) if page in f.rows]
         specs = [(found[i].label, *found[i].rows[page]) for i in on_page]
-        for i, layer in zip(on_page, table_layers(page, layers[page], specs), strict=True):
+        cropped = table_layers(page, layers[page], specs)
+        for i, layer in zip(on_page, cropped, strict=True):
             out[i][page] = layer
+        if trace is not None and len(on_page) > 1:
+            trace.bands[page] = list(
+                zip(cropped, shared_bands(page, layers[page], specs), strict=True)
+            )
     return out
+
+
+def headers_and_bands(
+    tables: Sequence[Table], trace: RunTrace
+) -> tuple[list[dict[int, Header | None]], list[dict[int, Band]]]:
+    """
+    Return, per table, the header found on each whole page and its band on each shared page.
+
+    A page that came from a merged-in part is searched with that part's own column names and
+    the header's keys are renamed to the table's, by position.
+    """
+    headers: list[dict[int, Header | None]] = []
+    bands: list[dict[int, Band]] = []
+    for table in tables:
+        part_of = {p: part for part in table.merged for p in part.pages}
+        found: dict[int, Header | None] = {}
+        mine: dict[int, Band] = {}
+        for page in (r.page for r in table.pages):
+            part = part_of.get(page)
+            header = find_header(list(part.columns) if part else table.columns, trace.layers[page])
+            if header is not None and part is not None:
+                names = dict(zip(part.columns, table.columns, strict=True))
+                header = replace(header, x={names[c]: x for c, x in header.x.items()})
+            found[page] = header
+            band = next(
+                (b for lay, b in trace.bands.get(page, ()) if lay is table.layers[page]), None
+            )
+            if band is not None:
+                mine[page] = band
+        headers.append(found)
+        bands.append(mine)
+    return headers, bands
 
 
 async def usable_layers(
@@ -203,9 +265,12 @@ async def run_pipeline(  # noqa: PLR0913
     ocr_config: OcrConfig | None = None,
     cache_dir: Path | None = None,
     extra_fields: ExtraFields | None = None,
+    trace: RunTrace | None = None,
 ) -> list[Table]:
     """
     Run the whole pipeline on one PDF with an already-built client (internal; tests use it).
+
+    ``trace``, when given, is filled with the whole pages' layers and the shared pages' bands.
 
     ``extra_fields`` (spec 010) are checked first, before any request. In the order of the spec:
     discovery also reads the fields, they are grounded, fuzzy and ungrounded values are rechecked,
@@ -226,6 +291,8 @@ async def run_pipeline(  # noqa: PLR0913
         layers: dict[int, Layer] = {i + 1: load_layer(p) for i, p in enumerate(document)}
     # before rendering or any request; cannot be skipped
     layers, ocr_done = await usable_layers(pdf, layers, ocr, ocr_config or OcrConfig(), cache_dir)
+    if trace is not None:
+        trace.layers = layers
     with pymupdf.open(pdf) as document:
         pngs = [render_png(p) for p in document]
 
@@ -233,7 +300,8 @@ async def run_pipeline(  # noqa: PLR0913
         pngs, client, discovery_pages=discovery_pages, extra_fields=extra_fields
     )
     found = discovery.tables
-    table_layers_by_page = table_page_layers(found, layers)  # may reject a page before extracting
+    # may reject a page before extracting
+    table_layers_by_page = table_page_layers(found, layers, trace)
     layouts = [
         page_layouts(f.columns, [layers[p] for p in f.pages]) for f in found
     ]  # from the whole pages: the header sits above a table's band
@@ -314,6 +382,58 @@ def _ocr_config(ocr: OcrConfig | bool) -> OcrConfig | None:  # noqa: FBT001
     raise TypeError(msg)
 
 
+def _now() -> str:
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _save_run(  # noqa: PLR0913, PLR0917
+    run_id: str,
+    started: str,
+    pdf: Path,
+    model: Model | str,
+    tables: list[Table],
+    trace: RunTrace,
+    **settings: Any,  # noqa: ANN401
+) -> None:
+    """Write the run to ``.quotable/runs/``; any failure is one line on stderr, never raised."""
+    target = Path.cwd() / DEFAULT_DIR_NAME / RUNS_DIR_NAME
+    try:
+        project = resolve_project_dir()
+        target = project / RUNS_DIR_NAME
+        digest = hashlib.sha256()
+        with pdf.open("rb") as handle:
+            while chunk := handle.read(1 << 20):
+                digest.update(chunk)
+        with pymupdf.open(pdf) as document:
+            sizes = {i + 1: (p.rect.width, p.rect.height) for i, p in enumerate(document)}
+        pages = {r.page for t in tables for r in t.pages}
+        headers, bands = headers_and_bands(tables, trace)
+        info = RunInfo(
+            id=run_id,
+            started=started,
+            ended=_now(),
+            quotable=importlib.metadata.version("quotable"),
+            model=model_name(model),
+            name=pdf.name,
+            path=str(pdf.resolve()),
+            size=pdf.stat().st_size,
+            sha256=digest.hexdigest(),
+            pages=len(sizes),
+            **settings,
+        )
+        write_run(
+            project,
+            info,
+            tables,
+            {p: trace.layers[p] for p in sorted(pages)},
+            sizes,
+            headers,
+            bands,
+        )
+    except Exception as err:  # noqa: BLE001
+        print(f"quotable: could not save the run to {target}: {err}", file=sys.stderr)
+
+
 async def extract_tables_async(  # noqa: PLR0913
     pdf: str | Path,
     model: Model | str,
@@ -359,6 +479,9 @@ async def extract_tables_async(  # noqa: PLR0913
     Discovery reads them page by page; a page that prints a field uses it, and with
     ``carry_forward=True`` a page that does not takes the nearest earlier page's value.
     Pages that may hold a header the model missed get a second look. Without it nothing changes.
+
+    Each call that returns also saves its run in ``.quotable/runs/<run id>/`` (same id as in
+    the cost records); a failed save only prints a warning.
     """
     config = _ocr_config(ocr)
     directory = resolve_cache_dir(cache_dir)
@@ -368,7 +491,9 @@ async def extract_tables_async(  # noqa: PLR0913
         directory,
         max_requests,
     )
-    return await run_pipeline(
+    started = _now()
+    trace = RunTrace()
+    tables = await run_pipeline(
         Path(pdf),
         client,
         discovery_pages=discovery_pages,
@@ -378,7 +503,23 @@ async def extract_tables_async(  # noqa: PLR0913
         ocr=None if config is None else PaddleEngine(config),
         ocr_config=config,
         cache_dir=directory,
+        trace=trace,
     )
+    _save_run(
+        costs.run_id,
+        started,
+        Path(pdf),
+        model,
+        tables,
+        trace,
+        discovery_pages=discovery_pages,
+        recheck=recheck,
+        ocr=ocr,
+        merge_reworded=merge_reworded,
+        max_requests=max_requests,
+        extra_fields=extra_fields,
+    )
+    return tables
 
 
 def extract_tables(  # noqa: PLR0913

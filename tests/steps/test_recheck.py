@@ -134,6 +134,14 @@ def test_answers_for_cells_that_were_not_listed_are_ignored():
     assert table.proposals == []
 
 
+def test_the_rechecked_table_carries_the_areas_of_its_pages():
+    (table,) = extract_tables(PDF, _client(TRUE_VALUE))
+    assert [p.outcome for p in table.proposals] == ["accepted"]
+    page = table.grounded[1]
+    assert sorted(page.row_windows) == list(range(len(page.rows)))
+    assert page.column_ranges
+
+
 def test_a_clean_document_is_never_rechecked():
     client = replay(COLUMNS, TRUTH)
     (table,) = extract_tables(PDF, client)

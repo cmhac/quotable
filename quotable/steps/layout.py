@@ -158,16 +158,15 @@ def locate(layer: Layer, text: str, which: str) -> tuple[float, float] | None:
     return pick[1], pick[3]
 
 
-def table_layers(page: int, layer: Layer, tables: list[tuple[str, str, str]]) -> list[Layer]:
+def shared_bands(
+    page: int, layer: Layer, tables: list[tuple[str, str, str]]
+) -> list[tuple[float, float]]:
     """
-    Return each table's layer for ``page``.
+    Return the (top, bottom) of each table on ``page``, from its first row to its last.
 
-    ``tables`` holds (label, first row, last row) for every table on the page. A page with
-    one table keeps the whole layer. With several, each table gets the band from its first
-    row to its last row; ``ExtractionError`` if a row is not found or two bands overlap.
+    ``tables`` holds (label, first row, last row) for every table on the page. ``ExtractionError``
+    if a row is not found or two bands overlap.
     """
-    if len(tables) < 2:  # noqa: PLR2004
-        return [layer for _ in tables]
     bands: list[tuple[float, float]] = []
     for label, first, last in tables:
         top = locate(layer, first, "first")
@@ -193,4 +192,18 @@ def table_layers(page: int, layer: Layer, tables: list[tuple[str, str, str]]) ->
                     "vertically (side-by-side tables are not supported)"
                 )
                 raise ExtractionError(msg)
+    return bands
+
+
+def table_layers(page: int, layer: Layer, tables: list[tuple[str, str, str]]) -> list[Layer]:
+    """
+    Return each table's layer for ``page``.
+
+    ``tables`` holds (label, first row, last row) for every table on the page. A page with
+    one table keeps the whole layer. With several, each table gets the band from its first
+    row to its last row (see :func:`shared_bands`).
+    """
+    if len(tables) < 2:  # noqa: PLR2004
+        return [layer for _ in tables]
+    bands = shared_bands(page, layer, tables)
     return [layer.crop(top, bottom, -WHOLE_WIDTH, WHOLE_WIDTH) for top, bottom in bands]
