@@ -1,15 +1,21 @@
 """``quotable cost-report``: the command that adds up the cost log."""
 
 import ast
+import re
+import socket
 import subprocess
 import sys
+import webbrowser
 from pathlib import Path
 
 import pytest
 
 import quotable
 from quotable.__main__ import main
+from quotable.review import server as review_server
+from quotable.runs import write_run
 from tests.test_costs import line, write_lines
+from tests.test_runs import make_info
 
 SRC = Path(quotable.__file__).parent
 
@@ -140,3 +146,131 @@ def test_python_dash_m_quotable_and_the_installed_script_print_the_same_report()
     assert by_module.returncode == by_script.returncode == 0
     assert by_module.stdout == by_script.stdout
     assert "Total:     $0.7500" in by_module.stdout
+
+
+# --- quotable review (spec 013) ---------------------------------------------------------------
+@pytest.fixture
+def no_serving(monkeypatch):
+    """Make ``serve_forever`` stop at once, as Ctrl+C does; return the browser calls."""
+    opened: list[str] = []
+
+    def stop(self, poll_interval=0.5):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(review_server.ReviewServer, "serve_forever", stop)
+    monkeypatch.setattr(webbrowser, "open", lambda url, *a, **k: opened.append(url) or True)
+    return opened
+
+
+def saved_run(project: Path) -> str:
+    info = make_info(Path(__file__))
+    write_run(project, info, [], {}, {}, [], [])
+    return info.id
+
+
+def test_review_help_lists_the_options(capsys):
+    with pytest.raises(SystemExit) as stop:
+        main(["review", "--help"])
+    assert stop.value.code == 0
+    out = capsys.readouterr().out
+    for option in ("--dir", "--port", "--no-browser", "--run", "--verbose"):
+        assert option in out
+    assert "8765" in out
+
+
+def test_the_top_level_help_lists_review_next_to_cost_report(capsys):
+    with pytest.raises(SystemExit):
+        main(["--help"])
+    out = capsys.readouterr().out
+    assert "review" in out
+    assert "cost-report" in out
+
+
+def test_review_prints_the_address_and_the_run_count_and_opens_the_browser(no_serving, capsys):
+    saved_run(Path.cwd() / ".quotable")
+    saved_run(Path.cwd() / ".quotable")
+    assert main(["review", "--port", "0"]) == 0
+    out = capsys.readouterr().out
+    (url,) = no_serving
+    assert re.fullmatch(r"http://127\.0\.0\.1:\d+/", url)
+    assert f"Serving the review app at {url.rstrip('/')} (Ctrl+C to stop)" in out
+    assert "Runs: 2 in .quotable/runs/" in out
+
+
+def test_no_browser_prints_the_address_and_opens_nothing(no_serving, capsys):
+    assert main(["review", "--port", "0", "--no-browser"]) == 0
+    assert "Serving the review app at http://127.0.0.1:" in capsys.readouterr().out
+    assert no_serving == []
+
+
+def test_without_runs_it_says_how_to_make_one_and_still_starts(no_serving, capsys):
+    assert main(["review", "--port", "0", "--no-browser"]) == 0
+    out = capsys.readouterr().out
+    assert "Serving the review app" in out
+    assert "No runs yet in .quotable/runs/" in out
+    assert "extract_tables" in out
+
+
+def test_review_creates_nothing(no_serving):
+    assert main(["review", "--port", "0", "--no-browser"]) == 0
+    assert listing(Path.cwd()) == []
+
+
+def test_dir_names_another_project_folder(no_serving, tmp_path, capsys):
+    other = tmp_path / "other" / ".quotable"
+    saved_run(other)
+    assert main(["review", "--dir", str(other), "--port", "0", "--no-browser"]) == 0
+    assert f"Runs: 1 in {other / 'runs'}/" in capsys.readouterr().out
+
+
+def test_run_opens_the_browser_on_that_run(no_serving):
+    run_id = saved_run(Path.cwd() / ".quotable")
+    assert main(["review", "--port", "0", "--run", run_id]) == 0
+    (url,) = no_serving
+    assert url.endswith(f"/#/run/{run_id}")
+
+
+def test_an_unknown_run_exits_one_before_serving(no_serving, capsys):
+    saved_run(Path.cwd() / ".quotable")
+    assert main(["review", "--port", "0", "--run", "f" * 32]) == 1
+    captured = capsys.readouterr()
+    assert captured.err.startswith("quotable: no run ")
+    assert "f" * 32 in captured.err
+    assert "Serving" not in captured.out
+    assert no_serving == []
+
+
+def test_a_taken_port_exits_one_and_says_so(capsys):
+    taken = socket.socket()
+    taken.bind(("127.0.0.1", 0))
+    taken.listen()
+    try:
+        port = taken.getsockname()[1]
+        assert main(["review", "--port", str(port), "--no-browser"]) == 1
+    finally:
+        taken.close()
+    captured = capsys.readouterr()
+    assert captured.err == f"quotable: port {port} is in use; try --port\n"
+    assert captured.out == ""
+
+
+def test_ctrl_c_stops_it_and_frees_the_port(no_serving, capsys):
+    assert main(["review", "--port", "0", "--no-browser"]) == 0
+    found = re.search(r"127\.0\.0\.1:(\d+)", capsys.readouterr().out)
+    assert found
+    port = int(found.group(1))
+    probe = socket.socket()
+    try:
+        probe.bind(("127.0.0.1", port))
+    finally:
+        probe.close()
+
+
+@pytest.mark.parametrize(
+    "argv", [["review", "--port", "x"], ["review", "--run"], ["review", "--nope"]]
+)
+def test_a_review_usage_error_exits_two(argv, capsys):
+    with pytest.raises(SystemExit) as stop:
+        main(argv)
+    assert stop.value.code == 2
+    assert "usage: quotable" in capsys.readouterr().err
