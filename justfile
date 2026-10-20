@@ -49,6 +49,11 @@ test-ocr:
 synthetic:
     uv run python -m tests.synthetic_cases
 
+# Build a demo project with fake models (no network, no key) in build/review-demo and open the review app on it (spec 013; for working on the app)
+review-demo:
+    uv run python -m tests.review_demo build/review-demo
+    uv run quotable review --dir build/review-demo/.quotable
+
 # Run every pre-commit hook (ruff check --fix, ruff format, ty) on all files
 hooks:
     uv run pre-commit run --all-files
