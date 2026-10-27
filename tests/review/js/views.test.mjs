@@ -201,7 +201,7 @@ test("the header shows the name, the crumbs, the project and the address", () =>
   });
   assert.equal(
     text(node),
-    "quotable review Runs / a.pdf · 7f3a29c1 /p/.quotable · 127.0.0.1:8765",
+    "quotable review Runs / a.pdf · 7f3a29c1 Shortcuts ? /p/.quotable · 127.0.0.1:8765",
   );
   const [link] = byTag(node, "a");
   assert.equal(link.getAttribute("href"), "#/");
@@ -215,7 +215,7 @@ test("the header shows only the address when there is no project", () => {
     crumbs: [{ text: "Runs" }],
     address: "127.0.0.1:8765",
   });
-  assert.equal(text(node), "quotable review Runs 127.0.0.1:8765");
+  assert.equal(text(node), "quotable review Runs Shortcuts ? 127.0.0.1:8765");
 });
 
 test("a failure is an alert with the message and a way back", () => {

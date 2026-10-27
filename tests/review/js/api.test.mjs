@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-const { apiUrl, getJson, ApiError } =
+const { apiUrl, getJson, sendJson, ApiError } =
   await import("../../../quotable/review/static/api.js");
 
 function stubFetch(response) {
@@ -63,4 +63,34 @@ test("a server that cannot be reached is explained", async () => {
 test("an answer that is not JSON is an error", async () => {
   stubFetch(reply(200, undefined));
   await assert.rejects(getJson("/api/runs"), /not JSON/);
+});
+
+test("sendJson sends the body as JSON and returns the answer", async () => {
+  const calls = stubFetch(reply(200, { saved_at: "t" }));
+  assert.deepEqual(await sendJson("PUT", "/api/drafts", { note: "a" }), {
+    saved_at: "t",
+  });
+  const [url, options] = calls[0];
+  assert.equal(url, "/api/drafts");
+  assert.equal(options.method, "PUT");
+  assert.equal(options.headers["Content-Type"], "application/json");
+  assert.equal(options.body, JSON.stringify({ note: "a" }));
+});
+
+test("a refused save is an ApiError with the server's message", async () => {
+  stubFetch(reply(400, { error: "Choose why the model was wrong." }));
+  await assert.rejects(sendJson("POST", "/api/verdicts", {}), (err) => {
+    assert.ok(err instanceof ApiError);
+    assert.equal(err.message, "Choose why the model was wrong.");
+    assert.equal(err.status, 400);
+    return true;
+  });
+});
+
+test("sendJson explains an unreachable server", async () => {
+  stubFetch(new TypeError("Failed to fetch"));
+  await assert.rejects(
+    sendJson("POST", "/api/verdicts", {}),
+    /could not reach the review server/i,
+  );
 });

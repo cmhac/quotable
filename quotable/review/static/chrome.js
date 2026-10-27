@@ -1,6 +1,7 @@
 // The parts every screen shares: the header bar, the alert and the failure page.
 
 import { el } from "./dom.js";
+import { openShortcuts } from "./shortcuts.js";
 
 const WARNING = "\u26A0\uFE0E";
 
@@ -38,6 +39,12 @@ export function header({ crumbs, project, address }) {
         i > 0 ? el("span", { class: "sep", "aria-hidden": "true" }, "/") : null,
         crumb(item, i === crumbs.length - 1),
       ]),
+    ),
+    el(
+      "button",
+      { class: "shortcuts-btn", type: "button", onclick: openShortcuts },
+      "Shortcuts ",
+      el("span", { class: "key" }, "?"),
     ),
     el(
       "span",

@@ -22,6 +22,15 @@ import {
   zoomOut,
   zoomText,
 } from "./pageview.js";
+import { createVerdictPanel } from "./verdict.js";
+import {
+  entryRoute,
+  inQueue,
+  loadSettings,
+  queueRouteQuery,
+  settingsQuery,
+} from "./queue.js";
+import { barView, indexOf, neighbour, nextUnreviewed } from "./queuebar.js";
 import { hashFor } from "./route.js";
 import { pdfAlert } from "./run.js";
 import { cellQuery, parseState } from "./table.js";
@@ -38,6 +47,9 @@ const KEYS = {
   "-": "zoom_out",
   f: "fit",
   t: "text",
+  c: "correct",
+  x: "change",
+  u: "unsure",
 };
 const TEXT_BOXES = ["INPUT", "TEXTAREA", "SELECT"];
 const MOVES = [
@@ -75,10 +87,14 @@ function toggles() {
 
 // --- keys --------------------------------------------------------------------------------------
 export function keyAction(event) {
-  if (event.metaKey || event.ctrlKey || event.altKey) return null;
+  if (event.altKey) return null;
+  if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) return "save";
+  if (event.metaKey || event.ctrlKey) return null;
+  if (event.key === "Escape") return "cancel";
   const target = event.target;
   if (TEXT_BOXES.includes(target?.tagName) || target?.isContentEditable)
     return null;
+  if (/^[1-9]$/.test(event.key)) return `category:${event.key}`;
   return KEYS[String(event.key).toLowerCase()] ?? null;
 }
 
@@ -375,11 +391,37 @@ const cellPath = (runId, index, { page, row, name, extra }) =>
 
 export async function show(route, ctx) {
   const runId = route.run;
-  const query = cellQuery(parseState(route.query));
-  const [run, cell] = await Promise.all([
+  const queued = inQueue(route.query);
+  const settings = queued ? loadSettings(route.query, null) : null;
+  const query = queued
+    ? queueRouteQuery(settings)
+    : cellQuery(parseState(route.query));
+  const [run, cell, queueData] = await Promise.all([
     ctx.getJson(`/api/runs/${encodeURIComponent(runId)}`),
-    ctx.getJson(cellPath(runId, route.table, route.cell), query),
+    ctx.getJson(cellPath(runId, route.table, route.cell), queued ? {} : query),
+    queued ? ctx.getJson("/api/queue", settingsOf(settings)) : null,
   ]);
+  let index = -1;
+  if (queueData) {
+    index = indexOf(queueData.queue, {
+      run: runId,
+      ...route.cell,
+      table: route.table,
+    });
+    if (index >= 0) {
+      const q = queueData.queue;
+      const ref = (e) =>
+        e && { page: e.page, row: e.row ?? 1, name: e.column, extra: e.extra };
+      cell.nav = {
+        ...cell.nav,
+        n: index + 1,
+        of: q.length,
+        previous: ref(neighbour(q, index, -1)),
+        next: ref(neighbour(q, index, 1)),
+        next_unreviewed: ref(nextUnreviewed(q, index)),
+      };
+    }
+  }
   const info = run.tables.find((t) => t.index === route.table);
   if (!info) throw new Error("no such table");
   const shown = cell.highlights.page;
@@ -412,6 +454,15 @@ export async function show(route, ctx) {
   const tableName = info.label
     ? `Table ${info.number} · ${info.label}`
     : `Table ${info.number}`;
+  const verdict = createVerdictPanel({
+    cell,
+    ctx,
+    settings,
+    onSaved: (answer) => {
+      if (answer.next) ctx.go(entryRoute(answer.next.item, settings));
+      else ctx.refresh?.();
+    },
+  });
   const goMove = (name) => {
     const target = cell.nav?.[name];
     if (!target) return false;
@@ -430,7 +481,8 @@ export async function show(route, ctx) {
         view.focusPage();
         return true;
       }
-      return MOVES.includes(action) ? goMove(action) : view.act(action);
+      if (MOVES.includes(action)) return goMove(action);
+      return view.act(action) || verdict.act(action);
     },
   };
   const alert = pdfAlert(run.pdf);
@@ -453,7 +505,22 @@ export async function show(route, ctx) {
       "div",
       { class: "cell-screen" },
       alert,
-      el("div", { class: "cell-layout" }, view.node, cellView(cell, hrefFor)),
+      queueData && index >= 0
+        ? barView({ data: queueData, index, settings, hrefFor })
+        : null,
+      el(
+        "div",
+        { class: "cell-layout" },
+        view.node,
+        el(
+          "div",
+          { class: "cell-side" },
+          cellView(cell, hrefFor),
+          verdict.node,
+        ),
+      ),
     ),
   };
 }
+
+const settingsOf = (settings) => settingsQuery(settings);

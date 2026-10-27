@@ -1,10 +1,12 @@
 // The app: reads the hash, asks a screen to show it, draws the header and the screen.
 
-import { ApiError, getJson } from "./api.js";
+import { ApiError, getJson, sendJson } from "./api.js";
 import * as cell from "./cell.js";
 import { alertBox, failureView, header } from "./chrome.js";
 import { el } from "./dom.js";
 import { hashFor, parseHash } from "./route.js";
+import { openShortcuts, shortcutsOpen } from "./shortcuts.js";
+import * as queue from "./queue.js";
 import * as run from "./run.js";
 import * as runs from "./runs.js";
 import * as table from "./table.js";
@@ -14,9 +16,23 @@ const SCREENS = {
   run: run.show,
   table: table.show,
   cell: cell.show,
+  queue: queue.show,
 };
+function storage() {
+  try {
+    return globalThis.localStorage ?? null;
+  } catch {
+    return null;
+  }
+}
+
 const ctx = {
   getJson,
+  sendJson,
+  get storage() {
+    return storage();
+  },
+  refresh: () => show(),
   replace: (route) => history.replaceState(null, "", hashFor(route)),
   go: (route) => {
     location.hash = hashFor(route);
@@ -78,3 +94,12 @@ async function show() {
 
 window.addEventListener("hashchange", show);
 show();
+
+window.addEventListener("keydown", (event) => {
+  const tag = event.target?.tagName;
+  if (event.key !== "?" || event.metaKey || event.ctrlKey || event.altKey)
+    return;
+  if (["INPUT", "TEXTAREA", "SELECT"].includes(tag) || shortcutsOpen()) return;
+  event.preventDefault();
+  openShortcuts();
+});

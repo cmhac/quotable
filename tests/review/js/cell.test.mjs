@@ -165,7 +165,7 @@ test("keys: moves, zoom, fit and the text layer; modifiers and text boxes are le
   assert.equal(key("f"), "fit");
   assert.equal(key("t"), "text");
   assert.equal(key("J"), "next");
-  assert.equal(key("x"), null);
+  assert.equal(key("q"), null);
   assert.equal(key("j", { metaKey: true }), null);
   assert.equal(key("j", { ctrlKey: true }), null);
   assert.equal(key("j", { target: { tagName: "INPUT" } }), null);
@@ -530,4 +530,118 @@ test("the page's own text stays text", async () => {
     0,
   );
   assert.equal(byTag(content, "img").length, 1);
+});
+
+// --- queue bar, verdict panel and keys (task 013) ----------------------------------------------
+const qentry = (row, state = "none") => ({
+  run: ID,
+  short_run: ID.slice(0, 8),
+  table: 0,
+  table_number: 1,
+  page: 3,
+  row,
+  column: "Amount",
+  extra: false,
+  status: "fuzzy",
+  review: { state },
+});
+
+function queueCtx(over = {}) {
+  const sent = [];
+  const base = fakeCtx({
+    sent,
+    sendJson: async (method, path, body) => {
+      sent.push([method, path, body]);
+      if (path === "/api/drafts") return { saved_at: "2026-10-20T14:05:00Z" };
+      return { verdict: {}, next: { index: 2, item: qentry(3) } };
+    },
+    getJson: async (path, query) => {
+      base.calls.push([path, query]);
+      if (path === "/api/queue")
+        return {
+          queue: [qentry(1, "correct"), qentry(2), qentry(3)],
+          stats: {
+            confidence: 95,
+            reviewed: 1,
+            judged: 1,
+            changed: 0,
+            share: 0,
+            interval: [0, 0.5],
+          },
+        };
+      if (path.includes("/cells/")) return cellData();
+      if (path.includes("/pages/")) return pageData();
+      return runData();
+    },
+    refreshed: 0,
+    refresh() {
+      this.refreshed++;
+    },
+    ...over,
+  });
+  return base;
+}
+const qroute = () => route({ query: { queue: "1", mode: "all" } });
+
+test("in a queue the screen shows the queue bar and a verdict panel; the heading follows the queue", async () => {
+  const ctx = queueCtx();
+  const { content } = await C.show(qroute(), ctx);
+  assert.equal(withClass(content, "queue-bar").length, 1);
+  assert.equal(withClass(content, "verdict").length, 1);
+  assert.match(text(content), /Cell 2 of 3/);
+  assert.ok(ctx.calls.some(([p]) => p === "/api/queue"));
+});
+
+test("without a queue there is a verdict panel but no queue bar", async () => {
+  const { content } = await C.show(route(), queueCtx());
+  assert.equal(withClass(content, "queue-bar").length, 0);
+  assert.equal(withClass(content, "verdict").length, 1);
+});
+
+test("in a queue the moves link through the queue with its settings", async () => {
+  const { content } = await C.show(qroute(), queueCtx());
+  const next = findAll(
+    content,
+    (e) => e.tagName === "A" && text(e).includes("Next cell"),
+  )[0];
+  assert.match(next.getAttribute("href"), /cell\/3\/3\/Amount\?.*queue=1/);
+});
+
+test("a saved verdict in a queue goes to the next unreviewed cell", async () => {
+  const ctx = queueCtx();
+  const { content } = await C.show(qroute(), ctx);
+  const choice = byTag(withClass(content, "choices")[0], "button")[0];
+  click(choice);
+  click(withClass(content, "save")[0]);
+  await settle();
+  assert.equal(ctx.went.at(-1).cell.row, 3);
+  assert.equal(ctx.went.at(-1).query.queue, "1");
+});
+
+test("a saved verdict outside a queue refreshes the screen", async () => {
+  const ctx = queueCtx({
+    sendJson: async () => ({ verdict: {}, next: null }),
+  });
+  const { content } = await C.show(route(), ctx);
+  click(byTag(withClass(content, "choices")[0], "button")[0]);
+  click(withClass(content, "save")[0]);
+  await settle();
+  assert.equal(ctx.refreshed, 1);
+});
+
+test("keys: verdict choices and categories; save and cancel work inside a text box", () => {
+  const key = (k, over = {}) =>
+    C.keyAction({ key: k, target: { tagName: "BODY" }, ...over });
+  assert.equal(key("c"), "correct");
+  assert.equal(key("x"), "change");
+  assert.equal(key("u"), "unsure");
+  assert.equal(key("3"), "category:3");
+  assert.equal(key("0"), null);
+  assert.equal(key("Enter", { metaKey: true }), "save");
+  assert.equal(key("Enter", { ctrlKey: true }), "save");
+  assert.equal(key("Escape"), "cancel");
+  const box = { tagName: "TEXTAREA" };
+  assert.equal(key("Enter", { ctrlKey: true, target: box }), "save");
+  assert.equal(key("Escape", { target: box }), "cancel");
+  assert.equal(key("c", { target: box }), null);
 });
