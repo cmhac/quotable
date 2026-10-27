@@ -261,6 +261,38 @@ openai:gpt-5-mini         12        104,118         8,430       $0.47
 reached a model and "unpriced" says how many of those had no price. A line that cannot be read
 is skipped and counted. With no records it says so and exits 0; an unreadable cost file exits 1.
 
+### Reviewing the results
+
+Every `extract_tables` call saves its run (the values, each cell's grounding status, the words
+of the pages involved and the settings) to `.quotable/runs/<run id>/`. The PDF is not copied:
+the app reads it from the path stored in the run and shows page images only while its SHA-256
+still matches. To delete runs, delete their folders; nothing else depends on them.
+
+`quotable review` starts a local app on 127.0.0.1 only (`--dir PATH` for another project,
+`--port N`, default 8765, `--no-browser`, `--run ID` to open on a run). It never changes a run,
+the cache, the cost log or the PDF; it writes only `.quotable/review/`.
+
+```console
+$ quotable review
+Serving the review app at http://127.0.0.1:8765 (Ctrl+C to stop)
+```
+
+Browse runs, tables, rows and cells, with each cell's page and highlighted matched words. To
+review, open "Review this run" or "Review flagged cells", pick the statuses, and either review
+them all or a seeded random sample, then step through the cells with the keyboard (`?` lists
+the keys) and mark each one correct, changed (with the right value and why the model was
+wrong) or can't tell. The queue screen shows the share of judged cells that were wrong with a
+Wilson interval, an estimate of the wrong cells in the whole population, and the margins of
+error.
+
+Verdicts are appended to `.quotable/review/verdicts.jsonl` (one JSON object per line, readable
+with `jq` or `polars.read_ndjson`) and drafts to `.quotable/review/drafts.json`. They are an
+audit trail only: they do not change `extract_tables`, `records()` or the DataFrames. The folder
+survives deleting the cache or the runs.
+
+The `.quotable/` folder holds `cache/` (model answers and OCR results), `cost/` (the cost log),
+`runs/` (saved runs) and `review/` (verdicts and drafts).
+
 ## What it does
 
 | Stage | Module | What happens |

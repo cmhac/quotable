@@ -1,7 +1,6 @@
 # 013 - Review app: browse extracted tables and review the grounding
 
-Status: approved by the user; split into tasks (see tasks/); waiting for the user's review of
-the tasks.
+Status: implemented (browser checks of tasks 011-014 done in Chrome only).
 The design is the mockup file [quotable review app.html](quotable%20review%20app.html) in this
 folder, described in "Visual design".
 
