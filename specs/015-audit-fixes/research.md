@@ -146,9 +146,9 @@ sync function in a real notebook; the claim rests on the Python documentation.
 ## R6. The duplicate test file (story 6, finding 6)
 
 `tests/test_merge_checks.py` and `tests/steps/test_merge_checks.py` have the same SHA-1 prefix
-(`3e1cc1b687`), 359 lines and 35 tests each; both are tracked. It is the only duplicated test file
+(`3e1cc1b687`), 359 lines and 35 test functions each (55 collected tests, since some are parametrized); both are tracked. It is the only duplicated test file
 name in `tests/`. Spec 012 moved the tests into folders that mirror the package, and
-`tests/steps/` is that home. `git rm tests/test_merge_checks.py`. The suite drops by exactly 35.
+`tests/steps/` is that home. `git rm tests/test_merge_checks.py`. The suite drops by exactly 55.
 
 ## R7. Removing the half-equal rule (story 6, finding 7)
 
@@ -181,6 +181,6 @@ the rule holds.
 
 ## R8. Counting the tests
 
-The offline suite has 2,704 tests today. Story 6 removes 35 (duplicate) and 1 (`test_equal_share_is_a_setting`);
+The offline suite has 2,704 tests today. Story 6 removes 55 (the duplicate file's collected tests) and 2 (`test_equal_share_is_a_setting`, `test_half_equal_ok_at_the_edges`);
 the other stories add tests, which the task list names. The final count is whatever those add up
 to; SC-005 asks only that every change be accounted for.

@@ -9,13 +9,13 @@ just hooks    # ruff check --fix, ruff format, ty (stage new files first)
 just test     # the offline suite
 ```
 
-Expected: both pass. The test count is the old count (2,704) minus 36 (story 6) plus the new tests
+Expected: both pass. The test count is the old count (2,704) minus 57 (story 6: 55 and 2) plus the new tests
 the task list names.
 
 ## Story 1: the request limit
 
 ```bash
-uv run pytest -k "gate or in_flight or request_limit"
+uv run pytest tests/test_recheck_limit.py tests/steps/test_recheck.py tests/steps/test_extra_fields_recheck.py -k limit
 ```
 
 Expected: the new tests pass. They run a 20-page table with a flagged cell on every page through
@@ -81,7 +81,7 @@ need any other file.
 
 ```bash
 test "$(find tests -name test_merge_checks.py | wc -l)" = 1 && echo "one copy"
-grep -rn "equal_share\|half_equal_ok\|\"half_equal\"" quotable tests/*.py tests/steps | head
+grep -rn --exclude-dir=__pycache__ "equal_share\|half_equal_ok" quotable tests/*.py tests/steps
 uv run python -m tests.score_merge | head -5
 uv run pytest tests/test_synthetic.py tests/steps -q
 ```

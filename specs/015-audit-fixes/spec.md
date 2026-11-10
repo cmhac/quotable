@@ -156,14 +156,14 @@ and says why.
 
 A maintainer changes the merge step's tests. Spec 012 moved the tests into folders that mirror the
 package, but left the old file behind. `tests/test_merge_checks.py` and
-`tests/steps/test_merge_checks.py` are byte-identical (35 tests each) and both run, so the test
-count is inflated by 35 and an edit to one copy is hidden by the other. Separately, the merge step
+`tests/steps/test_merge_checks.py` are byte-identical (35 test functions each, 55 collected tests because some are parametrized) and both run, so the test
+count is inflated by 55 and an edit to one copy is hidden by the other. Separately, the merge step
 has a setting (`Rules.equal_share`, the "half-equal header" rule) that is off by default, was found
 harmful by spec 007's own results, and is used only by a test and a scoring script.
 
 **Why this priority**: housekeeping with no user-visible change, done once so it does not drift.
 
-**Independent Test**: only one file named `test_merge_checks.py` exists; the suite passes with 35
+**Independent Test**: only one file named `test_merge_checks.py` exists; the suite passes with 55
 fewer tests from that removal; the merge step gives the same decisions on every fixture document.
 
 **Acceptance Scenarios**:
@@ -295,7 +295,7 @@ overwritten `drafts.json.bad` backup.
 - **SC-004**: A base install has neither pandas nor polars, and `import quotable` plus a full fake-
   model run succeed in it. With each extra installed, all existing frame tests pass.
 - **SC-005**: Ruff, ty and the offline tests pass. Removing the duplicate file lowers the test
-  count by exactly 35. Each other change in the count is a test this spec removes or adds, listed in
+  count by exactly 55. Each other change in the count is a test this spec removes or adds, listed in
   the tasks.
 - **SC-006**: A notebook user finds the notebook advice and the extra install lines in the README
   without reading any other file.
@@ -344,4 +344,22 @@ the fixture (C).
 
 - `python -m tests.score_merge --detail`, default rules: harmful 0, (resid) 4, broken 0, missed 39, the same as the baseline. The 54 lines of per-document disagreements after the "Defaults" header are identical before and after (`diff` empty). `git status` under `tests/data/synthetic/` is clean, so `just synthetic` and its freshness test are untouched.
 - Spec 007's half-equal score rows (rows 215 and 216 of its table) can no longer be reproduced; spec 007 keeps them as history (Question 1, option A).
-- Tests removed: the 35 tests of the duplicate file, and 2 of the half-equal rule (`test_equal_share_is_a_setting`, `test_half_equal_ok_at_the_edges`). One more, `test_fewer_than_half_equal_fails_only_when_the_rule_is_on`, was rewritten as `test_a_pair_with_few_equal_header_words_still_merges` (a pair with no equal header position still merges under the default rules). The plan had counted one removed test; there were two.
+- Tests removed: the duplicate file's 35 test functions (55 collected tests), and 2 of the half-equal rule (`test_equal_share_is_a_setting`, `test_half_equal_ok_at_the_edges`). One more, `test_fewer_than_half_equal_fails_only_when_the_rule_is_on`, was rewritten as `test_a_pair_with_few_equal_header_words_still_merges` (a pair with no equal header position still merges under the default rules). The plan had counted one removed test; there were two.
+
+### Final state (2026-11-10)
+
+- Offline suite: **2,660 passed** (`uv run pytest -n 3`), `ruff check`, `ruff format --check` and `ty check` clean (also through `pre-commit run --all-files`). No live or OCR test was run, nothing was spent, nothing was pushed.
+- Test count: 2,704 − 55 (the duplicate file's collected tests; it has 35 test functions, but several are parametrized) − 2 (the half-equal rule's `test_equal_share_is_a_setting` and `test_half_equal_ok_at_the_edges`) + 13 new = 2,660. New tests: `tests/test_recheck_limit.py` (1), `tests/steps/test_recheck.py` (2), `tests/steps/test_extra_fields_recheck.py` (1), `tests/review/test_render_lock.py` (2), `tests/review/test_run_cache.py` (5), `tests/test_frames.py` (2, one per library). One more test was rewritten in place (`test_a_pair_with_few_equal_header_words_still_merges`).
+- The earlier statement "the suite drops by exactly 35" was wrong in the spec, plan and research (it counted functions, not collected tests). They now say 55.
+
+| Audit finding | Result | Proof |
+|---------------|--------|-------|
+| 2 (render lock) | fixed | `test_render_lock.py`: six clients at a time over 20 requests, never two renders at once (6 at once on the unchanged code); a failed render does not block the next. The test uses six at a time because the server's default backlog of 5 resets 20 simultaneous connections, and a browser opens six per host. The crash itself was never reproduced. |
+| 3 (recheck limit) | fixed | `test_recheck_limit.py`: with the run's limit set to 1, the highest number of requests in flight over a whole run is 1 (4 on the unchanged code). `test_recheck.py`: 20 flagged pages, limit 4, highest 4. The recheck's page image is byte-identical to `render_page` at the policy's dpi. A rate-limit failure with a real provider was never reproduced. |
+| 4 (queue cache) | fixed | `test_run_cache.py`; 0.35 s to 0.10 s on the demo project (see "After story 3"). |
+| 6 (duplicate tests) | fixed | one `test_merge_checks.py` remains, under `tests/steps/`. |
+| 7 (half-equal rule) | fixed | merge decisions identical (see "After story 6"); fixture files unchanged. |
+| 9 (notebooks) | fixed | README passage; `tests/test_entrypoint.py::test_the_pdf_can_be_a_string_and_the_async_twin_works` already runs the async function inside a running loop. Not tried in a real notebook. |
+| 11 (pandas and polars) | fixed | `tests/test_frames.py` (message) and the base-install check: in `uv run --no-dev --isolated`, `import quotable` works and neither library imports. `uv lock --check` is clean. |
+
+Not run: a real Jupyter notebook; a request against a real provider; the review app in a browser.
