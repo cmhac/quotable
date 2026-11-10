@@ -187,8 +187,9 @@ fewer tests from that removal; the merge step gives the same decisions on every 
 - The same page is requested twice at once: both get the same image.
 - A saved run is deleted or damaged while the review app runs: the answer is "no such run" or "run
   cannot be read", as before, and a stale parsed copy is not served.
-- A project has more documents than the cache holds: slower, never wrong. The memory the cache can
-  take has an upper bound that the plan states.
+- A project has more run data than the budget holds (50 documents of several MiB each): slower,
+  never wrong. The memory the cache can take has an upper bound (FR-007). A single run bigger than
+  the whole budget is still kept, alone, while it is the one in use.
 - Only pandas, only polars or neither is installed: each method works exactly when its library is
   present. `import quotable` loads neither library, as before.
 - Saved runs and stored decisions written by 0.1.0 or by the current code are read as before. Nothing
@@ -218,12 +219,19 @@ fewer tests from that removal; the merge step gives the same decisions on every 
 
 **Review queue cache (story 3)**
 
-- **FR-007**: The review app MUST keep parsed runs for at least the newest run of each of 50
-  documents, so that repeated queue and verdict requests on an unchanged project read no run file.
+- **FR-007**: The review app MUST keep parsed runs in memory up to a fixed size budget instead of a
+  fixed count of 4, so that repeated queue and verdict requests on an unchanged project read no run
+  file. The budget is 64 MiB of run files on disk (about 320 MB of memory once parsed, measured at
+  about 5 times the file size). The newest runs of 50 documents fit if their files average 1.3 MiB
+  or less. Beyond the budget, the run used least recently is dropped.
 - **FR-008**: A run whose file changed (size or modification time) MUST be read again before it is
   used. Answers MUST NOT be stale.
-- **FR-009**: The plan MUST state the most memory the cache can hold and measure it on the largest
-  demo run (3,024 rows). The queue and verdict answers MUST NOT change.
+- **FR-009**: The most memory the cache can hold MUST be stated (done in FR-007, measured on the
+  largest demo run: 5.7 MB of files, 28.5 MB parsed). The queue and verdict answers MUST NOT change.
+- **FR-009a** *(added during planning, after profiling a queue request)*: A queue request MUST build
+  the list of reviewable items once. Today it builds the list twice, once for the status counts and
+  once for the queue, and that is 58% of a repeated request on the demo project (reading runs from
+  disk is 39%).
 
 **DataFrame libraries (story 4)**
 
@@ -280,8 +288,10 @@ overwritten `drafts.json.bad` backup.
   flight during a whole run is 4 or less (before: about 20 during the recheck).
 - **SC-002**: With 20 page-image requests made at the same time, all 20 answers are valid images
   and no two renders overlap.
-- **SC-003**: On a project of 50 runs with no change on disk, the second queue request reads 0 run
-  files (before: every run beyond the first 4 is read again).
+- **SC-003**: On a project of 50 runs that fit the budget, with no change on disk, the second queue
+  request reads 0 run files (before: every run beyond the first 4 is read again). On the 8-document demo project, a
+  repeated queue request takes at most half the time it takes on `main` (about 0.4 s there), both
+  measured on the same machine.
 - **SC-004**: A base install has neither pandas nor polars, and `import quotable` plus a full fake-
   model run succeed in it. With each extra installed, all existing frame tests pass.
 - **SC-005**: Ruff, ty and the offline tests pass. Removing the duplicate file lowers the test
@@ -296,8 +306,8 @@ overwritten `drafts.json.bad` backup.
 
 - "A few dozen documents" is the load that matters for the review app: one reviewer, one project.
 - The audit's timings (0.33 s and 0.40 s for the queue on 8 documents) were measured once on a
-  development machine. If the plan finds that parsing runs is not the main cost of a queue request,
-  it must say what is, and the cache size in FR-007 is revisited.
+  development machine. Planning profiled a repeated request (0.47 s under the profiler): reading
+  runs is 0.18 s, building the item list twice is 0.27 s. That is why FR-009a was added.
 - The crash in finding 2 was not reproduced; the requirement follows the PyMuPDF documentation,
   which says the library does not support use from several threads.
 - The rate-limit failure in finding 3 was not reproduced against a real provider. The requirement
