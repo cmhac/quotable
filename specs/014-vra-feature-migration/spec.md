@@ -333,3 +333,47 @@ unchecked and may be a separate problem (see Assumptions).
   not from a scorer.
 - Cost log, saved runs, DataFrames and OCR keep their current behavior apart from the additions
   named above. Specs 001 to 013 are not rewritten.
+
+## Live results (SC-005)
+
+Run on 2026-11-10 with `just test-live tests/live/test_live_audit.py` and the model
+`openai:gpt-5.6-luna` (the model the VRA script uses; the live test reads it from
+`QUOTABLE_LIVE_TEST_MODEL`). The document is the 4-page sample `tests/data/fy22_ag_house_original.pdf`
+(one table, 111 rows). The OpenAI key came from the project's `.env`. The cost figures are
+quotable's own estimate from pydantic-ai's price data and have **not** been compared with the
+provider's dashboard.
+
+**Four settings on the whole document.** Runs with the same image setting share a cache, so each
+audit row shows only the requests the audit added.
+
+| Setting | New requests | Input tokens | Output tokens | Cost | Flagged cells |
+| --- | --- | --- | --- | --- | --- |
+| audit off, sharp off | discovery 1, extract 4, recheck 4 | 46,215 | 12,788 | $0.0268 | 59 |
+| audit on, sharp off | audit 4 (added to the row above) | 20,338 | 1,241 | $0.0065 | 59 |
+| audit off, sharp on | discovery 1, extract 4, recheck 4 | 105,748 | 9,864 | $0.0358 | 60 |
+| audit on, sharp on | audit 4 (added to the row above) | 50,213 | 793 | $0.0135 | 60 |
+
+- The audit sent a request for every one of the 4 pages, as expected with page numbers counting.
+  It added 24% to the cost of the plain run and 38% to the cost of the sharp run. It found nothing
+  to add, because nothing was omitted from this extraction.
+- Sharp images used 2.3 times the input tokens and 0.77 times the output tokens, for 34% more cost
+  in total. On this document they did not change the number of flagged cells (59 and 60). It is an
+  easy document; the improvement on tricky pages reported by the user was not reproduced here.
+
+**Omissions injected into a real extraction.** The test removed the last row of each page and
+blanked one cell of the second row (8 omissions in all), then asked the real model through
+`audit_table` with sharp images (4 audit requests, 50,359 input tokens, $0.0139):
+
+| | Removed | Restored | Rejected |
+| --- | --- | --- | --- |
+| Rows | 4 | 2 | 2 (`ungrounded`) |
+| Cells | 4 | 4 | 0 |
+
+No wrong row or cell was added. The two rows that were not restored were correct rows, rejected
+because the page's text layer disagrees with what is printed: one reads `$1.000.000` for the
+amount `$1,000,000` (numbers must match exactly), the other splits `Administrator.` over two lines
+as `Adminis-` / `trator.`, which grounds only `fuzzy`. In the original extraction the same cells
+were `ungrounded` and `fuzzy`, so the recheck would have flagged them too. This is the rule of
+FR-006 working as written: the audit's strictness costs recall on a document with a messy text
+layer. Accepting a row whose cells ground `fuzzy`, and leaving them to the recheck, is a change
+for the user to decide; it is not made here.
