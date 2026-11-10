@@ -123,21 +123,29 @@ Two things to know about the hooks: `pre-commit run --all-files` (and so `just h
 
 ## Spec-driven development
 
-This project follows a spec-driven development approach, meaning that the specifications defined in the `specs/` directory serve as the primary source of truth for the project's functionality. The development workflow is as follows:
+This project follows spec-driven development with **[Spec Kit](https://github.com/github/spec-kit) only**. The specifications in `specs/` are the primary source of truth for the project's functionality. Every new feature, bug fix or other change from now on goes through Spec Kit. Do not use the old home-grown spec format (a `tasks/` folder of one file per task, `deltas/`) for anything new.
 
-1. User requests features, bug fixes, and other changes, and the agent writes an initial specification for the requested change in the `specs/` directory. Agent opens a new branch for the implementation of the specification.
-2. User reviews the spec and provides feedback or approval. If there are any open questions that need the user's decision, the user is required to provide clear guidance or answers before the agent proceeds with splitting the spec into actionable tasks.
-   CRITICAL: DO NOT move to step 3 until all open questions have been resolved and the user has provided clear guidance or answers.
-3. Agent splits the spec into actionable tasks that can be implemented in the codebase.
-4. User reviews the actionable tasks and provides feedback or approval before implementation begins.
-5. Agent implements the actionable tasks in the codebase, ensuring that the implementation aligns with the approved specifications.
-6. User reviews the implemented changes and provides feedback or approval, completing the development cycle for the requested change.
+The old specs (001 to 013) stay as they are. Do not convert, rename or rewrite them. When new work touches one, read it as history, and put the new decisions in the new feature's own spec.
+
+Spec Kit's skills are installed for every agent (see the file structure). Run them in the agent's chat, one at a time, in this order (Codex writes `$speckit-…`, the others `/speckit-…`):
+
+1. `speckit-constitution` – project principles. Run once, and again only when the user wants the principles changed. The result lives in `.specify/memory/constitution.md`.
+2. `speckit-specify` – write the spec for the user's request in `specs/nnn-feature-name/spec.md`. Open a new git branch for the work (Spec Kit's git extension is not installed, so it will not do this).
+3. `speckit-clarify` – ask the user the open questions. The user reviews the spec and answers them.
+   CRITICAL: DO NOT move to `speckit-plan` until all open questions are resolved and the user has approved the spec.
+4. `speckit-plan` – design artifacts for the feature.
+5. `speckit-tasks` – the task list in `tasks.md`. The user reviews it and approves it before any implementation.
+6. `speckit-implement` – implement the approved tasks, keeping to the approved spec and plan.
+7. `speckit-converge` – compare the code with the spec, plan and tasks, and append any unbuilt work to `tasks.md`. Repeat steps 6 and 7 until it reports Converged. The user then reviews the changes and approves, which completes the change.
+
+`speckit-analyze` (consistency check across spec, plan and tasks, after step 5) and `speckit-checklist` (requirement-quality checklists, after step 4) are optional.
+
+The user's approval gates are unchanged: the user approves the spec, then the tasks, then the finished work. Never skip one because a Spec Kit skill would let you carry on.
 
 ### Naming conventions
 
-- Each spec in the `specs/` directory gets its own folder, numbered serially using the format `nnn-feature-name`, where `nnn` is a three-digit number representing the order of the specification and `feature-name` is a brief, descriptive name for the feature or change being specified.
-- Within the folder for each spec, the main specification file should be named `spec.md`.
-- Tasks related to a spec should be placed in a `tasks/` subfolder within the spec's folder, numbered serially using the format `nnn-task-name.md`, where `nnn` is a three-digit number representing the order of the task and `task-name` is a brief, descriptive name for the task.
-- After initial task implementation, if the user requests any changes or modifications to the written code, spec deltas may be created in a `deltas/` subfolder within the spec's folder, numbered serially using the format `nnn-delta-description.md`, where `nnn` is a three-digit number representing the order of the delta and `delta-description` is a brief, descriptive name for the delta.
+- Each feature gets its own folder `specs/nnn-feature-name/`. Spec Kit picks `nnn` as one more than the highest number already in `specs/`, so numbering continues from 013 (the next feature is 014). Do not renumber.
+- Spec Kit's files in a feature folder are `spec.md`, `plan.md`, `research.md`, `data-model.md`, `quickstart.md`, `contracts/`, `tasks.md` (one file, not a `tasks/` folder) and `checklists/`. Do not hand-edit the generated skills, scripts or templates in `.specify/` and the agent skill folders; change a project rule through the constitution or a Spec Kit preset, and refresh with `specify integration upgrade <key>`.
+- The 001 to 013 specs keep their original layout: `spec.md`, a `tasks/` folder of `nnn-task-name.md` files and an optional `deltas/` folder of `nnn-delta-description.md` files.
 - Specs 001 to 011 refer to modules by the paths they had when written (flat `src/quotable/*.py`) and are not rewritten; spec 012 moved them (its `spec.md` maps old to new).
 - Specs 001 and 002 keep the project's former name, `pdf-table-extract` (import `pdf_table_extract`), and specs 003 to 009 keep `gridkey` (import `gridkey`; spec 009 describes the rename to `quotable` itself), because they record decisions made under those names. They are history and are not rewritten. The folder `specs/003-rename-to-gridkey/` keeps its name for the same reason.
