@@ -2987,8 +2987,6 @@ name = "quotable"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "pandas" },
-    { name = "polars" },
     { name = "pydantic" },
     { name = "pydantic-ai-slim", extra = ["anthropic", "bedrock", "cohere", "google", "groq", "huggingface", "mistral", "openai", "openrouter", "xai"] },
     { name = "pymupdf" },
@@ -3002,11 +3000,19 @@ ocr = [
 ocr-core = [
     { name = "paddleocr" },
 ]
+pandas = [
+    { name = "pandas" },
+]
+polars = [
+    { name = "polars" },
+]
 
 [package.dev-dependencies]
 dev = [
     { name = "paddleocr" },
     { name = "paddlepaddle" },
+    { name = "pandas" },
+    { name = "polars" },
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "pytest-xdist" },
@@ -3019,18 +3025,20 @@ requires-dist = [
     { name = "paddleocr", marker = "extra == 'ocr'", specifier = "==3.7.0" },
     { name = "paddleocr", marker = "extra == 'ocr-core'", specifier = "==3.7.0" },
     { name = "paddlepaddle", marker = "extra == 'ocr'", specifier = "==3.3.1" },
-    { name = "pandas", specifier = ">=3,<4" },
-    { name = "polars", specifier = ">=2,<3" },
+    { name = "pandas", marker = "extra == 'pandas'", specifier = ">=3,<4" },
+    { name = "polars", marker = "extra == 'polars'", specifier = ">=2,<3" },
     { name = "pydantic", specifier = "==2.13.5" },
     { name = "pydantic-ai-slim", extras = ["anthropic", "bedrock", "cohere", "google", "groq", "huggingface", "mistral", "openai", "openrouter", "xai"], specifier = "==2.54.0" },
     { name = "pymupdf", specifier = "==1.28.2" },
 ]
-provides-extras = ["ocr", "ocr-core"]
+provides-extras = ["ocr", "ocr-core", "pandas", "polars"]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "paddleocr", specifier = "==3.7.0" },
     { name = "paddlepaddle", specifier = "==3.3.1" },
+    { name = "pandas", specifier = ">=3,<4" },
+    { name = "polars", specifier = ">=2,<3" },
     { name = "pre-commit", specifier = "==4.5.1" },
     { name = "pytest", specifier = "==8.4.2" },
     { name = "pytest-xdist", specifier = "==3.8.0" },

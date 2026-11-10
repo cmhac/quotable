@@ -29,7 +29,21 @@ environment, as pydantic-ai documents it (for example `OPENAI_API_KEY`). The ins
 SDKs for Anthropic, Bedrock, Cohere, Google, Groq, Hugging Face, Mistral, OpenAI, OpenRouter and
 xAI. `model_settings=` is passed to pydantic-ai. `extract_tables_async` takes the same arguments.
 
-pandas and polars are installed with quotable. The frames have the columns of `records()`: `page`,
+In a Jupyter notebook, which already runs an event loop, write
+`tables = await extract_tables_async(...)`. `extract_tables` starts its own loop, and Python
+refuses to start one while another is running.
+
+pandas and polars are optional, because `to_pandas()` and `to_polars()` are the only things that
+use them. Install the one you want (or both); without it, the method raises an `ImportError` that
+says what to install, and `records()` works either way:
+
+```bash
+pip install "quotable[pandas]"          # to_pandas()
+pip install "quotable[polars]"          # to_polars()
+pip install "quotable[pandas,polars]"   # both
+```
+
+The frames have the columns of `records()`: `page`,
 `row`, the PDF's columns (strings, exactly as extracted), then for each of them its `__grounding`
 status and `__coverage` (a float, missing when the cell was never looked up), then
 `grounding_status`, `recheck_changes` and `audit_added`. A PDF column is never renamed: if it already has the name

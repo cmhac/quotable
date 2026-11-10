@@ -19,7 +19,7 @@ the review app's HTTP API, the saved-run format and the cache keys do not change
 message is the same with `polars` in each place):
 
 ```text
-to_pandas() needs pandas, which quotable does not install by default. Run: pip install "quotable[pandas]"
+to_pandas() needs pandas, which is not installed by default. Run: pip install "quotable[pandas]"
 ```
 
 The original `ImportError` is chained as the cause. `records()` and everything else work without
