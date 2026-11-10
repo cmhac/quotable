@@ -158,7 +158,8 @@ audit requests carry a 300-dpi image with detail `original`, and discovery reque
 - **FR-001**: `extract_tables` MUST accept a boolean `audit`, default `True`. With `audit=False`
   the pipeline MUST make no audit request, and the audit MUST change nothing in the output or in
   any other request.
-- **FR-002**: For each page of each table, after the first-pass extraction and before grounding, the
+- **FR-002**: For each page of each table, after the first-pass extraction (and its grounding) and
+  before the final grounding of the table, the
   pipeline MUST count the page's *unexplained words*: words in the page's text layer whose tokens no
   extracted cell of that table accounts for, matched one cell token to one page token with the
   same tokenization grounding uses. On a page that holds one table that is every word on the page
