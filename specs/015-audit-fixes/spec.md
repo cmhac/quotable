@@ -333,3 +333,9 @@ the fixture (C).
 
 - Repeated `get_queue` on the 8-document demo project (`build/review-demo`, 3 runs after one warm-up): 0.372 s, 0.319 s, 0.350 s.
 - `python -m tests.score_merge`, default rules (`equal_share=0.00 tol=10 min_cells=5 shape=0.8 words_apart=False`): harmful 0, (resid) 4, broken 0, missed 39. `git status` under `tests/data/synthetic/` is clean.
+
+### After story 3 (review queue)
+
+- Repeated `get_queue` on the same demo project, same machine: 0.110 s, 0.097 s, 0.105 s (baseline 0.372, 0.319, 0.350). That is about 3.4 times faster, so SC-003 ("at most half") is met.
+- On a project of 10 more copied documents, the second queue request reads 0 run files (before: the 15 runs beyond the first 4 were read again).
+- Memory: the run cache holds up to 64 MiB of run files (about 5 times that parsed, measured on 2026-11-10 on the 3,024-row run: 5.7 MB of files, 28.5 MB parsed).
