@@ -11,6 +11,8 @@ description: "Task list for spec 014: omission audit and sharp page images"
 
 **Tests**: Required. The constitution (III) and FR-041 say new logic ships with offline tests using fake clients. Write each story's tests first and watch them fail. The live test (T029) is opt-in.
 
+**Baseline (T001, 2026-11-10)**: `just lint` and `just typecheck` pass; `just test` runs 2,430 passed in 43 s (`-n 4`).
+
 **Organization**: by user story. US1 is the omission audit (P1, MVP). US2 is sharp page images (P2). The spec's third story (blank dot and dash cells) was dropped by the user; FR-030 and SC-007 (cells of only dots or dashes stay as extracted) are covered by a test in US1.
 
 ## Format: `[ID] [P?] [Story] Description`
@@ -23,8 +25,8 @@ description: "Task list for spec 014: omission audit and sharp page images"
 
 ## Phase 1: Setup
 
-- [ ] T001 Confirm the branch is `spec/014-vra-feature-migration` and run `just test`; write the number of passing tests and that `just lint` and `just typecheck` pass into the header of `specs/014-vra-feature-migration/tasks.md` as the baseline (the plan expects every later run to match it, plus the new tests).
-- [ ] T002 Add `test_request_key_is_unchanged` to `tests/test_cache.py`: build a fixed `Request` (stage `extract`, instructions `"x"`, output type `PageRows`, parts `["text", Image(b"png-bytes")]`), compute `request_key("fake", request)` on the code as it is now, and assert the printed hex digest as a literal. Run it once before any other change so the constant is the pre-change key (SC-001, FR-020).
+- [x] T001 Confirm the branch is `spec/014-vra-feature-migration` and run `just test`; write the number of passing tests and that `just lint` and `just typecheck` pass into the header of `specs/014-vra-feature-migration/tasks.md` as the baseline (the plan expects every later run to match it, plus the new tests).
+- [x] T002 Add `test_request_key_is_unchanged` to `tests/test_cache.py`: build a fixed `Request` (stage `extract`, instructions `"x"`, output type `PageRows`, parts `["text", Image(b"png-bytes")]`), compute `request_key("fake", request)` on the code as it is now, and assert the printed hex digest as a literal. Run it once before any other change so the constant is the pre-change key (SC-001, FR-020).
 
 ---
 
@@ -32,10 +34,10 @@ description: "Task list for spec 014: omission audit and sharp page images"
 
 **Purpose**: the small shared pieces both the audit and the sharp images use.
 
-- [ ] T003 [P] Add `MissingRow` (`after_row: int`, `values: dict[str, str]`), `FilledCell` (`row: int`, `column: str`, `value: str`) and `Omissions` (`missing_rows: list[MissingRow]`, `filled_cells: list[FilledCell]`) to `quotable/llm/answers.py`, with the field descriptions of `data-model.md` ("number of the listed row it follows, 0 = before the first"; "number as listed, from 1").
-- [ ] T004 [P] In `quotable/llm/client.py` add `detail: str = "high"` to `Image`; make `_fingerprint` add the detail to the image's fingerprint only when it is not `"high"`; make `PydanticAIClient.ask` set `vendor_metadata={"detail": p.detail}` instead of the literal; add `audit` to the `Request.stage` comment. Add `audit` to the stage comment in `quotable/storage.py` (`CostRecord.stage`). Tests in `tests/llm/test_images.py` (new file): an `Image(png)` key equals the key before the change (use T002's constant), `Image(png, "original")` differs, and the client sends the image's detail (use the existing fake-model pattern in `tests/llm/test_model.py`).
-- [ ] T005 [P] Create `quotable/llm/images.py` with `ImagePolicy` (frozen dataclass: `dpi: int`, `detail: str`, `max_patches: int | None`, `max_side: int | None`) and `TODAY = ImagePolicy(150, "high", None, None)`; nothing else yet (T022 adds the rest).
-- [ ] T006 [P] In `quotable/steps/extract.py` change `render_png(page)` to `render_png(page, dpi=DPI)` and give `extract_page` a `detail: str = "high"` argument used for its `Image(png, detail)`. Tests in `tests/test_extract.py`: the default call renders and sends exactly what it did, and `detail="original"` reaches the request's `Image`.
+- [x] T003 [P] Add `MissingRow` (`after_row: int`, `values: dict[str, str]`), `FilledCell` (`row: int`, `column: str`, `value: str`) and `Omissions` (`missing_rows: list[MissingRow]`, `filled_cells: list[FilledCell]`) to `quotable/llm/answers.py`, with the field descriptions of `data-model.md` ("number of the listed row it follows, 0 = before the first"; "number as listed, from 1").
+- [x] T004 [P] In `quotable/llm/client.py` add `detail: str = "high"` to `Image`; make `_fingerprint` add the detail to the image's fingerprint only when it is not `"high"`; make `PydanticAIClient.ask` set `vendor_metadata={"detail": p.detail}` instead of the literal; add `audit` to the `Request.stage` comment. Add `audit` to the stage comment in `quotable/storage.py` (`CostRecord.stage`). Tests in `tests/llm/test_images.py` (new file): an `Image(png)` key equals the key before the change (use T002's constant), `Image(png, "original")` differs, and the client sends the image's detail (use the existing fake-model pattern in `tests/llm/test_model.py`).
+- [x] T005 [P] Create `quotable/llm/images.py` with `ImagePolicy` (frozen dataclass: `dpi: int`, `detail: str`, `max_patches: int | None`, `max_side: int | None`) and `TODAY = ImagePolicy(150, "high", None, None)`; nothing else yet (T022 adds the rest).
+- [x] T006 [P] In `quotable/steps/extract.py` change `render_png(page)` to `render_png(page, dpi=DPI)` and give `extract_page` a `detail: str = "high"` argument used for its `Image(png, detail)`. Tests in `tests/test_extract.py`: the default call renders and sends exactly what it did, and `detail="original"` reaches the request's `Image`.
 
 **Checkpoint**: `just test` passes with the T001 baseline plus the new tests.
 

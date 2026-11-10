@@ -7,6 +7,8 @@ from pathlib import Path
 import pytest
 
 from quotable import extract_tables
+from quotable.llm.answers import PageRows
+from quotable.llm.client import Image, Request, request_key
 from quotable.storage import resolve_cache_dir, resolve_project_dir, write_atomic
 from tests.test_entrypoint import PDF, Calls
 
@@ -231,3 +233,12 @@ def test_a_failed_atomic_write_leaves_the_old_file_and_no_temporary_file(tmp_pat
     monkeypatch.undo()
     assert target.read_text() == "old"
     assert names(folder) == ["file.json"]
+
+
+def test_request_key_is_unchanged():
+    """A request's cache key is what it was before spec 014 (an existing cache keeps answering)."""
+    request = Request("extract", "x", PageRows, ["text", Image(b"png-bytes")])
+    assert (
+        request_key("fake", request)
+        == "d2c04ff8e6d5120c87f436b049908f68b3f79b0e385bad24376855b744201eb6"
+    )

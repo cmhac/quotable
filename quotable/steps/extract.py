@@ -68,9 +68,9 @@ def retry_prompt(rows: list[dict[str, str]], problems: list[str]) -> str:
     )
 
 
-def render_png(page: pymupdf.Page) -> bytes:
-    """Render a page to PNG bytes at ``DPI`` (honours the page's rotation)."""
-    return page.get_pixmap(dpi=DPI).tobytes("png")
+def render_png(page: pymupdf.Page, dpi: int = DPI) -> bytes:
+    """Render a page to PNG bytes at ``dpi`` (honours the page's rotation)."""
+    return page.get_pixmap(dpi=dpi).tobytes("png")
 
 
 def page_schema(schema: TableSchema, present: tuple[str, ...]) -> TableSchema:
@@ -86,20 +86,23 @@ def other_tables_text(others: list[tuple[str, list[str]]]) -> str:
     return f"Other tables on this page:\n{lines}"
 
 
-async def extract_page(
+async def extract_page(  # noqa: PLR0913
     page: int,
     png: bytes,
     schema: TableSchema,
     client: LLMClient,
     others: list[tuple[str, list[str]]] | None = None,
+    *,
+    detail: str = "high",
 ) -> PageResult:
     """
     Extract one table's rows from one page; retry once with the problems named if invalid.
 
     ``others`` names (label, columns) of the other tables on the page, if there are any.
+    ``detail`` is the image-detail value sent with the page image.
     """
     keys = [c.name.strip() for c in schema.columns]
-    base: list[str | Image] = [column_structure(schema), Image(png)]
+    base: list[str | Image] = [column_structure(schema), Image(png, detail)]
     prompt = EXTRACT_PROMPT
     if others:
         base.append(other_tables_text(others))

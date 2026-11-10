@@ -1,14 +1,17 @@
+import asyncio
 import copy
 import inspect
 import json
 
+import pymupdf
 import pytest
 
 from quotable import ExtractionError, TextLayerError, extract_tables_async
 from quotable import extract_tables as public_extract_tables
-from quotable.llm.answers import PageRows
+from quotable.llm.answers import Column, PageRows, TableSchema
 from quotable.llm.client import Image
 from quotable.pipeline import run_pipeline
+from quotable.steps.extract import extract_page, render_png
 from tests.conftest import (
     DATA,
     FakeClient,
@@ -206,3 +209,26 @@ def test_the_text_layer_check_has_no_off_switch():
         "cache_dir",
         "trace",  # spec 013: what saving the run needs
     }
+
+
+def test_render_png_defaults_to_150_dpi_and_takes_another():
+    with pymupdf.open(load_sample("fy22_milcon_house_original")["pdf"]) as document:
+        default = pymupdf.Pixmap(render_png(document[0]))
+        same = pymupdf.Pixmap(render_png(document[0], 150))
+        sharp = pymupdf.Pixmap(render_png(document[0], 300))
+    assert (default.width, default.height) == (same.width, same.height)
+    assert abs(sharp.width - 2 * default.width) <= 2
+    assert abs(sharp.height - 2 * default.height) <= 2
+
+
+def test_extract_page_sends_the_detail_it_is_given():
+    schema = TableSchema(columns=[Column(name="A", description="")])
+    client = FakeClient(lambda request: PageRows(rows=[{"A": "x"}]))
+    for detail in ("high", "original"):
+        client.requests.clear()
+        asyncio.run(extract_page(1, b"png", schema, client, detail=detail))
+        image = next(p for p in client.requests[0].parts if isinstance(p, Image))
+        assert image.detail == detail
+    client.requests.clear()
+    asyncio.run(extract_page(1, b"png", schema, client))
+    assert next(p for p in client.requests[0].parts if isinstance(p, Image)).detail == "high"

@@ -142,7 +142,7 @@ class CostRecord:
     v: int
     time: str  # UTC, ISO 8601
     run: str  # one ``extract_tables`` call
-    stage: str  # "schema" | "extract" | "recheck"
+    stage: str  # "schema" | "extract" | "audit" | "recheck"
     model: str  # ``provider:model-name``
     input_tokens: int
     output_tokens: int

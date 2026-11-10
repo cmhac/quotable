@@ -43,9 +43,10 @@ from quotable.storage import write_atomic
 
 @dataclass(frozen=True)
 class Image:
-    """A PNG prompt part."""
+    """A PNG prompt part; ``detail`` is the image-detail value sent with it (spec 014)."""
 
     png: bytes
+    detail: str = "high"
 
 
 Part = str | Image
@@ -55,7 +56,7 @@ Part = str | Image
 class Request:
     """One model request: everything that determines its answer."""
 
-    stage: str  # "schema" | "extract" | "recheck"; for logs, not part of the key
+    stage: str  # "schema" | "extract" | "audit" | "recheck"; for logs, not part of the key
     instructions: str
     output_type: type[BaseModel]
     parts: list[Part]
@@ -75,7 +76,9 @@ class LLMClient(Protocol):
 def _fingerprint(part: Part) -> list[Any]:
     if isinstance(part, str):
         return ["text", part]
-    return ["image", hashlib.sha256(part.png).hexdigest()]
+    digest = hashlib.sha256(part.png).hexdigest()
+    # the default detail adds nothing, so every key from before spec 014 stays valid
+    return ["image", digest] if part.detail == "high" else ["image", digest, part.detail]
 
 
 def request_key(identity: str, request: Request) -> str:
@@ -181,7 +184,7 @@ class PydanticAIClient:
             p
             if not isinstance(p, Image)
             else BinaryContent(
-                data=p.png, media_type="image/png", vendor_metadata={"detail": "high"}
+                data=p.png, media_type="image/png", vendor_metadata={"detail": p.detail}
             )
             for p in request.parts
         ]

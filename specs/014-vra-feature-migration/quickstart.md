@@ -47,8 +47,8 @@ Expect `True True`.
 
 ```python
 tables = quotable.extract_tables("report.pdf", "openai:<model>")
-tables[0].records()[0]["audit_added"]      # "", "row" or "cells: <columns>"
-tables[0].audit                            # every proposal and its outcome
+tables[0].records()[0]["audit_added"]  # "", "row" or "cells: <columns>"
+tables[0].audit  # every proposal and its outcome
 ```
 
 ## 5. Live check (opt-in, costs money)
