@@ -74,6 +74,7 @@ def test_records_put_the_fields_after_the_values_and_before_the_groundings(table
         "year__source_page",
         "grounding_status",
         "recheck_changes",
+        "audit_added",  # spec 014: last, so no earlier column moved
     ]
     assert (first["division"], first["division__grounding"], first["division__source_page"]) == (
         "Roads",
@@ -102,6 +103,7 @@ def test_without_extra_fields_the_columns_are_the_old_ones(tmp_path):
         "Amount__coverage",
         "grounding_status",
         "recheck_changes",
+        "audit_added",  # spec 014: last, so no earlier column moved
     ]
 
 

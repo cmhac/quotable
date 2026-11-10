@@ -92,16 +92,20 @@ def built(tmp_path_factory: pytest.TempPathFactory) -> Built:
         mp.chdir(work)
         # two runs of one page: the first pays (no known price), the second is all cache hits
         before = folders()
-        tables["simple_old"] = extract_tables(SIMPLE_PDF, Calls().model(), recheck=False)
+        tables["simple_old"] = extract_tables(
+            SIMPLE_PDF, Calls().model(), recheck=False, audit=False
+        )
         runs["simple_old"] = new_run(project, before)
         before = folders()
-        tables["simple_new"] = extract_tables(SIMPLE_PDF, Calls().model(), recheck=False)
+        tables["simple_new"] = extract_tables(
+            SIMPLE_PDF, Calls().model(), recheck=False, audit=False
+        )
         runs["simple_new"] = new_run(project, before)
 
         def with_client(label: str, client: FakeClient, pdf: Path, **options: Any) -> None:
             mp.setattr(pipeline_module, "PydanticAIClient", lambda *a, **k: client)
             before = folders()
-            tables[label] = extract_tables(pdf, f"test:{label}", ocr=False, **options)
+            tables[label] = extract_tables(pdf, f"test:{label}", ocr=False, audit=False, **options)
             runs[label] = new_run(project, before)
 
         with_client("senate", recorded_model(), SENATE_PDF, recheck=False)
@@ -455,7 +459,7 @@ def own_copy(app: App, tmp_path: Path) -> tuple[Path, str]:
     copy = tmp_path / "copy.pdf"
     shutil.copy(SIMPLE_PDF, copy)
     known = {p.name for p in (app.project / "runs").iterdir()}
-    extract_tables(copy, Calls().model(), recheck=False)
+    extract_tables(copy, Calls().model(), recheck=False, audit=False)
     return copy, new_run(app.project, known)
 
 

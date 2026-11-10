@@ -324,7 +324,8 @@ def merge_pair(a: Table, b: Table, evidence: MergeEvidence) -> Table:
 
     ``b``'s row keys (and its layouts) are renamed to ``a``'s column names by position;
     grounding and the position check are run again over the whole table. Neither input is
-    changed. The recheck has not run yet, so there are no proposals to carry over.
+    changed. The recheck has not run yet, so there are no proposals to carry over; the omission
+    audit (spec 014) has, and the audit items of both parts are kept.
     """
     names = dict(zip(b.columns, a.columns, strict=True))
     parts: list[tuple[PageResult, PageLayout | None]] = []
@@ -362,6 +363,7 @@ def merge_pair(a: Table, b: Table, evidence: MergeEvidence) -> Table:
         layouts_out,
         label=a.label,
         ocr_pages=tuple(sorted({*a.ocr_pages, *b.ocr_pages})),
+        audit=[*a.audit, *b.audit],
         merged=(*a.merged, absorbed),
         extra_fields={**a.extra_fields, **b.extra_fields},
         extra_names=a.extra_names,

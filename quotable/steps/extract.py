@@ -8,6 +8,7 @@ happens here (see :mod:`quotable.steps.grounding`).
 """
 
 import json
+from pathlib import Path
 
 import pymupdf
 
@@ -71,6 +72,12 @@ def retry_prompt(rows: list[dict[str, str]], problems: list[str]) -> str:
 def render_png(page: pymupdf.Page, dpi: int = DPI) -> bytes:
     """Render a page to PNG bytes at ``dpi`` (honours the page's rotation)."""
     return page.get_pixmap(dpi=dpi).tobytes("png")
+
+
+def render_page(pdf: Path, number: int, dpi: int = DPI) -> bytes:
+    """Render page ``number`` (1-based) of ``pdf`` at ``dpi``, opening the file for just that."""
+    with pymupdf.open(pdf) as document:
+        return render_png(document[number - 1], dpi)
 
 
 def page_schema(schema: TableSchema, present: tuple[str, ...]) -> TableSchema:

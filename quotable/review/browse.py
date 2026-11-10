@@ -33,7 +33,7 @@ from quotable.review.routing import BadRequest, NotFound, Raw, Request, Route
 from quotable.review.verdicts import CellKey, ExtraKey, Key, Verdict
 from quotable.runs import Run, RunCell, RunRow, RunSummary, RunTable, list_runs
 from quotable.steps.grounding import SEVERITY, UNFLAGGED
-from quotable.table import OutputNames, output_names
+from quotable.table import OutputNames, audit_marks, output_names
 
 PAGE_SIZE = 100
 STATUS_ORDER = (
@@ -667,11 +667,19 @@ def _csv_header(ctx: _Ctx) -> list[str]:
         head += [names.grounding[column], names.coverage[column]]
     for name in table.extra_names:
         head += [names.field_grounding[name], names.field_coverage[name], names.field_source[name]]
-    return [*head, names.status, names.changes]
+    return [*head, names.status, names.changes, names.audit]
 
 
 def _csv_row(ctx: _Ctx, row: _Row) -> list[Any]:
     table = ctx.table
+    marks = audit_marks(
+        table.columns,
+        (
+            (a["kind"], a["page"], a["row"], a["values"])
+            for a in table.audit
+            if a["outcome"] == "accepted"
+        ),
+    )
     count = len(table.columns)
     own, extras = row.cells[:count], row.cells[count:]
     changes = [
@@ -688,7 +696,7 @@ def _csv_row(ctx: _Ctx, row: _Row) -> list[Any]:
         values += [cell.status, cell.coverage]
     for cell in extras:
         values += [cell.status, cell.coverage, cell.source_page]
-    return [*values, row.status, "; ".join(changes)]
+    return [*values, row.status, "; ".join(changes), marks.get((row.page, row.row), "")]
 
 
 def _disposition(kind: str, name: str) -> str:

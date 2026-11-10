@@ -192,17 +192,23 @@ def test_the_text_layer_check_has_no_off_switch():
         "model_settings",
         "discovery_pages",
         "recheck",
+        "audit",  # spec 014: the omission audit's switch (on by default)
         "ocr",  # chooses whether bad pages are OCR'd; the text-layer check itself has no switch
         "merge_reworded",  # spec 007: the merge step's switch
         "extra_fields",  # spec 010: values to read from outside the tables
     }
     assert set(inspect.signature(extract_tables_async).parameters) == parameters
+    for function in (public_extract_tables, extract_tables_async):
+        assert inspect.signature(function).parameters["audit"].default is True  # spec 014
+    assert inspect.signature(run_pipeline).parameters["audit"].default is False
     assert set(inspect.signature(run_pipeline).parameters) == {
         "pdf",
         "client",
         "discovery_pages",
         "recheck",
         "merge_reworded",
+        "audit",
+        "images",
         "extra_fields",
         "ocr",
         "ocr_config",

@@ -41,7 +41,7 @@ def default_names(columns: list[str]) -> list[str]:
     names = ["page", "row", *columns]
     for column in columns:
         names += [f"{column}__grounding", f"{column}__coverage"]
-    return [*names, "grounding_status", "recheck_changes"]
+    return [*names, "grounding_status", "recheck_changes", "audit_added"]
 
 
 # --- column names -----------------------------------------------------------------------
@@ -139,7 +139,7 @@ def test_dtypes_in_pandas(table):
     assert frame["page"].dtype == "int64"
     assert frame["row"].dtype == "int64"
     assert frame["Amount__coverage"].dtype == "float64"
-    for name in ("Item", "Item__grounding", "grounding_status", "recheck_changes"):
+    for name in ("Item", "Item__grounding", "grounding_status", "recheck_changes", "audit_added"):
         assert pd.api.types.is_string_dtype(frame[name])
         assert frame[name].dtype != object
 
@@ -149,7 +149,7 @@ def test_dtypes_in_polars(table):
     assert schema["page"] == pl.Int64
     assert schema["row"] == pl.Int64
     assert schema["Amount__coverage"] == pl.Float64
-    for name in ("Item", "Item__grounding", "grounding_status", "recheck_changes"):
+    for name in ("Item", "Item__grounding", "grounding_status", "recheck_changes", "audit_added"):
         assert schema[name] == pl.String
 
 

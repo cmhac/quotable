@@ -22,6 +22,11 @@ The pipeline: text-layer check, table discovery, per-page extraction, grounding,
    whole page, or on a page with several tables only that table's band, see
    :mod:`quotable.steps.layout`), then required to sit in its own row and column (see
    :mod:`quotable.steps.grounding` and :mod:`quotable.steps.position`).
+5. Omission audit (``audit``, on by default; see :mod:`quotable.steps.audit`): a page whose text
+   layer prints words that no extracted cell accounts for goes back to the model once, and the
+   rows and cells it reports as omitted are kept only if the text layer confirms them. The
+   table is grounded again if anything was kept.
+6. Extra fields, merge and recheck, in that order (see :func:`run_pipeline`).
 """
 
 import asyncio
@@ -40,10 +45,12 @@ from pydantic_ai.models import Model
 
 from quotable.errors import TextLayerError
 from quotable.llm.client import CachedClient, LLMClient, PydanticAIClient, model_name
+from quotable.llm.images import TODAY, ImagePolicy
 from quotable.ocr.config import OcrConfig, OcrEngine
 from quotable.ocr.paddle import PaddleEngine
 from quotable.ocr.pages import ocr_pages
 from quotable.runs import RunInfo, write_run
+from quotable.steps.audit import audit_table
 from quotable.steps.discover import DISCOVERY_PAGES, Discovery, Found, discover
 from quotable.steps.extra_fields import (
     ExtraField,
@@ -261,6 +268,8 @@ async def run_pipeline(  # noqa: PLR0913
     discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
     merge_reworded: bool = True,
+    audit: bool = False,
+    images: ImagePolicy = TODAY,
     ocr: OcrEngine | None = None,
     ocr_config: OcrConfig | None = None,
     cache_dir: Path | None = None,
@@ -271,6 +280,11 @@ async def run_pipeline(  # noqa: PLR0913
     Run the whole pipeline on one PDF with an already-built client (internal; tests use it).
 
     ``trace``, when given, is filled with the whole pages' layers and the shared pages' bands.
+
+    ``audit`` (spec 014) runs the omission audit on every table after its first grounding.
+    Here, unlike in ``extract_tables``, it is off by default and ``images`` is the pre-014 image
+    policy, so the many callers that drive this function with scripted models keep their
+    behavior; ``extract_tables`` passes its own defaults.
 
     ``extra_fields`` (spec 010) are checked first, before any request. In the order of the spec:
     discovery also reads the fields, they are grounded, fuzzy and ungrounded values are rechecked,
@@ -344,6 +358,15 @@ async def run_pipeline(  # noqa: PLR0913
                 label=f.label,
                 ocr_pages=tuple(r.page for r in pages if r.page in ocr_done),
             )
+        )
+    if audit:
+        tables = list(
+            await asyncio.gather(*(audit_table(t, pdf, client, images, gate) for t in tables))
+        )
+        log.info(
+            "audit: %d proposal(s), %d kept",
+            sum(len(t.audit) for t in tables),
+            sum(a.outcome == "accepted" for t in tables for a in t.audit),
         )
     if extra_fields is not None:
         printed, changes, suspect_pages = await resolve_extra_fields(
@@ -443,6 +466,7 @@ async def extract_tables_async(  # noqa: PLR0913
     model_settings: dict[str, Any] | None = None,
     discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
+    audit: bool = True,
     ocr: OcrConfig | bool = True,
     merge_reworded: bool = True,
     extra_fields: ExtraFields | None = None,
@@ -458,6 +482,15 @@ async def extract_tables_async(  # noqa: PLR0913
     ``max_requests`` caps the new (uncached) requests and raises ``BudgetExceededError``
     beyond it. Each new request is recorded (tokens and price) in ``.quotable/cost/``, apart
     from the cache; ``quotable cost-report`` adds the records up.
+
+    ``audit`` (default on, like ``recheck``) looks for rows and cells the model left out. Each
+    page whose text layer prints words that no extracted cell accounts for (page numbers and
+    titles count, but a word repeated on many pages of a table does not) goes back to the model
+    once with its image, its rows and those words. A row or cell it reports is kept only if
+    every value in it is found in the page's text layer, and is marked in ``Table.audit`` and in
+    the ``audit_added`` column of ``records()``. Rows are numbered by position afterwards, so
+    an added row shifts the rows after it. It costs up to one request per page; ``audit=False``
+    turns it off.
 
     ``ocr`` says what to do when the PDF's text layer is garbled or missing: ``True`` (the
     default) OCRs the bad pages with PaddleOCR using ``OcrConfig()``, an ``OcrConfig``
@@ -498,6 +531,7 @@ async def extract_tables_async(  # noqa: PLR0913
         client,
         discovery_pages=discovery_pages,
         recheck=recheck,
+        audit=audit,
         merge_reworded=merge_reworded,
         extra_fields=extra_fields,
         ocr=None if config is None else PaddleEngine(config),
@@ -514,6 +548,7 @@ async def extract_tables_async(  # noqa: PLR0913
         trace,
         discovery_pages=discovery_pages,
         recheck=recheck,
+        audit=audit,
         ocr=ocr,
         merge_reworded=merge_reworded,
         max_requests=max_requests,
@@ -531,6 +566,7 @@ def extract_tables(  # noqa: PLR0913
     model_settings: dict[str, Any] | None = None,
     discovery_pages: int = DISCOVERY_PAGES,
     recheck: bool = True,
+    audit: bool = True,
     ocr: OcrConfig | bool = True,
     merge_reworded: bool = True,
     extra_fields: ExtraFields | None = None,
@@ -545,6 +581,7 @@ def extract_tables(  # noqa: PLR0913
             model_settings=model_settings,
             discovery_pages=discovery_pages,
             recheck=recheck,
+            audit=audit,
             ocr=ocr,
             merge_reworded=merge_reworded,
             extra_fields=extra_fields,
