@@ -12,9 +12,6 @@ dependencies = [
     "pymupdf==1.28.2",
     # Every provider SDK pydantic-ai supports, except the extras that pull in PyTorch.
     "pydantic-ai-slim[anthropic,bedrock,cohere,google,groq,huggingface,mistral,openai,openrouter,xai]==2.54.0",
-    # Ranges, not pins: quotable is installed into its own environment (spec 008).
-    "pandas>=3,<4",
-    "polars>=2,<3",
 ]
 
 [project.scripts]
@@ -25,11 +22,17 @@ quotable = "quotable.__main__:main"
 # CPU; ``ocr-core`` is for NVIDIA users, who install a GPU build of PaddlePaddle themselves.
 ocr = ["paddleocr==3.7.0", "paddlepaddle==3.3.1"]
 ocr-core = ["paddleocr==3.7.0"]
+# DataFrame output (Table.to_pandas / Table.to_polars). Ranges, not pins: quotable is installed
+# into its own environment (spec 008). Optional since spec 015.
+pandas = ["pandas>=3,<4"]
+polars = ["polars>=2,<3"]
 
 [dependency-groups]
 dev = [
+    "pandas>=3,<4",
     "paddleocr==3.7.0",
     "paddlepaddle==3.3.1",
+    "polars>=2,<3",
     "pre-commit==4.5.1",
     "pytest==8.4.2",
     "pytest-xdist==3.8.0",

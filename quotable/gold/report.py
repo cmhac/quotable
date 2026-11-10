@@ -1,9 +1,9 @@
 """
-The gold report as text, JSON-able data and CSV (spec 015).
+The gold report as text, JSON-able data and CSV (spec 016).
 
 ``format_text`` is what ``quotable gold-report`` prints and ``to_json`` is what the review app
 shows; both come from the same :class:`~quotable.gold.score.Report`. The CSV files follow
-``specs/015-gold-quality-check/contracts/gold-files.md``. Standard library only.
+``specs/016-gold-quality-check/contracts/gold-files.md``. Standard library only.
 """
 
 import csv

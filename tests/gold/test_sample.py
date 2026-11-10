@@ -1,4 +1,4 @@
-"""Drawing the gold sample (spec 015 task 006)."""
+"""Drawing the gold sample (spec 016 task 006)."""
 
 import pytest
 

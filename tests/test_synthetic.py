@@ -62,7 +62,7 @@ def test_each_settled_rule_has_cases_on_both_sides():
         assert seen[probe] == {True, False}, probe
 
 
-def test_the_rule_dependent_cases_are_there_to_decide_the_half_equal_rule():
+def test_the_open_merge_cases_are_still_in_the_fixture():
     open_cases = [
         rel
         for entry in MANIFEST

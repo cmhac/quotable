@@ -1,4 +1,4 @@
-// The model functions of the gold table editor (spec 015), ported from the VRA app's tests.
+// The model functions of the gold table editor (spec 016), ported from the VRA app's tests.
 import assert from "node:assert/strict";
 import { test } from "node:test";
 

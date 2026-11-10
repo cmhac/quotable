@@ -1,5 +1,5 @@
 """
-Scoring an extraction against hand-typed gold tables (spec 015).
+Scoring an extraction against hand-typed gold tables (spec 016).
 
 The VRA scorer (``scripts/analysis/gold_eval.py`` in the VRA community-projects repository)
 generalized to several tables per page. Per page: gold tables are paired one to one with the

@@ -1,4 +1,4 @@
-"""The gold files (spec 015 task 004): validation, limits, safe writes."""
+"""The gold files (spec 016 task 004): validation, limits, safe writes."""
 
 import json
 import threading

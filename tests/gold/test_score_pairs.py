@@ -1,4 +1,4 @@
-"""Pairing and scoring a page (spec 015 tasks 008 and 009)."""
+"""Pairing and scoring a page (spec 016 tasks 008 and 009)."""
 
 import random
 import time

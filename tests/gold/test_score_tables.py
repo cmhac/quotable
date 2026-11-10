@@ -1,4 +1,4 @@
-"""Several tables, in any order and under any names (spec 015 task 025, SC-003)."""
+"""Several tables, in any order and under any names (spec 016 task 025, SC-003)."""
 
 import itertools
 import json

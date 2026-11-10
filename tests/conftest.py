@@ -98,6 +98,28 @@ class FakeClient:
         return [r.stage for r in self.requests]
 
 
+class OverlapClient:
+    """Wrap a client and record the most ``ask`` calls that were in flight at the same moment."""
+
+    def __init__(self, inner: FakeClient) -> None:
+        self.inner = inner
+        self.identity = inner.identity
+        self.now = 0
+        self.most = 0
+
+    async def ask(self, request: Request) -> object:
+        self.now += 1
+        self.most = max(self.most, self.now)
+        try:
+            await asyncio.sleep(0.01)  # give the other tasks a chance to start
+            return await self.inner.ask(request)
+        finally:
+            self.now -= 1
+
+    def stages(self) -> list[str]:
+        return self.inner.stages()
+
+
 def window_of(request: Request, tables: list[PageTables]) -> WindowTables:
     """Return a discovery answer with ``tables`` repeated for each page image in ``request``."""
     images = sum(isinstance(p, Image) for p in request.parts)

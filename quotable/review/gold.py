@@ -1,7 +1,7 @@
 """
-The review app's gold check routes (spec 015): the sample, the typed pages and the score.
+The review app's gold check routes (spec 016): the sample, the typed pages and the score.
 
-See ``specs/015-gold-quality-check/contracts/gold-api.md``. A page is reached by the SHA-256 of a
+See ``specs/016-gold-quality-check/contracts/gold-api.md``. A page is reached by the SHA-256 of a
 document in the current sample and a page number, never by a path; the PDF is found through the
 newest saved run of that document whose file is still there and unchanged. Nothing here calls a
 model, and the only files written are the gold files (and the gold exception in

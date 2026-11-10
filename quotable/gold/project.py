@@ -1,5 +1,5 @@
 """
-Scoring a project's gold (spec 015): the one entry point the review app and the command share.
+Scoring a project's gold (spec 016): the one entry point the review app and the command share.
 
 ``score_project`` reads the sample, the typed pages and the saved runs of a project folder,
 chooses a run for each sampled document (the newest, or the ones named) and returns either the

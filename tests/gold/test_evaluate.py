@@ -1,4 +1,4 @@
-"""Scoring a whole sample (spec 015 tasks 010 and 015): the headline units, faults, the interval."""
+"""Scoring a whole sample (spec 016 tasks 010 and 015): the headline units, faults, the interval."""
 
 import copy
 import json

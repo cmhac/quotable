@@ -1,4 +1,4 @@
-"""Helpers for the gold check's tests (spec 015): a sample and typed gold made from a saved run."""
+"""Helpers for the gold check's tests (spec 016): a sample and typed gold made from a saved run."""
 
 from collections.abc import Callable
 from pathlib import Path

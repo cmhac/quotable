@@ -2,7 +2,7 @@
 
 **Branch**: `spec/015-gold-quality-check` | **Date**: 2026-11-10 | **Spec**: [spec.md](spec.md)
 
-**Input**: Feature specification from `specs/015-gold-quality-check/spec.md` (approved 2026-11-10, five clarifications)
+**Input**: Feature specification from `specs/016-gold-quality-check/spec.md` (approved 2026-11-10, five clarifications)
 
 ## Summary
 
@@ -76,7 +76,7 @@ change to the run format.
 ### Documentation (this feature)
 
 ```text
-specs/015-gold-quality-check/
+specs/016-gold-quality-check/
 ├── plan.md              # This file
 ├── research.md          # Decisions and alternatives
 ├── data-model.md        # Entities, stored records, scoring structures

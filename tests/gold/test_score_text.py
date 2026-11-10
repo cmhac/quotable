@@ -1,4 +1,4 @@
-"""The scorer's text rules and assignment (spec 015 task 007)."""
+"""The scorer's text rules and assignment (spec 016 task 007)."""
 
 import itertools
 import random

@@ -12,7 +12,7 @@ records yet"), 1 when the cost file cannot be read, 2 for a usage error.
 the runs in ``.quotable/runs/``; it creates nothing itself. Exit codes: 0 after Ctrl+C, 1 when
 the port is in use or ``--run`` names no saved run, 2 for a usage error.
 
-``quotable gold-report`` scores the hand-typed gold of ``.quotable/gold/`` (spec 015) against the
+``quotable gold-report`` scores the hand-typed gold of ``.quotable/gold/`` (spec 016) against the
 newest saved run of each sampled document, or the runs named with ``--run``, prints the report and
 writes ``gold_pages.csv`` and ``gold_cells.csv`` to ``--out`` (default ``.quotable/reports/``). It
 never calls a model. Exit codes: 0 for a report, 1 when no sample was drawn, not every sampled page

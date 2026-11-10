@@ -16,7 +16,7 @@ faults put in on purpose so every status shows). It holds:
   verdict given to the first run is stale in the second;
 * ``dropped-column.pdf``: a column the second page does not print (``not_on_page``).
 
-A gold check (spec 015) too: a sample of every page of the Senate report and the extras report,
+A gold check (spec 016) too: a sample of every page of the Senate report and the extras report,
 typed as a careful person would, except that one page has a wrong word, one is typed as having no
 table and one page holds two tables. The score screen has something to show right away.
 

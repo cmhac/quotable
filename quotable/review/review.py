@@ -10,6 +10,7 @@ Nothing but ``review/verdicts.jsonl`` and ``review/drafts.json`` is ever written
 """
 
 import contextlib
+from collections import Counter
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict
 from pathlib import Path
@@ -21,10 +22,10 @@ from quotable.review.queue import (
     STATUSES,
     Item,
     QueueSettings,
-    counts_by_status,
     population,
     review_state,
     sample,
+    scoped_items,
     statistics,
     suggested_size,
 )
@@ -167,12 +168,13 @@ def get_queue(request: Request) -> dict[str, Any]:
     settings = _settings({name: values[-1] for name, values in request.query.items() if values})
     project = request.project_dir
     runs = _runs_in_scope(project, settings)
-    pop = population(runs, settings)
+    items = scoped_items(runs, settings)  # built once: the counts and the population share it
+    pop = [i for i in items if i.status in settings.statuses]
     queue = sample(pop, settings)
     verdicts = sources.stores(project)[0].latest()
     return {
         "settings": settings.to_dict(),
-        "counts": counts_by_status(runs, settings),
+        "counts": dict(Counter(i.status for i in items)),
         "matching": len(pop),
         "suggested": suggested_size(settings.margin, settings.confidence, len(pop)),
         "queue": [_entry(item, verdicts) for item in queue],

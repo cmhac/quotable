@@ -1,4 +1,4 @@
-// The per-page work clock and the time-left line of the gold check (spec 015, FR-020a and
+// The per-page work clock and the time-left line of the gold check (spec 016, FR-020a and
 // FR-020b). Pure: no DOM, and the time comes from a function the caller can replace.
 
 export function clock(seconds) {

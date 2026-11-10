@@ -1,4 +1,4 @@
-// Spreadsheet-style editor for one gold table (spec 015; ported from the VRA gold annotation app).
+// Spreadsheet-style editor for one gold table (spec 016; ported from the VRA gold annotation app).
 //
 // Model: {columns: [...names], rows: [{cells: [...], ghost: bool}], done}.
 // Grid rows: -1 is the column-name row, 0..rows.length-1 the data rows, and

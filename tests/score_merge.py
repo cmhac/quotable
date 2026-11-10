@@ -77,16 +77,10 @@ def variants() -> list[Rules]:
     """Return the rule sets to compare: one setting at a time, then the interacting ones."""
     base = DEFAULT_RULES
     found = [base]
-    found += [replace(base, equal_share=s) for s in (0.0, 1 / 3, 0.5, 2 / 3, 1.0)]
     found += [replace(base, grid_tolerance=t) for t in (5.0, 8.0, 10.0, 12.0, 15.0, 20.0)]
     found += [replace(base, min_cells=n) for n in (3, 4, 5, 6, 8)]
     found += [replace(base, shape_share=s) for s in (0.7, 0.75, 0.8, 0.9)]
     found += [replace(base, word_text_apart=True)]
-    found += [
-        replace(base, equal_share=s, grid_tolerance=t)
-        for s in (0.0, 0.5)
-        for t in (5.0, 10.0, 15.0)
-    ]
     seen: list[Rules] = []
     for rules in found:
         if rules not in seen:
@@ -97,7 +91,7 @@ def variants() -> list[Rules]:
 def describe(rules: Rules) -> str:
     """Return a one-line description of a rule set."""
     return (
-        f"equal_share={rules.equal_share:.2f} tol={rules.grid_tolerance:g} "
+        f"tol={rules.grid_tolerance:g} "
         f"min_cells={rules.min_cells} shape={rules.shape_share:g} "
         f"words_apart={rules.word_text_apart}"
     )

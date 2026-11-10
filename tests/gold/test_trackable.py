@@ -1,4 +1,4 @@
-"""Making only the gold folder committable (spec 015 task 003)."""
+"""Making only the gold folder committable (spec 016 task 003)."""
 
 import shutil
 import subprocess

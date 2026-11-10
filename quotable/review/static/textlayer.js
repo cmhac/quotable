@@ -1,5 +1,5 @@
 // The selectable text over a page image, and what happens when text is selected on it
-// (spec 015, FR-018): the selection is copied clean, once, and the highlight stays.
+// (spec 016, FR-018): the selection is copied clean, once, and the highlight stays.
 
 // The SVG namespace is an identifier the DOM needs to make SVG elements; nothing is ever fetched
 // from it. It is written in two parts so the static check for remote addresses stays strict.

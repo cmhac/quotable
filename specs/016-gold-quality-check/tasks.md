@@ -1,11 +1,11 @@
 ---
 
-description: "Task list for spec 015: the gold check"
+description: "Task list for spec 016: the gold check"
 ---
 
 # Tasks: Gold check (hand-typed answers and a score for an extraction)
 
-**Input**: Design documents from `specs/015-gold-quality-check/`
+**Input**: Design documents from `specs/016-gold-quality-check/`
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/gold-api.md, contracts/gold-files.md, quickstart.md (all present)
 
@@ -25,8 +25,8 @@ description: "Task list for spec 015: the gold check"
 
 ## Phase 1: Setup
 
-- [x] T001 Confirm the branch is `spec/015-gold-quality-check`, run `just lint`, `just typecheck` and `just test`, and write the number of passing tests into the Baseline line of `specs/015-gold-quality-check/tasks.md`. Every later run must match it plus the new tests.
-- [x] T002 [P] Create the empty packages `quotable/gold/__init__.py` (docstring: spec 015, the gold check, standard library only, internal) and `tests/gold/__init__.py`.
+- [x] T001 Confirm the branch is `spec/015-gold-quality-check`, run `just lint`, `just typecheck` and `just test`, and write the number of passing tests into the Baseline line of `specs/016-gold-quality-check/tasks.md`. Every later run must match it plus the new tests.
+- [x] T002 [P] Create the empty packages `quotable/gold/__init__.py` (docstring: spec 016, the gold check, standard library only, internal) and `tests/gold/__init__.py`.
 
 ---
 
@@ -201,8 +201,8 @@ description: "Task list for spec 015: the gold check"
 - [x] T048 [P] README: add a "Gold check" section (the workflow, the three steps, blind entry, copy-from-page and the lock modes, that text copied from the page comes from the PDF's text layer so a text-layer error can be copied into the gold, that the gold folder is not git-ignored and holds text copied from the PDF so its licence matters before it is committed publicly, the command `quotable gold-report` and its exit codes, and that it never calls a model).
 - [ ] T049 Hand check by the user in Chrome with `just review-demo` (the agent cannot start servers): quickstart section 4, steps 1 to 7, plus a look at the editor's keys against the VRA app. Record in this file which steps passed and what is not checked (Firefox, Safari).
 - [x] T050 [P] Extend `tests/review_demo.py` so the demo project has a drawn sample and a few typed pages (one with two tables, one with no table, one with a deliberate difference), and `tests/review/test_review_demo.py` to check them; the demo must still build in about 10 s.
-- [x] T051 Measure the pairing thresholds (row 0.5, column 0.5, fuzzy 0.9) on the synthetic fixture with injected faults (SC-002, SC-003) and the 400-row timing; record the numbers in `specs/015-gold-quality-check/research.md` section 16 and change a threshold only if the numbers say so.
-- [x] T052 Update `AGENTS.md` in the same change: the project-state paragraph (spec 015), the file structure (`quotable/gold/`, `review/gold.py`, the new static modules, `tests/gold/`), the commands (`quotable gold-report`, not a `just` recipe, like `cost-report`) and the Spec Kit numbering note.
+- [x] T051 Measure the pairing thresholds (row 0.5, column 0.5, fuzzy 0.9) on the synthetic fixture with injected faults (SC-002, SC-003) and the 400-row timing; record the numbers in `specs/016-gold-quality-check/research.md` section 16 and change a threshold only if the numbers say so.
+- [x] T052 Update `AGENTS.md` in the same change: the project-state paragraph (spec 016), the file structure (`quotable/gold/`, `review/gold.py`, the new static modules, `tests/gold/`), the commands (`quotable gold-report`, not a `just` recipe, like `cost-report`) and the Spec Kit numbering note.
 - [x] T053 Run `just lint`, `just typecheck`, `just hooks` and `just test`; the count must be the T001 baseline plus the new tests. Run the quickstart sections 1 to 3. Check the README, `quotable/__main__.py` docstring and `quotable/review/server.py` docstring against what was built.
 - [ ] T054 `speckit-converge` is run by the user after this list is done, repeated until it reports Converged (AGENTS.md workflow).
 
@@ -260,3 +260,4 @@ Found by `speckit-converge` on 2026-11-10, after `speckit-implement`. T049 and T
 - [x] T058 Add one end-to-end test of the path in SC-001 over HTTP, per SC-001 (partial), in `tests/review/test_gold_api.py`: draw a sample of the simple document, `PUT` every sampled page with tables built from the run's own rows (`tests.gold_project.gold_from_run`), `GET /api/gold/score` and assert every unit is 100%, the interval is a point, and the cells list is empty; then change one cell in one `PUT` and assert exactly one difference is listed.
 - [x] T059 Read the run list once per request, per the plan's route design (partial): in `quotable/review/gold.py` `_documents` call `list_runs` once and choose the newest usable run per SHA-256 from that list; in `quotable/review/sources.py` make `newest_run_for` use a small cache of `list_runs` keyed by the modification time and size of `.quotable/runs/` (cleared by `clear_caches`). Tests: the answers do not change (`tests/review/test_gold_api.py` passes), and a new run saved after a first call is seen by the next one.
 - [x] T060 Bring `AGENTS.md` up to date with what was built, per FR-039 and the constitution's workflow rule (partial): list `tests/review/test_gold_api.py` and the node tests (`grid`, `goldmodel`, `gold`, `goldentry`, `textlayer`, `clock`) in the file structure, say that `routing.py` has `Route.max_body`, and say that `tests/review_demo.py` builds a finished gold sample.
+- **Renumbered (2026-11-10)**: main merged another spec 015 (audit fixes, `specs/015-audit-fixes/`) while this PR was open, so this feature became spec 016 and its folder `specs/016-gold-quality-check/`. The branch keeps its name, `spec/015-gold-quality-check`. After merging main, `just test` runs 2,874 passed; the gold page image and words now take the review app's render lock (PyMuPDF is not thread-safe), with a test that fails without it.

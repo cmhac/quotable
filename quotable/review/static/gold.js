@@ -1,4 +1,4 @@
-// The gold check's sample screen (#/gold) and score screen (#/gold/score) (spec 015).
+// The gold check's sample screen (#/gold) and score screen (#/gold/score) (spec 016).
 
 import { alertBox } from "./chrome.js";
 import { clock } from "./clock.js";

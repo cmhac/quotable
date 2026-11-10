@@ -38,7 +38,7 @@ REVIEW_DIR_NAME = "review"
 GOLD_DIR_NAME = "gold"
 REPORTS_DIR_NAME = "reports"
 IGNORE_ALL = "*\n"
-# Spec 015: the hand-typed gold is the one thing in .quotable/ worth committing. ``!.gitignore``
+# Spec 016: the hand-typed gold is the one thing in .quotable/ worth committing. ``!.gitignore``
 # keeps this file itself tracked, so a fresh clone does not lose the rule that hides the rest.
 GOLD_IGNORE = "*\n!.gitignore\n!gold/\n!gold/**\n"
 _OCR_DIR_NAME = "ocr"

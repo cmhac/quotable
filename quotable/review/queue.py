@@ -152,7 +152,7 @@ def _newest_per_document(runs: Sequence[Run]) -> list[Run]:
     return list(newest.values())
 
 
-def _scoped_items(runs: Sequence[Run], settings: QueueSettings) -> list[Item]:
+def scoped_items(runs: Sequence[Run], settings: QueueSettings) -> list[Item]:
     """Return every item in scope, of any status, in population order."""
     if settings.run is None:
         chosen = _newest_per_document(runs)
@@ -219,13 +219,13 @@ def _scoped_items(runs: Sequence[Run], settings: QueueSettings) -> list[Item]:
 
 def population(runs: Sequence[Run], settings: QueueSettings) -> list[Item]:
     """Return the items in scope whose status is one of ``settings.statuses``, in reading order."""
-    return [i for i in _scoped_items(runs, settings) if i.status in settings.statuses]
+    return [i for i in scoped_items(runs, settings) if i.status in settings.statuses]
 
 
 def counts_by_status(runs: Sequence[Run], settings: QueueSettings) -> dict[str, int]:
     """Count the items in scope by status, whatever statuses the settings choose."""
     counts: dict[str, int] = {}
-    for item in _scoped_items(runs, settings):
+    for item in scoped_items(runs, settings):
         counts[item.status] = counts.get(item.status, 0) + 1
     return counts
 

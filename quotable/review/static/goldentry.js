@@ -1,4 +1,4 @@
-// The gold entry screen (spec 015): a sampled page next to a spreadsheet-style editor, for typing
+// The gold entry screen (spec 016): a sampled page next to a spreadsheet-style editor, for typing
 // the tables the page really prints. Ported from the VRA gold annotation app. The extraction is
 // never shown here: the editor is blind (FR-014).
 

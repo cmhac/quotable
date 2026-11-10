@@ -1,5 +1,5 @@
 """
-Drawing the gold sample (spec 015, research 13): which pages of which documents to type.
+Drawing the gold sample (spec 016, research 13): which pages of which documents to type.
 
 The VRA rule without its document families: every document gets one page, and the rest go one
 at a time to the document with the highest ``sqrt(pages) / (pages so far + 1)`` that still has

@@ -1,10 +1,10 @@
 """
-The gold check's files (spec 015): the sample and the hand-typed tables, in ``.quotable/gold/``.
+The gold check's files (spec 016): the sample and the hand-typed tables, in ``.quotable/gold/``.
 
 ``sample.json`` is the drawn sample. ``pages.json`` holds one record per typed page, keyed
 ``<sha256>:<page>``, rewritten whole and atomically under a lock with sorted keys, so a commit
 shows only the pages that changed (research 2). Both are version 1 JSON; see
-``specs/015-gold-quality-check/contracts/gold-files.md``.
+``specs/016-gold-quality-check/contracts/gold-files.md``.
 
 The gold is hours of hand work and cannot be rebuilt, so a file that exists but cannot be read
 raises :class:`StoreError` and is never replaced. A single record that fails validation is

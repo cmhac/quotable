@@ -1,4 +1,4 @@
-"""``quotable gold-report`` (spec 015 tasks 013 and 044)."""
+"""``quotable gold-report`` (spec 016 tasks 013 and 044)."""
 
 import csv
 import hashlib

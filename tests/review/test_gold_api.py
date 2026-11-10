@@ -1,9 +1,14 @@
-"""The gold check's routes over HTTP (spec 015 tasks 012 and 018), on a built project."""
+"""The gold check's routes over HTTP (spec 016 tasks 012 and 018), on a built project."""
 
 import http.client
 import json
 import shutil
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
+
+import pymupdf
 
 from quotable.gold.store import GoldStore, GoldTable
 from quotable.review import sources
@@ -486,3 +491,39 @@ def test_many_gold_requests_read_the_run_list_once(app: App, monkeypatch):
         call(app, "GET", base + suffix)
     call(app, "GET", "/api/gold")
     assert len(calls) == 1
+
+
+def test_gold_images_and_words_requested_together_never_use_pymupdf_at_the_same_time(
+    app: App, monkeypatch
+):
+    real = pymupdf.open
+    state = {"now": 0, "most": 0}
+    guard = threading.Lock()
+
+    class Counted:
+        def __init__(self, *args):
+            with guard:
+                state["now"] += 1
+                state["most"] = max(state["most"], state["now"])
+            time.sleep(0.02)  # long enough for the other requests to arrive
+            self.document = real(*args)
+
+        def __enter__(self):
+            return self.document.__enter__()
+
+        def __exit__(self, *exc):
+            try:
+                return self.document.__exit__(*exc)
+            finally:
+                with guard:
+                    state["now"] -= 1
+
+    page = draw(app)["pages"][0]
+    base = f"/api/gold/pages/{page['sha256']}/{page['page']}"
+    sources.clear_caches()
+    monkeypatch.setattr(pymupdf, "open", Counted)
+    paths = [base + suffix for suffix in ("/words", ".png", ".png?rot=90", "/words") * 3]
+    with ThreadPoolExecutor(6) as pool:
+        answers = list(pool.map(lambda path: send(app, "GET", path)[0], paths))
+    assert answers == [200] * len(paths)
+    assert state["most"] == 1
