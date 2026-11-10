@@ -100,7 +100,7 @@ description: "Task list for spec 014: omission audit and sharp page images"
 - [x] T027 [P] Create `tests/live/test_live_audit.py` (marker `live`, skipped without `OPENAI_API_KEY` and `QUOTABLE_LIVE_TEST_MODEL`): run one real multi-page document from `tests/data/` four ways (audit off and on, sharp images off and on, cache dir per variant) and print pages audited out of pages, audit requests, rows and cells kept and rejected (from `Table.audit`), flagged cells, and tokens from `.quotable/cost/`. It asserts only that nothing kept breaks FR-006.
 - [x] T028 Run `just check` (hooks, then tests); stage new files by name first so the hooks see them. Fix whatever it reports. Ruff, ty and every offline test must pass.
 - [x] T029 With the user's go-ahead, run `just test-live tests/live/test_live_audit.py`, copy the numbers into a new "Live results" section of `specs/014-vra-feature-migration/spec.md` (SC-005), run `uv run quotable cost-report` and say plainly that its prices have still not been compared with the provider's dashboard unless the user does so. Do not run it without the go-ahead.
-- [ ] T030 Run `speckit-converge` and append any unbuilt work to this file; repeat implement and converge until it reports Converged. The user then reviews the changes.
+- [x] T030 Run `speckit-converge` and append any unbuilt work to this file; repeat implement and converge until it reports Converged. The user then reviews the changes.
 
 ---
 
@@ -126,3 +126,12 @@ Polish docs:  T025, T026, T027
 - **MVP**: Phases 1 to 3. The audit alone delivers the spec's main gain (no silent missing rows) and ships on its own; sharp images follow as a separate increment.
 - **Incremental**: finish and check each phase with `just check` before the next. Keep commits small (one per task or pair) on `spec/014-vra-feature-migration`.
 - **Not in scope**: gold scoring and annotation, the requestor and roster checks, anything in `scripts/` of the VRA project, display of audit marks in the review app, and cleaning dots or dashes.
+
+---
+
+## Phase 6: Convergence
+
+- [x] T031 Add a test in `tests/test_audit_pipeline.py` that a cell of only dots and a cell of only dashes, returned by the fake model in the extraction, are unchanged in the final table when the whole pipeline runs with `audit=True` and the recheck on, and are not sent in an audit request as empty cells, per SC-007 (partial: tested only at `audit_table` level)
+- [x] T032 Add a test in `tests/review/test_browse_api.py` that `rows.csv` ends with the `audit_added` column and marks an added row as `row` and filled cells as `cells: <columns>` (use `edit_run` to give a table's `audit` list accepted items), per FR-010 and the `rows.csv` change in `quotable/review/browse.py` that is not named in the spec (unrequested: needed to keep the CSV equal to `records()`)
+- [x] T033 Add a test in `tests/steps/test_audit.py` that a client that raises during an audit request makes `audit_table` raise the same error, and a valid answer whose proposals are all rejected does not, per the spec edge case "An unusable audit answer" (partial)
+- [x] T034 Add a `shortcut:` comment to `numbered_structure` in `quotable/steps/audit.py`: the audit request lists column names without the descriptions discovery gave, because `Table` keeps only the names; upgrade if the model files values in the wrong column, per Constitution VI (partial)

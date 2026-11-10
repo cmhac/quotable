@@ -4,6 +4,8 @@ import asyncio
 from dataclasses import replace
 from pathlib import Path
 
+import pytest
+
 from quotable.llm.answers import FilledCell, MissingRow, Omissions
 from quotable.llm.client import Image
 from quotable.llm.images import TODAY
@@ -137,3 +139,20 @@ def test_a_word_outside_a_shared_pages_band_is_not_counted(tmp_path):
     whole_page = answer(NOTHING)
     run(full, tmp_path, whole_page)
     assert [r.page for r in whole_page.requests] == [2]
+
+
+def test_a_request_that_fails_makes_the_audit_raise_the_same_error(tmp_path):
+    def fail(request):
+        raise ConnectionError("provider down")
+
+    with pytest.raises(ConnectionError, match="provider down"):
+        run(without(complete(tmp_path), 2, 3), tmp_path, FakeClient(fail))
+
+
+def test_an_answer_whose_proposals_are_all_rejected_is_not_an_error(tmp_path):
+    found = Omissions(
+        missing_rows=[MissingRow(after_row=9, values={"Item": "Proj2x3", "Amount": "$2300"})],
+        filled_cells=[FilledCell(row=0, column="Amount", value="$2300")],
+    )
+    table = run(without(complete(tmp_path), 2, 3), tmp_path, answer(found))
+    assert sorted(a.outcome for a in table.audit) == ["invalid_cell", "invalid_row"]

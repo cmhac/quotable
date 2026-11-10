@@ -950,6 +950,24 @@ def test_the_csv_has_the_columns_and_values_of_records(app, label, index):
     same_as_records(header, rows, app.built.tables[label][index])
 
 
+def test_the_csv_marks_the_rows_and_cells_the_audit_added(app):
+    audit = [
+        {"page": 1, "kind": "row", "values": {}, "outcome": "accepted", "row": 2},
+        {"page": 1, "kind": "cell", "values": {"Amount": "x"}, "outcome": "accepted", "row": 3},
+        {"page": 1, "kind": "cell", "values": {"Account": "y"}, "outcome": "accepted", "row": 3},
+        {"page": 1, "kind": "row", "values": {}, "outcome": "ungrounded", "row": None},
+    ]
+    edit_run(app.project, app.id["simple_new"], big=lambda d: d["tables"][0].update(audit=audit))
+    status, _, body = app.get(f"{app.run('simple_new')}/tables/0/rows.csv")
+    assert status == 200
+    header, rows = read_csv(body)
+    assert header[-1] == "audit_added"
+    marks = {(r[0], r[1]): r[-1] for r in rows}
+    assert marks["1", "2"] == "row"
+    assert marks["1", "3"] == "cells: Account, Amount"  # the table's column order
+    assert {v for k, v in marks.items() if k not in {("1", "2"), ("1", "3")}} == {""}
+
+
 def test_the_csv_names_its_file_after_the_pdf_and_the_table(app):
     _, response, _ = app.get(f"{app.run('senate')}/tables/1/rows.csv")
     stem = SENATE_PDF.stem

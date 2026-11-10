@@ -90,6 +90,32 @@ def test_audit_requests_count_toward_the_request_cap(tmp_path):
         asyncio.run(run_pipeline(PDF, capped, recheck=False, audit=True))
 
 
+def test_cells_of_only_dots_or_dashes_come_through_the_whole_pipeline_unchanged():
+    pages = copy.deepcopy(TRUTH)
+    pages[1][1]["Location"] = "....................."
+    pages[1][2]["Amount"] = "---"
+    base = replay(COLUMNS, pages).handler
+
+    def handler(request):
+        if request.stage == "audit":
+            return Omissions(missing_rows=[], filled_cells=[])
+        if request.stage == "recheck":
+            return PageRecheck(cells=[])
+        return base(request)
+
+    client = FakeClient(handler)
+    (table,) = run_with_fake(PDF, client, audit=True)
+    rows = table.page_rows(1)
+    assert (rows[1].values["Location"], rows[2].values["Amount"]) == (
+        ".....................",
+        "---",
+    )
+    assert [r["audit_added"] for r in table.records()] == [""] * len(rows)
+    audit = next(r for r in client.requests if r.stage == "audit")
+    text = "\n".join(p for p in audit.parts if isinstance(p, str))
+    assert "Row 2, Location" not in text and "Row 3, Amount" not in text  # not empty cells
+
+
 # --- through the public function ---------------------------------------------------------------
 class AuditCalls(Calls):
     """The entrypoint test's FunctionModel, which also answers an audit request with nothing."""

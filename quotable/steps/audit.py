@@ -358,6 +358,9 @@ def hints(page: PageGrounding, names: Sequence[str]) -> list[str]:
 
 def numbered_structure(names: Sequence[str]) -> str:
     """Return the column structure with each column's place and the column count."""
+    # shortcut: names only, without the descriptions discovery gave (a Table keeps just the
+    # names); keep them on the Table and send them if the model files values in wrong columns
+
     lines = "\n".join(f"{i}. {n}" for i, n in enumerate(names, 1))
     return f"Column structure ({len(names)} columns, left to right):\n{lines}"
 
