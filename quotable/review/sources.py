@@ -6,7 +6,8 @@ their files' size and modification time), the cost log (by its), a PDF's SHA-256
 and modification time, so a file is hashed once) and rendered pages (by the document's SHA-256
 and the page number, so two runs of one PDF share them). Nothing here writes to the project
 folder. Standard library only, apart from PyMuPDF (through ``quotable.steps.extract``), which is
-imported when a page is rendered.
+imported when a page is rendered. The server answers each request on its own thread and PyMuPDF
+does not support threads, so renders run one at a time.
 """
 
 import hashlib
@@ -27,6 +28,7 @@ _RUNS = 4
 _HASHES = 256
 _PAGES = 24
 _lock = threading.Lock()
+_render_lock = threading.Lock()  # PyMuPDF is not thread-safe: one render at a time
 _runs: OrderedDict[tuple[str, str], tuple[Any, Run]] = OrderedDict()
 _costs: dict[str, tuple[Any, dict[str, dict[str, Any]]]] = {}
 _hashes: dict[tuple[str, int, int], str] = {}
@@ -210,7 +212,7 @@ def page_png(summary: RunSummary, page: int) -> bytes:
     from quotable.steps.extract import render_png  # noqa: PLC0415
 
     try:
-        with pymupdf.open(path) as document:
+        with _render_lock, pymupdf.open(path) as document:
             png = render_png(document[page - 1])
     except (OSError, ValueError, RuntimeError):
         raise NotFound("the PDF cannot be read") from None
