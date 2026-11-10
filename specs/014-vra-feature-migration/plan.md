@@ -46,7 +46,7 @@ already in quotable and adds no dependency (a dozen-line edit-distance function 
 
 | Principle | Check |
 | --- | --- |
-| I. The text layer is the truth | The audit adds a value only if `ground_rows` finds it `exact` in the table's layer (with the near-spelling rule for the check only); added rows then go through the normal grounding, position check and recheck. Grounding is not switchable. Pass. |
+| I. The text layer is the truth | The audit adds a value only if `ground_rows` finds it `exact` or `fuzzy` in the table's layer, never `ungrounded` (with the near-spelling rule for the check only; a `fuzzy` value is flagged and goes to the recheck); added rows then go through the normal grounding, position check and recheck. Grounding is not switchable. Pass. |
 | II. Fail closed on doubt | A proposal that fails any rule is rejected and recorded. An oversize page stops the run before any request. A request failure raises like any other. Pass. |
 | III. Offline-testable, live opt-in | Every requirement has an offline test with a fake client. The live test is opt-in and run only with the user's go-ahead; model behavior is tested against the real model, not a scripted fake. Pass. |
 | IV. One entrypoint, explicit inputs | Two keyword arguments on the existing entrypoint; no new public name. Cache keys and prompts: unchanged with both switches off (golden-key test); with the new defaults the extraction and recheck keys of the first run change, which the spec states (FR-020, FR-040). Saved-run format: additive keys read with defaults, so no migration. Pass. |

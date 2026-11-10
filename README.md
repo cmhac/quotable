@@ -137,10 +137,11 @@ Grounding checks the values the model gave; it cannot see a row or a cell the mo
 After the first grounding, quotable compares each page's text layer with the extracted cells.
 If the page prints words that no cell accounts for, the page goes back to the model once with its
 image, its rows and those words, and the model reports only what it omitted. A reported row or
-cell is kept only if every value in it is found in the page's text layer (a word of five or more
-letters may be up to two letters off a page word, and the model's spelling is kept for the
-recheck to correct), it is not a copy of a row already there, and it uses at least one of the
-unexplained words. Nothing already extracted is changed.
+cell is kept only if every value in it is found in the page's text layer, exactly or in part (a
+word of five or more letters may be up to two letters off a page word; a value with no match at
+all is refused), it is not a copy of a row already there, and it uses at least one of the
+unexplained words. A partly matched cell keeps the model's spelling, is flagged `fuzzy`, and the
+recheck then corrects it like any other flagged cell (with `recheck=False` it stays flagged). Nothing already extracted is changed.
 
 - On a page with one table, every word on the page counts, page numbers and titles included, so
   almost every page is audited: expect up to one extra request per page. A word left over on
@@ -351,7 +352,7 @@ The `.quotable/` folder holds `cache/` (model answers and OCR results), `cost/` 
 | Extraction | `extract` | One request per table and page returns its rows. On a page with several tables the request names the other tables and asks for this one only. Rows with wrong keys are sent back once. |
 | Grounding | `grounding` | Each value is looked up in the table's text layer (the page's, or on a page with several tables only the band between the table's first and last row, found with `regions`): exact token match, else a fuzzy longest-common-subsequence match. Statuses: `exact`, `fuzzy`, `ungrounded`, `untokenized`, `empty`, `not_on_page`. |
 | Position check | `position` | A value must sit in its own row and column (row windows from uniquely-occurring values, column bands pooled over the document). Values found elsewhere become `misplaced`. |
-| Audit | `audit` | Pages whose text layer prints words that no extracted cell accounts for go back to the model once, to report rows and cells it left out; only what the text layer confirms is kept (see "Rows the model left out"). On by default; `audit=False` turns it off. |
+| Audit | `audit` | Pages whose text layer prints words that no extracted cell accounts for go back to the model once, to report rows and cells it left out; only what the text layer supports is kept (see "Rows the model left out"). On by default; `audit=False` turns it off. |
 | Merge | `merge` | Two tables that are really one but whose headers are worded differently on different pages are joined when every check passes (see "Headers worded differently"); any doubt leaves them apart. Switch off with `merge_reworded=False`. |
 | Extra fields | `extra_fields` | Optional (see "Values printed outside the tables"). Discovery also reads the requested fields on each page; they are grounded in the page's whole text layer, rechecked if fuzzy or ungrounded, checked for missed headers (a second look at pages with unexplained words where the header is printed elsewhere), carried forward on request and attached to every row. |
 | Recheck | `recheck` | Flagged cells go back to the model once with their reason, the page image and the page's whole text layer; the model is told to copy the text layer's reading. An answer is kept only if grounding of that cell strictly improves. Because the text layer wins, OCR errors in it (for example thousands commas read as periods) can pass into the output. |

@@ -13,10 +13,12 @@ hint, and the model reports only what it omitted. A proposal is kept only if
 
 * a row's position exists and the row is not a copy of a listed one, or a cell is empty in its
   listed row;
-* every non-empty value is an exact match in the table's text layer, except that a word of
-  ``NEAR_MIN_LEN`` or more letters may be up to ``NEAR_EDITS`` letters off one page word (numbers
-  must be exact). The model's spelling is kept; grounding then flags it and the recheck corrects
-  it as elsewhere;
+* every non-empty value is found in the table's text layer, exactly or in part (``fuzzy``: some
+  of its words are missing, as when the layer splits a word over two lines or misreads a
+  character), and a word of ``NEAR_MIN_LEN`` or more letters may be up to ``NEAR_EDITS`` letters
+  off one page word (numbers must be exact). A value with no match at all is refused. The model's
+  spelling is kept; a partly matched cell is flagged by the final grounding and the recheck then
+  corrects it, as for any other flagged cell;
 * it contains at least one of the unexplained words (a real omission has one, a repeat of
   something already extracted has none).
 
@@ -50,6 +52,7 @@ HINT_MAX_WORDS = 40  # unexplained words listed in the request
 CELL_HINT_MAX = 40  # empty cells named in the request
 NEAR_EDITS = 2  # letters a proposed word may differ from a page word ...
 NEAR_MIN_LEN = 5  # ... if it has this many letters; numbers must be exact
+FOUND = ("exact", "fuzzy", "empty")  # grounding statuses a proposed value may have
 
 AUDIT_PROMPT = (
     "You are checking an earlier extraction of the table on this page image. The "
@@ -199,11 +202,11 @@ def _spelled(value: str, page: AuditPage) -> str:
     return " ".join(near_word(t, page) for t in tokenize(value))
 
 
-def _all_exact(row: dict[str, str], page: AuditPage) -> bool:
-    """Say whether every non-empty value of ``row`` is an exact match (near spelling allowed)."""
+def _all_found(row: dict[str, str], page: AuditPage) -> bool:
+    """Say whether every non-empty value of ``row`` is found, exactly or in part (near spelling)."""
     spelled = {k: _spelled(v, page) for k, v in row.items()}
     cells = ground_rows([spelled], page.names, page.layer)[0]
-    return all(c.status in ("exact", "empty") for c in cells.values())
+    return all(c.status in FOUND for c in cells.values())
 
 
 def _draws_on(values: Iterable[str], page: AuditPage) -> bool:
@@ -231,7 +234,7 @@ def judge_cell(
         return "not_empty"
     if (fill.row, fill.column) in taken:
         return "repeated"
-    if not _all_exact({**dict.fromkeys(page.names, ""), fill.column: fill.value}, page):
+    if not _all_found({**dict.fromkeys(page.names, ""), fill.column: fill.value}, page):
         return "ungrounded"
     return "accepted" if _draws_on([fill.value], page) else "no_evidence"
 
@@ -250,7 +253,7 @@ def judge_row(
         return "invalid_row", row
     if _is_copy(row, rows):
         return "duplicate", row
-    if not _all_exact(row, page):
+    if not _all_found(row, page):
         return "ungrounded", row
     return ("accepted" if _draws_on(row.values(), page) else "no_evidence"), row
 

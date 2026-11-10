@@ -17,7 +17,7 @@ extract_tables(
 
 | Argument | `True` (default) | `False` |
 | --- | --- | --- |
-| `audit` | pages with words that no cell accounts for go back to the model once; proposals the text layer confirms are added | no audit request; nothing else about the output changes |
+| `audit` | pages with words that no cell accounts for go back to the model once; proposals the text layer supports, exactly or in part, are added (a partly matched cell is flagged `fuzzy` for the recheck) | no audit request; nothing else about the output changes |
 | `sharp_images` | extraction, recheck and audit use the provider's sharp image (table below) | requests are identical to the version before this change |
 
 | Provider (from the model string or `Model.system`) | Image for extraction, recheck, audit | Up-front size check |

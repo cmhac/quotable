@@ -135,3 +135,14 @@ Polish docs:  T025, T026, T027
 - [x] T032 Add a test in `tests/review/test_browse_api.py` that `rows.csv` ends with the `audit_added` column and marks an added row as `row` and filled cells as `cells: <columns>` (use `edit_run` to give a table's `audit` list accepted items), per FR-010 and the `rows.csv` change in `quotable/review/browse.py` that is not named in the spec (unrequested: needed to keep the CSV equal to `records()`)
 - [x] T033 Add a test in `tests/steps/test_audit.py` that a client that raises during an audit request makes `audit_table` raise the same error, and a valid answer whose proposals are all rejected does not, per the spec edge case "An unusable audit answer" (partial)
 - [x] T034 Add a `shortcut:` comment to `numbered_structure` in `quotable/steps/audit.py`: the audit request lists column names without the descriptions discovery gave, because `Table` keeps only the names; upgrade if the model files values in the wrong column, per Constitution VI (partial)
+
+---
+
+## Phase 7: Change after the live run (accept partly matched values)
+
+The user decided on 2026-11-10 that the audit keeps a row or cell whose values the text layer matches only in part (`fuzzy`) and leaves it to the recheck (spec FR-006 changed).
+
+- [x] T035 In `quotable/steps/audit.py` accept grounding statuses `exact`, `fuzzy` and `empty` for a proposed value (`FOUND`, `_all_found`), keep refusing `ungrounded`, and update the module docstring, per FR-006
+- [x] T036 Update `tests/steps/test_audit_rules.py` and `tests/steps/test_audit.py`: a row or cell that grounds only `fuzzy` is accepted and left `fuzzy`; a value with no match is still `ungrounded`, per FR-006
+- [x] T037 Add a test in `tests/test_audit_pipeline.py`: the audit returns the dropped row with one wrong word, the row is added and flagged `fuzzy`, and the recheck corrects it so the final rows equal the truth, per FR-006 and SC-003
+- [x] T038 Update `README.md`, `AGENTS.md` and the live-results note in `spec.md` for the new rule, and replay the cached live answers to record the new count

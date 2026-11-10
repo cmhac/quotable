@@ -21,7 +21,7 @@ $ just test tests/llm/test_images.py tests/steps/test_audit.py tests/test_audit_
 They show, in order of the spec:
 
 - the audit asks only about pages that have unexplained words, once each, and keeps only
-  proposals the text layer confirms (FR-002 to FR-009, SC-002, SC-003);
+  proposals the text layer supports (FR-002 to FR-009, SC-002, SC-003);
 - an added row is in page order, marked in `audit_added`, grounded `exact` (FR-008, FR-010);
 - `audit=False` makes no audit request (FR-001);
 - the image of each stage and provider is the one in the table of `contracts/public-api.md`

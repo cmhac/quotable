@@ -156,3 +156,34 @@ def test_an_answer_whose_proposals_are_all_rejected_is_not_an_error(tmp_path):
     )
     table = run(without(complete(tmp_path), 2, 3), tmp_path, answer(found))
     assert sorted(a.outcome for a in table.audit) == ["invalid_cell", "invalid_row"]
+
+
+def wide_table(tmp_path: Path) -> Table:
+    """Six pages of four rows whose Item has four words, so one wrong word is a partial match."""
+    pages = [
+        [{"Item": f"Road Bridge Culvert Proj{p}x{r}", "Amount": f"${p}{r}00"} for r in range(1, 5)]
+        for p in range(1, PAGES + 1)
+    ]
+    return build_table(tmp_path, COLUMNS, pages, xs=XS)
+
+
+def test_a_partly_matched_row_is_added_flagged_fuzzy_and_left_to_the_recheck(tmp_path):
+    partly = {"Item": "Road Bridge Zzyzx Proj2x3", "Amount": "$2300"}  # one word not on the page
+    found = Omissions(missing_rows=[MissingRow(after_row=2, values=partly)], filled_cells=[])
+    table = run(without(wide_table(tmp_path), 2, 3), tmp_path, answer(found))
+    row = table.page_rows(2)[2]
+    assert row.values == partly  # the model's spelling is kept
+    assert row.cells["Item"].status == "fuzzy"
+    assert [(f.page, f.row, f.column, f.status) for f in table.flagged()] == [
+        (2, 3, "Item", "fuzzy")
+    ]
+    assert [(a.outcome, a.row) for a in table.audit] == [("accepted", 3)]
+    assert [r["audit_added"] for r in table.records() if r["page"] == 2][2] == "row"
+
+
+def test_a_row_with_a_value_that_matches_nothing_is_still_refused(tmp_path):
+    nothing = {"Item": "Qqq Zzyzx Www Vvv", "Amount": "$2300"}
+    found = Omissions(missing_rows=[MissingRow(after_row=2, values=nothing)], filled_cells=[])
+    table = run(without(wide_table(tmp_path), 2, 3), tmp_path, answer(found))
+    assert [a.outcome for a in table.audit] == ["ungrounded"]
+    assert len(table.page_rows(2)) == 3

@@ -69,10 +69,13 @@ Each entry is Decision, Rationale, Alternatives. Facts about the VRA script come
 
 ## 6. Judging a proposal
 
-- **Decision**: port `_cell_outcome`, `_row_outcome`, `_is_copy`, `_all_exact`, `_draws_on`,
+- **Decision**: port `_cell_outcome`, `_row_outcome`, `_is_copy`, `_all_exact` (now `_all_found`), `_draws_on`,
   `_near_word` as `steps/audit.py`. A proposal's values are first respelled to the page's spelling
   for the check only (the near-spelling rule), then grounded with `ground_rows` against the
-  table's layer: every cell must be `exact` or `empty`. The proposal keeps the model's spelling.
+  table's layer: every cell must be `exact`, `fuzzy` or `empty`; `ungrounded` is refused. The
+  proposal keeps the model's spelling. (Changed after the live run: it first required `exact`,
+  which refused correct rows whose text layer splits or misreads a word; the final grounding now
+  flags a `fuzzy` cell and the recheck corrects it.)
   Outcomes (reported in `Table.audit`): `accepted`, `invalid_row`, `invalid_cell`, `duplicate`,
   `not_empty`, `repeated`, `ungrounded`, `no_evidence`, `empty`.
 - **Rationale**: same rules as the spec's FR-006, FR-007; `ground_rows` is quotable's own

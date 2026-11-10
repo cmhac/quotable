@@ -70,6 +70,35 @@ def test_the_audit_restores_the_dropped_row_between_extraction_and_recheck():
     assert marks.count("row") == 1 and marks[DROPPED - 1] == "row"
 
 
+def test_a_partly_matched_row_the_audit_adds_is_corrected_by_the_recheck():
+    row_number = TYPO_ROW  # a row whose Project has several words
+    pages = copy.deepcopy(TRUTH)
+    missing = pages[1].pop(row_number - 1)
+    words = missing["Project"].split()
+    words[1] = "Zzyzx"  # the audit's reading has one wrong word, so it grounds only fuzzy
+    off = {**missing, "Project": " ".join(words)}
+    base = replay(COLUMNS, pages).handler
+
+    def handler(request):
+        if request.stage == "audit":
+            row = MissingRow(after_row=row_number - 1, values=off)
+            return Omissions(missing_rows=[row], filled_cells=[])
+        if request.stage == "recheck":
+            cell = CellRecheck(row=row_number, column="Project", value=missing["Project"])
+            return PageRecheck(cells=[cell])
+        return base(request)
+
+    client = FakeClient(handler)
+    (table,) = run_with_fake(PDF, client, audit=True)
+    assert client.stages() == ["schema", "extract", "audit", "recheck"]
+    assert [r.values for r in table.page_rows(1)] == TRUTH[1]  # the recheck put the right word in
+    assert table.page_rows(1)[row_number - 1].status == "exact"
+    assert [(p.row, p.status_before, p.outcome) for p in table.proposals] == [
+        (row_number, "fuzzy", "accepted")
+    ]
+    assert table.records()[row_number - 1]["audit_added"] == "row"
+
+
 def test_without_the_audit_the_row_stays_missing_and_no_audit_request_is_made():
     client = omitting_model()
     (table,) = run_with_fake(PDF, client, recheck=False, audit=False)

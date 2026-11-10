@@ -18,8 +18,8 @@ since (several tables per page, OCR, extra fields, cost tracking, saved runs).
 1. **Omission audit.** Grounding checks the values the model gave. It cannot see a value the model
    left out: a whole row, or one cell returned empty. The audit finds these from the text layer
    (words printed in the table that no extracted cell accounts for), asks the model once about that
-   page, and keeps only what the text layer confirms. It is a first-class step like the recheck, so
-   it is **on by default**.
+   page, and keeps only what the text layer supports, exactly or in part (a value with no match at
+   all is refused). It is a first-class step like the recheck, so it is **on by default**.
 2. **Sharp page images.** The images that carry cell text to the model are rendered at 300 dpi
    instead of 150 and, for OpenAI, sent at the highest image-detail setting, so small print is
    readable. It is **on by default**. It is verified to work for OpenAI only; the README says so.
@@ -38,6 +38,7 @@ Senate comparison, memos, standardizing, and every other part of the VRA project
 - Q: Is the omission audit on by default? A: Yes, like `recheck`. Omission audit and recheck are both essential steps of the process.
 - Q: Are sharp images on by default? A: Yes. The user reports a significant improvement on tricky real-world cases. Anthropic's handling was researched (see Research notes); the README states that the feature is verified for OpenAI only.
 - Q: On a page that holds one table, does the audit count unexplained words anywhere on the page or only inside the table's area? -> A: Anywhere on the page, as the VRA script does. A page shared by several tables keeps the existing per-table band of spec 004.
+- Q: Should the audit keep a row or cell whose values the text layer matches only in part (`fuzzy`)? A: Yes, and leave them to the recheck (decided after the live run, which rejected two correct rows for text-layer reasons). A value with no match at all is still refused.
 - Q: Should cells of only dots or dashes be blanked (the third VRA change, and the earlier request to blank dash-only cells too)? A: No. Extract cell contents exactly and remove no character-only cells. That change is dropped from this spec.
 
 ## User Scenarios & Testing *(mandatory)*
@@ -47,7 +48,8 @@ Senate comparison, memos, standardizing, and every other part of the VRA project
 A user extracts a table and wants to know that no row is missing. After the first pass, quotable
 compares each table page's text layer with the extracted cells. If the page prints words that no
 cell accounts for, quotable asks the model once to report only what it omitted. A proposed row or
-cell is kept only if the text layer confirms every value in it. Kept rows and cells are marked as
+cell is kept only if the text layer supports every value in it, exactly or in part; a partly
+matched cell is flagged `fuzzy` and the recheck then corrects it. Kept rows and cells are marked as
 added by the audit.
 
 **Why this priority**: it closes the one gap grounding cannot: a dropped row leaves nothing to
@@ -67,7 +69,7 @@ row whose values are not on the page adds nothing.
    runs, **Then** no audit request is made for that page.
 3. **Given** a cell returned empty whose area on the page prints text, **When** the audit runs,
    **Then** the request names that cell, and a proposed value is filled in only if the text layer
-   confirms it.
+   supports it.
 4. **Given** the model proposes a row whose values are not all found in the page's text layer,
    or a row that repeats an existing row, **When** the audit judges it, **Then** the row is
    rejected and the table is unchanged.
@@ -182,11 +184,13 @@ audit requests carry a 300-dpi image with detail `original`, and discovery reque
   and fill cells that were empty.
 - **FR-006**: A proposed row MUST be kept only if all of these hold: its position exists; it is
   not a copy of an existing row (every non-empty cell of the proposal repeats the same cell of some
-  row); every non-empty value is an exact match in the page's text layer, with the near-spelling
-  allowance of FR-007; and at least one of its tokens is an unexplained word. A proposed cell
-  MUST be kept only if its row exists, its column is one the page prints, the existing cell is
-  empty, and it meets the same exact-match and unexplained-word conditions. Every other proposal
-  MUST be rejected.
+  row); every non-empty value is found in the page's text layer, either exactly or in part (an
+  `exact` or `fuzzy` grounding; a value with no match, `ungrounded`, is refused), with the
+  near-spelling allowance of FR-007; and at least one of its tokens is an unexplained word. A
+  proposed cell MUST be kept only if its row exists, its column is one the page prints, the
+  existing cell is empty, and it meets the same found-in-the-text-layer and unexplained-word
+  conditions. Every other proposal MUST be rejected. A kept value that grounds `fuzzy` is flagged
+  like any other `fuzzy` cell and goes to the recheck.
 - **FR-007**: For the check only, a word of five or more letters may differ from a page word by up
   to two letters (insertions, deletions, substitutions or one adjacent swap), provided exactly one
   page word is that near, preferring one of the unexplained words. A token with a digit MUST match
@@ -266,7 +270,7 @@ audit requests carry a 300-dpi image with detail `original`, and discovery reque
   first pass and returns it when audited, the audit restores 100% of the dropped rows and adds 0
   rows to pages where nothing was dropped.
 - **SC-003**: For every proposal kept by the audit in any test, 100% of its non-empty values are
-  found in the page's text layer (exactly, or within the near-spelling allowance). No test finds a
+  found in the page's text layer (exactly or in part, or within the near-spelling allowance). No test finds a
   kept proposal that breaks FR-006.
 - **SC-004**: With `sharp_images=True`, the offline tests show the image of each request stage and
   provider as FR-021 says: OpenAI 300 dpi with `original`, Anthropic 300 dpi, any other provider
@@ -375,5 +379,12 @@ amount `$1,000,000` (numbers must match exactly), the other splits `Administrato
 as `Adminis-` / `trator.`, which grounds only `fuzzy`. In the original extraction the same cells
 were `ungrounded` and `fuzzy`, so the recheck would have flagged them too. This is the rule of
 FR-006 working as written: the audit's strictness costs recall on a document with a messy text
-layer. Accepting a row whose cells ground `fuzzy`, and leaving them to the recheck, is a change
-for the user to decide; it is not made here.
+layer.
+
+**After the run, the user decided to keep rows whose cells ground `fuzzy`** and leave them to the
+recheck (FR-006 above is the changed text). Replaying the cached answers of the run above (no new
+request) under the new rule restores 3 of the 4 rows, as before 4 of 4 cells, and adds nothing
+wrong: the page-3 row comes back flagged `fuzzy`. The page-1 row is still refused, because its
+`Account` and `Project` cells match nothing in that page's text layer (`ungrounded`), whatever the
+amount reads; the recheck had flagged the same cells in the original extraction. The run itself
+was not repeated, so the recheck's correction of an added row was not seen with the real model.

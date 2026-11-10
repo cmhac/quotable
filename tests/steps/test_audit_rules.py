@@ -140,6 +140,13 @@ def test_a_row_that_repeats_a_listed_row_is_a_duplicate():
 
 def test_a_row_with_a_value_not_on_the_page_is_ungrounded():
     assert judge_row({"A": "delta", "B": "999"})[0] == "ungrounded"
+    assert judge_row({"A": "delta qqq", "B": "200"})[0] == "ungrounded"  # nothing in a row matches
+
+
+def test_a_row_the_text_layer_matches_only_in_part_is_accepted_for_the_recheck():
+    # one word of the cell is not on the page (the layer split or misread it): grounds `fuzzy`
+    outcome, row = judge_row({"A": "delta 200 zzz epsilon", "B": ""})
+    assert (outcome, row["A"]) == ("accepted", "delta 200 zzz epsilon")
 
 
 def test_a_row_made_of_words_already_explained_has_no_evidence():
@@ -166,6 +173,10 @@ def test_an_empty_cell_filled_with_a_confirmed_value_is_accepted():
 @pytest.mark.parametrize(("row", "column"), [(0, "B"), (3, "B"), (2, "C")])
 def test_a_cell_that_does_not_exist_is_invalid(row, column):
     assert judge_cell(row, column, "200") == "invalid_cell"
+
+
+def test_a_cell_the_text_layer_matches_only_in_part_is_accepted():
+    assert judge_cell(2, "B", "delta 200 zzz epsilon") == "accepted"
 
 
 def test_the_other_cell_outcomes():
