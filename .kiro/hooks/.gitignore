@@ -1,0 +1,2 @@
+# Ignore all corporate security hooks in this directory as they will likely not work for others
+security-*.json

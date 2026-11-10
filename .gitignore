@@ -18,5 +18,5 @@ tests/live/.cache/
 # Environment variables
 .env
 
-# coding agent harnesses we don't want tracked in git
-.kiro
+# Kiro Crew's generated settings and lock file (machine state)
+.kiro/settings/
