@@ -48,21 +48,23 @@ def test_a_model_is_required_and_no_environment_variable_supplies_it(monkeypatch
 
 def test_the_public_function_runs_the_pipeline_with_a_pydantic_ai_model():
     calls = Calls()
-    (table,) = extract_tables(PDF, calls.model(), recheck=False)
+    (table,) = extract_tables(PDF, calls.model(), recheck=False, audit=False)
     assert table.columns == SAMPLE["columns"]
     assert [r.values for r in table.page_rows(1)] == SAMPLE["pages"][1]
     assert calls.count == 2  # discovery, then the one page
 
     # the same result as the internal function with the recorded-rows fake
     (expected,) = asyncio.run(
-        run_pipeline(PDF, replay(SAMPLE["columns"], SAMPLE["pages"]), recheck=False)
+        run_pipeline(PDF, replay(SAMPLE["columns"], SAMPLE["pages"]), recheck=False, audit=False)
     )
     assert [r.values for r in table.rows()] == [r.values for r in expected.rows()]
 
 
 def test_the_pdf_can_be_a_string_and_the_async_twin_works():
     calls = Calls()
-    (table,) = asyncio.run(extract_tables_async(str(PDF), calls.model(), recheck=False))
+    (table,) = asyncio.run(
+        extract_tables_async(str(PDF), calls.model(), recheck=False, audit=False)
+    )
     assert table.columns == SAMPLE["columns"]
 
 
@@ -70,9 +72,9 @@ def test_the_pdf_can_be_a_string_and_the_async_twin_works():
 def test_a_second_run_makes_no_model_request_with_or_without_a_cache_dir(tmp_path, explicit):
     cache = str(tmp_path / "cache") if explicit else None
     first = Calls()
-    extract_tables(PDF, first.model(), cache_dir=cache, recheck=False)
+    extract_tables(PDF, first.model(), cache_dir=cache, recheck=False, audit=False)
     second = Calls()
-    extract_tables(PDF, second.model(), cache_dir=cache, recheck=False)
+    extract_tables(PDF, second.model(), cache_dir=cache, recheck=False, audit=False)
     assert first.count == 2
     assert second.count == 0
 
@@ -84,7 +86,9 @@ def test_max_requests_caps_new_requests_with_the_default_or_an_explicit_director
     calls = Calls()
     cache = tmp_path / "cache" if explicit else None
     with pytest.raises(BudgetExceededError):
-        extract_tables(PDF, calls.model(), cache_dir=cache, max_requests=1, recheck=False)
+        extract_tables(
+            PDF, calls.model(), cache_dir=cache, max_requests=1, recheck=False, audit=False
+        )
     assert calls.count == 1
 
 

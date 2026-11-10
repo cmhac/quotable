@@ -6,7 +6,8 @@ page images, the PDF. Two JSON files, so the runs list never loads the big one. 
 1; ``v`` changes whenever the format does, and a reader skips what it does not know.
 
 ``run.json`` (small): ``v``; ``run`` (``id``, ``started`` and ``ended`` as UTC ISO 8601 with
-``Z``, ``quotable`` version, ``model``, ``settings``: ``discovery_pages``, ``recheck``, ``ocr``
+``Z``, ``quotable`` version, ``model``, ``settings``: ``discovery_pages``, ``recheck``, ``audit``,
+``sharp_images`` (the last two from spec 014; a run saved before it has neither), ``ocr``
 as ``true``, ``false`` or the ``OcrConfig`` fields, ``merge_reworded``, ``max_requests`` and
 ``extra_fields``, which is ``null`` or each field's ``name``, ``description`` and ``group``
 with the ``prompt`` and ``carry_forward``); ``document`` (``name``, absolute ``path``, ``size``,
@@ -24,7 +25,9 @@ and ``tables`` in the order ``extract_tables`` returned them, each with ``index`
 (page -> ``[y0, y1]``, only pages shared with another table), ``areas`` (page -> ``rows``:
 1-based row number -> ``[y0, y1]``, and ``columns``: name -> ``[x0, x1]``; an open edge of the
 position check is clamped to the page), ``merged`` (``pages``, ``columns``, ``evidence``),
-``proposals``, ``extra_names``, ``extra_fields`` (page -> name -> ``value``, ``source_page``
+``proposals``, ``audit`` (spec 014: the omission audit's items, each ``page``, ``kind``,
+``values``, ``outcome`` and ``row``; absent in older runs), ``extra_names``, ``extra_fields``
+(page -> name -> ``value``, ``source_page``
 and the grounding fields of a cell), ``extra_changes`` (``[page, name, old, new]``) and
 ``rows`` (``page``, ``row``, ``values`` and ``cells``: column -> ``status``, ``coverage``,
 ``density``, ``n_candidates``, ``matched_text``, ``bbox`` and ``candidates``, the box of every
@@ -80,6 +83,8 @@ class RunInfo:
     size: int
     sha256: str
     pages: int
+    audit: bool = True  # spec 014: the omission audit was on
+    sharp_images: bool = True  # spec 014: sharp page images were on
 
 
 def _pt(value: float) -> float:
@@ -210,6 +215,7 @@ def _table_data(  # noqa: PLR0913, PLR0917
         "areas": {str(p): _areas(table, p, page_sizes[p]) for p in pages},
         "merged": merged,
         "proposals": [asdict(p) for p in table.proposals],
+        "audit": [asdict(a) for a in table.audit],
         "extra_names": list(table.extra_names),
         "extra_fields": {
             str(page): {n: _extra(r, page_layers) for n, r in results.items()}
@@ -233,6 +239,8 @@ def _settings(info: RunInfo) -> dict[str, Any]:
     return {
         "discovery_pages": info.discovery_pages,
         "recheck": info.recheck,
+        "audit": info.audit,
+        "sharp_images": info.sharp_images,
         "ocr": ocr,
         "merge_reworded": info.merge_reworded,
         "max_requests": info.max_requests,
@@ -450,6 +458,7 @@ class RunTable:
     extra_fields: dict[int, dict[str, RunExtra]]
     extra_changes: list[list[Any]]
     rows: list[RunRow]
+    audit: list[dict[str, Any]] = field(default_factory=list)  # spec 014; older runs have none
 
 
 @dataclass
@@ -534,6 +543,7 @@ def _run_table(data: dict[str, Any]) -> RunTable:
         areas=areas,
         merged=data["merged"],
         proposals=data["proposals"],
+        audit=data.get("audit", []),  # runs saved before spec 014 have none
         extra_names=data["extra_names"],
         extra_fields=extras,
         extra_changes=data["extra_changes"],

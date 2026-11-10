@@ -20,13 +20,14 @@ SAMPLES = ["fy22_milcon_house_original", "fy24_milcon_house_original", "fy22_ag_
 Word = tuple[float, float, str]  # x, y (baseline), text
 
 
-def extract_tables(
+def extract_tables(  # noqa: PLR0913
     pdf: Path,
     client: LLMClient,
     *,
     discovery_pages: int | None = None,
     recheck: bool = True,
     merge_reworded: bool | None = None,
+    audit: bool = False,
 ) -> list[Table]:
     """Run the pipeline with a fake client (the public function takes a model instead)."""
     options: dict[str, Any] = (
@@ -34,7 +35,7 @@ def extract_tables(
     )
     if merge_reworded is not None:
         options["merge_reworded"] = merge_reworded
-    return asyncio.run(run_pipeline(Path(pdf), client, recheck=recheck, **options))
+    return asyncio.run(run_pipeline(Path(pdf), client, recheck=recheck, audit=audit, **options))
 
 
 @pytest.fixture(autouse=True)

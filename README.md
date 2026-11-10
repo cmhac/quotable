@@ -32,7 +32,7 @@ xAI. `model_settings=` is passed to pydantic-ai. `extract_tables_async` takes th
 pandas and polars are installed with quotable. The frames have the columns of `records()`: `page`,
 `row`, the PDF's columns (strings, exactly as extracted), then for each of them its `__grounding`
 status and `__coverage` (a float, missing when the cell was never looked up), then
-`grounding_status` and `recheck_changes`. A PDF column is never renamed: if it already has the name
+`grounding_status`, `recheck_changes` and `audit_added`. A PDF column is never renamed: if it already has the name
 of one of those columns (a PDF column called `page`, say), the quotable column gets a trailing `_`
 (`page_`). Write a CSV with `table.to_polars().write_csv(path)`.
 
@@ -131,6 +131,52 @@ answers.
 
 `just score-extra-fields` shows how the checks do with injected faults (no model, no cost).
 
+### Rows the model left out (the omission audit)
+
+Grounding checks the values the model gave; it cannot see a row or a cell the model left out.
+After the first grounding, quotable compares each page's text layer with the extracted cells.
+If the page prints words that no cell accounts for, the page goes back to the model once with its
+image, its rows and those words, and the model reports only what it omitted. A reported row or
+cell is kept only if every value in it is found in the page's text layer, exactly or in part (a
+word of five or more letters may be up to two letters off a page word; a value with no match at
+all is refused), it is not a copy of a row already there, and it uses at least one of the
+unexplained words. A partly matched cell keeps the model's spelling, is flagged `fuzzy`, and the
+recheck then corrects it like any other flagged cell (with `recheck=False` it stays flagged). Nothing already extracted is changed.
+
+- On a page with one table, every word on the page counts, page numbers and titles included, so
+  almost every page is audited: expect up to one extra request per page. A word left over on
+  30% or more of a table's pages (tables of five pages or more) is treated as a running header
+  or footer and ignored. On a page shared by several tables only that table's band counts.
+- `Table.audit` lists every proposal with its outcome (`accepted`, or why not: `ungrounded`,
+  `duplicate`, `no_evidence`, ...). `records()` and the frames have an `audit_added` column:
+  `row` for a row the audit added, `cells: <columns>` for cells it filled, else empty.
+- Rows are numbered by position, so an added row shifts the rows after it. A saved review
+  verdict for a row that moved is shown as stale, not applied to another row's value.
+- A cell of only dots or dashes (`.....`, `---`) is kept exactly as extracted; quotable does not
+  clean cell contents.
+- `audit=False` turns it off, like `recheck=False`.
+
+### Sharp page images
+
+The pages that carry cell text to the model (extraction, the audit and the recheck) are rendered
+at 300 dpi instead of 150 (`sharp_images=True`, the default; `False` sends what quotable sent
+before). Table discovery and the extra-field requests keep 150 dpi. What is sent depends on the
+provider:
+
+| Provider | Image | Before any request |
+|---|---|---|
+| OpenAI (`openai`, `openai-chat`, `openai-responses`) | 300 dpi, image detail `original` | a page over 30,000 patches of 32 px stops the run with `ExtractionError` |
+| Anthropic | 300 dpi; Anthropic has no detail setting | a page over 8,000 px on a side stops the run |
+| Any other (Bedrock, Google, Groq, a gateway, ...) | 150 dpi, detail `high`, as before | nothing |
+
+**Sharp images are verified to work with OpenAI only.** On Anthropic they are unverified. Anthropic
+shrinks any image above its model's limit (a 1,568 px long edge before Claude 4.7, 2,576 px from
+4.7 on, per its [vision documentation](https://platform.claude.com/docs/en/build-with-claude/vision)),
+so on models before 4.7 the extra pixels are not read and the cost is a larger upload, and on 4.7
+and later a sharper page can use up to about three times the image tokens. A 300-dpi PNG of a
+dense scan can also come close to Anthropic's 10 MB image limit (5 MB on Bedrock); the size check
+covers pixel size only, and a rejected request fails with the provider's own error.
+
 ## The text layer, and OCR
 
 Every value is checked against the PDF's text layer, and grounding cannot be turned off.
@@ -223,6 +269,9 @@ Model answers and OCR results are always cached on disk, in `.quotable/cache/` i
 working directory unless you pass `cache_dir` (which is used as you give it). quotable creates
 the folder and, when it makes `.quotable/` itself, puts a `.gitignore` containing `*` in it. A
 cache that an earlier version left loose in `.quotable/` is moved into `cache/` the first time.
+Upgrading from a version before the audit and sharp images changes the images and adds a request
+type, so a document already cached is extracted and rechecked again on its first run (discovery
+still hits the cache). `audit=False, sharp_images=False` reproduces the old requests and keys.
 There is no in-memory mode, and nothing is ever deleted: remove `.quotable/cache/` to start
 over. It holds content derived from your PDF (the model's
 extracted values and the OCR'd text), so delete it if the data is sensitive. A run that cannot
@@ -303,6 +352,7 @@ The `.quotable/` folder holds `cache/` (model answers and OCR results), `cost/` 
 | Extraction | `extract` | One request per table and page returns its rows. On a page with several tables the request names the other tables and asks for this one only. Rows with wrong keys are sent back once. |
 | Grounding | `grounding` | Each value is looked up in the table's text layer (the page's, or on a page with several tables only the band between the table's first and last row, found with `regions`): exact token match, else a fuzzy longest-common-subsequence match. Statuses: `exact`, `fuzzy`, `ungrounded`, `untokenized`, `empty`, `not_on_page`. |
 | Position check | `position` | A value must sit in its own row and column (row windows from uniquely-occurring values, column bands pooled over the document). Values found elsewhere become `misplaced`. |
+| Audit | `audit` | Pages whose text layer prints words that no extracted cell accounts for go back to the model once, to report rows and cells it left out; only what the text layer supports is kept (see "Rows the model left out"). On by default; `audit=False` turns it off. |
 | Merge | `merge` | Two tables that are really one but whose headers are worded differently on different pages are joined when every check passes (see "Headers worded differently"); any doubt leaves them apart. Switch off with `merge_reworded=False`. |
 | Extra fields | `extra_fields` | Optional (see "Values printed outside the tables"). Discovery also reads the requested fields on each page; they are grounded in the page's whole text layer, rechecked if fuzzy or ungrounded, checked for missed headers (a second look at pages with unexplained words where the header is printed elsewhere), carried forward on request and attached to every row. |
 | Recheck | `recheck` | Flagged cells go back to the model once with their reason, the page image and the page's whole text layer; the model is told to copy the text layer's reading. An answer is kept only if grounding of that cell strictly improves. Because the text layer wins, OCR errors in it (for example thousands commas read as periods) can pass into the output. |
@@ -359,6 +409,10 @@ just check       # hooks, then tests
   through a real model; the second describes each field by its position only, so the request
   never prints a word of the header it asks about (`tests/test_extra_fields_live_prompts.py`
   checks that offline).
+- The omission audit is tested offline against the synthetic fixture: a fake model drops each
+  page's last row and returns it when audited (`tests/test_audit_pipeline.py`).
+  `tests/live/test_live_audit.py` runs a real model with the audit and sharp images off and on and
+  prints what each cost and kept.
 - `tests/ocr/` runs the real PaddleOCR models on the CPU (`just test-ocr`). Deselected by
   default; it takes minutes, downloads the models on first use, and calls no model API.
 - `tests/live/` calls a real model. These tests are deselected by default and skip

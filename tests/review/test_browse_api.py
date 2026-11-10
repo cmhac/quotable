@@ -92,16 +92,20 @@ def built(tmp_path_factory: pytest.TempPathFactory) -> Built:
         mp.chdir(work)
         # two runs of one page: the first pays (no known price), the second is all cache hits
         before = folders()
-        tables["simple_old"] = extract_tables(SIMPLE_PDF, Calls().model(), recheck=False)
+        tables["simple_old"] = extract_tables(
+            SIMPLE_PDF, Calls().model(), recheck=False, audit=False
+        )
         runs["simple_old"] = new_run(project, before)
         before = folders()
-        tables["simple_new"] = extract_tables(SIMPLE_PDF, Calls().model(), recheck=False)
+        tables["simple_new"] = extract_tables(
+            SIMPLE_PDF, Calls().model(), recheck=False, audit=False
+        )
         runs["simple_new"] = new_run(project, before)
 
         def with_client(label: str, client: FakeClient, pdf: Path, **options: Any) -> None:
             mp.setattr(pipeline_module, "PydanticAIClient", lambda *a, **k: client)
             before = folders()
-            tables[label] = extract_tables(pdf, f"test:{label}", ocr=False, **options)
+            tables[label] = extract_tables(pdf, f"test:{label}", ocr=False, audit=False, **options)
             runs[label] = new_run(project, before)
 
         with_client("senate", recorded_model(), SENATE_PDF, recheck=False)
@@ -455,7 +459,7 @@ def own_copy(app: App, tmp_path: Path) -> tuple[Path, str]:
     copy = tmp_path / "copy.pdf"
     shutil.copy(SIMPLE_PDF, copy)
     known = {p.name for p in (app.project / "runs").iterdir()}
-    extract_tables(copy, Calls().model(), recheck=False)
+    extract_tables(copy, Calls().model(), recheck=False, audit=False)
     return copy, new_run(app.project, known)
 
 
@@ -944,6 +948,24 @@ def test_the_csv_has_the_columns_and_values_of_records(app, label, index):
     assert response.getheader("Content-Type") == "text/csv; charset=utf-8"
     header, rows = read_csv(body)
     same_as_records(header, rows, app.built.tables[label][index])
+
+
+def test_the_csv_marks_the_rows_and_cells_the_audit_added(app):
+    audit = [
+        {"page": 1, "kind": "row", "values": {}, "outcome": "accepted", "row": 2},
+        {"page": 1, "kind": "cell", "values": {"Amount": "x"}, "outcome": "accepted", "row": 3},
+        {"page": 1, "kind": "cell", "values": {"Account": "y"}, "outcome": "accepted", "row": 3},
+        {"page": 1, "kind": "row", "values": {}, "outcome": "ungrounded", "row": None},
+    ]
+    edit_run(app.project, app.id["simple_new"], big=lambda d: d["tables"][0].update(audit=audit))
+    status, _, body = app.get(f"{app.run('simple_new')}/tables/0/rows.csv")
+    assert status == 200
+    header, rows = read_csv(body)
+    assert header[-1] == "audit_added"
+    marks = {(r[0], r[1]): r[-1] for r in rows}
+    assert marks["1", "2"] == "row"
+    assert marks["1", "3"] == "cells: Account, Amount"  # the table's column order
+    assert {v for k, v in marks.items() if k not in {("1", "2"), ("1", "3")}} == {""}
 
 
 def test_the_csv_names_its_file_after_the_pdf_and_the_table(app):

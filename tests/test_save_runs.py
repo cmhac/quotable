@@ -46,28 +46,28 @@ def cost_runs() -> set[str]:
 
 # --- one run per call ---------------------------------------------------------------------------
 def test_a_call_leaves_one_run_whose_id_is_the_one_in_its_cost_records():
-    extract_tables(PDF, Calls().model(), recheck=False)
+    extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     (run_id,) = run_folders()
     assert cost_runs() == {run_id}
     assert re.fullmatch(r"[0-9a-f]{32}", run_id)
 
 
 def test_a_second_call_of_cache_hits_adds_a_run_and_no_cost_record():
-    extract_tables(PDF, Calls().model(), recheck=False)
+    extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     lines = (PROJECT / "cost" / "requests.jsonl").read_text().splitlines()
-    extract_tables(PDF, Calls().model(), recheck=False)
+    extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     assert len(run_folders()) == 2
     assert (PROJECT / "cost" / "requests.jsonl").read_text().splitlines() == lines
 
 
 def test_the_async_twin_saves_too():
-    asyncio.run(extract_tables_async(PDF, Calls().model(), recheck=False))
+    asyncio.run(extract_tables_async(PDF, Calls().model(), recheck=False, audit=False))
     assert len(run_folders()) == 1
 
 
 def test_a_named_cache_dir_does_not_move_the_run(tmp_path):
     named = tmp_path / "named"
-    extract_tables(PDF, Calls().model(), cache_dir=named, recheck=False)
+    extract_tables(PDF, Calls().model(), cache_dir=named, recheck=False, audit=False)
     assert len(run_folders()) == 1
     assert not [p for p in named.rglob("*") if "run" in p.name.lower() and p.is_dir()]
     assert not (named / "runs").exists()
@@ -75,7 +75,7 @@ def test_a_named_cache_dir_does_not_move_the_run(tmp_path):
 
 def test_a_call_that_raises_saves_nothing():
     with pytest.raises(BudgetExceededError):
-        extract_tables(PDF, Calls().model(), max_requests=1, recheck=False)
+        extract_tables(PDF, Calls().model(), max_requests=1, recheck=False, audit=False)
     assert not (PROJECT / "runs").exists()
     with pytest.raises(TextLayerError):
         extract_tables(GARBLED, Calls().model(), ocr=False)
@@ -87,7 +87,7 @@ def test_a_failed_save_warns_once_and_still_returns_the_tables(monkeypatch, caps
         raise OSError("disk full")
 
     monkeypatch.setattr(pipeline_module, "write_run", refuse)
-    (table,) = extract_tables(PDF, Calls().model(), recheck=False)
+    (table,) = extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     assert table.rows()
     err = capsys.readouterr().err
     assert err.count("could not save the run") == 1
@@ -106,6 +106,8 @@ def test_the_document_the_settings_and_the_times_are_recorded():
         model,
         discovery_pages=2,
         recheck=False,
+        audit=False,
+        sharp_images=False,
         ocr=config,
         merge_reworded=False,
         max_requests=50,
@@ -125,20 +127,23 @@ def test_the_document_the_settings_and_the_times_are_recorded():
     settings = summary.settings
     assert (settings["discovery_pages"], settings["recheck"]) == (2, False)
     assert (settings["merge_reworded"], settings["max_requests"]) == (False, 50)
+    assert (settings["audit"], settings["sharp_images"]) == (False, False)  # spec 014
     assert settings["ocr"]["dpi"] == config.dpi
 
 
 def test_the_default_settings_are_recorded_as_given():
-    extract_tables(PDF, Calls().model(), recheck=False)
+    extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     (summary,), skipped = list_runs(PROJECT)
     assert skipped == 0
     assert summary.settings["ocr"] is True
+    assert summary.settings["sharp_images"] is True  # spec 014: on unless turned off
+    assert summary.settings["audit"] is False  # this call passed audit=False
     assert summary.settings["extra_fields"] is None
     assert summary.settings["max_requests"] is None
 
 
 def test_the_saved_tables_are_the_returned_ones():
-    (table,) = extract_tables(PDF, Calls().model(), recheck=False)
+    (table,) = extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     (run_id,) = run_folders()
     run = load_run(PROJECT, run_id)
     (saved,) = run.tables
@@ -160,7 +165,7 @@ def test_headers_and_bands_reach_write_run_per_table(monkeypatch):
         return Path("unused")
 
     monkeypatch.setattr(pipeline_module, "write_run", spy)
-    (table,) = extract_tables(PDF, Calls().model(), recheck=False)
+    (table,) = extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     assert seen["tables"] == [table]
     assert list(seen["layers"]) == [1]
     assert seen["bands"] == [{}]
@@ -170,7 +175,9 @@ def test_headers_and_bands_reach_write_run_per_table(monkeypatch):
 # --- the trace of run_pipeline ------------------------------------------------------------------
 def test_the_trace_holds_whole_pages_and_the_bands_of_a_shared_page():
     trace = RunTrace()
-    tables = asyncio.run(run_pipeline(SENATE_PDF, recorded_model(), recheck=False, trace=trace))
+    tables = asyncio.run(
+        run_pipeline(SENATE_PDF, recorded_model(), recheck=False, audit=False, trace=trace)
+    )
     assert sorted(trace.layers) == [1, 2, 3]
     assert len(trace.layers[1].words) > len(tables[0].layers[1].words)  # whole page, not a band
     assert sorted(trace.bands) == [1]
@@ -186,7 +193,9 @@ def test_the_trace_holds_whole_pages_and_the_bands_of_a_shared_page():
 
 def test_headers_and_bands_are_found_per_table_and_page():
     trace = RunTrace()
-    tables = asyncio.run(run_pipeline(SENATE_PDF, recorded_model(), recheck=False, trace=trace))
+    tables = asyncio.run(
+        run_pipeline(SENATE_PDF, recorded_model(), recheck=False, audit=False, trace=trace)
+    )
     headers, bands = headers_and_bands(tables, trace)
     assert [sorted(h) for h in headers] == [[1], [1, 2, 3]]
     assert [sorted(b) for b in bands] == [[1], [1]]
@@ -204,6 +213,7 @@ def test_a_merged_tables_later_part_gets_its_header_under_the_tables_names():
             client,
             discovery_pages=1,
             recheck=False,
+            audit=False,
             trace=trace,
         )
     )
@@ -217,7 +227,7 @@ def test_a_merged_tables_later_part_gets_its_header_under_the_tables_names():
 
 
 def test_the_trace_is_optional():
-    tables = asyncio.run(run_pipeline(SENATE_PDF, recorded_model(), recheck=False))
+    tables = asyncio.run(run_pipeline(SENATE_PDF, recorded_model(), recheck=False, audit=False))
     assert len(tables) == 2
 
 

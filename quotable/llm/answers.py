@@ -131,6 +131,28 @@ class PageRecheck(BaseModel):
     cells: list[CellRecheck]
 
 
+class MissingRow(BaseModel):
+    """A row printed on the page but absent from the listed rows (spec 014)."""
+
+    after_row: int = Field(description="Number of the listed row it follows; 0 if before row 1.")
+    values: dict[str, str] = Field(description="Column name -> value as printed.")
+
+
+class FilledCell(BaseModel):
+    """A cell the listed rows left empty although the page prints a value (spec 014)."""
+
+    row: int = Field(description="Row number as listed, from 1.")
+    column: str = Field(description="Column name exactly as given.")
+    value: str = Field(description="The cell's text exactly as printed.")
+
+
+class Omissions(BaseModel):
+    """What the audit found missing from the listed rows."""
+
+    missing_rows: list[MissingRow]
+    filled_cells: list[FilledCell]
+
+
 def validate_schema(schema: TableSchema) -> list[str]:
     """Return the column names, raising if they cannot key a table."""
     names = [c.name.strip() for c in schema.columns]

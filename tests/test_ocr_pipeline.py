@@ -229,9 +229,11 @@ def test_the_event_loop_keeps_running_while_the_engine_blocks(tmp_path):
 @pytest.mark.parametrize("ocr", [True, False, OcrConfig(dpi=200)])
 def test_both_entrypoints_accept_true_false_and_a_config(ocr):
     calls = Calls()
-    (table,) = public_extract_tables(GOOD_PDF, calls.model(), recheck=False, ocr=ocr)
+    (table,) = public_extract_tables(GOOD_PDF, calls.model(), recheck=False, audit=False, ocr=ocr)
     assert table.ocr_pages == ()
-    (again,) = asyncio.run(extract_tables_async(GOOD_PDF, calls.model(), recheck=False, ocr=ocr))
+    (again,) = asyncio.run(
+        extract_tables_async(GOOD_PDF, calls.model(), recheck=False, audit=False, ocr=ocr)
+    )
     assert again.ocr_pages == ()
 
 

@@ -137,6 +137,7 @@ class Demo:
         """Run ``extract_tables`` with the fake model; ``age`` is how long ago the run started."""
         before = self._ids()
         options.setdefault("ocr", False)
+        options.setdefault("audit", False)  # the fake models know no audit request
         with _models(client, engine or ExplodingEngine()):
             extract_tables(pdf, f"demo:{label}", **options)
         (run_id,) = self._ids() - before

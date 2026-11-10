@@ -498,21 +498,21 @@ def test_a_model_that_reports_no_usage_writes_nothing_and_warns_once(capsys):
 
 
 def test_every_paid_request_of_a_run_is_recorded_and_cache_hits_are_not():
-    extract_tables(PDF, Calls().model(), recheck=False)
+    extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     first = records()
     assert len(first) == 2  # discovery, then the one page
     assert {r["stage"] for r in first} <= {"schema", "extract", "recheck"}
     assert len({r["run"] for r in first}) == 1
     assert {r["model"] for r in first} == {"function:entrypoint-test"}
 
-    extract_tables(PDF, Calls().model(), recheck=False)  # all cache hits
+    extract_tables(PDF, Calls().model(), recheck=False, audit=False)  # all cache hits
     assert len(records()) == 2
 
 
 def test_clearing_the_cache_keeps_the_costs_and_the_next_run_adds_to_them():
-    extract_tables(PDF, Calls().model(), recheck=False)
+    extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     shutil.rmtree(Path.cwd() / ".quotable" / "cache")
-    extract_tables(PDF, Calls().model(), recheck=False)
+    extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     written = records()
     assert len(written) == 4
     assert len({r["run"] for r in written}) == 2
@@ -520,7 +520,7 @@ def test_clearing_the_cache_keeps_the_costs_and_the_next_run_adds_to_them():
 
 def test_a_named_cache_dir_holds_no_costs(tmp_path):
     named = tmp_path / "named"
-    extract_tables(PDF, Calls().model(), cache_dir=named, recheck=False)
+    extract_tables(PDF, Calls().model(), cache_dir=named, recheck=False, audit=False)
     assert len(records()) == 2
     assert not any("cost" in p.name or p.suffix == ".jsonl" for p in named.rglob("*"))
 
@@ -529,7 +529,7 @@ def test_an_unwritable_cost_folder_does_not_stop_the_extraction(capsys):
     project = Path.cwd() / ".quotable"
     project.mkdir()
     (project / "cost").write_text("in the way")
-    (table,) = extract_tables(PDF, Calls().model(), recheck=False)
+    (table,) = extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     assert table.columns
     warnings = [x for x in capsys.readouterr().err.splitlines() if "cost" in x]
     assert len(warnings) == 1
@@ -537,7 +537,7 @@ def test_an_unwritable_cost_folder_does_not_stop_the_extraction(capsys):
 
 def test_a_refused_request_over_the_cap_writes_no_record():
     with pytest.raises(BudgetExceededError):
-        extract_tables(PDF, Calls().model(), max_requests=1, recheck=False)
+        extract_tables(PDF, Calls().model(), max_requests=1, recheck=False, audit=False)
     assert len(records()) == 1
 
 

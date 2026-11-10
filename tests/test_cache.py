@@ -7,6 +7,8 @@ from pathlib import Path
 import pytest
 
 from quotable import extract_tables
+from quotable.llm.answers import PageRows
+from quotable.llm.client import Image, Request, request_key
 from quotable.storage import resolve_cache_dir, resolve_project_dir, write_atomic
 from tests.test_entrypoint import PDF, Calls
 
@@ -16,7 +18,7 @@ def names(folder: Path) -> list[str]:
 
 
 def test_the_default_location_is_dot_quotable_cache_in_the_working_directory():
-    extract_tables(PDF, Calls().model(), recheck=False)
+    extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     project = Path.cwd() / ".quotable"
     assert (project / ".gitignore").read_text() == "*\n"
     assert names(project) == [".gitignore", "cache", "cost", "runs"]
@@ -27,7 +29,7 @@ def test_the_default_location_is_dot_quotable_cache_in_the_working_directory():
 
 def test_a_named_cache_dir_gets_the_files_and_the_working_directory_only_costs_and_runs(tmp_path):
     cache = tmp_path / "named"
-    extract_tables(PDF, Calls().model(), cache_dir=cache, recheck=False)
+    extract_tables(PDF, Calls().model(), cache_dir=cache, recheck=False, audit=False)
     assert len([n for n in names(cache) if n.endswith(".json")]) == 2
     assert ".gitignore" not in names(cache)
     assert names(Path.cwd()) == [".quotable"]
@@ -123,13 +125,13 @@ def test_the_move_is_not_repeated_once_the_cache_folder_exists():
 
 
 def test_a_run_after_the_move_finds_the_old_answers():
-    extract_tables(PDF, Calls().model(), recheck=False)
+    extract_tables(PDF, Calls().model(), recheck=False, audit=False)
     project = Path.cwd() / ".quotable"
     for entry in (project / "cache").iterdir():  # turn it back into an old-style cache
         entry.replace(project / entry.name)
     (project / "cache").rmdir()
     calls = Calls()
-    extract_tables(PDF, calls.model(), recheck=False)
+    extract_tables(PDF, calls.model(), recheck=False, audit=False)
     assert calls.count == 0
 
 
@@ -198,11 +200,11 @@ def test_a_file_where_the_directory_should_be_raises_oserror_naming_the_path(tmp
 
 def test_a_corrupt_model_answer_file_is_a_miss_and_is_overwritten(tmp_path):
     cache = tmp_path / "cache"
-    extract_tables(PDF, Calls().model(), cache_dir=cache, recheck=False)
+    extract_tables(PDF, Calls().model(), cache_dir=cache, recheck=False, audit=False)
     (victim,) = [p for p in cache.glob("*.json") if "rows" in p.read_text()]
     victim.write_text("{not json")
     calls = Calls()
-    extract_tables(PDF, calls.model(), cache_dir=cache, recheck=False)
+    extract_tables(PDF, calls.model(), cache_dir=cache, recheck=False, audit=False)
     assert calls.count == 1  # only the corrupt one is asked again
     json.loads(victim.read_text())  # and it is valid again
 
@@ -231,3 +233,12 @@ def test_a_failed_atomic_write_leaves_the_old_file_and_no_temporary_file(tmp_pat
     monkeypatch.undo()
     assert target.read_text() == "old"
     assert names(folder) == ["file.json"]
+
+
+def test_request_key_is_unchanged():
+    """A request's cache key is what it was before spec 014 (an existing cache keeps answering)."""
+    request = Request("extract", "x", PageRows, ["text", Image(b"png-bytes")])
+    assert (
+        request_key("fake", request)
+        == "d2c04ff8e6d5120c87f436b049908f68b3f79b0e385bad24376855b744201eb6"
+    )

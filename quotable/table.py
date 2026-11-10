@@ -1,6 +1,6 @@
 """The extracted table with the grounding verdict of every cell."""
 
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Literal, NamedTuple
 
@@ -34,6 +34,7 @@ class OutputNames(NamedTuple):
     field_grounding: dict[str, str]  # extra field -> name of its grounding status column
     field_coverage: dict[str, str]  # extra field -> name of its coverage column
     field_source: dict[str, str]  # extra field -> name of its source page column
+    audit: str = "audit_added"  # spec 014: what the omission audit added to the row
 
 
 def output_names(columns: list[str], fields: Sequence[str] = ()) -> OutputNames:
@@ -67,6 +68,7 @@ def output_names(columns: list[str], fields: Sequence[str] = ()) -> OutputNames:
         field_grounding[name] = free(name + GROUNDING_SUFFIX)
         field_coverage[name] = free(name + COVERAGE_SUFFIX)
         field_source[name] = free(name + SOURCE_PAGE_SUFFIX)
+    audit = free("audit_added")
     return OutputNames(
         page,
         row,
@@ -78,6 +80,7 @@ def output_names(columns: list[str], fields: Sequence[str] = ()) -> OutputNames:
         field_grounding,
         field_coverage,
         field_source,
+        audit,
     )
 
 
@@ -118,6 +121,48 @@ class Flag:
     status: str
     coverage: float | None
     extra: bool = False  # an extra field of the page, not a cell: `column` is the field's name
+
+
+@dataclass
+class AuditItem:
+    """
+    A row or cell the omission audit's model reported, and what became of it (spec 014).
+
+    ``values`` is the model's spelling: every column for a row, one entry for a cell.
+    ``outcome`` is ``accepted`` or the reason it was not: ``invalid_row``, ``invalid_cell``,
+    ``duplicate``, ``not_empty``, ``repeated``, ``ungrounded``, ``no_evidence`` or ``empty``.
+    ``row`` is set only when accepted: the 1-based row number in the page after the audit.
+    """
+
+    page: int
+    kind: Literal["row", "cell"]
+    values: dict[str, str]
+    outcome: str
+    row: int | None = None
+
+
+def audit_marks(
+    columns: Sequence[str], accepted: Iterable[tuple[str, int, int | None, Iterable[str]]]
+) -> dict[tuple[int, int], str]:
+    """
+    Return the ``audit_added`` value of each (page, row) the audit changed.
+
+    ``accepted`` holds (kind, page, row, the columns of its values) for each accepted item:
+    ``row`` for an added row, ``cells: <columns, in the table's order>`` for filled cells.
+    """
+    added: set[tuple[int, int]] = set()
+    filled: dict[tuple[int, int], set[str]] = {}
+    for kind, page, row, names in accepted:
+        if row is None:
+            continue
+        if kind == "row":
+            added.add((page, row))
+        else:
+            filled.setdefault((page, row), set()).update(names)
+    marks = dict.fromkeys(added, "row")
+    for key, names in filled.items():
+        marks.setdefault(key, "cells: " + ", ".join(c for c in columns if c in names))
+    return marks
 
 
 @dataclass
@@ -185,6 +230,7 @@ class Table:
     position: dict[str, int]
     layouts: list[PageLayout] = field(default_factory=list)
     proposals: list[Proposal] = field(default_factory=list)  # what the recheck proposed
+    audit: list[AuditItem] = field(default_factory=list)  # what the omission audit proposed
     label: str = ""  # the model's short name for the table; the caller's use only
     # pages of this table whose text layer came from OCR (grounding against OCR text can pass
     # OCR errors into the output, so review these more carefully)
@@ -214,8 +260,10 @@ class Table:
         Return flat rows: page, row, the values, the extra fields, then the groundings.
 
         Order: ``page``, ``row``, the values, the extra fields' values, each column's grounding
-        and coverage, each extra field's grounding, coverage and source page, the row's status
-        and the accepted rechecks. A library column whose name is taken gets a trailing ``_``.
+        and coverage, each extra field's grounding, coverage and source page, the row's status,
+        the accepted rechecks and ``audit_added`` (``row`` for a row the omission audit added,
+        ``cells: <columns>`` for cells it filled, else empty). A library column whose name is
+        taken gets a trailing ``_``.
         """
         names = output_names(self.columns, self.extra_names)
         out: list[dict[str, object]] = []
@@ -224,6 +272,14 @@ class Table:
             if p.outcome == "accepted":
                 text = f'{p.column}: "{p.original}" -> "{p.proposed}"'
                 changes.setdefault((p.page, p.row), []).append(text)
+        marks = audit_marks(
+            self.columns,
+            (
+                (i.kind, i.page, i.row, i.values)
+                for i in self.audit
+                if i.outcome == "accepted" and i.row is not None
+            ),
+        )
         for row in self.rows():
             record: dict[str, object] = {names.page: row.page, names.row: row.row, **row.values}
             for name in self.extra_names:
@@ -243,6 +299,7 @@ class Table:
                     row_changes.append(f'{name}: "{old}" -> "{new}"')
             record[names.status] = row.status
             record[names.changes] = "; ".join(row_changes)
+            record[names.audit] = marks.get((row.page, row.row), "")
             out.append(record)
         return out
 
@@ -260,7 +317,7 @@ class Table:
                 (names.field_coverage[name], "float"),
                 (names.field_source[name], "nullable_int"),
             ]
-        return [*out, (names.status, "str"), (names.changes, "str")]
+        return [*out, (names.status, "str"), (names.changes, "str"), (names.audit, "str")]
 
     def to_pandas(self) -> "pandas.DataFrame":
         """Return `records()` as a pandas DataFrame (ints, strings and a float coverage)."""
