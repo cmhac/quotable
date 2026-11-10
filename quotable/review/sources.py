@@ -2,11 +2,13 @@
 What the browsing API reads besides ``run.json`` and ``tables.json`` (spec 013, task 007).
 
 Small caches in front of the disk, all keyed by what makes the answer change: the loaded runs (by
-their files' size and modification time), the cost log (by its), a PDF's SHA-256 (by path, size
-and modification time, so a file is hashed once) and rendered pages (by the document's SHA-256
-and the page number, so two runs of one PDF share them). Nothing here writes to the project
-folder. Standard library only, apart from PyMuPDF (through ``quotable.steps.extract``), which is
-imported when a page is rendered.
+their files' size and modification time; up to 64 MiB of run files are kept, the least recently
+used dropped first), the cost log (by its), a PDF's SHA-256 (by path, size and modification time,
+so a file is hashed once) and rendered pages (by the document's SHA-256 and the page number, so
+two runs of one PDF share them). Nothing here writes to the project folder. Standard library
+only, apart from PyMuPDF (through ``quotable.steps.extract``), which is imported when a page is
+rendered. The server answers each request on its own thread and PyMuPDF does not support
+threads, so renders run one at a time.
 """
 
 import hashlib
@@ -23,11 +25,12 @@ from quotable.runs import RUN_FILE, TABLES_FILE, Run, RunSummary, load_run
 from quotable.storage import CostRecord, cost_file, runs_dir
 
 _RUN_ID = re.compile(r"[0-9a-f]{32}")
-_RUNS = 4
+_RUN_BYTES = 64 * 1024 * 1024  # run files kept parsed: about 5 times this in memory
 _HASHES = 256
 _PAGES = 24
 _lock = threading.Lock()
-_runs: OrderedDict[tuple[str, str], tuple[Any, Run]] = OrderedDict()
+_render_lock = threading.Lock()  # PyMuPDF is not thread-safe: one render at a time
+_runs: OrderedDict[tuple[str, str], tuple[Any, Run, int]] = OrderedDict()  # stamp, run, file bytes
 _costs: dict[str, tuple[Any, dict[str, dict[str, Any]]]] = {}
 _hashes: dict[tuple[str, int, int], str] = {}
 _pages: OrderedDict[tuple[str, int], bytes] = OrderedDict()
@@ -75,8 +78,10 @@ def load(project_dir: Path, run_id: str) -> Run:
     except ValueError:
         raise NotFound(f"run {run_id[:8]} cannot be read") from None
     with _lock:
-        _runs[key] = (stamp, run)
-        while len(_runs) > _RUNS:
+        _runs[key] = (stamp, run, sum(size for _, size in stamp))
+        _runs.move_to_end(key)  # a reloaded run is the newest, not left where its old copy was
+        # drop the least recently used run while over budget, but never the one just loaded
+        while len(_runs) > 1 and sum(entry[2] for entry in _runs.values()) > _RUN_BYTES:
             _runs.popitem(last=False)
     return run
 
@@ -210,7 +215,7 @@ def page_png(summary: RunSummary, page: int) -> bytes:
     from quotable.steps.extract import render_png  # noqa: PLC0415
 
     try:
-        with pymupdf.open(path) as document:
+        with _render_lock, pymupdf.open(path) as document:
             png = render_png(document[page - 1])
     except (OSError, ValueError, RuntimeError):
         raise NotFound("the PDF cannot be read") from None

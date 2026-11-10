@@ -15,7 +15,6 @@ from quotable.steps.merge import (
     dominant_shape,
     grid_ok,
     grid_positions,
-    half_equal_ok,
     header_check,
     name_tokens,
     pair_verdict,
@@ -56,7 +55,6 @@ def test_the_constants_have_the_spec_values():
     assert DEFAULT_RULES.grid_tolerance == GRID_TOLERANCE
     assert DEFAULT_RULES.min_cells == MIN_CELLS
     assert DEFAULT_RULES.shape_share == SHAPE_SHARE
-    assert DEFAULT_RULES.equal_share == 0.0  # the half-equal rule is off (spec 007, Results)
     assert not DEFAULT_RULES.word_text_apart
 
 
@@ -116,25 +114,6 @@ def test_a_bare_amount_is_cross_compatible_with_both_amounts():
     a = ["Name", "Requested Amount", "Recommended Amount"]
     b = ["Name", "Amount", "Amount Granted"]
     assert header_check(a, b).cross_compatible
-
-
-def test_equal_share_is_a_setting():
-    one_of_three = header_check(["a", "b", "c"], ["a", "b x", "c x"])
-    assert not half_equal_ok(one_of_three, 0.5)
-    assert half_equal_ok(one_of_three, 1 / 3)
-    assert half_equal_ok(one_of_three, 0.0)
-    assert half_equal_ok(header_check(["a"], ["a x"]), 0.0)  # off: even with none equal
-
-
-def test_half_equal_ok_at_the_edges():
-    two_of_four = header_check(["a", "b", "c", "d"], ["a", "b", "c x", "d x"])
-    one_of_four = header_check(["a", "b", "c", "d"], ["a", "b x", "c x", "d x"])
-    two_of_three = header_check(["a", "b", "c"], ["a", "b", "c x"])
-    one_of_three = header_check(["a", "b", "c"], ["a", "b x", "c x"])
-    assert half_equal_ok(two_of_four)
-    assert not half_equal_ok(one_of_four)
-    assert half_equal_ok(two_of_three)
-    assert not half_equal_ok(one_of_three)
 
 
 # --- shapes -------------------------------------------------------------------------
@@ -266,13 +245,13 @@ def test_incompatible_header_words_fail(tmp_path):
     assert pair_verdict(a, b, rules=DEFAULT_RULES).failed == "header"
 
 
-def test_fewer_than_half_equal_fails_only_when_the_rule_is_on(tmp_path):
+def test_a_pair_with_few_equal_header_words_still_merges(tmp_path):
     a_cols = ["Project Name", "Requested Local Match", "Funding Status"]
     b_cols = ["Project Name Full", "Requested Match", "Status"]
     a = table(tmp_path, a_cols, name="a")
     b = table(tmp_path, b_cols, first_page=7, name="b", start=6)
-    assert pair_verdict(a, b, rules=Rules(equal_share=0.5)).failed == "half_equal"
-    assert pair_verdict(a, b, rules=Rules(equal_share=0.0)).ok
+    assert header_check(a_cols, b_cols).equal == 0  # no position has identical words
+    assert pair_verdict(a, b, rules=DEFAULT_RULES).ok
 
 
 def test_cross_compatible_positions_fail(tmp_path):
@@ -281,7 +260,7 @@ def test_cross_compatible_positions_fail(tmp_path):
     # position 1: "amount" is inside both of A's columns 1 and 2, so B's column 1 is ambiguous
     a = table(tmp_path, a_cols, name="a")
     b = table(tmp_path, b_cols, first_page=7, name="b", start=6)
-    assert pair_verdict(a, b, rules=Rules(equal_share=0.0)).failed == "ambiguity"
+    assert pair_verdict(a, b, rules=DEFAULT_RULES).failed == "ambiguity"
 
 
 def test_a_shifted_grid_fails(tmp_path):

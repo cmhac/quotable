@@ -31,8 +31,14 @@ class Asker:
         self.answers = answers
         self.requests = []
 
+    now = most = 0  # requests in flight now, and the most at one moment
+
     async def ask(self, request):
         self.requests.append(request)
+        self.now += 1
+        self.most = max(self.most, self.now)
+        await asyncio.sleep(0.01)  # give the other tasks a chance to start
+        self.now -= 1
         return ExtrasRecheck(extras=[ExtraValue(name=n, value=v) for n, v in self.answers.items()])
 
 
@@ -42,7 +48,8 @@ def printed_from(layer, values, page=1):
 
 
 def run(printed, layers, client):
-    return asyncio.run(recheck_fields(printed, layers, [b"png1", b"png2"], FIELDS, client))
+    pngs = [b"png1", b"png2"]
+    return asyncio.run(recheck_fields(printed, layers, pngs, FIELDS, client, asyncio.Semaphore(4)))
 
 
 def test_a_better_answer_is_accepted_and_reported():
@@ -122,3 +129,20 @@ def test_a_missing_value_is_never_asked_about():
     client = Asker({})
     run(printed, {1: layer}, client)
     assert client.requests == []
+
+
+def test_the_recheck_keeps_to_the_limit_it_is_given():
+    pages = 10
+    layer = layer_of(("Division", 10, 10), ("Roads", 50, 10))
+    layers = dict.fromkeys(range(1, pages + 1), layer)
+    printed = {}
+    for page in layers:
+        printed.update(printed_from(layer, {"division": "Raods"}, page))
+    client = Asker({"division": "Roads"})
+    gate = asyncio.Semaphore(4)
+    got, changes = asyncio.run(
+        recheck_fields(printed, layers, [b"png"] * pages, FIELDS, client, gate)
+    )
+    assert len(client.requests) == pages
+    assert client.most == 4
+    assert len(changes) == pages

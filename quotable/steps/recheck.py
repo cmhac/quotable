@@ -23,13 +23,11 @@ from collections.abc import Mapping, Sequence
 from dataclasses import replace
 from pathlib import Path
 
-import pymupdf
-
 from quotable.llm.answers import ExtrasRecheck, PageRecheck
 from quotable.llm.client import Image, LLMClient, Request
-from quotable.llm.images import TODAY, ImagePolicy
+from quotable.llm.images import ImagePolicy
 from quotable.steps.extra_fields import ExtraField, ExtraResult, ground_fields
-from quotable.steps.extract import render_png
+from quotable.steps.extract import render_page
 from quotable.steps.grounding import SEVERITY
 from quotable.table import PageResult, Proposal, Table, ground_document
 from quotable.text.layer import Layer, tokenize
@@ -132,23 +130,26 @@ def _proposals(table: Table, answers: dict[int, PageRecheck]) -> list[Proposal]:
 
 
 async def recheck_table(
-    table: Table, pdf: Path, client: LLMClient, images: ImagePolicy = TODAY
+    table: Table, pdf: Path, client: LLMClient, images: ImagePolicy, gate: asyncio.Semaphore
 ) -> Table:
     """
     Ask the model about each page's flagged cells; keep the answers that ground better.
 
     The page image is rendered at ``images.dpi`` and sent with ``images.detail`` (spec 014).
+    ``gate`` is the run's limit on requests in flight (spec 015), shared with the other stages.
     """
     pages = sorted(
         {f.page for f in table.flagged() if f.status in RECHECK_STATUSES and not f.extra}
     )
     if not pages:
         return table
-    with pymupdf.open(pdf) as document:
-        pngs = {n: render_png(document[n - 1], images.dpi) for n in pages}
-    answers = await asyncio.gather(
-        *(client.ask(_request(table, n, pngs[n], images.detail)) for n in pages)
-    )
+
+    async def ask(page: int) -> PageRecheck:
+        async with gate:  # render inside it, so at most a few page images exist at a time
+            png = render_page(pdf, page, images.dpi)
+            return await client.ask(_request(table, page, png, images.detail))
+
+    answers = await asyncio.gather(*(ask(n) for n in pages))
     proposals = _proposals(table, dict(zip(pages, answers, strict=True)))
 
     trial = [p for p in proposals if not p.outcome]
@@ -180,12 +181,13 @@ EXTRA_RECHECK_STATUSES = ("fuzzy", "ungrounded")
 FieldKey = tuple[int, str]  # (the page that printed the value, the field's name)
 
 
-async def recheck_fields(
+async def recheck_fields(  # noqa: PLR0913, PLR0917
     printed: Mapping[int, Mapping[str, ExtraResult]],
     layers: Mapping[int, Layer],
     pngs: Sequence[bytes],
     fields: Mapping[str, ExtraField],
     client: LLMClient,
+    gate: asyncio.Semaphore,
 ) -> tuple[dict[int, dict[str, ExtraResult]], dict[FieldKey, tuple[str, str]]]:
     """
     Give each printing page's fuzzy or ungrounded field values one second look.
@@ -194,7 +196,8 @@ async def recheck_fields(
     flagged fields; the model is told the text layer is the reference. An answer is kept only if
     that field then grounds strictly better (by ``SEVERITY``); a blank answer, or one that
     tokenizes like the original, is never applied. Returns the printed results after the
-    changes and the accepted changes, ``(page, field) -> (original, new)``.
+    changes and the accepted changes, ``(page, field) -> (original, new)``. Each request waits
+    for ``gate``, the run's limit on requests in flight (spec 015).
     """
     flagged = {
         page: {n: r for n, r in row.items() if r.grounding.status in EXTRA_RECHECK_STATUSES}
@@ -219,7 +222,11 @@ async def recheck_fields(
         ]
         return Request("recheck", EXTRAS_RECHECK_PROMPT, ExtrasRecheck, parts, page)
 
-    answers = await asyncio.gather(*(client.ask(request(p)) for p in pages))
+    async def ask(page: int) -> ExtrasRecheck:
+        async with gate:
+            return await client.ask(request(page))
+
+    answers = await asyncio.gather(*(ask(p) for p in pages))
     changes: dict[FieldKey, tuple[str, str]] = {}
     for page, answer in zip(pages, answers, strict=True):
         proposed = {

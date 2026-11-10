@@ -16,7 +16,6 @@ only when every independent check passes:
 Any doubt, including too little data to judge, means no merge. No model request is made.
 """
 
-import math
 import re
 import statistics
 from dataclasses import dataclass
@@ -48,9 +47,6 @@ _WORD = re.compile(r"^[^\W\d_]+(?:[-'\u2019.][^\W\d_]+)*\.?$")
 class Rules:
     """The settings of the pair check (the module constants by default)."""
 
-    # share of positions whose words must be equal; 0 turns the rule off. Off by default: on the
-    # golden fixture it removed no harmful merge and cost many correct ones (spec 007, Results).
-    equal_share: float = 0.0
     grid_tolerance: float = GRID_TOLERANCE
     min_cells: int = MIN_CELLS
     shape_share: float = SHAPE_SHARE
@@ -87,7 +83,7 @@ class HeaderCheck:
 
 
 def header_check(a_columns: list[str], b_columns: list[str]) -> HeaderCheck:
-    """Compare two header rows (the facts only; no decision about the half-equal rule)."""
+    """Compare two header rows (the facts only; the decisions are in ``pair_verdict``)."""
     a = [name_tokens(c) for c in a_columns]
     b = [name_tokens(c) for c in b_columns]
     same_count = len(a) == len(b)
@@ -103,12 +99,6 @@ def header_check(a_columns: list[str], b_columns: list[str]) -> HeaderCheck:
             compatible(a[i], b[j]) for i in range(len(a)) for j in range(len(b)) if i != j
         ),
     )
-
-
-def half_equal_ok(check: HeaderCheck, share: float = 0.5) -> bool:
-    """Return whether at least ``share`` of the positions (rounded up) have equal token sets."""
-    needed = math.ceil(share * len(check.token_sets) - 1e-9)
-    return check.same_count and bool(check.token_sets) and check.equal >= needed
 
 
 # --- values and geometry --------------------------------------------------------------
@@ -220,7 +210,7 @@ class Verdict:
     """Whether two tables pass, the name of the first failing check, and what was measured."""
 
     ok: bool
-    failed: str  # "" | shared_page | count | header | half_equal | ambiguity | min_cells |
+    failed: str  # "" | shared_page | count | header | ambiguity | min_cells |
     # grid | no_shape | shape
     evidence: MergeEvidence
 
@@ -250,8 +240,6 @@ def pair_verdict(a: Table, b: Table, *, rules: Rules = DEFAULT_RULES) -> Verdict
         return fail("count")
     if not head.all_compatible:
         return fail("header")
-    if not half_equal_ok(head, rules.equal_share):
-        return fail("half_equal")
     if head.cross_compatible:
         return fail("ambiguity")
     facts_a, facts_b = column_facts(a, rules), column_facts(b, rules)

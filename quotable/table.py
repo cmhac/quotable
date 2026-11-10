@@ -14,6 +14,9 @@ if TYPE_CHECKING:
     import pandas
     import polars
 
+_NEEDS_EXTRA = (
+    'to_{0}() needs {0}, which is not installed by default. Run: pip install "quotable[{0}]"'
+)
 GROUNDING_SUFFIX = "__grounding"
 COVERAGE_SUFFIX = "__coverage"
 SOURCE_PAGE_SUFFIX = "__source_page"
@@ -321,7 +324,10 @@ class Table:
 
     def to_pandas(self) -> "pandas.DataFrame":
         """Return `records()` as a pandas DataFrame (ints, strings and a float coverage)."""
-        import pandas as pd  # noqa: PLC0415
+        try:
+            import pandas as pd  # noqa: PLC0415
+        except ImportError as err:
+            raise ImportError(_NEEDS_EXTRA.format("pandas")) from err
 
         columns = self._frame_columns()
         dtypes = {"int": "int64", "str": "str", "float": "float64", "nullable_int": "Int64"}
@@ -330,7 +336,10 @@ class Table:
 
     def to_polars(self) -> "polars.DataFrame":
         """Return `records()` as a polars DataFrame (ints, strings and a float coverage)."""
-        import polars as pl  # noqa: PLC0415
+        try:
+            import polars as pl  # noqa: PLC0415
+        except ImportError as err:
+            raise ImportError(_NEEDS_EXTRA.format("polars")) from err
 
         dtypes = {
             "int": pl.Int64,

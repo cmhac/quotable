@@ -107,6 +107,19 @@ def test_no_frame_has_a_duplicate_column_when_names_collide(tmp_path, library):
 # --- frames -----------------------------------------------------------------------------
 
 
+@pytest.mark.parametrize("library", ["pandas", "polars"])
+def test_a_missing_frame_library_says_which_extra_to_install(table, library, monkeypatch):
+    monkeypatch.setitem(sys.modules, library, None)  # makes `import <library>` raise ImportError
+    with pytest.raises(ImportError) as raised:
+        getattr(table, f"to_{library}")()
+    assert str(raised.value) == (
+        f"to_{library}() needs {library}, which is not installed by default. "
+        f'Run: pip install "quotable[{library}]"'
+    )
+    assert isinstance(raised.value.__cause__, ImportError)
+    assert len(table.records()) == 2  # nothing else needs the library
+
+
 def test_both_frames_have_the_columns_and_rows_of_records(table):
     records = table.records()
     for frame in (table.to_pandas(), table.to_polars()):
