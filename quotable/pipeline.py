@@ -203,12 +203,13 @@ def printed_fields(
     return out
 
 
-async def resolve_extra_fields(  # noqa: PLR0913
+async def resolve_extra_fields(  # noqa: PLR0913, PLR0917
     extra_fields: ExtraFields,
     discovery: Discovery,
     layers: Mapping[int, Layer],
     pngs: Sequence[bytes],
     client: LLMClient,
+    gate: asyncio.Semaphore,
     *,
     recheck: bool,
 ) -> tuple[Printed, dict[tuple[int, str], tuple[str, str]], int]:
@@ -217,13 +218,14 @@ async def resolve_extra_fields(  # noqa: PLR0913
 
     Grounding, the recheck of fuzzy and ungrounded values, the missed-header check with its
     second look. Returns what each page prints, the accepted rechecks, and the number of suspect
-    pages. The carry rule is applied by the caller (``propagate``).
+    pages. The carry rule is applied by the caller (``propagate``). Every request waits for
+    ``gate``, the run's one limit on requests in flight.
     """
     fields = {f.name: f for f, _ in flatten(extra_fields)}
     printed = printed_fields(discovery.extras, layers)
     changes: dict[tuple[int, str], tuple[str, str]] = {}
     if recheck:
-        printed, changes = await recheck_fields(printed, layers, pngs, fields, client)
+        printed, changes = await recheck_fields(printed, layers, pngs, fields, client, gate)
     rows_by_page: dict[int, list[tuple[str, str]]] = {}
     for found in discovery.tables:
         for page, rows in found.rows.items():
@@ -232,7 +234,6 @@ async def resolve_extra_fields(  # noqa: PLR0913
     suspects = find_suspects(
         layers, {p: {n: r.grounding for n, r in row.items()} for p, row in printed.items()}, bands
     )
-    gate = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
 
     async def look(page: int, evidence: dict[str, list[str]]) -> dict[str, ExtraResult]:
         asked: dict[str, ExtraField] = {name: fields[name] for name in evidence}
@@ -375,7 +376,7 @@ async def run_pipeline(  # noqa: PLR0913
         )
     if extra_fields is not None:
         printed, changes, suspect_pages = await resolve_extra_fields(
-            extra_fields, discovery, layers, pngs, client, recheck=recheck
+            extra_fields, discovery, layers, pngs, client, gate, recheck=recheck
         )
         flat = flatten(extra_fields)
         by_page = propagate(sorted(layers), printed, flat, carry_forward=extra_fields.carry_forward)
@@ -397,7 +398,7 @@ async def run_pipeline(  # noqa: PLR0913
         tables = merge_tables(tables)
     if recheck:
         tables = list(
-            await asyncio.gather(*(recheck_table(t, pdf, client, images) for t in tables))
+            await asyncio.gather(*(recheck_table(t, pdf, client, images, gate) for t in tables))
         )
     return tables
 

@@ -1,3 +1,4 @@
+import asyncio
 import copy
 import json
 
@@ -5,9 +6,12 @@ import pymupdf
 
 from quotable.llm.answers import CellRecheck, PageRecheck
 from quotable.llm.client import Image
-from quotable.steps.recheck import RECHECK_PROMPT
+from quotable.llm.images import TODAY
+from quotable.steps.extract import render_page
+from quotable.steps.recheck import RECHECK_PROMPT, _regrounded, recheck_table
 from quotable.text.layer import load_layer
-from tests.conftest import DATA, FakeClient, extract_tables, replay
+from tests.conftest import DATA, FakeClient, OverlapClient, extract_tables, replay
+from tests.table_builder import build_table
 
 PDF = DATA / "fy22_milcon_house_original.pdf"
 RECORDED = json.loads((DATA / "fy22_milcon_house_original.rows.json").read_text())
@@ -147,3 +151,43 @@ def test_a_clean_document_is_never_rechecked():
     (table,) = extract_tables(PDF, client)
     assert client.stages() == ["schema", "extract"]
     assert table.proposals == []
+
+
+# --- the run's limit on requests in flight (spec 015) ------------------------------------------
+PAGES = 20
+RIGHT = "Harbor dredging and channel repair"
+WRONG = "Harbor dredging and channal repair"
+
+
+def _long_table(tmp_path):
+    """A 20-page table with a misspelled Project cell on every page, and the PDF's path."""
+    rows = [[{"Name": f"Alpha {p}", "Project": RIGHT}] for p in range(PAGES)]
+    table = build_table(tmp_path, ["Name", "Project"], rows, xs=[72, 250])
+    table = _regrounded(table, {(p, 1, "Project"): WRONG for p in range(1, PAGES + 1)})
+    assert len(table.flagged()) == PAGES
+    return table, tmp_path / "t.pdf"
+
+
+def _answering(value):
+    return FakeClient(
+        lambda request: PageRecheck(cells=[CellRecheck(row=1, column="Project", value=value)])
+    )
+
+
+def test_the_recheck_keeps_to_the_limit_it_is_given(tmp_path):
+    table, pdf = _long_table(tmp_path)
+    client = OverlapClient(_answering(RIGHT))
+    out = asyncio.run(recheck_table(table, pdf, client, TODAY, asyncio.Semaphore(4)))
+    assert client.stages() == ["recheck"] * PAGES
+    assert client.most == 4
+    assert [p.outcome for p in out.proposals] == ["accepted"] * PAGES
+
+
+def test_the_recheck_sends_the_same_page_image_as_before(tmp_path):
+    table, pdf = _long_table(tmp_path)
+    client = _answering(RIGHT)
+    asyncio.run(recheck_table(table, pdf, client, TODAY, asyncio.Semaphore(4)))
+    for request in client.requests:
+        (image,) = (p for p in request.parts if isinstance(p, Image))
+        assert image.png == render_page(pdf, request.page, TODAY.dpi)
+        assert image.detail == TODAY.detail

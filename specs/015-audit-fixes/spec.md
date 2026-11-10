@@ -326,3 +326,10 @@ rows? Remove the rule, its setting, its unit test and the scorer's `equal_share`
 fixture documents as they are, and keep the test that they exist, reworded. The options not taken
 were to leave the rule in place (B) and to remove the 50+ cases that exist for it and regenerate
 the fixture (C).
+
+## Results
+
+### Baseline on main, 2026-11-10 (before any change on this branch)
+
+- Repeated `get_queue` on the 8-document demo project (`build/review-demo`, 3 runs after one warm-up): 0.372 s, 0.319 s, 0.350 s.
+- `python -m tests.score_merge`, default rules (`equal_share=0.00 tol=10 min_cells=5 shape=0.8 words_apart=False`): harmful 0, (resid) 4, broken 0, missed 39. `git status` under `tests/data/synthetic/` is clean.

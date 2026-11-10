@@ -140,7 +140,7 @@ def test_the_audit_finds_rows_and_cells_removed_from_a_real_extraction():
     images = policy_for(MODEL, sharp=True)
     audited = asyncio.run(audit_table(cut, PDF, client, images, asyncio.Semaphore(4)))
     # what the rest of the pipeline then does with the added rows: the recheck
-    final = asyncio.run(recheck_table(audited, PDF, client, images))
+    final = asyncio.run(recheck_table(audited, PDF, client, images, asyncio.Semaphore(4)))
 
     def text(values) -> list[str]:
         return tokenize(" ".join(values))

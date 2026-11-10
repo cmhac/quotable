@@ -8,6 +8,7 @@ import pandas as pd
 import polars as pl
 import pytest
 
+from quotable.llm.images import TODAY
 from quotable.steps.extra_fields import ExtraResult
 from quotable.steps.grounding import FieldGrounding
 from quotable.steps.recheck import recheck_table
@@ -204,7 +205,7 @@ def test_the_cell_recheck_ignores_a_flagged_field(tmp_path):
         raise AssertionError(msg)
 
     client = FakeClient(refuse)
-    out = asyncio.run(recheck_table(table, tmp_path / "t.pdf", client))
+    out = asyncio.run(recheck_table(table, tmp_path / "t.pdf", client, TODAY, asyncio.Semaphore(4)))
     assert client.requests == []
     assert out is table
 
