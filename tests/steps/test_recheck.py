@@ -159,13 +159,13 @@ RIGHT = "Harbor dredging and channel repair"
 WRONG = "Harbor dredging and channal repair"
 
 
-def _long_table(tmp_path):
+def _long_table(tmp_path, name="t"):
     """A 20-page table with a misspelled Project cell on every page, and the PDF's path."""
     rows = [[{"Name": f"Alpha {p}", "Project": RIGHT}] for p in range(PAGES)]
-    table = build_table(tmp_path, ["Name", "Project"], rows, xs=[72, 250])
+    table = build_table(tmp_path, ["Name", "Project"], rows, xs=[72, 250], name=name)
     table = _regrounded(table, {(p, 1, "Project"): WRONG for p in range(1, PAGES + 1)})
     assert len(table.flagged()) == PAGES
-    return table, tmp_path / "t.pdf"
+    return table, tmp_path / f"{name}.pdf"
 
 
 def _answering(value):
@@ -191,3 +191,19 @@ def test_the_recheck_sends_the_same_page_image_as_before(tmp_path):
         (image,) = (p for p in request.parts if isinstance(p, Image))
         assert image.png == render_page(pdf, request.page, TODAY.dpi)
         assert image.detail == TODAY.detail
+
+
+def test_two_tables_rechecked_together_share_one_limit(tmp_path):
+    (one, pdf_one), (two, pdf_two) = _long_table(tmp_path, "one"), _long_table(tmp_path, "two")
+    client = OverlapClient(_answering(RIGHT))
+    gate = asyncio.Semaphore(4)
+
+    async def both():
+        return await asyncio.gather(
+            recheck_table(one, pdf_one, client, TODAY, gate),
+            recheck_table(two, pdf_two, client, TODAY, gate),
+        )
+
+    asyncio.run(both())
+    assert client.stages() == ["recheck"] * (2 * PAGES)
+    assert client.most == 4  # not 4 for each table

@@ -113,3 +113,8 @@ None. The stories are independent; each can be done and committed alone.
 - **MVP**: story 1 alone (T001 to T009) fixes the only finding that can fail a paid run.
 - Then story 2 (the crash), story 3, and the rest as you approve. Each checkpoint leaves the suite green and the branch committed.
 - If a task's check fails, stop and report; do not widen the change.
+
+## Phase 10: Convergence
+
+- [X] T034 Add a test in `tests/steps/test_recheck.py` that two tables rechecked at the same time share one limit: build two 20-page tables (give `_long_table` a `name` argument so the two PDFs do not overwrite each other), run `recheck_table` on both inside one `asyncio.gather` with one `asyncio.Semaphore(4)` and one `OverlapClient`, and assert the highest number of requests in flight is 4 and that 40 recheck requests were made per US1/AC2 (partial: the limit is tested for one table only, and the spec's acceptance scenario asks for several tables together)
+- [X] T035 Correct `specs/015-audit-fixes/research.md` section R7 so its list of tests to change matches what was done: two tests of the rule removed (`test_equal_share_is_a_setting`, `test_half_equal_ok_at_the_edges`), `test_fewer_than_half_equal_fails_only_when_the_rule_is_on` rewritten as `test_a_pair_with_few_equal_header_words_still_merges`, and the explicit `Rules(equal_share=0.0)` argument of the ambiguity test replaced by `DEFAULT_RULES`, per plan: research R7 (partial: it names one test, there were three plus one argument)

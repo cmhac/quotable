@@ -157,7 +157,11 @@ the `if not half_equal_ok(...)  return fail("half_equal")` branch, `half_equal` 
 lists failure names, the words "no decision about the half-equal rule" in the `header_check`
 docstring, and `import math` (its only use is in `half_equal_ok`). In
 `tests/steps/test_merge_checks.py`: the `half_equal_ok` import, the `DEFAULT_RULES.equal_share`
-assertion and `test_equal_share_is_a_setting`. In `tests/score_merge.py`: the `equal_share` rows of
+assertion, `test_equal_share_is_a_setting` and `test_half_equal_ok_at_the_edges`; the test
+`test_fewer_than_half_equal_fails_only_when_the_rule_is_on` is rewritten as
+`test_a_pair_with_few_equal_header_words_still_merges` (the pair still merges under the default
+rules), and the explicit `Rules(equal_share=0.0)` of the ambiguity test becomes `DEFAULT_RULES`. In
+`tests/score_merge.py`: the `equal_share` rows of
 `variants()` and the `equal_share=` text in `describe()`.
 
 **What stays**:

@@ -348,8 +348,8 @@ the fixture (C).
 
 ### Final state (2026-11-10)
 
-- Offline suite: **2,660 passed** (`uv run pytest -n 3`), `ruff check`, `ruff format --check` and `ty check` clean (also through `pre-commit run --all-files`). No live or OCR test was run, nothing was spent, nothing was pushed.
-- Test count: 2,704 − 55 (the duplicate file's collected tests; it has 35 test functions, but several are parametrized) − 2 (the half-equal rule's `test_equal_share_is_a_setting` and `test_half_equal_ok_at_the_edges`) + 13 new = 2,660. New tests: `tests/test_recheck_limit.py` (1), `tests/steps/test_recheck.py` (2), `tests/steps/test_extra_fields_recheck.py` (1), `tests/review/test_render_lock.py` (2), `tests/review/test_run_cache.py` (5), `tests/test_frames.py` (2, one per library). One more test was rewritten in place (`test_a_pair_with_few_equal_header_words_still_merges`).
+- Offline suite: **2,661 passed** (`uv run pytest -n 3`), `ruff check`, `ruff format --check` and `ty check` clean (also through `pre-commit run --all-files`). No live or OCR test was run, nothing was spent, nothing was pushed.
+- Test count: 2,704 − 55 (the duplicate file's collected tests; it has 35 test functions, but several are parametrized) − 2 (the half-equal rule's `test_equal_share_is_a_setting` and `test_half_equal_ok_at_the_edges`) + 14 new = 2,661. New tests: `tests/test_recheck_limit.py` (1), `tests/steps/test_recheck.py` (3, the last added by convergence task T034: two tables share one limit), `tests/steps/test_extra_fields_recheck.py` (1), `tests/review/test_render_lock.py` (2), `tests/review/test_run_cache.py` (5), `tests/test_frames.py` (2, one per library). One more test was rewritten in place (`test_a_pair_with_few_equal_header_words_still_merges`).
 - The earlier statement "the suite drops by exactly 35" was wrong in the spec, plan and research (it counted functions, not collected tests). They now say 55.
 
 | Audit finding | Result | Proof |
