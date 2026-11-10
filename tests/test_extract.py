@@ -193,6 +193,7 @@ def test_the_text_layer_check_has_no_off_switch():
         "discovery_pages",
         "recheck",
         "audit",  # spec 014: the omission audit's switch (on by default)
+        "sharp_images",  # spec 014: 300-dpi page images (on by default)
         "ocr",  # chooses whether bad pages are OCR'd; the text-layer check itself has no switch
         "merge_reworded",  # spec 007: the merge step's switch
         "extra_fields",  # spec 010: values to read from outside the tables

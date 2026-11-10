@@ -27,6 +27,7 @@ import pymupdf
 
 from quotable.llm.answers import ExtrasRecheck, PageRecheck
 from quotable.llm.client import Image, LLMClient, Request
+from quotable.llm.images import TODAY, ImagePolicy
 from quotable.steps.extra_fields import ExtraField, ExtraResult, ground_fields
 from quotable.steps.extract import render_png
 from quotable.steps.grounding import SEVERITY
@@ -64,7 +65,7 @@ def _rank(status: str) -> int:
     return SEVERITY.get(status, 0)
 
 
-def _request(table: Table, page: int, png: bytes) -> Request:
+def _request(table: Table, page: int, png: bytes, detail: str = "high") -> Request:
     flagged = [
         f
         for f in table.flagged()
@@ -79,7 +80,7 @@ def _request(table: Table, page: int, png: bytes) -> Request:
     previous = json.dumps([{"row": i, **row} for i, row in enumerate(rows, 1)], ensure_ascii=False)
     text_layer = "\n".join(table.layers[page].lines())
     parts = [
-        Image(png),
+        Image(png, detail),
         f"Previous rows:\n{previous}",
         f"Text layer of the whole page, one visual line per line:\n{text_layer}",
         f"Cells to re-check:\n{listing}",
@@ -130,16 +131,24 @@ def _proposals(table: Table, answers: dict[int, PageRecheck]) -> list[Proposal]:
     return out
 
 
-async def recheck_table(table: Table, pdf: Path, client: LLMClient) -> Table:
-    """Ask the model about each page's flagged cells; keep the answers that ground better."""
+async def recheck_table(
+    table: Table, pdf: Path, client: LLMClient, images: ImagePolicy = TODAY
+) -> Table:
+    """
+    Ask the model about each page's flagged cells; keep the answers that ground better.
+
+    The page image is rendered at ``images.dpi`` and sent with ``images.detail`` (spec 014).
+    """
     pages = sorted(
         {f.page for f in table.flagged() if f.status in RECHECK_STATUSES and not f.extra}
     )
     if not pages:
         return table
     with pymupdf.open(pdf) as document:
-        pngs = {n: render_png(document[n - 1]) for n in pages}
-    answers = await asyncio.gather(*(client.ask(_request(table, n, pngs[n])) for n in pages))
+        pngs = {n: render_png(document[n - 1], images.dpi) for n in pages}
+    answers = await asyncio.gather(
+        *(client.ask(_request(table, n, pngs[n], images.detail)) for n in pages)
+    )
     proposals = _proposals(table, dict(zip(pages, answers, strict=True)))
 
     trial = [p for p in proposals if not p.outcome]

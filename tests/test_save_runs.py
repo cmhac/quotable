@@ -107,6 +107,7 @@ def test_the_document_the_settings_and_the_times_are_recorded():
         discovery_pages=2,
         recheck=False,
         audit=False,
+        sharp_images=False,
         ocr=config,
         merge_reworded=False,
         max_requests=50,
@@ -126,6 +127,7 @@ def test_the_document_the_settings_and_the_times_are_recorded():
     settings = summary.settings
     assert (settings["discovery_pages"], settings["recheck"]) == (2, False)
     assert (settings["merge_reworded"], settings["max_requests"]) == (False, 50)
+    assert (settings["audit"], settings["sharp_images"]) == (False, False)  # spec 014
     assert settings["ocr"]["dpi"] == config.dpi
 
 
@@ -134,6 +136,8 @@ def test_the_default_settings_are_recorded_as_given():
     (summary,), skipped = list_runs(PROJECT)
     assert skipped == 0
     assert summary.settings["ocr"] is True
+    assert summary.settings["sharp_images"] is True  # spec 014: on unless turned off
+    assert summary.settings["audit"] is False  # this call passed audit=False
     assert summary.settings["extra_fields"] is None
     assert summary.settings["max_requests"] is None
 
