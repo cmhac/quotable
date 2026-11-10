@@ -339,3 +339,9 @@ the fixture (C).
 - Repeated `get_queue` on the same demo project, same machine: 0.110 s, 0.097 s, 0.105 s (baseline 0.372, 0.319, 0.350). That is about 3.4 times faster, so SC-003 ("at most half") is met.
 - On a project of 10 more copied documents, the second queue request reads 0 run files (before: the 15 runs beyond the first 4 were read again).
 - Memory: the run cache holds up to 64 MiB of run files (about 5 times that parsed, measured on 2026-11-10 on the 3,024-row run: 5.7 MB of files, 28.5 MB parsed).
+
+### After story 6 (merge rule removed, duplicate test file removed)
+
+- `python -m tests.score_merge --detail`, default rules: harmful 0, (resid) 4, broken 0, missed 39, the same as the baseline. The 54 lines of per-document disagreements after the "Defaults" header are identical before and after (`diff` empty). `git status` under `tests/data/synthetic/` is clean, so `just synthetic` and its freshness test are untouched.
+- Spec 007's half-equal score rows (rows 215 and 216 of its table) can no longer be reproduced; spec 007 keeps them as history (Question 1, option A).
+- Tests removed: the 35 tests of the duplicate file, and 2 of the half-equal rule (`test_equal_share_is_a_setting`, `test_half_equal_ok_at_the_edges`). One more, `test_fewer_than_half_equal_fails_only_when_the_rule_is_on`, was rewritten as `test_a_pair_with_few_equal_header_words_still_merges` (a pair with no equal header position still merges under the default rules). The plan had counted one removed test; there were two.
