@@ -53,6 +53,7 @@ ROUTES = [
     Route("GET", r"/api/echo/([a-z]+)/(\d+)", echo),
     Route("POST", r"/api/echo", echo),
     Route("PUT", r"/api/echo", echo),
+    Route("PUT", r"/api/big", echo, max_body=200 * 1024),
     Route("GET", r"/api/missing", missing),
     Route("GET", r"/api/refuse", refuse),
     Route("GET", r"/api/explode", explode),
@@ -244,6 +245,13 @@ def test_a_body_of_100_kib_is_refused(server):
     status, _, body = post(server, "/api/echo", b'"' + b"x" * (100 * 1024) + b'"')
     assert status == 413
     assert error_of(body)
+
+
+def test_a_route_can_ask_for_a_bigger_body_and_others_keep_the_old_limit(server):
+    big = b'"' + b"x" * (100 * 1024) + b'"'
+    assert post(server, "/api/big", big, method="PUT")[0] == 200
+    assert post(server, "/api/big", big + b"x" * (120 * 1024), method="PUT")[0] == 413
+    assert post(server, "/api/echo", big, method="PUT")[0] == 413
 
 
 def test_a_huge_declared_length_is_refused_without_being_read(server):

@@ -4,6 +4,8 @@ import { ApiError, getJson, sendJson } from "./api.js";
 import * as cell from "./cell.js";
 import { alertBox, failureView, header } from "./chrome.js";
 import { el } from "./dom.js";
+import * as gold from "./gold.js";
+import * as goldentry from "./goldentry.js";
 import { hashFor, parseHash } from "./route.js";
 import { openShortcuts, shortcutsOpen } from "./shortcuts.js";
 import * as queue from "./queue.js";
@@ -17,6 +19,9 @@ const SCREENS = {
   table: table.show,
   cell: cell.show,
   queue: queue.show,
+  gold: gold.showSample,
+  goldscore: gold.showScore,
+  goldpage: goldentry.show,
 };
 function storage() {
   try {
@@ -61,6 +66,7 @@ function unavailable(route) {
 
 let latest = 0;
 let firstScreen = true;
+let leaving = null; // the screen on show may ask to be told when it goes (listeners, saving)
 
 async function show() {
   const mine = ++latest;
@@ -76,7 +82,12 @@ async function show() {
       content: failureView(error),
     };
   }
-  if (mine !== latest) return;
+  if (mine !== latest) {
+    view.dispose?.(); // built, but a newer screen won
+    return;
+  }
+  leaving?.();
+  leaving = view.dispose ?? null;
   const main = document.getElementById("main");
   document.getElementById("chrome").replaceChildren(
     header({
@@ -97,6 +108,7 @@ show();
 
 window.addEventListener("keydown", (event) => {
   const tag = event.target?.tagName;
+  if (event.defaultPrevented) return; // the gold editor takes every key it can use
   if (event.key !== "?" || event.metaKey || event.ctrlKey || event.altKey)
     return;
   if (["INPUT", "TEXTAREA", "SELECT"].includes(tag) || shortcutsOpen()) return;

@@ -1,5 +1,5 @@
 """
-The ``quotable`` command line: ``cost-report`` and ``review``.
+The ``quotable`` command line: ``cost-report``, ``review`` and ``gold-report``.
 
 ``python -m quotable`` is the same command.
 
@@ -11,6 +11,13 @@ records yet"), 1 when the cost file cannot be read, 2 for a usage error.
 ``quotable review`` starts the local review app (:mod:`quotable.review.server`) on 127.0.0.1 over
 the runs in ``.quotable/runs/``; it creates nothing itself. Exit codes: 0 after Ctrl+C, 1 when
 the port is in use or ``--run`` names no saved run, 2 for a usage error.
+
+``quotable gold-report`` scores the hand-typed gold of ``.quotable/gold/`` (spec 016) against the
+newest saved run of each sampled document, or the runs named with ``--run``, prints the report and
+writes ``gold_pages.csv`` and ``gold_cells.csv`` to ``--out`` (default ``.quotable/reports/``). It
+never calls a model. Exit codes: 0 for a report, 1 when no sample was drawn, not every sampled page
+is done, a gold file cannot be read, a ``--run`` is unknown or repeats a document, or a file cannot
+be written; 2 for a usage error.
 """
 
 import argparse
@@ -20,9 +27,21 @@ import sys
 import webbrowser
 from pathlib import Path
 
+from quotable.gold.project import score_project
+from quotable.gold.report import cells_csv, format_text, pages_csv
+from quotable.gold.score import Progress
+from quotable.gold.store import GoldError
 from quotable.review.server import make_server
 from quotable.runs import list_runs
-from quotable.storage import DEFAULT_DIR_NAME, cost_file, format_report, runs_dir, summarize
+from quotable.storage import (
+    DEFAULT_DIR_NAME,
+    cost_file,
+    format_report,
+    gold_ignore_note,
+    reports_dir,
+    runs_dir,
+    summarize,
+)
 
 DEFAULT_PORT = 8765
 
@@ -40,7 +59,15 @@ def _parser() -> argparse.ArgumentParser:
         help="start the local app for reviewing extracted values",
         description="Serve the review app on 127.0.0.1 over the runs saved in .quotable/runs/.",
     )
-    for command in (report, review):
+    gold = commands.add_parser(
+        "gold-report",
+        help="score the hand-typed gold tables against saved runs",
+        description=(
+            "Score the gold in .quotable/gold/ against the newest run of each sampled "
+            "document and write gold_pages.csv and gold_cells.csv."
+        ),
+    )
+    for command in (report, review, gold):
         command.add_argument(
             "--dir",
             type=Path,
@@ -59,6 +86,18 @@ def _parser() -> argparse.ArgumentParser:
     )
     review.add_argument("--run", metavar="ID", help="open the app on this run")
     review.add_argument("--verbose", action="store_true", help="log every request to stderr")
+    gold.add_argument(
+        "--run",
+        action="append",
+        metavar="ID",
+        help="score this run instead of its document's newest (repeat for other documents)",
+    )
+    gold.add_argument(
+        "--out",
+        type=Path,
+        metavar="DIR",
+        help="where to write the two CSV files (default: reports/ in the .quotable folder)",
+    )
     return parser
 
 
@@ -101,12 +140,43 @@ def _review(args: argparse.Namespace, project: Path) -> int:
     return 0
 
 
+def _gold_report(args: argparse.Namespace, project: Path) -> int:
+    try:
+        result = score_project(project, args.run or ())
+    except GoldError as err:
+        print(f"quotable: {err}", file=sys.stderr)
+        return 1
+    if isinstance(result, Progress):
+        print(
+            f"quotable: {result.done} of {result.total} sampled pages are done; "
+            "mark them all done before scoring",
+            file=sys.stderr,
+        )
+        return 1
+    out = args.out if args.out is not None else reports_dir(project)
+    pages_file, cells_file = out / "gold_pages.csv", out / "gold_cells.csv"
+    sys.stdout.write(format_text(result))
+    try:
+        out.mkdir(parents=True, exist_ok=True)
+        pages_file.write_text(pages_csv(result), encoding="utf-8", newline="")
+        cells_file.write_text(cells_csv(result), encoding="utf-8", newline="")
+    except OSError as err:
+        print(f"quotable: cannot write to {out}: {err.strerror or err}", file=sys.stderr)
+        return 1
+    print(f"wrote {pages_file} and {cells_file}")
+    if (note := gold_ignore_note(project)) is not None:
+        print(f"quotable: {note}", file=sys.stderr)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """Run the command; return the exit code (argparse exits 2 itself on a usage error)."""
     args = _parser().parse_args(argv)
     project = args.dir if args.dir is not None else Path.cwd() / DEFAULT_DIR_NAME
     if args.command == "review":
         return _review(args, project)
+    if args.command == "gold-report":
+        return _gold_report(args, project)
     return _cost_report(project)
 
 

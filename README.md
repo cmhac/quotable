@@ -353,8 +353,59 @@ with `jq` or `polars.read_ndjson`) and drafts to `.quotable/review/drafts.json`.
 audit trail only: they do not change `extract_tables`, `records()` or the DataFrames. The folder
 survives deleting the cache or the runs.
 
+### Checking the extraction against hand-typed tables (the gold check)
+
+Grounding and the review verdicts judge the values quotable produced. They cannot see a row it
+never produced or a table it never found. The gold check can: a sample of pages is drawn, you type
+the tables each page really prints, and a score says how many cells, rows and pages the
+extraction got right. It is optional, never calls a model and changes nothing about
+`extract_tables`.
+
+1. In `quotable review`, open **Gold check**, choose the documents (those with a saved run) and a
+   sample size, and draw. Pages are drawn at random from every page of the documents, including
+   pages where no table was found. The same seed draws the same pages.
+2. Open each sampled page. The page image is next to a spreadsheet-style editor that starts empty:
+   it never shows the extraction. Type every row of every table on the page (a page can have
+   several; add a table for each), name every column, and mark the page **done**. A page with no
+   table is marked done with the editor empty. Select text on the page to copy it into the table
+   (hyphens at line ends are joined, trailing periods and dot leaders dropped), or turn on **lock
+   column** or **lock row** so each copy also moves to the next cell. A clock runs while a page is
+   open, and the top bar estimates the time left. The page can be turned and zoomed.
+3. When every sampled page is done, open **Score**, or run `quotable gold-report`. The report gives
+   recall, precision and accuracy for cells, rows and pages (a cell counts when its text matches
+   after folding case, spacing, `$` and thousands commas, quote and dash styles, trailing periods
+   and the order of `;` lists), the same per document and per table, how each column was paired,
+   and every cell that is not an exact match. For a sample of one document it also gives the share
+   of pages that are correct with a 95% interval. Cell and row figures have no interval, because
+   cells on one page are not independent.
+
+```console
+$ quotable gold-report [--dir PATH] [--run ID]... [--out DIR]
+```
+
+`gold-report` prints the report and writes `gold_pages.csv` and `gold_cells.csv` to `--out`
+(default `.quotable/reports/`). It scores the newest run of each document; `--run` chooses another,
+so the same gold scores a new model or setting without retyping. Exit code 1 means no sample, a
+sample with pages not done, an unreadable gold file or a bad `--run`; 2 is a usage error.
+
+Columns are paired by name where the names match and by their values otherwise, so you do not copy
+the model's column names. Gold is tied to the PDF's content (SHA-256) and page, so an edited PDF
+has no gold.
+
+Things to know:
+
+- Text you copy from the page comes from the PDF's text layer (or the OCR text where a run kept it),
+  so a text-layer error can be copied into the gold. Read the page image, and correct what looks wrong.
+- The gold is in `.quotable/gold/` and is **not** ignored by git, so you can commit the hand-made
+  work. `.quotable/.gitignore` is changed to say so the first time gold is written; the rest of
+  `.quotable/` stays ignored. It holds text copied from the PDF, so check the PDF's licence before
+  committing it to a public repository. Nothing is committed for you.
+- Scores are computed when you ask and are not stored. The app shows one score at a time.
+- Scoring is done in the review app or with `gold-report`; there is no Python function for it.
+
 The `.quotable/` folder holds `cache/` (model answers and OCR results), `cost/` (the cost log),
-`runs/` (saved runs) and `review/` (verdicts and drafts).
+`runs/` (saved runs), `review/` (verdicts and drafts), `gold/` (the gold sample and tables) and
+`reports/` (what `gold-report` writes).
 
 ## What it does
 

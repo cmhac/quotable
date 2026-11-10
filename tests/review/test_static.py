@@ -66,7 +66,9 @@ def test_every_module_a_script_imports_exists(path: Path):
         assert (STATIC / local_name(reference)).is_file(), f"{path.name} imports {reference}"
 
 
-@pytest.mark.parametrize("route", ["runs", "run", "table"])
+@pytest.mark.parametrize(
+    "route", ["runs", "run", "table", "queue", "gold", "goldscore", "goldpage"]
+)
 def test_app_registers_the_screens_built_so_far(route: str):
     app = (STATIC / "app.js").read_text(encoding="utf-8")
-    assert re.search(rf"\b{route}:\s*\w+\.show\b", app), f"app.js has no screen for {route}"
+    assert re.search(rf"\b{route}:\s*\w+\.show\w*\b", app), f"app.js has no screen for {route}"

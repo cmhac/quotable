@@ -38,13 +38,21 @@ class Request:
     body: Any = None
 
 
+DEFAULT_MAX_BODY = 64 * 1024
+
+
 @dataclass(frozen=True)
 class Route:
-    """``func(request)`` handles ``method`` on every path that fully matches ``pattern``."""
+    """
+    ``func(request)`` handles ``method`` on every path that fully matches ``pattern``.
+
+    A ``POST`` or ``PUT`` body larger than ``max_body`` bytes is refused (HTTP 413).
+    """
 
     method: str
     pattern: str
     func: Callable[[Request], Any]
+    max_body: int = DEFAULT_MAX_BODY
 
     def match(self, path: str) -> tuple[str, ...] | None:
         """Return the pattern's groups if ``path`` matches it, else ``None``."""

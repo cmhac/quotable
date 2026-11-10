@@ -40,6 +40,7 @@ export function header({ crumbs, project, address }) {
         crumb(item, i === crumbs.length - 1),
       ]),
     ),
+    el("a", { class: "bar-link", href: "#/gold" }, "Gold check"),
     el(
       "button",
       { class: "shortcuts-btn", type: "button", onclick: openShortcuts },

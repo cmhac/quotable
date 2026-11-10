@@ -35,7 +35,12 @@ CACHE_DIR_NAME = "cache"
 COST_DIR_NAME = "cost"
 RUNS_DIR_NAME = "runs"
 REVIEW_DIR_NAME = "review"
+GOLD_DIR_NAME = "gold"
+REPORTS_DIR_NAME = "reports"
 IGNORE_ALL = "*\n"
+# Spec 016: the hand-typed gold is the one thing in .quotable/ worth committing. ``!.gitignore``
+# keeps this file itself tracked, so a fresh clone does not lose the rule that hides the rest.
+GOLD_IGNORE = "*\n!.gitignore\n!gold/\n!gold/**\n"
 _OCR_DIR_NAME = "ocr"
 _ANSWER_FILE = re.compile(r"[0-9a-f]{64}\.json")
 
@@ -275,6 +280,51 @@ def runs_dir(project_dir: Path) -> Path:
 def review_dir(project_dir: Path) -> Path:
     """Return the folder holding the verdicts and drafts of the project folder ``project_dir``."""
     return project_dir / REVIEW_DIR_NAME
+
+
+def gold_dir(project_dir: Path) -> Path:
+    """Return the folder holding the gold sample and tables of the project folder."""
+    return project_dir / GOLD_DIR_NAME
+
+
+def reports_dir(project_dir: Path) -> Path:
+    """Return the folder the ``gold-report`` command writes its CSV files to by default."""
+    return project_dir / REPORTS_DIR_NAME
+
+
+def gold_ignore_note(project_dir: Path) -> str | None:
+    """Return ``None`` if git leaves the gold folder alone, else a note saying why it may not."""
+    path = project_dir / ".gitignore"
+    try:
+        current = path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return None  # nothing ignores it
+    except OSError as err:
+        return f"could not check {path}: {err.strerror or err}; git may ignore the gold folder"
+    if current == GOLD_IGNORE:
+        return None
+    return f"{path} has its own rules, so git may ignore the gold folder; check before committing"
+
+
+def ensure_gold_trackable(project_dir: Path) -> str | None:
+    """
+    Make git leave ``.quotable/gold/`` alone while the rest of ``.quotable/`` stays ignored.
+
+    A ``.gitignore`` that is exactly quotable's own ``*`` is replaced by ``GOLD_IGNORE``, and a
+    missing one is written. Any other content is not touched. Returns ``None`` when the gold
+    folder can be committed, else a note for the user; never raises.
+    """
+    path = project_dir / ".gitignore"
+    try:
+        current = path.read_text(encoding="utf-8") if path.exists() else None
+        if current is None or current == IGNORE_ALL:
+            write_atomic(path, GOLD_IGNORE)
+            return None
+        if current == GOLD_IGNORE:
+            return None
+    except OSError as err:
+        return f"could not check {path}: {err.strerror or err}; git may ignore the gold folder"
+    return f"{path} has its own rules, so git may ignore the gold folder; check before committing"
 
 
 @dataclass(frozen=True)
