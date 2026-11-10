@@ -386,5 +386,24 @@ recheck (FR-006 above is the changed text). Replaying the cached answers of the 
 request) under the new rule restores 3 of the 4 rows, as before 4 of 4 cells, and adds nothing
 wrong: the page-3 row comes back flagged `fuzzy`. The page-1 row is still refused, because its
 `Account` and `Project` cells match nothing in that page's text layer (`ungrounded`), whatever the
-amount reads; the recheck had flagged the same cells in the original extraction. The run itself
-was not repeated, so the recheck's correction of an added row was not seen with the real model.
+amount reads; the recheck had flagged the same cells in the original extraction.
+
+**Second live run, same day, after the change** (`tests/live/test_live_audit.py`, same model and
+document). The four-setting test was answered entirely from the cache, so its numbers above stand.
+The injection test now also runs the recheck on the audited table, with sharp images:
+
+| | Result |
+| --- | --- |
+| Rows removed / restored by the audit | 4 / 3 (the fourth is refused, `ungrounded`) |
+| Cells removed / restored | 4 / 4 |
+| Status of the 3 added rows after the audit | `exact`, `fuzzy`, `exact` |
+| Status after the recheck | `exact`, `fuzzy`, `exact` (no change) |
+| Added rows whose values equal the removed row | 3 of 3 |
+| Requests paid this run | recheck 4, audit 0 (answered from the cache) |
+| Tokens and cost of those requests | 53,874 input, $0.0158 |
+
+All three added rows carry the right values, and nothing wrong was added. The `fuzzy` one is the
+page-3 row whose text layer splits `Administrator.` as `Adminis-` / `trator.`; the recheck copies
+that reading back and cannot make it ground better, so the row stays flagged `fuzzy` for a human
+to check. That is the outcome the change was meant to give: a correct row that is present and
+marked for review, not a row that is missing.

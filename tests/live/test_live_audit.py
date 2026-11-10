@@ -30,6 +30,7 @@ from quotable import extract_tables
 from quotable.llm.client import CachedClient, PydanticAIClient
 from quotable.llm.images import policy_for
 from quotable.steps.audit import audit_table
+from quotable.steps.recheck import recheck_table
 from quotable.storage import CostLog, CostRecord
 from quotable.table import ground_document
 from quotable.text.layer import tokenize
@@ -136,9 +137,10 @@ def test_the_audit_finds_rows_and_cells_removed_from_a_real_extraction():
     client = CachedClient(
         PydanticAIClient(MODEL, on_usage=CostLog().record_usage), folder, MAX_NEW_REQUESTS
     )
-    audited = asyncio.run(
-        audit_table(cut, PDF, client, policy_for(MODEL, sharp=True), asyncio.Semaphore(4))
-    )
+    images = policy_for(MODEL, sharp=True)
+    audited = asyncio.run(audit_table(cut, PDF, client, images, asyncio.Semaphore(4)))
+    # what the rest of the pipeline then does with the added rows: the recheck
+    final = asyncio.run(recheck_table(audited, PDF, client, images))
 
     def text(values) -> list[str]:
         return tokenize(" ".join(values))
@@ -159,6 +161,12 @@ def test_the_audit_finds_rows_and_cells_removed_from_a_real_extraction():
         for p, (column, value) in blanked.items()
     )
     paid = new_records(seen)
+    added = [a for a in kept if a.kind == "row"]
+
+    def status(table, item) -> str:
+        assert item.row is not None
+        return table.page_rows(item.page)[item.row - 1].status
+
     summary = {
         "pages": len(dropped),
         "rows_removed": len(dropped),
@@ -166,8 +174,17 @@ def test_the_audit_finds_rows_and_cells_removed_from_a_real_extraction():
         "cells_removed": len(blanked),
         "cells_restored": cells_back,
         "kept_in_all": len(kept),
+        "added_rows_status_after_audit": [status(audited, a) for a in added],
+        "added_rows_status_after_recheck": [status(final, a) for a in added],
+        "added_rows_equal_the_removed_row": sum(
+            text(final.page_rows(a.page)[a.row - 1].values.values())
+            == text(dropped[a.page].values())
+            for a in added
+            if a.row is not None
+        ),
         "rejected": dict(Counter(a.outcome for a in audited.audit if a.outcome != "accepted")),
         "audit_requests_paid": sum(r.stage == "audit" for r in paid),
+        "recheck_requests_paid": sum(r.stage == "recheck" for r in paid),
         "input_tokens": sum(r.input_tokens for r in paid),
         "cost_usd": sum(r.cost_usd or 0 for r in paid),
     }
