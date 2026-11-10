@@ -9,10 +9,15 @@ export class ApiError extends Error {
 }
 
 export function apiUrl(path, query) {
-  const entries = Object.entries(query ?? {}).filter(
-    ([, v]) => v !== null && v !== undefined && v !== "",
-  );
-  return entries.length ? `${path}?${new URLSearchParams(entries)}` : path;
+  const params = new URLSearchParams();
+  for (const [name, value] of Object.entries(query ?? {})) {
+    // a list is sent as the name repeated: run=a&run=b
+    for (const item of Array.isArray(value) ? value : [value]) {
+      if (item !== null && item !== undefined && item !== "") params.append(name, item);
+    }
+  }
+  const text = params.toString();
+  return text ? `${path}?${text}` : path;
 }
 
 async function request(url, options) {

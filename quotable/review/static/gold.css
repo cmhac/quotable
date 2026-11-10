@@ -1,0 +1,573 @@
+/* The gold check (spec 015): system fonts, the review app's colours, nothing external. */
+
+.bar-link {
+  color: #d9dbd5;
+  font-size: 13px;
+}
+
+.bar-link:hover {
+  color: #fff;
+}
+
+/* sample and score screens */
+.gold-page h2 {
+  margin: 24px 0 8px;
+  font-size: 16px;
+}
+
+.gold-page .card {
+  margin-top: 16px;
+  padding: 16px 20px;
+}
+
+.gold-docs {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.gold-doc.unusable {
+  color: var(--text-2);
+}
+
+.gold-draw-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.gold-draw-fields .field {
+  display: grid;
+  gap: 4px;
+}
+
+.gold-status.done {
+  color: var(--exact-ink);
+  font-weight: 600;
+}
+
+.gold-status.started {
+  color: var(--fuzzy-ink);
+}
+
+.gold-definitions {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: var(--text-3);
+  font-size: 12.5px;
+}
+
+.gold-interval {
+  max-width: 80ch;
+}
+
+.gold-pairing {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12.5px;
+}
+
+.gold-differences td.mono {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* the entry screen: page list | page | editor */
+.gold-entry {
+  --gold-sel: #dbe7fd;
+  --gold-sel-strong: #c9d9f7;
+  --gold-active-dim: #9db8f0;
+  --gold-done: #eef7ee;
+  --gold-started: #fff8e6;
+  --gold-lock: #fff4e0;
+  --gold-lock-strong: #fde2b3;
+  --gold-lock-line: #d97706;
+  --gold-append: #c7f0d4;
+  --gold-append-line: #16a34a;
+  --gold-doc-mode: #7c3aed;
+  --gold-danger: #b91c1c;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1.3fr) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  height: calc(100vh - 52px);
+  background: var(--card);
+}
+
+.gold-entry.feed-hidden {
+  grid-template-columns: 0 minmax(0, 1.3fr) minmax(0, 1fr);
+}
+
+.gold-entry.feed-hidden .gold-feed {
+  visibility: hidden;
+}
+
+.gold-entry [hidden] {
+  display: none !important;
+}
+
+.gold-entry button {
+  padding: 3px 8px;
+  border: 1px solid var(--line-2);
+  border-radius: 4px;
+  background: var(--fill-2);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.gold-entry button:disabled {
+  color: var(--text-2);
+  cursor: default;
+}
+
+.gold-entry button[aria-pressed="true"] {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #fff;
+}
+
+.gold-activity {
+  display: flex;
+  grid-column: 1 / -1;
+  gap: 10px;
+  align-items: center;
+  padding: 3px 10px;
+  border-bottom: 1px solid var(--line);
+  background: var(--fill-1);
+  color: var(--text-2);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.gold-activity progress {
+  width: 220px;
+  height: 8px;
+  accent-color: var(--blue);
+}
+
+.gold-activity span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gold-feed,
+.gold-viewer,
+.gold-editor {
+  min-height: 0;
+  overflow: auto;
+  border-right: 1px solid var(--line);
+}
+
+.gold-viewer,
+.gold-editor {
+  display: flex;
+  flex-direction: column;
+}
+
+.gold-feed h2 {
+  margin: 12px;
+  font-size: 15px;
+}
+
+.gold-feed-count {
+  margin: 0 12px 8px;
+  color: var(--text-2);
+}
+
+.gold-feed-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gold-feed-item {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--card);
+  text-align: left;
+}
+
+.gold-feed-item .doc {
+  display: block;
+  font-weight: 600;
+}
+
+.gold-feed-item .meta {
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+.gold-feed-item.done {
+  background: var(--gold-done);
+}
+
+.gold-feed-item.started {
+  background: var(--gold-started);
+}
+
+.gold-feed-item[aria-current="true"] {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+}
+
+.gold-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  background: var(--card);
+}
+
+.gold-group {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.gold-reset {
+  margin-left: auto;
+}
+
+.gold-timer {
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.gold-timer.running {
+  color: var(--ink);
+}
+
+.gold-save-state.error {
+  color: var(--gold-danger);
+}
+
+.gold-view-area {
+  flex: 1;
+  overflow: auto;
+  touch-action: pan-x pan-y;
+}
+
+.gold-page-box {
+  position: relative;
+}
+
+.gold-page-image {
+  display: block;
+  width: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.gold-text-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: text;
+}
+
+.gold-text-layer text {
+  fill: transparent;
+  font-family: sans-serif;
+  white-space: pre;
+}
+
+.gold-text-layer text::selection {
+  fill: transparent;
+  background: rgba(76, 141, 255, 0.4);
+}
+
+.gold-doc-pages .gold-page-box {
+  margin-bottom: 12px;
+}
+
+.gold-doc-pages .gold-page-box.waiting {
+  aspect-ratio: 8.5 / 11;
+  background: var(--fill-2);
+}
+
+.gold-doc-pages .gold-page-box.sampled {
+  outline: 3px solid var(--blue);
+}
+
+.gold-page-label {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  z-index: 1;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--fill-2);
+  color: var(--text-2);
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.gold-doc-banner {
+  padding: 8px 12px;
+  background: var(--gold-doc-mode);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.gold-viewer.doc-mode {
+  outline: 4px solid var(--gold-doc-mode);
+  outline-offset: -4px;
+}
+
+.gold-viewer.doc-mode .gold-toolbar button[aria-pressed="true"] {
+  border-color: var(--gold-doc-mode);
+  background: var(--gold-doc-mode);
+}
+
+/* laid over the right end of the viewer toolbar, out of the layout, so showing it never moves
+   the toolbar or the page below it */
+.gold-toast {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  z-index: 2;
+  max-width: min(340px, 60%);
+  padding: 3px 8px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.gold-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.gold-hint {
+  margin: 6px 8px;
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+.gold-offline {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  padding: 14px 18px;
+  background: #b91c1c;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  animation: gold-offline-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes gold-offline-pulse {
+  to {
+    background: #7f1d1d;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gold-offline {
+    animation: none;
+  }
+}
+
+/* the spreadsheet; room past the last column and row so the fill handle clears the scroll bars */
+.gold-table-wrap {
+  overflow: auto;
+  padding: 0 24px 24px 8px;
+}
+
+.gold-table {
+  border-collapse: collapse;
+  cursor: cell;
+  user-select: none;
+}
+
+.gold-table th,
+.gold-table td {
+  padding: 0;
+  border: 1px solid var(--line-2);
+  vertical-align: top;
+}
+
+.gold-table th {
+  background: var(--fill-2);
+}
+
+.gold-table .cell {
+  position: relative;
+  min-width: 9em;
+  max-width: 22em;
+  padding: 4px 18px 4px 4px;
+}
+
+.gold-table .cell .text {
+  display: inline-block;
+  min-height: 1.2em;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.gold-table th.cell {
+  font-weight: 600;
+  text-align: left;
+}
+
+.gold-table th.cell .text:empty::before {
+  color: var(--text-2);
+  font-weight: 400;
+  content: "column name";
+}
+
+.gold-table th.cell .remove {
+  position: absolute;
+  top: 2px;
+  right: 0;
+}
+
+.gold-table .cell.sel {
+  background: var(--gold-sel);
+}
+
+.gold-table .cell.lock-lane {
+  background: var(--gold-lock);
+}
+
+.gold-table th.cell.lock-lane {
+  background: var(--gold-lock-strong);
+}
+
+.gold-table.lock .cell.active {
+  background: var(--gold-lock-strong);
+  outline: 2px solid var(--gold-lock-line);
+  outline-offset: -2px;
+}
+
+/* Shift held in a lock mode: the next copy is added to the target cell, not moved on */
+.gold-table.lock.append .cell.active {
+  background: var(--gold-append);
+  outline: 3px solid var(--gold-append-line);
+}
+
+.gold-table .cell.fill {
+  outline: 1px dashed var(--blue);
+  outline-offset: -2px;
+}
+
+.gold-table .fill-handle {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  z-index: 3;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--card);
+  background: var(--blue);
+  cursor: crosshair;
+}
+
+.gold-table .cell.active {
+  outline: 2px solid var(--gold-active-dim);
+  outline-offset: -2px;
+}
+
+.gold-table.focused .cell.active {
+  outline-color: var(--blue);
+}
+
+.gold-table .editor {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  z-index: 2;
+  width: 22em;
+  min-width: calc(100% + 2px);
+  padding: 4px;
+  border: 2px solid var(--blue);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  resize: none;
+  user-select: text;
+}
+
+.gold-keys {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gold-table tr.ghost td {
+  border-style: dashed;
+  background: var(--fill-1);
+}
+
+.gold-table tr.ghost td.sel {
+  background: var(--gold-sel);
+}
+
+.gold-table td.lead {
+  position: relative;
+  min-width: 3.4em;
+  padding: 4px 18px 4px 6px;
+  background: var(--fill-2);
+  color: var(--text-2);
+  font-size: 12px;
+  text-align: right;
+  cursor: e-resize;
+}
+
+.gold-table td.lead.sel {
+  background: var(--gold-sel-strong);
+  color: var(--ink);
+}
+
+.gold-table tr.ghost td.lead {
+  background: var(--fill-2);
+}
+
+.gold-table td.lead .remove {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  visibility: hidden;
+}
+
+.gold-table td.lead:hover .remove {
+  visibility: visible;
+}
+
+.gold-table .remove {
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+}
+
+.gold-table .remove:hover {
+  color: var(--gold-danger);
+}

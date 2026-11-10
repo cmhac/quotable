@@ -16,6 +16,10 @@ faults put in on purpose so every status shows). It holds:
   verdict given to the first run is stale in the second;
 * ``dropped-column.pdf``: a column the second page does not print (``not_on_page``).
 
+A gold check (spec 015) too: a sample of every page of the Senate report and the extras report,
+typed as a careful person would, except that one page has a wrong word, one is typed as having no
+table and one page holds two tables. The score screen has something to show right away.
+
 Then a few verdicts and cost records (one run with no price known, three free), one PDF moved away
 (``missing``) and one edited (``changed``). The folder is made fresh each time; a folder that is
 not a demo is never deleted.
@@ -35,17 +39,20 @@ from unittest import mock
 import pymupdf
 
 from quotable import extract_tables, pipeline
+from quotable.gold.sample import make_sample
+from quotable.gold.store import GoldPage, GoldStore, GoldTable, SampleStore
 from quotable.llm.answers import PageRecheck
 from quotable.ocr.config import OcrConfig
 from quotable.review.queue import FLAGGED
 from quotable.review.verdicts import CellKey, Verdict, VerdictStore, now
 from quotable.runs import Run, RunRow, load_run
-from quotable.storage import CostLog, runs_dir
+from quotable.storage import CostLog, ensure_gold_trackable, runs_dir
 from tests.conftest import FakeClient, load_sample, replay
 from tests.extra_fields_model import request_for, truth_model
 from tests.fake_ocr import ExplodingEngine, FakeEngine, native_as_ocr
 from tests.fixture_tables import DATA as FIXTURE
 from tests.fixture_tables import load_doc
+from tests.gold_project import gold_from_run
 from tests.synthetic import Doc, render
 from tests.synthetic_cases import part
 from tests.test_merge_pipeline import client_for
@@ -333,6 +340,7 @@ def build(root: Path, *, large_pages: int = LARGE_PAGES) -> Path:  # noqa: PLR09
         )
 
         _judge(demo, column)
+        _gold(demo)
 
         # an edited PDF, and one moved away
         with dropped.open("ab") as handle:
@@ -341,6 +349,26 @@ def build(root: Path, *, large_pages: int = LARGE_PAGES) -> Path:  # noqa: PLR09
         away.mkdir()
         shutil.move(demo.pdfs / MERGED_PDF, away / MERGED_PDF)
     return demo.project
+
+
+def _gold(demo: Demo) -> None:
+    """Draw every page of two documents and type them, with three deliberate differences."""
+    docs, typed = [], {}
+    for label in ("two-tables", "extras"):
+        doc, tables = gold_from_run(demo.project, demo.runs[label])
+        docs.append(doc)
+        typed[doc.sha256] = tables
+    sample = make_sample(docs, sum(d.pages for d in docs), 20261110)
+    SampleStore(demo.project).save(sample)
+    ensure_gold_trackable(demo.project)
+    store = GoldStore(demo.project)
+    for n, (sha, page) in enumerate(sample.pages):
+        tables = [GoldTable(list(t.columns), [list(r) for r in t.rows]) for t in typed[sha][page]]
+        if n == 1:  # one wrong word
+            tables[0].rows[0][0] += " (misread)"
+        if n == len(sample.pages) - 1:  # typed as a page with no table
+            tables = []
+        store.save(GoldPage(sha, page, tables, True, 80.0 + 7 * n, now()))
 
 
 def _judge(demo: Demo, column: str) -> None:

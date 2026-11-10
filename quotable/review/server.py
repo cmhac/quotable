@@ -29,8 +29,17 @@ from typing import Any
 from urllib.parse import parse_qs, unquote, urlsplit
 
 from quotable.review.browse import ROUTES as BROWSE_ROUTES
+from quotable.review.gold import ROUTES as GOLD_ROUTES
 from quotable.review.review import ROUTES as REVIEW_ROUTES
-from quotable.review.routing import BadRequest, NotFound, Raw, Request, Route, ServerError
+from quotable.review.routing import (
+    DEFAULT_MAX_BODY,
+    BadRequest,
+    NotFound,
+    Raw,
+    Request,
+    Route,
+    ServerError,
+)
 
 __all__ = [
     "API_ROUTES",
@@ -44,9 +53,9 @@ __all__ = [
     "make_server",
 ]
 
-API_ROUTES: list[Route] = [*BROWSE_ROUTES, *REVIEW_ROUTES]
+API_ROUTES: list[Route] = [*BROWSE_ROUTES, *REVIEW_ROUTES, *GOLD_ROUTES]
 
-MAX_BODY = 64 * 1024
+MAX_BODY = DEFAULT_MAX_BODY  # a route may ask for more (Route.max_body)
 _DRAIN_LIMIT = 1024 * 1024
 _STATIC = resources.files("quotable.review").joinpath("static")
 _STATIC_NAME = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]*")
@@ -198,7 +207,7 @@ class _Handler(BaseHTTPRequestHandler):
             if known:
                 raise _Refusal(HTTPStatus.METHOD_NOT_ALLOWED, f"{method} is not allowed here")
             raise NotFound("not found")
-        body = self._read_body() if method in _BODY_METHODS else None
+        body = self._read_body(found[0].max_body) if method in _BODY_METHODS else None
         request = Request(self.server.project_dir, found[1], query, body)
         result = found[0].func(request)
         if isinstance(result, Raw):
@@ -206,7 +215,7 @@ class _Handler(BaseHTTPRequestHandler):
         else:
             self._send_json(HTTPStatus.OK, result)
 
-    def _read_body(self) -> Any:
+    def _read_body(self, max_body: int) -> Any:
         if self.headers.get("Origin") is None:
             raise _Refusal(HTTPStatus.FORBIDDEN, "a request that changes things needs an Origin")
         kind = (self.headers.get("Content-Type") or "").split(";")[0].strip().lower()
@@ -218,8 +227,10 @@ class _Handler(BaseHTTPRequestHandler):
         if not _DIGITS.fullmatch(declared):
             raise _Refusal(HTTPStatus.BAD_REQUEST, "Content-Length is not a number")
         length = int(declared)
-        if length > MAX_BODY:
-            raise _Refusal(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, "the body is over 64 KiB")
+        if length > max_body:
+            raise _Refusal(
+                HTTPStatus.REQUEST_ENTITY_TOO_LARGE, f"the body is over {max_body // 1024} KiB"
+            )
         data = self.rfile.read(length)
         self._unread = 0
         try:

@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pytest
 
+from quotable.gold.project import score_project
+from quotable.gold.score import Report
 from quotable.review import sources
 from quotable.review.verdicts import CellKey, VerdictStore
 from quotable.runs import Run, list_runs, load_run
@@ -152,3 +154,14 @@ def test_the_demo_makes_no_network_request_and_needs_no_key(monkeypatch, tmp_pat
     project = review_demo.build(tmp_path / "demo", large_pages=SMALL)
     data = json.loads((next((project / "runs").iterdir()) / "run.json").read_text())
     assert data["run"]["model"].startswith("demo:")
+
+
+def test_the_gold_check_has_a_finished_sample_with_a_few_differences(project):
+    report = score_project(project)
+    assert isinstance(report, Report)
+    assert len(report.pages) == 6
+    assert any(len(p.pairs) == 2 for p in report.pages)  # a page that holds two tables
+    assert report.cells  # the wrong word, and the page typed as having no table
+    assert any(not p.correct for p in report.pages)
+    assert any(p.correct for p in report.pages)
+    assert (project / ".gitignore").read_text().startswith("*\n!.gitignore")

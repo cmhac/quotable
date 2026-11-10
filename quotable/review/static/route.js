@@ -19,6 +19,13 @@ export function parseHash(hash) {
   if (parts.length === 0 || (parts.length === 1 && head === ""))
     return { name: "runs", query };
   if (head === "queue" && parts.length === 1) return { name: "queue", query };
+  if (head === "gold") {
+    if (parts.length === 1) return { name: "gold", query };
+    if (parts.length === 2 && run === "score") return { name: "goldscore", query };
+    if (parts.length === 4 && run === "page" && /^[0-9a-f]{64}$/.test(word ?? "") && DIGITS.test(table ?? ""))
+      return { name: "goldpage", sha: word, page: Number(table), query };
+    return NOT_FOUND(hash);
+  }
   if (head !== "run" || !run) return NOT_FOUND(hash);
   if (parts.length === 2) return { name: "run", run, query };
   if (word !== "table" || !DIGITS.test(table ?? "")) return NOT_FOUND(hash);
@@ -45,6 +52,9 @@ export function hashFor(route) {
     const { page, row, name, extra } = route.cell;
     path = `/run/${part(route.run)}/table/${route.table}/cell/${page}/${row}/${extra ? "extra/" : ""}${part(name)}`;
   } else if (route.name === "queue") path = "/queue";
+  else if (route.name === "gold") path = "/gold";
+  else if (route.name === "goldscore") path = "/gold/score";
+  else if (route.name === "goldpage") path = `/gold/page/${route.sha}/${route.page}`;
   const entries = Object.entries(route.query ?? {}).filter(
     ([, v]) => v !== null && v !== undefined && v !== "",
   );
