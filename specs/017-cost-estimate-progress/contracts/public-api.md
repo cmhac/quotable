@@ -28,15 +28,17 @@ Nothing else about the call changes: the same requests in the same order for the
 class CostLimitExceededError(BudgetExceededError):
     reason: Literal["spent", "estimate", "unpriced", "unmetered"]
     limit: Decimal
-    spent: Decimal              # actual cost so far, in-flight requests included
-    over: Decimal               # spent - limit; Decimal(0) unless reason == "spent"
-    raise_by: Decimal           # round_up(smallest amount that gets past this point)
-    estimate: Decimal | None    # the expected cost of the whole run, when one exists
-    finish_by: Decimal | None   # round_up(estimate - limit), when estimate exists and exceeds the limit
-    stage: str | None           # "schema", "extract", "audit", "recheck", "extras"
-    done: int | None            # progress in that stage
+    spent: Decimal  # actual cost so far, in-flight requests included
+    over: Decimal  # spent - limit; Decimal(0) unless reason == "spent"
+    raise_by: Decimal  # round_up(smallest amount that gets past this point)
+    estimate: Decimal | None  # the expected cost of the whole run, when one exists
+    finish_by: (
+        Decimal | None
+    )  # round_up(estimate - limit), when estimate exists and exceeds the limit
+    stage: str | None  # "schema", "extract", "audit", "recheck", "extras"
+    done: int | None  # progress in that stage
     total: int | None
-    in_flight: int              # requests that were in flight when it tripped
+    in_flight: int  # requests that were in flight when it tripped
     # str(error) is the full message described in contracts/messages.md
 ```
 

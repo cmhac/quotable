@@ -25,6 +25,7 @@ What each file proves:
 
    ```python
    from quotable import extract_tables_async
+
    tables = await extract_tables_async("report.pdf", model="openai:<model>", max_cost=2.00)
    ```
 
