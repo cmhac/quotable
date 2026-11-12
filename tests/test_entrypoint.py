@@ -96,6 +96,7 @@ def test_the_public_names_are_the_entrypoint_and_its_results():
     assert sorted(quotable.__all__) == sorted(
         [
             "BudgetExceededError",
+            "CostLimitExceededError",
             "ExtraField",
             "ExtraFields",
             "ExtractionError",

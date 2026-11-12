@@ -33,22 +33,33 @@ import asyncio
 import hashlib
 import importlib.metadata
 import logging
+import math
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
 import pymupdf
 from pydantic_ai.models import Model
 
-from quotable.errors import TextLayerError
-from quotable.llm.client import CachedClient, LLMClient, PydanticAIClient, model_name
+from quotable.errors import CostLimitExceededError, TextLayerError
+from quotable.estimate import cached_discovery_requests, estimate_discovery, estimate_rest
+from quotable.llm.client import (
+    CachedClient,
+    LLMClient,
+    PydanticAIClient,
+    Request,
+    model_name,
+)
 from quotable.llm.images import TODAY, ImagePolicy, check_page_sizes, policy_for
+from quotable.meter import CostModel, RunMeter, dollars, make_error
 from quotable.ocr.config import OcrConfig, OcrEngine
 from quotable.ocr.paddle import PaddleEngine
 from quotable.ocr.pages import ocr_pages
+from quotable.progress import Reporter, choose_sink
 from quotable.runs import RunInfo, write_run
 from quotable.steps.audit import audit_table
 from quotable.steps.discover import DISCOVERY_PAGES, Discovery, Found, discover
@@ -97,6 +108,23 @@ class RunTrace:
     layers: dict[int, Layer] = field(default_factory=dict)  # whole pages, after OCR
     # shared page -> (the table's cropped layer, its band), one per table on that page
     bands: dict[int, list[tuple[Layer, Band]]] = field(default_factory=dict)
+
+
+@dataclass
+class CostContext:
+    """
+    What turns on the cost limit, the estimates and the messages of spec 017 (internal).
+
+    ``run_pipeline`` called without one behaves exactly as before. ``peek`` reads the request
+    cache without asking; ``estimates`` collects what the final message compares with the cost.
+    """
+
+    meter: RunMeter
+    reporter: Reporter
+    cost_model: CostModel
+    peek: Callable[[Request], Any]
+    estimates: dict[str, Any] = field(default_factory=dict)
+    pages: int = 0
 
 
 def table_page_layers(
@@ -262,7 +290,108 @@ def attach_extra_fields(
     return out
 
 
-async def run_pipeline(  # noqa: PLR0913
+SAMPLE_PAGES = 3  # table pages the sample run covers: the first, the middle and the last
+
+
+def choose_sample(jobs: Sequence[tuple[int, int]]) -> list[tuple[int, int]]:
+    """
+    Return the (table, page) jobs of the sample run, or none for a table too small to sample.
+
+    Positions ``round(i * (T - 1) / 2)`` for i in 0, 1, 2 among the ``T`` jobs in (table, page)
+    order, so a rerun chooses the same pages and finds their cached answers.
+    """
+    if len(jobs) <= SAMPLE_PAGES:
+        return []
+    last = SAMPLE_PAGES - 1
+    return [jobs[round(i * (len(jobs) - 1) / last)] for i in range(SAMPLE_PAGES)]
+
+
+async def _sample(
+    costs: CostContext,
+    jobs: Sequence[tuple[int, int]],
+    tables: int,
+    process: Callable[[frozenset[tuple[int, int]] | None], Awaitable[list[Table]]],
+) -> None:
+    """
+    Run the whole process on a few table pages, then estimate the rest and check the limit.
+
+    The sample's tables are thrown away; what it keeps is the cost it measured and the answers
+    in the cache. A table of three pages or fewer is not sampled.
+    """
+    meter, reporter = costs.meter, costs.reporter
+    picked = choose_sample(jobs)
+    if not picked:
+        meter.phase = "rest"
+        reporter.phase("rest")
+        reporter.fixed(
+            f"quotable: discovery found {tables} tables on {len(jobs)} table pages; "
+            "small enough to run as it is, no sample"
+        )
+        return
+    meter.phase = "sample"
+    reporter.phase("sample")
+    reporter.announce_sample(tables, len(jobs), picked, meter.total)
+    await process(frozenset(picked))
+    estimate = estimate_rest(meter, len(jobs), len(picked))
+    costs.estimates["rest"] = estimate
+    meter.estimate_total = estimate.expected_total
+    meter.phase = "rest"
+    reporter.phase("rest")
+    reporter.estimate_rest(estimate, meter.limit)
+    if (
+        meter.limit is not None
+        and estimate.expected_total is not None
+        and estimate.expected_total > meter.limit
+    ):
+        raise make_error(
+            "estimate",
+            limit=meter.limit,
+            spent=meter.total,
+            estimate=estimate.expected_total,
+            stage=None,
+        )
+
+
+async def _estimate_discovery(
+    pdf: Path,
+    pngs: list[bytes],
+    costs: CostContext,
+    discovery_pages: int,
+    extra_fields: ExtraFields | None,
+) -> None:
+    """Print the discovery estimate, stop if it is above the limit, and start the stage."""
+    meter, reporter = costs.meter, costs.reporter
+    meter.phase = "discovery"
+    reporter.phase("discovery")
+    with pymupdf.open(pdf) as document:
+        sizes = [(page.rect.width, page.rect.height) for page in document]
+    cached = await cached_discovery_requests(
+        pngs, costs.peek, discovery_pages=discovery_pages, extra_fields=extra_fields
+    )
+    estimate = estimate_discovery(
+        sizes,
+        costs.cost_model,
+        discovery_pages=discovery_pages,
+        extra_fields=extra_fields,
+        cached=cached,
+    )
+    costs.pages = len(sizes)
+    costs.estimates["discovery"] = estimate
+    reporter.estimate_discovery(estimate, discovery_pages, meter.limit)
+    if meter.limit is not None and estimate.cost is not None and estimate.cost > meter.limit:
+        raise make_error(
+            "estimate",
+            limit=meter.limit,
+            spent=meter.total,
+            estimate=estimate.cost,
+            what="discovery",
+        )
+    meter.stage("schema", math.ceil(len(pngs) / discovery_pages))
+    about = f"about {dollars(estimate.cost)}" if estimate.cost is not None else None
+    reporter.start_stage("schema", about)
+
+
+async def run_pipeline(  # noqa: PLR0913, PLR0915
     pdf: Path,
     client: LLMClient,
     *,
@@ -276,6 +405,7 @@ async def run_pipeline(  # noqa: PLR0913
     cache_dir: Path | None = None,
     extra_fields: ExtraFields | None = None,
     trace: RunTrace | None = None,
+    costs: CostContext | None = None,
 ) -> list[Table]:
     """
     Run the whole pipeline on one PDF with an already-built client (internal; tests use it).
@@ -302,6 +432,9 @@ async def run_pipeline(  # noqa: PLR0913
     ``ocr`` is the engine used for pages with a garbled or missing text layer (``None``: no
     OCR, such a document is rejected); ``ocr_config`` its settings; ``cache_dir`` where the
     OCR results are cached.
+
+    ``costs`` (spec 017) turns on the run meter's phases, the estimates and the messages; without it
+    nothing about the run changes.
     """
     if extra_fields is not None:
         validate_extra_fields(extra_fields)
@@ -315,9 +448,13 @@ async def run_pipeline(  # noqa: PLR0913
     with pymupdf.open(pdf) as document:
         pngs = [render_png(p) for p in document]
 
+    if costs is not None:
+        await _estimate_discovery(pdf, pngs, costs, discovery_pages, extra_fields)
     discovery = await discover(
         pngs, client, discovery_pages=discovery_pages, extra_fields=extra_fields
     )
+    if costs is not None:
+        costs.reporter.end_stage()
     found = discovery.tables
     # may reject a page before extracting
     table_layers_by_page = table_page_layers(found, layers, trace)
@@ -341,43 +478,99 @@ async def run_pipeline(  # noqa: PLR0913
         rows = [{**dict.fromkeys(absent, ""), **row} for row in result.rows]
         return replace(result, rows=rows, absent=absent)
 
-    jobs = [
+    all_jobs = [
         (index, page, layout.columns)
         for index, (f, lays) in enumerate(zip(found, layouts, strict=True))
         for page, layout in zip(f.pages, lays, strict=True)
     ]
-    results = await asyncio.gather(*(one(*job) for job in jobs))
 
-    tables: list[Table] = []
-    for index, f in enumerate(found):
-        pages = [r for (i, _, _), r in zip(jobs, results, strict=True) if i == index]
-        page_layers = table_layers_by_page[index]
-        grounded, position = ground_document(f.columns, pages, page_layers)
-        tables.append(
-            Table(
-                f.columns,
-                pages,
-                page_layers,
-                grounded,
-                position,
-                layouts[index],
-                label=f.label,
-                ocr_pages=tuple(r.page for r in pages if r.page in ocr_done),
+    def stage(name: str, total: int, *, upper_bound: bool = False) -> None:
+        if costs is not None:
+            costs.meter.stage(name, total, upper_bound=upper_bound)
+            costs.reporter.start_stage(name)
+
+    def stage_done() -> None:
+        if costs is not None:
+            costs.reporter.end_stage()
+
+    async def process(only: frozenset[tuple[int, int]] | None = None) -> list[Table]:
+        """Run every stage after discovery on the (table, page) jobs in ``only`` (all if None)."""
+        jobs = [j for j in all_jobs if only is None or (j[0], j[1]) in only]
+        stage("extract", len(jobs))
+        results = await asyncio.gather(*(one(*job) for job in jobs))
+        stage_done()
+
+        tables: list[Table] = []
+        for index, f in enumerate(found):
+            pages = [r for (i, _, _), r in zip(jobs, results, strict=True) if i == index]
+            if not pages:
+                continue
+            kept = {r.page for r in pages}
+            page_layers = table_layers_by_page[index]
+            grounded, position = ground_document(f.columns, pages, page_layers)
+            tables.append(
+                Table(
+                    f.columns,
+                    pages,
+                    page_layers,
+                    grounded,
+                    position,
+                    [
+                        lay
+                        for page, lay in zip(f.pages, layouts[index], strict=True)
+                        if page in kept
+                    ],
+                    label=f.label,
+                    ocr_pages=tuple(r.page for r in pages if r.page in ocr_done),
+                )
             )
-        )
-    if audit:
+        table_pages = sum(len(t.pages) for t in tables)
+        if audit:
+            stage("audit", table_pages, upper_bound=True)
+            tables = list(
+                await asyncio.gather(*(audit_table(t, pdf, client, images, gate) for t in tables))
+            )
+            stage_done()
+            log.info(
+                "audit: %d proposal(s), %d kept",
+                sum(len(t.audit) for t in tables),
+                sum(a.outcome == "accepted" for t in tables for a in t.audit),
+            )
+        if extra_fields is not None:
+            tables = await extras_stage(tables, only, table_pages)
+        if only is None and merge_reworded:  # the sample is not merged
+            tables = merge_tables(tables)
+        return await recheck_stage(tables, table_pages)
+
+    async def recheck_stage(tables: list[Table], table_pages: int) -> list[Table]:
+        if not recheck:
+            return tables
+        stage("recheck", table_pages, upper_bound=True)
         tables = list(
-            await asyncio.gather(*(audit_table(t, pdf, client, images, gate) for t in tables))
+            await asyncio.gather(*(recheck_table(t, pdf, client, images, gate) for t in tables))
         )
-        log.info(
-            "audit: %d proposal(s), %d kept",
-            sum(len(t.audit) for t in tables),
-            sum(a.outcome == "accepted" for t in tables for a in t.audit),
-        )
-    if extra_fields is not None:
+        stage_done()
+        return tables
+
+    async def extras_stage(
+        tables: list[Table], only: frozenset[tuple[int, int]] | None, table_pages: int
+    ) -> list[Table]:
+        assert extra_fields is not None
+        scope = discovery
+        if only is not None:  # the sample: only its pages, with every table that is on them
+            pages = {page for _, page in only}
+            scope = Discovery(
+                [replace(f, rows={p: r for p, r in f.rows.items() if p in pages}) for f in found],
+                {p: v for p, v in discovery.extras.items() if p in pages},
+            )
+            scope.tables = [f for f in scope.tables if f.rows]
+        stage("extras", table_pages, upper_bound=True)
         printed, changes, suspect_pages = await resolve_extra_fields(
-            extra_fields, discovery, layers, pngs, client, gate, recheck=recheck
+            extra_fields, scope, layers, pngs, client, gate, recheck=recheck
         )
+        stage_done()
+        if only is not None:
+            return tables  # what the sample read is thrown away with it
         flat = flatten(extra_fields)
         by_page = propagate(sorted(layers), printed, flat, carry_forward=extra_fields.carry_forward)
         names = tuple(f.name for f, _ in flat)
@@ -394,13 +587,11 @@ async def run_pipeline(  # noqa: PLR0913
             ),
             suspect_pages,
         )
-    if merge_reworded:
-        tables = merge_tables(tables)
-    if recheck:
-        tables = list(
-            await asyncio.gather(*(recheck_table(t, pdf, client, images, gate) for t in tables))
-        )
-    return tables
+        return tables
+
+    if costs is not None:
+        await _sample(costs, [(i, page) for i, page, _ in all_jobs], len(found), process)
+    return await process()
 
 
 def _ocr_config(ocr: OcrConfig | bool) -> OcrConfig | None:  # noqa: FBT001
@@ -465,6 +656,47 @@ def _save_run(  # noqa: PLR0913, PLR0917
         print(f"quotable: could not save the run to {target}: {err}", file=sys.stderr)
 
 
+def _limit(max_cost: float | str | Decimal | None) -> Decimal | None:
+    """Return the cost limit as dollars; ``ValueError`` if it is not a number above zero."""
+    if max_cost is None:
+        return None
+    try:
+        limit = Decimal(str(max_cost))
+    except InvalidOperation:
+        limit = Decimal("NaN")
+    if not limit.is_finite() or limit <= 0:
+        msg = f"max_cost must be a number of dollars above zero, not {max_cost!r}"
+        raise ValueError(msg)
+    return limit
+
+
+async def run_metered(
+    pdf: Path,
+    client: LLMClient,
+    costs: CostContext,
+    **options: Any,  # noqa: ANN401
+) -> list[Table]:
+    """
+    Run ``run_pipeline`` with a cost context; say how the run ended (internal).
+
+    A run stopped by the cost limit waits for the requests already in flight, so the error shows
+    what the provider will bill, then raises it. Any other failure only gets a closing message.
+    """
+    try:
+        tables = await run_pipeline(pdf, client, costs=costs, **options)
+    except CostLimitExceededError as err:
+        if err.reason in ("spent", "unmetered"):
+            await costs.meter.settled()
+            err = costs.meter.error()  # noqa: PLW2901 (the same stop, with the settled numbers)
+        costs.reporter.closing(err)
+        raise err from None
+    except Exception as err:
+        costs.reporter.closing(err)
+        raise
+    costs.reporter.final(tables, costs.estimates, costs.pages)
+    return tables
+
+
 async def extract_tables_async(  # noqa: PLR0913
     pdf: str | Path,
     model: Model | str,
@@ -479,6 +711,8 @@ async def extract_tables_async(  # noqa: PLR0913
     ocr: OcrConfig | bool = True,
     merge_reworded: bool = True,
     extra_fields: ExtraFields | None = None,
+    max_cost: float | str | Decimal | None = None,
+    progress: bool = True,
 ) -> list[Table]:
     """
     Run the whole pipeline on one PDF; return one ``Table`` per table in it.
@@ -530,22 +764,52 @@ async def extract_tables_async(  # noqa: PLR0913
     ``carry_forward=True`` a page that does not takes the nearest earlier page's value.
     Pages that may hold a header the model missed get a second look. Without it nothing changes.
 
+    ``max_cost`` (US dollars, above zero) limits what the call may cost. The total actual cost is
+    checked after every request that reaches a model, and as soon as it is above the limit no
+    further request is started: requests already sent finish and are billed, and
+    ``CostLimitExceededError`` (a ``BudgetExceededError``) says what the call has cost, how far
+    over the limit it is and how much to raise the limit by. Everything answered so far is cached,
+    so a rerun with a higher limit pays nothing for it. The limit is separate from
+    ``max_requests``. With a limit set, a model whose price is not known is refused before any
+    request, and a request that reports no usage stops the run, because the cost could not be
+    kept under the limit. ``progress`` (default on) prints the estimates and progress messages
+    to standard error, or to the cell output in a notebook; ``False`` prints nothing and the
+    limit still applies.
+
     Each call that returns also saves its run in ``.quotable/runs/<run id>/`` (same id as in
     the cost records); a failed save only prints a warning.
     """
     config = _ocr_config(ocr)
+    limit = _limit(max_cost)
     directory = resolve_cache_dir(cache_dir)
-    costs = CostLog()  # costs go to the project's .quotable/cost/, not into a named cache_dir
+    cost_log = CostLog()  # costs go to the project's .quotable/cost/, not into a named cache_dir
+    meter = RunMeter(limit)
+    reporter = Reporter(choose_sink(progress=progress), meter)
+    cost_model = CostModel.for_model(model)
+    if limit is not None and cost_model.price(1000, 100) is None:
+        error = make_error(
+            "unpriced", limit=limit, spent=Decimal(0), model=cost_model.name,
+            cause=cost_model.why_unpriced,
+        )  # fmt: skip
+        reporter.closing(error)
+        raise error
+
+    def on_usage(request: Request, name: str, usage: Any, cost: Decimal | None) -> None:  # noqa: ANN401
+        cost_log.record_usage(request, name, usage, cost)
+        meter.add(request, usage, cost)
+
     client = CachedClient(
-        PydanticAIClient(model, model_settings=model_settings, on_usage=costs.record_usage),
+        PydanticAIClient(model, model_settings=model_settings, on_usage=on_usage),
         directory,
         max_requests,
+        meter,
     )
     started = _now()
     trace = RunTrace()
-    tables = await run_pipeline(
+    tables = await run_metered(
         Path(pdf),
         client,
+        CostContext(meter, reporter, cost_model, client.peek),
         discovery_pages=discovery_pages,
         recheck=recheck,
         audit=audit,
@@ -558,7 +822,7 @@ async def extract_tables_async(  # noqa: PLR0913
         trace=trace,
     )
     _save_run(
-        costs.run_id,
+        cost_log.run_id,
         started,
         Path(pdf),
         model,
@@ -590,6 +854,8 @@ def extract_tables(  # noqa: PLR0913
     ocr: OcrConfig | bool = True,
     merge_reworded: bool = True,
     extra_fields: ExtraFields | None = None,
+    max_cost: float | str | Decimal | None = None,
+    progress: bool = True,
 ) -> list[Table]:
     """Run the whole pipeline on one PDF (synchronous wrapper); one ``Table`` per table."""
     return asyncio.run(
@@ -606,5 +872,7 @@ def extract_tables(  # noqa: PLR0913
             ocr=ocr,
             merge_reworded=merge_reworded,
             extra_fields=extra_fields,
+            max_cost=max_cost,
+            progress=progress,
         )
     )

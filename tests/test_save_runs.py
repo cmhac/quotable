@@ -87,7 +87,7 @@ def test_a_failed_save_warns_once_and_still_returns_the_tables(monkeypatch, caps
         raise OSError("disk full")
 
     monkeypatch.setattr(pipeline_module, "write_run", refuse)
-    (table,) = extract_tables(PDF, Calls().model(), recheck=False, audit=False)
+    (table,) = extract_tables(PDF, Calls().model(), recheck=False, audit=False, progress=False)
     assert table.rows()
     err = capsys.readouterr().err
     assert err.count("could not save the run") == 1

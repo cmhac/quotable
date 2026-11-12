@@ -529,7 +529,7 @@ def test_an_unwritable_cost_folder_does_not_stop_the_extraction(capsys):
     project = Path.cwd() / ".quotable"
     project.mkdir()
     (project / "cost").write_text("in the way")
-    (table,) = extract_tables(PDF, Calls().model(), recheck=False, audit=False)
+    (table,) = extract_tables(PDF, Calls().model(), recheck=False, audit=False, progress=False)
     assert table.columns
     warnings = [x for x in capsys.readouterr().err.splitlines() if "cost" in x]
     assert len(warnings) == 1

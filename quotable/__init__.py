@@ -2,6 +2,7 @@
 
 from quotable.errors import (
     BudgetExceededError,
+    CostLimitExceededError,
     ExtractionError,
     OcrUnavailableError,
     TextLayerError,
@@ -13,6 +14,7 @@ from quotable.table import Flag, MergedPart, MergeEvidence, Row, Table
 
 __all__ = [
     "BudgetExceededError",
+    "CostLimitExceededError",
     "ExtraField",
     "ExtraFields",
     "ExtractionError",
