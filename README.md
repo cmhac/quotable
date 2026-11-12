@@ -12,6 +12,7 @@ tables = extract_tables(
     model="openai:<model-name>",  # required; a pydantic-ai model string or Model instance
     cache_dir="cache",  # optional: where answers and OCR results are cached (default .quotable/cache/)
     max_requests=100,  # optional: cap on new (uncached) model requests
+    max_cost=25.00,  # optional: stop, with an error, once the run has cost more than $25
 )  # one Table per table in the PDF
 
 for table in tables:
@@ -324,6 +325,56 @@ openai:gpt-5-mini         12        104,118         8,430       $0.47
 reached a model and "unpriced" says how many of those had no price. A line that cannot be read
 is skipped and counted. With no records it says so and exits 0; an unreadable cost file exits 1.
 
+### Cost limit, estimates and progress messages
+
+`max_cost` is a limit in US dollars on what one `extract_tables` call may cost. It is checked
+after every request that reaches a model, and as soon as the total is above it quotable starts
+no new request and raises `CostLimitExceededError` (a `BudgetExceededError`). Requests already
+sent finish and are billed, so the limit can be passed by the cost of the (at most four)
+requests in flight; the error's total includes them. The message says what the call has cost,
+by how much it is over, how much to raise `max_cost` by to get past that point, and, once
+there is an estimate, by how much to finish the run. Every answer received before the stop
+is cached, the one that crossed the limit included, so running again with a higher limit pays
+nothing for what was already answered.
+
+```python
+tables = extract_tables("report.pdf", model="openai:<model-name>", max_cost=25.00)
+```
+
+With a limit set, a model whose price quotable cannot work out is refused before any request,
+and a request that comes back with no usage figures stops the run: the cost could not be kept
+under the limit. `max_cost` is separate from `max_requests`.
+
+A run goes through three phases and says so as it goes (to standard error, or to the cell
+output in a notebook):
+
+1. **Discovery.** Before the first request, a message gives the estimated cost: page images at
+   150 dpi priced by the provider's published image-token rule, plus the instructions and an
+   allowance for the answer. Discovery answers already in the cache are left out. If the
+   estimate is above `max_cost`, the run stops with nothing sent. No approval is asked for.
+2. **Sample.** If the table has more than three table pages, the whole process (extraction,
+   audit, recheck) runs on three of them, the first, the middle and the last, to measure what a
+   page really costs. A new estimate for the rest is printed and checked against the limit.
+   The sample's extraction answers are reused. Its audit and recheck answers are reused only when
+   the rest of the run asks the same question, and the final message says how much of the
+   sample's cost was not.
+3. **The rest.** The same process on the other pages, then one final message: the total, the
+   estimates beside what was spent, the requests made and the ones answered from the cache,
+   the pages and tables, and the time.
+
+Image-token rules exist for OpenAI's patch and tile models and for Anthropic (as an upper bound);
+a model outside that table gets "no estimate" and the limit is still enforced on actual cost.
+The estimates are estimates: their accuracy against real runs has not been measured
+(`tests/live/test_live_cost_estimate.py` records it, on request). Reasoning models can spend
+many output tokens that no estimate predicts.
+
+In a terminal the progress is one line that rewrites itself. In a Jupyter notebook it is one
+output block per phase, updated in place, so the cell's output does not grow a row per update.
+That is checked with a stand-in for IPython; it has not been tried in JupyterLab, VS Code or
+Colab. When the output is a file or a pipe it is plain lines, each written once, with no control
+codes. `progress=False` turns all of this off (the limit still applies). Use
+`await extract_tables_async(...)` in a notebook, as above.
+
 ### Reviewing the results
 
 Every `extract_tables` call saves its run (the values, each cell's grounding status, the words
@@ -505,7 +556,8 @@ Deliberately omitted from this first cut; the original code is the reference for
   between unbanded columns.
 - **Recheck:** splitting pages with many flagged cells over several requests, capping the size
   of the text layer sent, and undoing accepted changes that make another cell worse.
-- **Cost:** a dollar cap (only a request-count cap exists) and the run-metadata sidecar.
-  Per-request cost is recorded and summed by `quotable cost-report` (see "Cost").
+- **Cost:** the run-metadata sidecar. A dollar limit (`max_cost`), estimates and progress
+  messages exist (see "Cost limit, estimates and progress messages"); per-request cost is
+  recorded and summed by `quotable cost-report` (see "Cost").
 - **Output:** no CSV/sidecar writer or extraction CLI yet; `Table.records()`, `Table.to_pandas()` and
   `Table.to_polars()` are the interface.

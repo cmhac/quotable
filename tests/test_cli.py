@@ -111,7 +111,10 @@ def test_a_usage_error_exits_two(argv, capsys):
 
 def test_the_public_api_is_unchanged():
     assert "main" not in quotable.__all__
-    assert not any("cost" in name.lower() or "cli" in name.lower() for name in quotable.__all__)
+    assert not any(
+        ("cost" in name.lower() and name != "CostLimitExceededError") or "cli" in name.lower()
+        for name in quotable.__all__
+    )
 
 
 @pytest.mark.parametrize(

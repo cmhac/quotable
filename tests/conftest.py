@@ -2,8 +2,11 @@
 
 import asyncio
 import json
+import sys
 from collections.abc import Callable
+from decimal import Decimal
 from pathlib import Path
+from types import ModuleType, SimpleNamespace
 from typing import Any
 
 import pymupdf
@@ -155,3 +158,65 @@ def replay(columns: list[str], pages: dict[int, list[dict[str, str]]]) -> FakeCl
         raise AssertionError(msg)
 
     return FakeClient(handler)
+
+
+class PricedClient:
+    """
+    Wrap a client and report a cost for every request to a ``RunMeter`` (spec 017).
+
+    ``cost`` is one price for every request or a price per stage; a stage in ``no_usage`` reports
+    no token counts. ``asyncio.sleep(0)`` lets requests in flight overlap. ``started`` records the
+    meter's total at the moment each request began.
+    """
+
+    def __init__(
+        self,
+        inner: FakeClient,
+        meter: Any,
+        cost: Decimal | dict[str, Decimal] = Decimal("0.01"),
+        no_usage: tuple[str, ...] = (),
+    ) -> None:
+        self.inner = inner
+        self.meter = meter
+        self.cost = cost
+        self.no_usage = no_usage
+        self.identity = inner.identity
+        self.started: list[tuple[str, Decimal]] = []
+
+    async def ask(self, request: Request) -> object:
+        self.started.append((request.stage, self.meter.total))
+        answer = await self.inner.ask(request)
+        await asyncio.sleep(0)
+        price = self.cost[request.stage] if isinstance(self.cost, dict) else self.cost
+        tokens = (0, 0) if request.stage in self.no_usage else (1000, 100)
+        usage = SimpleNamespace(input_tokens=tokens[0], output_tokens=tokens[1])
+        self.meter.add(request, usage, price)
+        return answer
+
+    def stages(self) -> list[str]:
+        return self.inner.stages()
+
+
+@pytest.fixture
+def fake_ipython(monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
+    """Make ``IPython`` look loaded in a notebook; ``calls`` records display and update calls."""
+    calls: list[tuple[str, dict[str, Any], str | None]] = []
+
+    class ZMQInteractiveShell:  # the class name is how a notebook kernel is recognised
+        pass
+
+    shell = ZMQInteractiveShell()
+    display_module = ModuleType("IPython.display")
+    vars(display_module).update(
+        display=lambda data, raw=False, display_id=None: calls.append(
+            ("display", data, display_id)
+        ),
+        update_display=lambda data, raw=False, display_id=None: calls.append(
+            ("update", data, display_id)
+        ),
+    )
+    module = ModuleType("IPython")
+    vars(module).update(get_ipython=lambda: shell, display=display_module)
+    monkeypatch.setitem(sys.modules, "IPython", module)
+    monkeypatch.setitem(sys.modules, "IPython.display", display_module)
+    return SimpleNamespace(calls=calls)

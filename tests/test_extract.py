@@ -197,6 +197,8 @@ def test_the_text_layer_check_has_no_off_switch():
         "ocr",  # chooses whether bad pages are OCR'd; the text-layer check itself has no switch
         "merge_reworded",  # spec 007: the merge step's switch
         "extra_fields",  # spec 010: values to read from outside the tables
+        "max_cost",  # spec 017: the cost limit in dollars
+        "progress",  # spec 017: the estimate and progress messages (on by default)
     }
     assert set(inspect.signature(extract_tables_async).parameters) == parameters
     for function in (public_extract_tables, extract_tables_async):
@@ -215,6 +217,7 @@ def test_the_text_layer_check_has_no_off_switch():
         "ocr_config",
         "cache_dir",
         "trace",  # spec 013: what saving the run needs
+        "costs",  # spec 017: the run meter, reporter and cost model (None: nothing changes)
     }
 
 

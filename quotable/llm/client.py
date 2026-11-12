@@ -29,7 +29,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from decimal import Decimal
 from pathlib import Path
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Any, Protocol
 
 from pydantic import BaseModel, ValidationError
 from pydantic_ai import Agent, BinaryContent
@@ -39,6 +39,9 @@ from pydantic_ai.usage import RunUsage
 
 from quotable.errors import BudgetExceededError
 from quotable.storage import write_atomic
+
+if TYPE_CHECKING:
+    from quotable.meter import RunMeter
 
 
 @dataclass(frozen=True)
@@ -99,32 +102,67 @@ def request_key(identity: str, request: Request) -> str:
 class CachedClient:
     """Wrap a client with a disk cache and a cap on new requests."""
 
-    def __init__(self, inner: LLMClient, cache_dir: Path, max_requests: int | None = None) -> None:
+    def __init__(
+        self,
+        inner: LLMClient,
+        cache_dir: Path,
+        max_requests: int | None = None,
+        meter: "RunMeter | None" = None,
+    ) -> None:
         """
         Cache ``inner``'s answers in ``cache_dir`` (it must exist); cap new requests.
 
         At most ``max_requests`` requests reach ``inner``; the next raises ``BudgetExceededError``.
+        With a ``meter`` (spec 017) no request is started once the meter has tripped (a cost limit
+        was passed), and an answer that was paid for is stored before the meter is checked, so the
+        request that crossed the limit is not paid for again on a rerun.
         """
         self.inner = inner
         self.identity = inner.identity
         self.cache_dir = cache_dir
         self.max_requests = max_requests
+        self.meter = meter
         self.new_requests = 0
+
+    def peek(self, request: Request) -> Any:  # noqa: ANN401
+        """Return the cached answer to ``request``, or ``None``; nothing is requested or written."""
+        return self._read(request_key(self.identity, request), request)
+
+    def _read(self, key: str, request: Request) -> Any:  # noqa: ANN401
+        path = self.cache_dir / f"{key}.json"
+        if not path.exists():
+            return None
+        try:
+            return request.output_type.model_validate(json.loads(path.read_text("utf-8")))
+        except (ValueError, ValidationError) as err:
+            print(f"ignoring unusable cache file {path.name}: {err}", file=sys.stderr)
+            return None
 
     async def ask(self, request: Request) -> Any:  # noqa: ANN401
         """Return the cached answer, or ask the wrapped client and cache it."""
-        path = self.cache_dir / f"{request_key(self.identity, request)}.json"
-        if path.exists():
-            try:
-                return request.output_type.model_validate(json.loads(path.read_text("utf-8")))
-            except (ValueError, ValidationError) as err:
-                print(f"ignoring unusable cache file {path.name}: {err}", file=sys.stderr)
+        if self.meter is not None:
+            self.meter.check()
+        key = request_key(self.identity, request)
+        answer = self._read(key, request)
+        if answer is not None:
+            if self.meter is not None:
+                self.meter.hit(key, request.stage)
+            return answer
         if self.max_requests is not None and self.new_requests >= self.max_requests:
             msg = f"{self.new_requests} new requests made, cap is {self.max_requests}"
             raise BudgetExceededError(msg)
         self.new_requests += 1
-        answer = await self.inner.ask(request)
-        write_atomic(path, answer.model_dump_json(indent=1))
+        if self.meter is not None:
+            self.meter.begin()
+        try:
+            answer = await self.inner.ask(request)
+        finally:
+            if self.meter is not None:
+                self.meter.end()
+        write_atomic(self.cache_dir / f"{key}.json", answer.model_dump_json(indent=1))
+        if self.meter is not None:
+            self.meter.paid(key, request)
+            self.meter.check()
         return answer
 
 
