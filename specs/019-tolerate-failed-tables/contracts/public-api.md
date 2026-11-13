@@ -30,6 +30,8 @@ from quotable import Problem, Table, TableFailedWarning, extract_tables
 | `label`, `columns`, `pages`, `layers`, `grounded`, `position`, `layouts`, `proposals`, `audit`, `ocr_pages`, `merged`, `extra_fields`, `extra_names`, `extra_changes` | as today | no |
 | `rows()`, `page_rows(page)`, `records()`, `to_pandas()`, `to_polars()`, `flagged()` | as today | **yes, once per call, only on a failed table** |
 
+Not public: `Table.first_page()`, `Table.problem_pages()`, `Table.warn_failure()`, the quiet `_rows`, `_page_rows`, `_records` and `_flagged` and the function `page_ranges` are for the package itself and may change.
+
 On a failed table:
 
 - The six accessors return what the table holds and never raise because it failed. A table with no extracted pages gives `[]` from `rows()`, `records()` and `flagged()` and an empty frame (with the usual columns) from `to_pandas()` and `to_polars()`.

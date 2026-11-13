@@ -161,3 +161,10 @@ def test_every_entry_of_a_pipeline_run_has_its_details(make_pdf, tmp_path):
     assert all(e["_quotable"]["run"] == RUN for e in entries.values())
     (retry,) = [e for e in entries.values() if "retry_of" in e["_quotable"]]
     assert retry["_quotable"]["retry_of"] in entries
+
+
+def test_an_entry_is_still_written_without_details_when_they_cannot_be_built(tmp_path):
+    request = Request("extract", "do it", Answer, ["x"], pages=5)  # ty: ignore[invalid-argument-type]
+    ask(client_in(tmp_path), request)
+    entry = entry_of(tmp_path, request)
+    assert entry == {"text": "hello"}

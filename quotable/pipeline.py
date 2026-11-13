@@ -417,9 +417,18 @@ def attach_extra_fields(
     names: tuple[str, ...],
     changes: Mapping[tuple[int, str], tuple[str, str]],
 ) -> list[Table]:
-    """Give each table the results of its own pages (a page two tables share goes to both)."""
+    """
+    Give each table the results of its own pages (a page two tables share goes to both).
+
+    A failed table is left as it is (spec 019). shortcut: the extra-field requests are made per
+    page, so a page that only a failed table is on is still read (its value may carry forward to
+    a sound table); upgrade if the cost of those requests matters.
+    """
     out = []
     for table in tables:
+        if table.failed:
+            out.append(table)
+            continue
         mine = {r.page: dict(by_page[r.page]) for r in table.pages}
         used = {(r.source_page, n) for row in mine.values() for n, r in row.items()}
         kept = {key: value for key, value in changes.items() if key in used}

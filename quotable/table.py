@@ -246,7 +246,7 @@ class Problem:
 
 
 def page_ranges(pages: Iterable[int]) -> str:
-    """Return pages as ranges: ``3, 5-6, 9`` (for messages)."""
+    """Return pages as ranges: ``3, 5-6, 9`` (for messages; internal, spec 019)."""
     ordered = sorted(set(pages))
     parts: list[str] = []
     start = previous = ordered[0] if ordered else 0
@@ -293,16 +293,16 @@ class Table:
         return bool(self.problems)
 
     def first_page(self) -> int:
-        """Return the first page the table is on, or on which it failed (0 if it has none)."""
+        """Return the first page the table is on, or failed on (0 if none). Internal, spec 019."""
         pages = [r.page for r in self.pages] or [p for x in self.problems for p in x.pages]
         return min(pages, default=0)
 
     def problem_pages(self) -> str:
-        """Return the pages of every problem as ranges (``3, 5-6``), for messages."""
+        """Return the pages of every problem as ranges (``3, 5-6``). Internal, spec 019."""
         return page_ranges(p for x in self.problems for p in x.pages)
 
     def warn_failure(self) -> None:
-        """Warn that this table failed, once, at the moment its stage finds out (spec 019)."""
+        """Warn that this table failed, once, when its stage finds out. Internal, spec 019."""
         problems = "; ".join(p.message for p in self.problems)
         warnings.warn(
             f"table '{self.label or 'unnamed'}' failed (pages {self.problem_pages()}): {problems}. "

@@ -12,15 +12,19 @@ as ``true``, ``false`` or the ``OcrConfig`` fields, ``merge_reworded``, ``max_re
 ``extra_fields``, which is ``null`` or each field's ``name``, ``description`` and ``group``
 with the ``prompt`` and ``carry_forward``); ``document`` (``name``, absolute ``path``, ``size``,
 ``sha256``, ``pages``); ``summary`` (``tables``, ``rows``, ``cells``, ``flagged`` by status,
-``ocr_pages``); and ``tables``, one entry per table (``index``, ``label``, ``columns``,
-``extra_names``, ``pages``, ``rows``, ``flagged``, ``merged`` part count, ``ocr_pages``).
+``ocr_pages``, and ``failed``, the number of failed tables: spec 019; absent in older runs);
+and ``tables``, one entry per table (``index``, ``label``, ``columns``,
+``extra_names``, ``pages``, ``rows``, ``flagged``, ``merged`` part count, ``ocr_pages``, and
+``failed`` and ``problems`` from spec 019, each problem ``stage``, ``pages`` and ``message``;
+both absent in older runs, which read as not failed).
 Flagged counts are cells whose status is not in ``UNFLAGGED`` plus each extra field once per
 page that prints it, so they are the number of verdicts a full review asks for.
 
 ``tables.json``: ``v``; ``pages`` (every page any table is on: ``size`` ``[width, height]`` in
 points and ``words`` as ``[text, x0, y0, x1, y1]``, the whole page, OCR text on OCR'd pages);
 and ``tables`` in the order ``extract_tables`` returned them, each with ``index``, ``label``,
-``columns``, ``pages``, ``ocr_pages``, ``position``, ``layouts`` (``page``, ``columns``,
+``columns``, ``pages``, ``ocr_pages``, ``failed`` and ``problems`` (spec 019, as in ``run.json``),
+``position``, ``layouts`` (``page``, ``columns``,
 ``source`` and ``header``: ``line``, ``bottom``, column centres ``x``, or ``null``), ``bands``
 (page -> ``[y0, y1]``, only pages shared with another table), ``areas`` (page -> ``rows``:
 1-based row number -> ``[y0, y1]``, and ``columns``: name -> ``[x0, x1]``; an open edge of the

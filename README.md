@@ -249,6 +249,9 @@ extract_tables("scan.pdf", model=..., ocr=False)  # never OCR: reject a bad laye
 defers to the text layer, so an OCR error (the sample OCR'd Senate PDF reads every thousands
 comma as a period: `68.027.74`) can pass into the output; review those pages with more care.
 OCR of more than 5 pages prints its progress (a line at each tenth) unless `progress=False`.
+A page that has OCR text can be audited (see "Rows the model left out"); an empty page never was,
+because it had no words to compare, so a run with many OCR'd pages can cost up to one more
+request per page.
 
 ### Installing OCR
 

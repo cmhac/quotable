@@ -288,3 +288,29 @@ def test_extra_fields_ignore_a_table_that_failed_in_discovery(make_pdf):
         )
     assert [t.failed for t in tables] == [False, True]
     assert tables[0].extra_names == ("division",) and tables[1].extra_names == ()
+
+
+def test_extra_fields_are_not_given_to_a_table_that_failed_in_extraction(make_pdf):
+    path = make_pdf([HEADER_A, PAGE_2, PAGE_3, HEADER_C])
+    division = ExtraField("division", "The division named at the top left")
+    value = [ExtraValue(name="division", value=None)]
+    window = [PageWithExtras(tables=[t], extras=value) for t in (a(), a(), a(), c())]
+    answers = iter([WindowWithExtras(pages=window)])
+    rows = {**A_THREE, ("Item", 2): WRONG_KEYS}
+
+    def handler(request):
+        if request.stage == "schema":
+            return next(answers)
+        column = request.parts[0].splitlines()[1].split(":")[0].removeprefix("- ")
+        return PageRows(rows=[dict(r) for r in rows[column, request.page]])
+
+    with warnings.catch_warnings(record=True):
+        warnings.simplefilter("always")
+        tables = asyncio.run(
+            run_pipeline(
+                path, FakeClient(handler), recheck=False, extra_fields=ExtraFields([division])
+            )
+        )
+    failed_a, sound_c = tables
+    assert failed_a.failed and failed_a.extra_names == () and failed_a.extra_fields == {}
+    assert sound_c.extra_names == ("division",) and sound_c.extra_fields

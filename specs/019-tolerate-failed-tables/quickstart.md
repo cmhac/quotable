@@ -14,7 +14,7 @@ just test           # offline suite, no network or key
 The offline tests drive the pipeline with scripted models and a generated three-table PDF.
 
 ```bash
-just test tests/test_failed_tables.py tests/test_table_warnings.py tests/test_replay_failed_run.py
+just test tests/test_failed_tables.py tests/test_table_warnings.py tests/steps/test_discover.py
 ```
 
 What to see:
