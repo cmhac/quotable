@@ -10,7 +10,7 @@ description: "Task list for spec 019: a table that fails validation no longer st
 
 **Tests**: Required (FR-018, Constitution III). Each story starts with its tests; write them, run them, watch them fail for the stated reason, then implement. The real model is never replaced by a scripted one to test model behavior: the scripted clients here test the library's reaction to an answer, and the replay uses the model's own recorded answers.
 
-**Baseline (T001, 2026-11-13)**: `ruff` and `ty` pass; `just test -n 4` ran 2,996 passed in 86 s (2,993 before PR #5, plus 3 new tests). After T014 (the MVP): 3,036 passed. After T019: 3,050 passed.
+**Baseline (T001, 2026-11-13)**: `ruff` and `ty` pass; `just test -n 4` ran 2,996 passed in 86 s (2,993 before PR #5, plus 3 new tests). After T014 (the MVP): 3,036 passed. After T019: 3,050 passed. After T030: 3,072 passed (2,996 before, plus 76 new tests; `ruff`, `ty` and `just hooks` pass).
 
 **Already built (PR #5, branch commit `e4d49f9`)**: `answer_problems` in `quotable/steps/discover.py` makes a window answer invalid when a table has no columns, a blank name or a repeated name, and the window is asked once more. Its test `test_an_answer_with_no_columns_that_persists_raises` in `tests/steps/test_discover.py` describes the old end (a raise); T008 and T009 change it.
 
@@ -133,11 +133,11 @@ description: "Task list for spec 019: a table that fails validation no longer st
 
 ## Phase 9: Polish and cross-cutting
 
-- [ ] T027 [P] In `README.md` add a short section on failed tables (what `extract_tables` returns, `table.failed`, `table.problems`, the warning and how to turn it into an error or silence it, what still raises) and update "Not handled" and "Not carried over yet" if they mention the old raising behavior.
-- [ ] T028 [P] Update `AGENTS.md`: Project state (spec 019 implemented, what was and was not checked, the OCR default dependency and the removed extras, 1.1.0), the file structure lines for `errors.py`, `table.py`, `pipeline.py`, `progress.py`, `runs.py`, `llm/client.py`, `steps/discover.py`, `steps/layout.py`, `text/quality.py`, `ocr/` and the new tests, and every mention of `quotable[ocr]` or `quotable[ocr-core]`. The test count comes from T030.
-- [ ] T029 [P] Update the `Status` line of `specs/019-tolerate-failed-tables/spec.md` from "Draft, partly built" to what is true after this work, listing the unchecked items (real OCR time of 901 pages, installs on other platforms, the notebook display, SC-004 unless T031 was run).
-- [ ] T030 Run `just lint`, `just typecheck`, `just test -n 4` and `just hooks`; check SC-006: list the existing tests that were changed and confirm each expected an error from a check that now fails a table; write the final test count into `AGENTS.md` and this file's Baseline line. Run `speckit-converge` and append anything it finds.
-- [ ] T031 SC-004, only with the user's explicit go-ahead (Constitution III): run `just test-live tests/live/test_live_discovery_columns.py` and report the answer plainly: the empty answers are rare (6 of 6 windows were fine on the old code), so a pass does not show the fix; the replay in T008 does.
+- [x] T027 [P] In `README.md` add a short section on failed tables (what `extract_tables` returns, `table.failed`, `table.problems`, the warning and how to turn it into an error or silence it, what still raises) and update "Not handled" and "Not carried over yet" if they mention the old raising behavior.
+- [x] T028 [P] Update `AGENTS.md`: Project state (spec 019 implemented, what was and was not checked, the OCR default dependency and the removed extras, 1.1.0), the file structure lines for `errors.py`, `table.py`, `pipeline.py`, `progress.py`, `runs.py`, `llm/client.py`, `steps/discover.py`, `steps/layout.py`, `text/quality.py`, `ocr/` and the new tests, and every mention of `quotable[ocr]` or `quotable[ocr-core]`. The test count comes from T030.
+- [x] T029 [P] Update the `Status` line of `specs/019-tolerate-failed-tables/spec.md` from "Draft, partly built" to what is true after this work, listing the unchecked items (real OCR time of 901 pages, installs on other platforms, the notebook display, SC-004 unless T031 was run).
+- [x] T030 Run `just lint`, `just typecheck`, `just test -n 4` and `just hooks`; check SC-006: list the existing tests that were changed and confirm each expected an error from a check that now fails a table; write the final test count into `AGENTS.md` and this file's Baseline line. Run `speckit-converge` and append anything it finds.
+- [ ] T031 (not run: needs the user's go-ahead) SC-004, only with the user's explicit go-ahead (Constitution III): run `just test-live tests/live/test_live_discovery_columns.py` and report the answer plainly: the empty answers are rare (6 of 6 windows were fine on the old code), so a pass does not show the fix; the replay in T008 does.
 
 ---
 
@@ -172,3 +172,5 @@ Then US4 (T015 to T019) so that no check about one table can still end a run; th
 
 - Constraints quoted from `data-model.md`: `Problem.stage` is one of `"discovery"`, `"extraction"`, `"location"`; `Problem.pages` is a `tuple[int, ...]`, never empty; `Table.problems` is the last field; the signature of a failed `Found` is `("failed", label)`; `Request.pages`, `retry_of` and `problem` are not part of the key; `FORMAT_VERSION` stays 1.
 - Nothing is pushed by these tasks. PR #5 already carries the first commit of this spec.
+
+- **T030, SC-006**: the existing tests that were changed, each for a stated reason: `tests/steps/test_discover.py` (a check on one table no longer raises), `tests/test_extract.py` and `tests/test_tables.py` (rows still invalid, and a band that cannot be isolated, now fail that table), `tests/test_cost_limit.py` ("another failure" is a `RuntimeError`, because an `ExtractionError` from extraction is now a problem), `tests/test_entrypoint.py` and `tests/test_merged_field.py` (they pin the public names and the `Table` fields), `tests/ocr/test_ocr_device.py`, `tests/ocr/test_paddle_adapter.py` and `tests/test_ocr_pipeline.py` (the install texts no longer name the extras), `tests/review_demo.py` and `tests/review/test_review_demo.py` (the demo has a failed table). `speckit-converge` has not been run.

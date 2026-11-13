@@ -54,6 +54,37 @@ of one of those columns (a PDF column called `page`, say), the quotable column g
 A PDF with one table returns a list of one. Pages are shown to the model `discovery_pages`
 at a time (default 4; pass `discovery_pages=` to change it).
 
+### When a table fails
+
+One table that cannot be extracted does not cost you the others. If the model gives a table no
+columns (or a blank or repeated column name) even after quotable asks again once, if its rows are
+still invalid on a page after the retry, or if its first or last row cannot be found on a page it
+shares with another table, `extract_tables` returns that table anyway with `table.failed` set and
+`table.problems` saying what went wrong (`stage`, `pages`, `message`), and warns once with a
+`TableFailedWarning`. The closing message names the failed tables. Merge, recheck and audit leave
+them alone, and a failed table is never shown to the model as a known table.
+
+```python
+import warnings
+
+from quotable import TableFailedWarning, extract_tables
+
+tables = extract_tables("report.pdf", model=...)
+for table in tables:
+    if table.failed:
+        print(table.label, [(p.stage, p.pages, p.message) for p in table.problems])
+
+warnings.simplefilter("error", TableFailedWarning)  # make a failure, and reading one, an error
+```
+
+Reading the data of a failed table (`rows()`, `page_rows()`, `records()`, `to_pandas()`,
+`to_polars()`, `flagged()`) returns what the table holds, which may be nothing or only some of its
+pages, and warns each time. Reading `label`, `columns`, `pages`, `problems` or `failed` does not.
+Python's warning filters decide whether the warnings are shown, ignored or raised. What still
+raises: no table in the whole document, a window answer with the wrong number of pages after its
+retry, a page too large for the image policy, the request cap and the cost limit, and an unusable
+text layer. A saved run records the failed tables too.
+
 ### Headers worded differently on different pages
 
 Discovery joins pages whose column names match (case and punctuation ignored). If a table is
@@ -478,8 +509,8 @@ decides the answer, and `max_requests` caps how many new requests one run may ma
 ## Not handled
 
 - Tables side by side on a page. Tables are separated by a vertical band only; if two bands
-  overlap, or a table's first or last row cannot be found in the text layer, the run raises
-  `ExtractionError`.
+  overlap, or a table's first or last row cannot be found in the text layer, those tables come
+  back failed (see "When a table fails").
 - Tables whose column names change between pages are merged only in the cases described under
   "Headers worded differently on different pages". Names that share no words ("Amount" and
   "Funding"), a different column count and more than one possible partner stay separate tables;
