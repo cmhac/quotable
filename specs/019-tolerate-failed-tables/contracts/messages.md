@@ -51,19 +51,19 @@ Your previous answer was invalid:
 ## 5. OCR progress (Story 5; shown only with `progress=True` and more than 5 pages to OCR)
 
 ```text
-quotable: OCR of 901 pages without text (0 already in the cache)
+quotable: OCR of 901 pages (0 already in the cache)
 quotable: OCR 90 of 901 pages
 ...
 quotable: OCR done, 901 pages in 41 min 05 s
 ```
 
-A line at each 10% done. Plain lines in every sink.
+A line at each 10% done. Plain lines in every sink. (The figures are an example, not a measurement.)
 
 ## 6. Text-layer errors
 
 | Case | Exception | Text |
 |---|---|---|
-| `ocr=False`, more than 10% of the pages have no words | `TextLayerError` | `The PDF has no text on <n> of <m> pages (more than 10%).` followed by the existing `REMEDY_OCR_OFF` |
+| `ocr=False`, more than 10% of the pages have no words | `TextLayerError` | `The PDF has no text on <n> of <m> pages (more than 10% of them).` followed by the existing `REMEDY_OCR_OFF` |
 | `ocr=False`, no page has words | `TextLayerError` | unchanged: `The PDF has no text layer (it looks like a scan without OCR).` + `REMEDY_OCR_OFF` |
 | OCR needed, PaddleOCR cannot be imported | `OcrUnavailableError` | says OCR is installed with quotable only on macOS arm64, Linux x86_64 and Windows x86_64 with Python 3.11 to 3.13, and what to do (reinstall on a supported platform, or OCR the PDF yourself) |
 | OCR needed, PaddlePaddle missing but PaddleOCR present | `OcrUnavailableError` | says to install a PaddlePaddle build (CPU: `pip install paddlepaddle==3.3.1`; NVIDIA: see the README) |

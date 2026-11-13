@@ -33,6 +33,9 @@ from quotable.text.layer import Layer
 MIN_LETTERS = 100  # fewer letters than this and a page is not scored
 GARBLED_SCORE_THRESHOLD = -3.7  # mean log-probability per trigram below this is garbled
 MAX_GARBLED_PAGE_SHARE = 0.10  # of the scorable pages
+# Of all the pages: more than this share without any word is refused when OCR is off (spec 019).
+# The same share as for garbled pages; not tuned on data.
+MAX_EMPTY_PAGE_SHARE = MAX_GARBLED_PAGE_SHARE
 
 ALPHA = 0.5  # additive smoothing for unseen trigrams
 ALPHABET = 27  # 26 letters plus the end marker
@@ -150,6 +153,21 @@ def assess_text_layers(layers: dict[int, Layer]) -> Assessment:
             f"e.g. {_excerpt(layers[pages[0]])!r}."
         )
     return Assessment(results, reason, bad_pages)
+
+
+def empty_pages_reason(layers: dict[int, Layer]) -> str | None:
+    """
+    Return why a document with too many pages without text is refused, or ``None`` (spec 019).
+
+    Used only when OCR is off: with it on, every page without words is OCR'd, however many.
+    """
+    empty = sum(1 for layer in layers.values() if not layer.words)
+    if layers and empty / len(layers) > MAX_EMPTY_PAGE_SHARE:
+        return (
+            f"The PDF has no text on {empty} of {len(layers)} pages "
+            f"(more than {MAX_EMPTY_PAGE_SHARE:.0%} of them)."
+        )
+    return None
 
 
 def check_text_layers(layers: dict[int, Layer]) -> list[PageQuality]:

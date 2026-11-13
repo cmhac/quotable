@@ -183,7 +183,7 @@ def test_paddleocr_not_importable_gives_unavailable_with_the_install_command(mon
     with pytest.raises(OcrUnavailableError) as error:
         public_extract_tables(GARBLED, calls.model())
     assert isinstance(error.value, TextLayerError)
-    assert 'pip install "quotable[ocr]"' in str(error.value)
+    assert "PaddleOCR is not installed" in str(error.value) and "macOS" in str(error.value)
     assert calls.count == 0
 
 

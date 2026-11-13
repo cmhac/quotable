@@ -26,6 +26,7 @@ REDRAWS_PER_SECOND = 4
 SECONDS_A_MINUTE = 60
 SECONDS_AN_HOUR = 3600
 UNITS = {"schema": "windows", "extract": "pages", "audit": "pages", "recheck": "pages"}
+OCR_PROGRESS_FROM = 5  # OCR of this many pages or fewer is silent (spec 019)
 
 
 def duration(seconds: float) -> str:
@@ -225,6 +226,18 @@ class Reporter:
     def fixed(self, text: str) -> None:
         """Show lines that stay."""
         self._show("fixed", text)
+
+    def ocr_start(self, total: int, cached: int) -> None:
+        """Say that OCR of ``total`` pages begins (spec 019); ``cached`` are already done."""
+        self.fixed(f"quotable: OCR of {total} pages ({cached} already in the cache)")
+
+    def ocr_progress(self, done: int, total: int) -> None:
+        """Say how many pages OCR has finished."""
+        self.fixed(f"quotable: OCR {done} of {total} pages")
+
+    def ocr_done(self, total: int, seconds: float) -> None:
+        """Say that OCR is finished and how long it took."""
+        self.fixed(f"quotable: OCR done, {total} pages in {duration(seconds)}")
 
     def closing(self, error: Exception | None) -> None:
         """Say that the run stopped, and how much it had cost."""

@@ -197,17 +197,19 @@ covers pixel size only, and a rejected request fails with the provider's own err
 Every value is checked against the PDF's text layer, and grounding cannot be turned off.
 Before any model request, the text layer is scored with English character trigrams. A page
 whose layer is garbled (a broken font encoding, bad OCR) or missing (a scan with no OCR) is
-a bad page. If too many pages are bad, quotable OCRs the bad pages (only those) with
-[PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR), builds a text layer from the result,
-checks again, and carries on. If the OCR'd text is still unreadable, or OCR is not installed,
-the run stops with `TextLayerError`, still before any model request. The check is English and
-Latin-script only. A document with text but too few letters to score (only numbers) is
-accepted.
+a bad page. Every page with no text at all is OCR'd, however few or many, with
+[PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) before any model request, and its OCR
+text becomes that page's text layer. If too many of the other pages are garbled, quotable OCRs
+those too (only the bad pages), checks again, and carries on. If the OCR'd text is still
+unreadable, or OCR cannot run, the run stops with `TextLayerError`, still before any model
+request. With `ocr=False` nothing is OCR'd: a document with no text on more than 10% of its
+pages, or with a garbled layer, is refused. The check is English and Latin-script only. A
+document with text but too few letters to score (only numbers) is accepted.
 
 ```python
 from quotable import OcrConfig, extract_tables
 
-extract_tables("scan.pdf", model=...)  # ocr=True: OCR bad pages with the defaults
+extract_tables("scan.pdf", model=...)  # ocr=True: OCR the pages with no text, with the defaults
 extract_tables("scan.pdf", model=..., ocr=OcrConfig(dpi=200, device="cpu"))  # configured
 extract_tables("scan.pdf", model=..., ocr=False)  # never OCR: reject a bad layer instead
 ```
@@ -215,22 +217,18 @@ extract_tables("scan.pdf", model=..., ocr=False)  # never OCR: reject a bad laye
 `Table.ocr_pages` lists the pages of a table whose text layer came from OCR. The recheck
 defers to the text layer, so an OCR error (the sample OCR'd Senate PDF reads every thousands
 comma as a period: `68.027.74`) can pass into the output; review those pages with more care.
+OCR of more than 5 pages prints its progress (a line at each tenth) unless `progress=False`.
 
 ### Installing OCR
 
-OCR is an optional extra, so a plain `pip install quotable` stays small. If you are sure your
-PDFs have good text layers you never need it. If a PDF needs OCR and PaddleOCR is not
-installed, quotable raises `OcrUnavailableError` (a `TextLayerError`) saying so, before any
-model request, so the only cost is installing and running again.
-
-```bash
-# CPU (macOS Apple Silicon, Linux x86_64, Windows x86_64; Python 3.11 to 3.13): one command
-pip install "quotable[ocr]"
-```
-
-The extra installs `paddleocr` and the CPU build of `paddlepaddle` (about 100 to 200 MB, plus
-OpenCV and others). It cannot install on Intel Macs, Linux ARM or Python 3.14, where
-PaddlePaddle publishes no wheel; OCR the PDF yourself there (for example `ocrmypdf --force-ocr`).
+PaddleOCR and the CPU build of PaddlePaddle come with `pip install quotable`, on the platforms
+PaddlePaddle publishes a wheel for: macOS on Apple silicon, Linux x86_64 and Windows x86_64,
+with Python 3.11 to 3.13. That adds about 100 to 200 MB to the install (the PaddlePaddle wheel
+is 104 MB on macOS and Windows and 194 MB on Linux, plus PaddleOCR's own dependencies such as
+OpenCV, which were not measured), even if your PDFs never need OCR. quotable imports PaddleOCR
+only when a page needs it. On Intel Macs, Linux ARM and Python 3.14 quotable installs fine
+without it, and a PDF that needs OCR raises `OcrUnavailableError` (a `TextLayerError`) before
+any model request; OCR the PDF yourself there (for example `ocrmypdf --force-ocr`).
 
 ### OCR on an NVIDIA GPU
 
@@ -241,11 +239,11 @@ runs on the CPU and logs a warning saying why. A GPU that was chosen automatical
 GPUs and Apple GPUs are not supported: those machines run on the CPU.
 
 PaddlePaddle's CPU and GPU wheels both provide the `paddle` package, and the GPU wheels are on
-Paddle's own index, not PyPI, so there is no `gpu` extra. Install the core extra, then the GPU
-build:
+Paddle's own index, not PyPI. quotable installs the CPU build, so replace it with the GPU one:
 
 ```bash
-pip install "quotable[ocr-core]"
+pip install quotable
+pip uninstall -y paddlepaddle
 pip install paddlepaddle-gpu==3.3.1 \
   --extra-index-url https://www.paddlepaddle.org.cn/packages/stable/cu126/
 # cu126 needs an NVIDIA driver >= 550.54.14; cu118 (use .../cu118/) needs >= 450.80.02 on Linux.
@@ -253,15 +251,15 @@ pip install paddlepaddle-gpu==3.3.1 \
 # on Windows needs the special wheels listed in PaddleOCR's install guide.
 
 # with uv
-uv pip install "quotable[ocr-core]"
+uv pip install quotable
+uv pip uninstall paddlepaddle
 uv pip install paddlepaddle-gpu==3.3.1 \
   --extra-index-url https://www.paddlepaddle.org.cn/packages/stable/cu126/
 ```
 
-Do not install `quotable[ocr]` in the same environment: it brings the CPU build, which would
-overwrite the GPU one. The GPU path is untested on real hardware (the development machine has
-no NVIDIA GPU); `tests/data/README.md` has a manual checklist. The `uv` line and
-`--extra-index-url` were checked to resolve, not to install.
+The GPU path is untested on real hardware (the development machine has no NVIDIA GPU);
+`tests/data/README.md` has a manual checklist. The `uv` lines and `--extra-index-url` were
+checked to resolve, not to install.
 
 ### OCR settings
 

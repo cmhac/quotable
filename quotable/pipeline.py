@@ -35,6 +35,7 @@ import importlib.metadata
 import logging
 import math
 import sys
+import time
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime
@@ -59,7 +60,7 @@ from quotable.meter import CostModel, RunMeter, dollars, make_error
 from quotable.ocr.config import OcrConfig, OcrEngine
 from quotable.ocr.paddle import PaddleEngine
 from quotable.ocr.pages import ocr_pages
-from quotable.progress import Reporter, choose_sink
+from quotable.progress import OCR_PROGRESS_FROM, Reporter, choose_sink
 from quotable.runs import RunInfo, write_run
 from quotable.steps.audit import audit_table
 from quotable.steps.discover import DISCOVERY_PAGES, Discovery, Found, discover
@@ -98,6 +99,7 @@ from quotable.text.layer import Layer, load_layer
 from quotable.text.quality import (
     REMEDY_OCR_OFF,
     assess_text_layers,
+    empty_pages_reason,
     ocr_failed_message,
 )
 
@@ -269,35 +271,83 @@ def headers_and_bands(
     return headers, bands
 
 
-async def usable_layers(
+class _OcrReport:
+    """Hands ``ocr_pages``' progress, called in a worker thread, to the reporter on the loop."""
+
+    def __init__(self, loop: asyncio.AbstractEventLoop, reporter: Reporter) -> None:
+        self.loop = loop
+        self.reporter = reporter
+
+    def start(self, total: int, cached: int) -> None:
+        self.loop.call_soon_threadsafe(self.reporter.ocr_start, total, cached)
+
+    def page(self, done: int, total: int) -> None:
+        if done == total or done * 10 // total > (done - 1) * 10 // total:  # each tenth
+            self.loop.call_soon_threadsafe(self.reporter.ocr_progress, done, total)
+
+
+async def _ocr(  # noqa: PLR0913, PLR0917
+    pdf: Path,
+    pages: tuple[int, ...],
+    config: OcrConfig,
+    engine: OcrEngine,
+    cache_dir: Path | None,
+    reporter: Reporter | None,
+) -> dict[int, Layer]:
+    """OCR ``pages`` in a worker thread; report progress when there are more than a handful."""
+    progress = None
+    if reporter is not None and len(pages) > OCR_PROGRESS_FROM:
+        progress = _OcrReport(asyncio.get_running_loop(), reporter)
+    started = time.perf_counter()
+    replaced = await asyncio.to_thread(
+        ocr_pages, pdf, pages, config, engine, resolve_cache_dir(cache_dir), progress=progress
+    )
+    if progress is not None and reporter is not None:
+        reporter.ocr_done(len(pages), time.perf_counter() - started)
+    return replaced
+
+
+async def usable_layers(  # noqa: PLR0913, PLR0917
     pdf: Path,
     layers: dict[int, Layer],
     engine: OcrEngine | None,
     config: OcrConfig,
     cache_dir: Path | None,
+    reporter: Reporter | None = None,
 ) -> tuple[dict[int, Layer], tuple[int, ...]]:
     """
     Return the text layers to ground against, and the pages whose layer came from OCR.
 
-    A document that passes the check keeps its layers and the engine is never touched. One
-    that fails has its bad pages (garbled or empty) OCR'd, in a worker thread, and the merged
-    layers are checked again. ``TextLayerError`` (or its subclass ``OcrUnavailableError``) is
-    raised if OCR is off, cannot run, or does not help; no model request has been made.
+    Every page with no words is OCR'd first, however few or many (spec 019), in a worker thread.
+    The layers are then checked: a document that passes keeps them and the engine is not
+    touched again; one that fails has its bad pages (garbled or still empty) OCR'd, those
+    already done being cache reads, and the merged layers are checked again. With OCR off a
+    document in which too many pages have no words is refused. ``TextLayerError`` (or its
+    subclass ``OcrUnavailableError``) is raised if OCR is off, cannot run, or does not help; no
+    model request has been made.
     """
+    if engine is None:
+        before = assess_text_layers(layers)
+        reason = before.reason or empty_pages_reason(layers)
+        if reason is not None:
+            raise TextLayerError(f"{reason} {REMEDY_OCR_OFF}")
+        return layers, ()
+    empty = tuple(p for p in sorted(layers) if not layers[p].words)
+    done: set[int] = set()
+    if empty:
+        layers = {**layers, **await _ocr(pdf, empty, config, engine, cache_dir, reporter)}
+        done.update(empty)
     before = assess_text_layers(layers)
     if before.reason is None:
-        return layers, ()
-    if engine is None:
-        raise TextLayerError(f"{before.reason} {REMEDY_OCR_OFF}")
-    replaced = await asyncio.to_thread(
-        ocr_pages, pdf, before.bad_pages, config, engine, resolve_cache_dir(cache_dir)
-    )
+        return layers, tuple(sorted(done))
+    replaced = await _ocr(pdf, before.bad_pages, config, engine, cache_dir, reporter)
     merged = {**layers, **replaced}
     after = assess_text_layers(merged)
+    all_ocr = tuple(sorted(done | set(before.bad_pages)))
     if after.reason is not None:
         describe = getattr(engine, "description", "OCR")
-        raise TextLayerError(ocr_failed_message(before, after, before.bad_pages, describe))
-    return merged, before.bad_pages
+        raise TextLayerError(ocr_failed_message(before, after, all_ocr, describe))
+    return merged, all_ocr
 
 
 Printed = dict[int, dict[str, ExtraResult]]  # page -> field -> what the page prints
@@ -528,7 +578,14 @@ async def run_pipeline(  # noqa: PLR0913, PLR0915
     with pymupdf.open(pdf) as document:
         layers: dict[int, Layer] = {i + 1: load_layer(p) for i, p in enumerate(document)}
     # before rendering or any request; cannot be skipped
-    layers, ocr_done = await usable_layers(pdf, layers, ocr, ocr_config or OcrConfig(), cache_dir)
+    layers, ocr_done = await usable_layers(
+        pdf,
+        layers,
+        ocr,
+        ocr_config or OcrConfig(),
+        cache_dir,
+        costs.reporter if costs is not None else None,
+    )
     if trace is not None:
         trace.layers = layers
     check_page_sizes(pdf, images)  # before any render or request

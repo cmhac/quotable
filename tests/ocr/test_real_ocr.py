@@ -209,3 +209,18 @@ def test_model_dir_loads_the_models_from_a_folder(tmp_path):
         png = document[0].get_pixmap(dpi=100, clip=pymupdf.Rect(0, 0, 657, 120)).tobytes("png")
     words = PaddleEngine(config).recognize(png)
     assert any(w.text.isalpha() for w in words)
+
+
+def test_a_scanned_page_of_the_trump_report_is_ocrd_and_its_rows_are_found(tmp_path):
+    # Page 1 of pages_357_360.pdf is page 357 of the 2025 annual report: a scan with no text
+    # layer (spec 019). Its first rows are known from the page image.
+    pdf = DATA / "discovery_empty_columns" / "pages_357_360.pdf"
+    with pymupdf.open(pdf) as document:
+        assert not document[0].get_text("words")
+    config = OcrConfig()
+    started = time.perf_counter()
+    layers = ocr_pages(pdf, [1], config, PaddleEngine(config), tmp_path)
+    seconds = time.perf_counter() - started
+    words = {w.text.upper() for w in layers[1].words}
+    assert {"QUALCOMM", "AMGEN", "AFLAC"} <= words, (sorted(words)[:40], seconds)
+    print(f"OCR of one scanned report page took {seconds:.0f} s")
