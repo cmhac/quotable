@@ -14,7 +14,7 @@ import pymupdf
 
 from quotable.errors import ExtractionError
 from quotable.llm.answers import PageRows, TableSchema
-from quotable.llm.client import Image, LLMClient, Request
+from quotable.llm.client import Image, LLMClient, Request, request_key
 from quotable.table import PageResult
 
 DPI = 150
@@ -114,12 +114,22 @@ async def extract_page(  # noqa: PLR0913
     if others:
         base.append(other_tables_text(others))
         prompt = f"{EXTRACT_PROMPT} {MULTI_TABLE_SENTENCE}"
-    answer = await client.ask(Request("extract", prompt, PageRows, base, page))
+    first = Request("extract", prompt, PageRows, base, page)
+    answer = await client.ask(first)
     problems = validate_rows(answer.rows, keys)
     if not problems:
         return PageResult(page, answer.rows)
     retry = [*base, retry_prompt(answer.rows, problems)]
-    answer = await client.ask(Request("extract", prompt, PageRows, retry, page))
+    second = Request(
+        "extract",
+        prompt,
+        PageRows,
+        retry,
+        page,
+        retry_of=request_key(client.identity, first),
+        problem="; ".join(problems),
+    )
+    answer = await client.ask(second)
     problems = validate_rows(answer.rows, keys)
     if problems:
         msg = f"page {page}: rows still invalid after one retry: {problems}"

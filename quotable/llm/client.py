@@ -27,6 +27,7 @@ import json
 import sys
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from decimal import Decimal
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Protocol
@@ -64,6 +65,10 @@ class Request:
     output_type: type[BaseModel]
     parts: list[Part]
     page: int | None = None  # for logs and fakes, not part of the key
+    # spec 019, none of them part of the key: recorded in the cache entry beside the answer
+    pages: tuple[int, ...] = ()  # the pages the request covers (a discovery window's)
+    retry_of: str | None = None  # the key of the request this one retries
+    problem: str | None = None  # what was wrong with the answer that caused the retry
 
 
 class LLMClient(Protocol):
@@ -108,6 +113,7 @@ class CachedClient:
         cache_dir: Path,
         max_requests: int | None = None,
         meter: "RunMeter | None" = None,
+        run_id: str | None = None,
     ) -> None:
         """
         Cache ``inner``'s answers in ``cache_dir`` (it must exist); cap new requests.
@@ -115,13 +121,15 @@ class CachedClient:
         At most ``max_requests`` requests reach ``inner``; the next raises ``BudgetExceededError``.
         With a ``meter`` (spec 017) no request is started once the meter has tripped (a cost limit
         was passed), and an answer that was paid for is stored before the meter is checked, so the
-        request that crossed the limit is not paid for again on a rerun.
+        request that crossed the limit is not paid for again on a rerun. ``run_id`` (spec 019) is
+        the id the cost log uses; it goes into each entry written, beside the answer.
         """
         self.inner = inner
         self.identity = inner.identity
         self.cache_dir = cache_dir
         self.max_requests = max_requests
         self.meter = meter
+        self.run_id = run_id
         self.new_requests = 0
 
     def peek(self, request: Request) -> Any:  # noqa: ANN401
@@ -137,6 +145,33 @@ class CachedClient:
         except (ValueError, ValidationError) as err:
             print(f"ignoring unusable cache file {path.name}: {err}", file=sys.stderr)
             return None
+
+    def _entry(self, answer: Any, request: Request) -> str:  # noqa: ANN401
+        """
+        Return the text of a cache entry: the answer's fields and, beside them, ``_quotable``.
+
+        ``_quotable`` says what the entry is (spec 019): the stage, the pages, the model, when it
+        was written, the run and, for a retry, the request it retried and why. Pydantic ignores
+        it when the entry is read, so old and new code read each other's entries. It holds no
+        prompt, image, path or credential. Should it fail to be built the entry is written
+        without it: the answer is what matters.
+        """
+        try:
+            pages = request.pages or ((request.page,) if request.page is not None else ())
+            details: dict[str, Any] = {
+                "stage": request.stage,
+                "pages": list(pages),
+                "model": self.identity,
+                "written": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "run": self.run_id,
+            }
+            if request.retry_of is not None:
+                details["retry_of"] = request.retry_of
+                details["problem"] = request.problem
+            data = {**answer.model_dump(mode="json"), "_quotable": details}
+            return json.dumps(data, indent=1, ensure_ascii=False)
+        except Exception:  # noqa: BLE001
+            return answer.model_dump_json(indent=1)
 
     async def ask(self, request: Request) -> Any:  # noqa: ANN401
         """Return the cached answer, or ask the wrapped client and cache it."""
@@ -159,7 +194,7 @@ class CachedClient:
         finally:
             if self.meter is not None:
                 self.meter.end()
-        write_atomic(self.cache_dir / f"{key}.json", answer.model_dump_json(indent=1))
+        write_atomic(self.cache_dir / f"{key}.json", self._entry(answer, request))
         if self.meter is not None:
             self.meter.paid(key, request)
             self.meter.check()

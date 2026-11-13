@@ -924,6 +924,7 @@ async def extract_tables_async(  # noqa: PLR0913
         directory,
         max_requests,
         meter,
+        cost_log.run_id,
     )
     started = _now()
     trace = RunTrace()

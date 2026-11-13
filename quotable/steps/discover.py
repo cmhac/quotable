@@ -29,7 +29,7 @@ from quotable.llm.answers import (
     WindowWithExtras,
     validate_schema,
 )
-from quotable.llm.client import Image, LLMClient, Request
+from quotable.llm.client import Image, LLMClient, Request, request_key
 from quotable.steps.extra_fields import ExtraFields, extras_prompt, flatten
 from quotable.text.layer import tokenize
 
@@ -245,12 +245,23 @@ async def _ask_window(
     parts: list[str | Image] = [Image(images[p - 1]) for p in pages]
     if sound:
         parts.append(known_tables(found))
-    answer = await client.ask(Request("schema", prompt, output, parts))
+    first = Request("schema", prompt, output, parts, pages=tuple(pages))
+    answer = await client.ask(first)
     problems = [*window_problems(answer, pages, names), *table_problems(answer, pages)]
     if not problems:
         return list(answer.pages)
     retry = [*parts, _retry_text(answer, problems)]
-    answer = await client.ask(Request("schema", prompt, output, retry))
+    why = "; ".join(problems)
+    second = Request(
+        "schema",
+        prompt,
+        output,
+        retry,
+        pages=tuple(pages),
+        retry_of=request_key(client.identity, first),
+        problem=why,
+    )
+    answer = await client.ask(second)
     problems = window_problems(answer, pages, names)
     if problems:
         msg = (
