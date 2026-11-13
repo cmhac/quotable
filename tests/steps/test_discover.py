@@ -25,6 +25,7 @@ from quotable.steps.discover import (
     validate_found,
 )
 from quotable.steps.extra_fields import ExtraField, ExtraFields, FieldGroup
+from tests.conftest import DATA
 
 
 def info(columns, label="t", first="", last=""):
@@ -180,6 +181,35 @@ def test_a_count_mismatch_that_persists_raises():
     client = Recorder([window([info(["A"])])] * 2)
     with pytest.raises(ExtractionError, match="still invalid"):
         run(client, 2)
+
+
+RECORDED = DATA / "discovery_empty_columns"
+
+
+@pytest.mark.parametrize("window_pages", ["357_360", "889_892"])
+def test_a_recorded_answer_with_no_columns_is_retried_with_the_problem_named(window_pages):
+    # the model's real answers to these windows of the Trump annual report: tables with
+    # `columns: []` (copied from the request cache); the second answer is made up here
+    bad = WindowTables.model_validate_json((RECORDED / f"answer_{window_pages}.json").read_text())
+    assert all(not t.columns for p in bad.pages for t in p.tables)
+    good = bad.model_copy(deep=True)
+    for page in good.pages:
+        for table in page.tables:
+            table.columns = [Column(name="A", description=""), Column(name="B", description="")]
+    client = Recorder([bad, good])
+
+    (table,) = run(client, 4)
+
+    assert table.columns == ["A", "B"] and table.pages == [1, 2, 3, 4]
+    assert len(client.requests) == 2
+    retry = texts(client.requests[1])
+    assert "page 1" in retry and "no columns" in retry and "header" in retry
+
+
+def test_an_answer_with_no_columns_that_persists_raises():
+    client = Recorder([window([info([])])] * 2)
+    with pytest.raises(ExtractionError, match="still invalid.*no columns"):
+        run(client, 1)
 
 
 def test_a_window_smaller_than_one_page_is_rejected():

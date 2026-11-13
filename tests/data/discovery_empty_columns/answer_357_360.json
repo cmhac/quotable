@@ -1,0 +1,44 @@
+{
+ "pages": [
+  {
+   "tables": [
+    {
+     "label": "Investment Account #6 transactions",
+     "columns": [],
+     "first_row": "1257 QUALCOMM INC Purchase 7/23/2025 $100,001 - $250,000",
+     "last_row": "1287 MERCK & CO INC NEW Purchase 7/23/2025 $100,001 - $250,000"
+    }
+   ]
+  },
+  {
+   "tables": [
+    {
+     "label": "Investment Account #6 transactions",
+     "columns": [],
+     "first_row": "1288 GE AEROSPACE INC Purchase 7/23/2025 $100,001 - $250,000",
+     "last_row": "1318 SYNOPSYS INC Sale 7/25/2025 $1,001 - $15,000"
+    }
+   ]
+  },
+  {
+   "tables": [
+    {
+     "label": "Investment Account #6 transactions",
+     "columns": [],
+     "first_row": "1319 PARAMOUNT GLOBAL Sale 8/13/2025 $1,001 - $15,000",
+     "last_row": "1349 GODADDY INC Sale 8/18/2025 $15,001 - $50,000"
+    }
+   ]
+  },
+  {
+   "tables": [
+    {
+     "label": "Investment Account #6 transactions",
+     "columns": [],
+     "first_row": "1350 BROWN & BROWN INC Sale 8/18/2025 $15,001 - $50,000",
+     "last_row": "1380 WARNER BROS DISCOVERY INC Purchase 8/18/2025 $50,001 - $100,000"
+    }
+   ]
+  }
+ ]
+}

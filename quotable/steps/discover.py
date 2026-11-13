@@ -154,12 +154,22 @@ def _retry_text(answer: WindowTables, problems: list[str]) -> str:
 
 
 def answer_problems(answer: WindowTables, pages: list[int], names: list[str] | None) -> list[str]:
-    """Return what is wrong with a window answer: the page count, and the extra-field names."""
+    """Return what is wrong with a window answer: the page count, unusable columns, extra fields."""
     problems: list[str] = []
     try:
         match_pages(answer, pages)
     except PageCountError as err:
         problems.append(str(err))
+    for page, entry in zip(pages, answer.pages, strict=False):
+        for table in entry.tables:
+            try:
+                validate_schema(TableSchema(columns=table.columns))
+            except ExtractionError as err:
+                problems.append(
+                    f"page {page}, table {table.label!r}: {err}. Give the column names printed "
+                    "in the table's header row, or, if the page continues a known table "
+                    "without printing its header, that table's listed column names"
+                )
     if names is not None:
         for page, entry in zip(pages, answer.pages, strict=False):
             got = [e.name for e in getattr(entry, "extras", [])]
