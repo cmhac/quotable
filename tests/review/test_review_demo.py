@@ -58,6 +58,9 @@ def test_everything_the_app_shows_is_there(project):
     assert large.summary.rows == review_demo.LARGE_ROWS_PER_PAGE * SMALL
     # an OCR'd page
     assert any(r.summary.ocr_pages for r in runs)
+    # a table that failed, beside a sound one (spec 019)
+    (failed,) = [r for r in runs if r.summary.name == review_demo.FAILED_PDF]
+    assert [t.failed for t in failed.summary.tables] == [False, True] and failed.summary.failed == 1
 
 
 def test_every_status_appears(project):

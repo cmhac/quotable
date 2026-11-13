@@ -35,6 +35,7 @@ import importlib.metadata
 import logging
 import math
 import sys
+import time
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime
@@ -45,7 +46,7 @@ from typing import Any
 import pymupdf
 from pydantic_ai.models import Model
 
-from quotable.errors import CostLimitExceededError, TextLayerError
+from quotable.errors import CostLimitExceededError, ExtractionError, TextLayerError
 from quotable.estimate import cached_discovery_requests, estimate_discovery, estimate_rest
 from quotable.llm.client import (
     CachedClient,
@@ -59,7 +60,7 @@ from quotable.meter import CostModel, RunMeter, dollars, make_error
 from quotable.ocr.config import OcrConfig, OcrEngine
 from quotable.ocr.paddle import PaddleEngine
 from quotable.ocr.pages import ocr_pages
-from quotable.progress import Reporter, choose_sink
+from quotable.progress import OCR_PROGRESS_FROM, Reporter, choose_sink
 from quotable.runs import RunInfo, write_run
 from quotable.steps.audit import audit_table
 from quotable.steps.discover import DISCOVERY_PAGES, Discovery, Found, discover
@@ -76,7 +77,14 @@ from quotable.steps.extra_fields import (
     validate_extra_fields,
 )
 from quotable.steps.extract import DPI, extract_page, page_schema, render_page, render_png
-from quotable.steps.layout import Header, find_header, page_layouts, shared_bands, table_layers
+from quotable.steps.layout import (
+    WHOLE_WIDTH,
+    BandError,
+    Header,
+    find_header,
+    page_layouts,
+    shared_bands,
+)
 from quotable.steps.merge import merge_tables
 from quotable.steps.recheck import recheck_fields, recheck_table
 from quotable.storage import (
@@ -86,11 +94,12 @@ from quotable.storage import (
     resolve_cache_dir,
     resolve_project_dir,
 )
-from quotable.table import PageResult, Table, ground_document
+from quotable.table import PageResult, Problem, Table, ground_document
 from quotable.text.layer import Layer, load_layer
 from quotable.text.quality import (
     REMEDY_OCR_OFF,
     assess_text_layers,
+    empty_pages_reason,
     ocr_failed_message,
 )
 
@@ -111,6 +120,18 @@ class RunTrace:
 
 
 @dataclass
+class PageFailure:
+    """A page whose rows the model could not give validly, even after the retry (spec 019)."""
+
+    page: int
+    message: str
+
+
+def _joined(failures: list[PageFailure]) -> str:
+    return "; ".join(f.message for f in failures)
+
+
+@dataclass
 class CostContext:
     """
     What turns on the cost limit, the estimates and the messages of spec 017 (internal).
@@ -128,25 +149,93 @@ class CostContext:
 
 
 def table_page_layers(
-    found: list[Found], layers: dict[int, Layer], trace: RunTrace | None = None
-) -> list[dict[int, Layer]]:
+    found: list[Found],
+    layers: dict[int, Layer],
+    trace: RunTrace | None = None,
+    helpers: Sequence[Found] = (),
+) -> tuple[list[dict[int, Layer]], dict[int, Problem]]:
     """
-    Return, per table, the text layer of each page it is on.
+    Return, per table, the text layer of each page it is on, and the tables whose band failed.
 
     A page with one table keeps the whole layer; on a page with several, each table gets
-    its own band (``ExtractionError`` if one cannot be isolated), which ``trace`` also records.
+    its own band, which ``trace`` also records. A table whose band cannot be found (a row not in
+    the text layer, a last row above the first, an overlap) is not raised (spec 019): it comes
+    back in the second value, by its index, as a ``location`` problem, and the page is worked out
+    again for the tables that remain, each still cropped to its own rows. ``helpers`` are tables
+    that failed in discovery: where one shares a page and the model gave its first and last row,
+    it still takes its band, so a sound table keeps its own band instead of the whole page; if
+    that band cannot be found the page is handled without it.
     """
     out: list[dict[int, Layer]] = [{} for _ in found]
+    notes: dict[int, list[tuple[int, str]]] = {}  # table -> (page, what was wrong)
     for page in sorted({p for f in found for p in f.rows}):
         on_page = [i for i, f in enumerate(found) if page in f.rows]
-        specs = [(found[i].label, *found[i].rows[page]) for i in on_page]
-        cropped = table_layers(page, layers[page], specs)
-        for i, layer in zip(on_page, cropped, strict=True):
-            out[i][page] = layer
-        if trace is not None and len(on_page) > 1:
-            trace.bands[page] = list(
-                zip(cropped, shared_bands(page, layers[page], specs), strict=True)
-            )
+        extra = [_spec(h, page) for h in helpers if page in h.rows and all(h.rows[page])]
+        crop = len(on_page) + len(extra) > 1  # a shared page: even a lone survivor is cropped
+        group = [i for i in on_page if i not in notes]
+        while group:
+            specs = [_spec(found[i], page) for i in group]
+            try:
+                cropped, bands = _page_bands(page, layers[page], specs, extra, crop=crop)
+            except BandError as err:
+                lost = [group[p] for p in err.positions if p < len(specs)]
+                kept = [e for k, e in enumerate(extra) if len(specs) + k not in err.positions]
+                if not lost and len(kept) == len(extra):
+                    raise
+                extra = kept
+                for i in lost:
+                    notes.setdefault(i, []).append((page, str(err)))
+                group = [i for i in group if i not in lost]
+                continue
+            for i, layer in zip(group, cropped, strict=True):
+                out[i][page] = layer
+            if trace is not None and crop:
+                trace.bands[page] = list(zip(cropped, bands, strict=True))
+            break
+    problems = {
+        i: Problem("location", tuple(p for p, _ in sorted(n)), "; ".join(m for _, m in sorted(n)))
+        for i, n in notes.items()
+    }
+    return out, problems
+
+
+def _spec(found: Found, page: int) -> tuple[str, str, str]:
+    """Return (label, first row, last row) of a table on a page, for finding its band."""
+    first, last = found.rows[page]
+    return found.label, first, last
+
+
+def _page_bands(
+    page: int,
+    layer: Layer,
+    specs: list[tuple[str, str, str]],
+    extra: list[tuple[str, str, str]],
+    *,
+    crop: bool,
+) -> tuple[list[Layer], list[tuple[float, float]]]:
+    """Return the layers and bands of ``specs``; ``extra`` tables on the page are located too."""
+    if not crop:
+        return [layer for _ in specs], []
+    bands = shared_bands(page, layer, [*specs, *extra])[: len(specs)]
+    return [layer.crop(top, bottom, -WHOLE_WIDTH, WHOLE_WIDTH) for top, bottom in bands], bands
+
+
+def failed_table(found: Found, problem: Problem) -> Table:
+    """Return the failed ``Table`` for a discovered table, with what it holds (nothing yet)."""
+    return Table(found.columns, [], {}, {}, {}, label=found.label, problems=[problem])
+
+
+def failed_discovery_table(found: Found) -> Table:
+    """Return the failed ``Table`` for a table whose columns discovery could not use."""
+    return failed_table(found, Problem("discovery", tuple(found.pages), "; ".join(found.problems)))
+
+
+def with_failed(tables: list[Table], failed: list[Table]) -> list[Table]:
+    """Put each failed table where its first page puts it; the sound tables keep their order."""
+    out = list(tables)
+    for table in failed:
+        at = next((i for i, t in enumerate(out) if t.first_page() > table.first_page()), len(out))
+        out.insert(at, table)
     return out
 
 
@@ -182,35 +271,83 @@ def headers_and_bands(
     return headers, bands
 
 
-async def usable_layers(
+class _OcrReport:
+    """Hands ``ocr_pages``' progress, called in a worker thread, to the reporter on the loop."""
+
+    def __init__(self, loop: asyncio.AbstractEventLoop, reporter: Reporter) -> None:
+        self.loop = loop
+        self.reporter = reporter
+
+    def start(self, total: int, cached: int) -> None:
+        self.loop.call_soon_threadsafe(self.reporter.ocr_start, total, cached)
+
+    def page(self, done: int, total: int) -> None:
+        if done == total or done * 10 // total > (done - 1) * 10 // total:  # each tenth
+            self.loop.call_soon_threadsafe(self.reporter.ocr_progress, done, total)
+
+
+async def _ocr(  # noqa: PLR0913, PLR0917
+    pdf: Path,
+    pages: tuple[int, ...],
+    config: OcrConfig,
+    engine: OcrEngine,
+    cache_dir: Path | None,
+    reporter: Reporter | None,
+) -> dict[int, Layer]:
+    """OCR ``pages`` in a worker thread; report progress when there are more than a handful."""
+    progress = None
+    if reporter is not None and len(pages) > OCR_PROGRESS_FROM:
+        progress = _OcrReport(asyncio.get_running_loop(), reporter)
+    started = time.perf_counter()
+    replaced = await asyncio.to_thread(
+        ocr_pages, pdf, pages, config, engine, resolve_cache_dir(cache_dir), progress=progress
+    )
+    if progress is not None and reporter is not None:
+        reporter.ocr_done(len(pages), time.perf_counter() - started)
+    return replaced
+
+
+async def usable_layers(  # noqa: PLR0913, PLR0917
     pdf: Path,
     layers: dict[int, Layer],
     engine: OcrEngine | None,
     config: OcrConfig,
     cache_dir: Path | None,
+    reporter: Reporter | None = None,
 ) -> tuple[dict[int, Layer], tuple[int, ...]]:
     """
     Return the text layers to ground against, and the pages whose layer came from OCR.
 
-    A document that passes the check keeps its layers and the engine is never touched. One
-    that fails has its bad pages (garbled or empty) OCR'd, in a worker thread, and the merged
-    layers are checked again. ``TextLayerError`` (or its subclass ``OcrUnavailableError``) is
-    raised if OCR is off, cannot run, or does not help; no model request has been made.
+    Every page with no words is OCR'd first, however few or many (spec 019), in a worker thread.
+    The layers are then checked: a document that passes keeps them and the engine is not
+    touched again; one that fails has its bad pages (garbled or still empty) OCR'd, those
+    already done being cache reads, and the merged layers are checked again. With OCR off a
+    document in which too many pages have no words is refused. ``TextLayerError`` (or its
+    subclass ``OcrUnavailableError``) is raised if OCR is off, cannot run, or does not help; no
+    model request has been made.
     """
+    if engine is None:
+        before = assess_text_layers(layers)
+        reason = before.reason or empty_pages_reason(layers)
+        if reason is not None:
+            raise TextLayerError(f"{reason} {REMEDY_OCR_OFF}")
+        return layers, ()
+    empty = tuple(p for p in sorted(layers) if not layers[p].words)
+    done: set[int] = set()
+    if empty:
+        layers = {**layers, **await _ocr(pdf, empty, config, engine, cache_dir, reporter)}
+        done.update(empty)
     before = assess_text_layers(layers)
     if before.reason is None:
-        return layers, ()
-    if engine is None:
-        raise TextLayerError(f"{before.reason} {REMEDY_OCR_OFF}")
-    replaced = await asyncio.to_thread(
-        ocr_pages, pdf, before.bad_pages, config, engine, resolve_cache_dir(cache_dir)
-    )
+        return layers, tuple(sorted(done))
+    replaced = await _ocr(pdf, before.bad_pages, config, engine, cache_dir, reporter)
     merged = {**layers, **replaced}
     after = assess_text_layers(merged)
+    all_ocr = tuple(sorted(done | set(before.bad_pages)))
     if after.reason is not None:
         describe = getattr(engine, "description", "OCR")
-        raise TextLayerError(ocr_failed_message(before, after, before.bad_pages, describe))
-    return merged, before.bad_pages
+        raise TextLayerError(ocr_failed_message(before, after, all_ocr, describe))
+    return merged, all_ocr
 
 
 Printed = dict[int, dict[str, ExtraResult]]  # page -> field -> what the page prints
@@ -280,9 +417,18 @@ def attach_extra_fields(
     names: tuple[str, ...],
     changes: Mapping[tuple[int, str], tuple[str, str]],
 ) -> list[Table]:
-    """Give each table the results of its own pages (a page two tables share goes to both)."""
+    """
+    Give each table the results of its own pages (a page two tables share goes to both).
+
+    A failed table is left as it is (spec 019). shortcut: the extra-field requests are made per
+    page, so a page that only a failed table is on is still read (its value may carry forward to
+    a sound table); upgrade if the cost of those requests matters.
+    """
     out = []
     for table in tables:
+        if table.failed:
+            out.append(table)
+            continue
         mine = {r.page: dict(by_page[r.page]) for r in table.pages}
         used = {(r.source_page, n) for row in mine.values() for n, r in row.items()}
         kept = {key: value for key, value in changes.items() if key in used}
@@ -441,7 +587,14 @@ async def run_pipeline(  # noqa: PLR0913, PLR0915
     with pymupdf.open(pdf) as document:
         layers: dict[int, Layer] = {i + 1: load_layer(p) for i, p in enumerate(document)}
     # before rendering or any request; cannot be skipped
-    layers, ocr_done = await usable_layers(pdf, layers, ocr, ocr_config or OcrConfig(), cache_dir)
+    layers, ocr_done = await usable_layers(
+        pdf,
+        layers,
+        ocr,
+        ocr_config or OcrConfig(),
+        cache_dir,
+        costs.reporter if costs is not None else None,
+    )
     if trace is not None:
         trace.layers = layers
     check_page_sizes(pdf, images)  # before any render or request
@@ -455,25 +608,41 @@ async def run_pipeline(  # noqa: PLR0913, PLR0915
     )
     if costs is not None:
         costs.reporter.end_stage()
-    found = discovery.tables
+    found = [f for f in discovery.tables if not f.failed]
+    failed_found = [f for f in discovery.tables if f.failed]
+    failed_tables = [failed_discovery_table(f) for f in failed_found]
+    for table in failed_tables:
+        table.warn_failure()
     # may reject a page before extracting
-    table_layers_by_page = table_page_layers(found, layers, trace)
+    table_layers_by_page, location_problems = table_page_layers(found, layers, trace, failed_found)
+    located_failed = {i: failed_table(found[i], p) for i, p in location_problems.items()}
+    for table in located_failed.values():
+        table.warn_failure()
+    sound = [f for i, f in enumerate(found) if i not in located_failed]
     layouts = [
         page_layouts(f.columns, [layers[p] for p in f.pages]) for f in found
     ]  # from the whole pages: the header sits above a table's band
 
     gate = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
 
-    async def one(index: int, page: int, present: tuple[str, ...]) -> PageResult:
+    async def one(index: int, page: int, present: tuple[str, ...]) -> PageResult | PageFailure:
         table = found[index]
         others = [
             (f.label, f.columns) for i, f in enumerate(found) if i != index and page in f.rows
         ]
         async with gate:
             png = pngs[page - 1] if images.dpi == DPI else render_page(pdf, page, images.dpi)
-            result = await extract_page(
-                page, png, page_schema(table.schema, present), client, others, detail=images.detail
-            )
+            try:
+                result = await extract_page(
+                    page,
+                    png,
+                    page_schema(table.schema, present),
+                    client,
+                    others,
+                    detail=images.detail,
+                )
+            except ExtractionError as err:  # rows still invalid after the retry: this table fails
+                return PageFailure(page, str(err))
         absent = tuple(c for c in table.columns if c not in present)
         rows = [{**dict.fromkeys(absent, ""), **row} for row in result.rows]
         return replace(result, rows=rows, absent=absent)
@@ -481,6 +650,7 @@ async def run_pipeline(  # noqa: PLR0913, PLR0915
     all_jobs = [
         (index, page, layout.columns)
         for index, (f, lays) in enumerate(zip(found, layouts, strict=True))
+        if index not in located_failed
         for page, layout in zip(f.pages, lays, strict=True)
     ]
 
@@ -501,12 +671,23 @@ async def run_pipeline(  # noqa: PLR0913, PLR0915
         stage_done()
 
         tables: list[Table] = []
+        extraction_failed: list[Table] = []
         for index, f in enumerate(found):
-            pages = [r for (i, _, _), r in zip(jobs, results, strict=True) if i == index]
-            if not pages:
+            if index in located_failed:
+                tables.append(located_failed[index])
                 continue
+            mine = [r for (i, _, _), r in zip(jobs, results, strict=True) if i == index]
+            if not mine:
+                continue
+            pages = [r for r in mine if isinstance(r, PageResult)]
+            failures = [r for r in mine if isinstance(r, PageFailure)]
+            problems = (
+                [Problem("extraction", tuple(x.page for x in failures), _joined(failures))]
+                if failures
+                else []
+            )
             kept = {r.page for r in pages}
-            page_layers = table_layers_by_page[index]
+            page_layers = {p: lay for p, lay in table_layers_by_page[index].items() if p in kept}
             grounded, position = ground_document(f.columns, pages, page_layers)
             tables.append(
                 Table(
@@ -522,8 +703,14 @@ async def run_pipeline(  # noqa: PLR0913, PLR0915
                     ],
                     label=f.label,
                     ocr_pages=tuple(r.page for r in pages if r.page in ocr_done),
+                    problems=problems,
                 )
             )
+            if problems:
+                extraction_failed.append(tables[-1])
+        if only is None:  # the sample's failures are thrown away with it, and come again here
+            for table in extraction_failed:
+                table.warn_failure()
         table_pages = sum(len(t.pages) for t in tables)
         if audit:
             stage("audit", table_pages, upper_bound=True)
@@ -556,11 +743,11 @@ async def run_pipeline(  # noqa: PLR0913, PLR0915
         tables: list[Table], only: frozenset[tuple[int, int]] | None, table_pages: int
     ) -> list[Table]:
         assert extra_fields is not None
-        scope = discovery
+        scope = Discovery(sound, discovery.extras)  # sound tables only
         if only is not None:  # the sample: only its pages, with every table that is on them
             pages = {page for _, page in only}
             scope = Discovery(
-                [replace(f, rows={p: r for p, r in f.rows.items() if p in pages}) for f in found],
+                [replace(f, rows={p: r for p, r in f.rows.items() if p in pages}) for f in sound],
                 {p: v for p, v in discovery.extras.items() if p in pages},
             )
             scope.tables = [f for f in scope.tables if f.rows]
@@ -591,7 +778,7 @@ async def run_pipeline(  # noqa: PLR0913, PLR0915
 
     if costs is not None:
         await _sample(costs, [(i, page) for i, page, _ in all_jobs], len(found), process)
-    return await process()
+    return with_failed(await process(), failed_tables)
 
 
 def _ocr_config(ocr: OcrConfig | bool) -> OcrConfig | None:  # noqa: FBT001
@@ -803,6 +990,7 @@ async def extract_tables_async(  # noqa: PLR0913
         directory,
         max_requests,
         meter,
+        cost_log.run_id,
     )
     started = _now()
     trace = RunTrace()

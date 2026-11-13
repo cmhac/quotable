@@ -149,7 +149,8 @@ def test_paddleocr_not_importable_gives_unavailable_with_the_install_command(mon
     with pytest.raises(OcrUnavailableError) as error:
         PaddleEngine(OcrConfig()).recognize(png())
     message = str(error.value)
-    assert 'pip install "quotable[ocr]"' in message
+    assert "pip install quotable" in message and "macOS" in message and "Linux" in message
+    assert "extra" not in message
     assert "NVIDIA" in message
     assert isinstance(error.value.__cause__, ImportError)
 
@@ -189,7 +190,7 @@ def test_paddleocr_without_paddlepaddle_names_the_missing_package(monkeypatch):
     install(monkeypatch, paddle=False)
     with pytest.raises(OcrUnavailableError, match="PaddlePaddle") as error:
         PaddleEngine(OcrConfig()).recognize(png())
-    assert "quotable[ocr-core]" in str(error.value)
+    assert "pip install paddlepaddle==3.3.1" in str(error.value)
     assert FakePaddleOCR.instances == []
 
 

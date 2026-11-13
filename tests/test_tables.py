@@ -2,7 +2,7 @@
 
 import pytest
 
-from quotable import BudgetExceededError, ExtractionError
+from quotable import BudgetExceededError, ExtractionError, TableFailedWarning
 from quotable.llm.answers import CellRecheck, Column, PageRecheck, PageRows, PageTables, TableInfo
 from quotable.llm.client import CachedClient, Image
 from quotable.steps.discover import DISCOVER_PROMPT
@@ -165,12 +165,13 @@ def test_the_recheck_of_a_table_sees_only_its_own_band_of_text(make_pdf):
     assert b.page_rows(1)[0].values["Note"] == "red"
 
 
-def test_a_band_that_cannot_be_isolated_fails_before_any_extract_request(make_pdf):
+def test_a_band_that_cannot_be_isolated_fails_that_table_before_any_extract_request(make_pdf):
     path = make_pdf([STACKED_A + STACKED_B])
     client = stacked_client(first_b="Omega 1")
-    with pytest.raises(ExtractionError, match=r"page 1: table 'B': its first row was not found"):
-        extract_tables(path, client)
-    assert client.stages() == ["schema"]
+    with pytest.warns(TableFailedWarning, match=r"page 1: table 'B': its first row was not found"):
+        a, b = extract_tables(path, client)
+    assert (a.failed, b.failed) == (False, True)
+    assert [r.page for r in client.requests if r.stage == "extract"] == [1]  # A's only
 
 
 def test_the_discovery_prompt_is_what_the_model_is_given(make_pdf):

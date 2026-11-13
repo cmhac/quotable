@@ -18,6 +18,8 @@ from quotable.progress import (
     TerminalSink,
     choose_sink,
 )
+from quotable.table import Problem, Table
+from tests.table_builder import failed_table
 
 D = Decimal
 
@@ -306,3 +308,34 @@ def test_a_notebook_whose_display_fails_falls_back_to_plain_lines(fake_ipython, 
     reporter.fixed("hello")
     reporter.fixed("again")
     assert capsys.readouterr().err == "hello\nagain\n"
+
+
+# --- failed tables (spec 019) -------------------------------------------------------------------
+def final_text(tables):
+    sink = RecordingSink()
+    Reporter(sink, RunMeter(None)).final(tables, {}, 20)
+    (text,) = [t for kind, t in sink.events if kind == "fixed"]
+    return text
+
+
+def test_the_final_message_names_the_failed_tables():
+    tables = [
+        Table(["A"], [], {}, {}, {}, label="Sound"),
+        failed_table("Investment Account", [Problem("discovery", (357, 358, 359, 360), "x")]),
+        failed_table("Trademarks", [Problem("extraction", (3, 5, 6), "x")]),
+    ]
+    lines = final_text(tables).splitlines()
+    assert lines[-1] == (
+        "  2 tables failed: 'Investment Account' (pages 357-360), 'Trademarks' (pages 3, 5-6)"
+    )
+    assert lines[-2].startswith("  20 pages, 3 tables")
+
+
+def test_one_failed_table_is_said_in_the_singular():
+    text = final_text([failed_table("B", [Problem("location", (2,), "x")])])
+    assert text.splitlines()[-1] == "  1 table failed: 'B' (pages 2)"
+
+
+def test_the_final_message_of_a_call_with_no_failure_has_no_such_line():
+    text = final_text([Table(["A"], [], {}, {}, {}, label="Sound")])
+    assert "failed" not in text

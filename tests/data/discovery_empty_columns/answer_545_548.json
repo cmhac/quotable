@@ -1,0 +1,44 @@
+{
+ "pages": [
+  {
+   "tables": [
+    {
+     "label": "Investment Account #7 Transactions",
+     "columns": [],
+     "first_row": "1110 BGC GROUP INC Purchase 2/24/2025 $15,001 - $50,000",
+     "last_row": "1140 WISDOMTREE INC Purchase 10/3/2025 $15,001 - $50,000"
+    }
+   ]
+  },
+  {
+   "tables": [
+    {
+     "label": "Investment Account #7 Transactions",
+     "columns": [],
+     "first_row": "1141 INTERDIGITAL INC Purchase 1/30/2025 $15,001 - $50,000",
+     "last_row": "1171 ZURN ELKAY WTR SOLUTIONS Purchase 4/10/2025 $15,001 - $50,000"
+    }
+   ]
+  },
+  {
+   "tables": [
+    {
+     "label": "Investment Account #7 Transactions",
+     "columns": [],
+     "first_row": "1172 SUNRUN INC Purchase 5/15/2025 $15,001 - $50,000",
+     "last_row": "1202 U S PHYSICAL THERAPY Purchase 5/15/2025 $15,001 - $50,000"
+    }
+   ]
+  },
+  {
+   "tables": [
+    {
+     "label": "Investment Account #7 Transactions",
+     "columns": [],
+     "first_row": "1203 SITE CTRS CORP EQUITY Purchase 3/27/2025 $15,001 - $50,000",
+     "last_row": "1233 TANDEM DIABETES CARE INC Purchase 10/3/2025 $15,001 - $50,000"
+    }
+   ]
+  }
+ ]
+}

@@ -5,7 +5,7 @@ from pathlib import Path
 import pymupdf
 
 from quotable.steps.layout import page_layouts
-from quotable.table import PageResult, Table, ground_document
+from quotable.table import PageResult, Problem, Table, ground_document
 from quotable.text.layer import load_layer
 
 ROW_STEP = 14.0
@@ -47,3 +47,28 @@ def build_table(  # noqa: PLR0913
     grounded, position = ground_document(columns, results, layers)
     layouts = page_layouts(columns, [layers[r.page] for r in results])
     return Table(columns, results, layers, grounded, position, layouts, label=label)
+
+
+def failed_table(
+    label: str = "t",
+    problems: list[Problem] | None = None,
+    *,
+    tmp_path: Path | None = None,
+    columns: list[str] | None = None,
+    pages: list[list[dict[str, str]]] | None = None,
+) -> Table:
+    """
+    Return a failed `Table` (spec 019): by default empty, as a table that failed in discovery.
+
+    With ``pages`` (and ``tmp_path``) it also holds those extracted pages, as a table that
+    failed on one page of several does. ``problems`` defaults to one ``discovery`` problem.
+    """
+    problems = problems or [Problem("discovery", (1,), "schema discovery returned: no columns")]
+    if pages is None:
+        return Table(columns or [], [], {}, {}, {}, label=label, problems=problems)
+    assert tmp_path is not None
+    names = columns or ["A", "B"]
+    xs = [50.0 + 150.0 * i for i in range(len(names))]
+    table = build_table(tmp_path, names, pages, xs=xs, label=label)
+    table.problems = problems
+    return table

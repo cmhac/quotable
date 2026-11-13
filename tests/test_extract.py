@@ -6,7 +6,7 @@ import json
 import pymupdf
 import pytest
 
-from quotable import ExtractionError, TextLayerError, extract_tables_async
+from quotable import TableFailedWarning, TextLayerError, extract_tables_async
 from quotable import extract_tables as public_extract_tables
 from quotable.llm.answers import Column, PageRows, TableSchema
 from quotable.llm.client import Image
@@ -123,7 +123,7 @@ def test_rows_with_the_wrong_keys_are_sent_back_once(make_pdf):
     assert any("Extra" in p for p in retry.parts if isinstance(p, str))  # the problem is named
 
 
-def test_rows_that_are_still_wrong_after_the_retry_abort(make_pdf):
+def test_rows_that_are_still_wrong_after_the_retry_fail_that_table(make_pdf):
     path = make_pdf([[(72, 60, "Alpha")]])
 
     def handler(request):
@@ -131,8 +131,10 @@ def test_rows_that_are_still_wrong_after_the_retry_abort(make_pdf):
             return window_of(request, [one_table(["A"])])
         return PageRows(rows=[{"Nope": "Alpha"}])
 
-    with pytest.raises(ExtractionError, match="page 1"):
-        extract_tables(path, FakeClient(handler), recheck=False)
+    with pytest.warns(TableFailedWarning, match="page 1"):
+        (table,) = extract_tables(path, FakeClient(handler), recheck=False)
+    assert table.failed and table.pages == []
+    assert "page 1: rows still invalid after one retry" in table.problems[0].message
 
 
 def test_a_column_the_page_does_not_print_is_not_asked_for_and_stays_blank(make_pdf):

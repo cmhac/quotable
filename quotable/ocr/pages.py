@@ -27,7 +27,7 @@ import time
 from collections.abc import Iterable
 from importlib import metadata
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 import pymupdf
 
@@ -40,6 +40,18 @@ log = logging.getLogger("quotable.ocr")
 FORMAT = 1
 SUBDIR = "ocr"
 CHUNK = 1 << 20
+
+
+class OcrProgress(Protocol):
+    """What ``ocr_pages`` tells a listener (spec 019); called from the thread that does the OCR."""
+
+    def start(self, total: int, cached: int) -> None:
+        """Say how many pages there are to do and how many of them are in the cache."""
+        ...
+
+    def page(self, done: int, total: int) -> None:
+        """Say that ``done`` of ``total`` pages are finished."""
+        ...
 
 
 def file_sha256(path: Path) -> str:
@@ -116,26 +128,36 @@ def write_page(cache_dir: Path, key: str, words: list[OcrWord], settings: dict[s
     write_atomic(_path(cache_dir, key), json.dumps(data, ensure_ascii=False, default=str))
 
 
-def ocr_pages(
+def ocr_pages(  # noqa: PLR0913
     pdf: Path,
     pages: Iterable[int],
     config: OcrConfig,
     engine: OcrEngine,
     cache_dir: Path,
+    *,
+    progress: "OcrProgress | None" = None,
 ) -> dict[int, Layer]:
     """
     Return a replacement ``Layer`` for each page number (1-based) in ``pages``.
 
     Pages not in ``pages`` are never rendered or recognised. A page that comes back with no
     words still gets an (empty) layer and a cache file, so a blank page is not OCR'd again.
+    ``progress`` (spec 019) is told how many pages there are and how many are already in the
+    cache, then each page as it is done.
     """
     digest = file_sha256(pdf)
     settings = fingerprint(config)
     layers: dict[int, Layer] = {}
     from_cache = recognised = 0
     started = time.perf_counter()
+    numbers = list(pages)
+    if progress is not None:
+        cached = sum(
+            read_page(cache_dir, ocr_key(digest, n, settings)) is not None for n in numbers
+        )
+        progress.start(len(numbers), cached)
     with pymupdf.open(pdf) as document:
-        for number in pages:
+        for number in numbers:
             key = ocr_key(digest, number, settings)
             page = document[number - 1]
             words = read_page(cache_dir, key)
@@ -148,6 +170,8 @@ def ocr_pages(
                 from_cache += 1
             size = (page.rect.width, page.rect.height)  # upright, as load_layer's coordinates
             layers[number] = words_to_layer(words, config.dpi, size, config.min_confidence)
+            if progress is not None:
+                progress.page(len(layers), len(numbers))
     log.info(
         "OCR: %d page(s) from the cache, %d recognised, %.1f s",
         from_cache,

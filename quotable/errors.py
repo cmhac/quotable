@@ -57,3 +57,12 @@ class TextLayerError(RuntimeError):
 
 class OcrUnavailableError(TextLayerError):
     """The document needs OCR, but OCR cannot run (not installed, or the device is missing)."""
+
+
+class TableFailedWarning(UserWarning):
+    """
+    A table failed a check (spec 019), or the data of a table that failed was read.
+
+    ``extract_tables`` returns a failed table instead of raising; ``Table.problems`` says what
+    went wrong. Python's warning filters decide whether this is shown, ignored or an error.
+    """

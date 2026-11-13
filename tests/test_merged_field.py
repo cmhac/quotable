@@ -17,10 +17,15 @@ def test_a_table_built_the_old_way_has_nothing_merged():
 
 
 def test_merged_follows_ocr_pages_so_positional_construction_still_works():
-    # spec 010 appended its three extra-field members after `merged`
+    # spec 010 appended its three extra-field members after `merged`, spec 019 `problems`
     names = [f.name for f in dataclasses.fields(Table)]
     assert names[names.index("merged") - 1] == "ocr_pages"
-    assert names[names.index("merged") + 1 :] == ["extra_fields", "extra_names", "extra_changes"]
+    assert names[names.index("merged") + 1 :] == [
+        "extra_fields",
+        "extra_names",
+        "extra_changes",
+        "problems",
+    ]
 
 
 def test_merged_part_is_frozen_and_hashable():

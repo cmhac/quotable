@@ -278,7 +278,11 @@ def candidate_pairs(tables: list[Table], rules: Rules = DEFAULT_RULES) -> list[t
     """
     pairs: list[tuple[int, int]] = []
     for i in range(len(tables)):
+        if tables[i].failed:  # a failed table is never part of a merge (spec 019)
+            continue
         for j in range(i + 1, len(tables)):
+            if tables[j].failed:
+                continue
             first, second = sorted((i, j), key=lambda k: _first_page(tables[k]))
             if pair_verdict(tables[first], tables[second], rules=rules).ok:
                 pairs.append((first, second))

@@ -28,13 +28,13 @@ from quotable.ocr.config import TEXTLINE_ORIENTATION_MODEL, OcrConfig, OcrWord
 
 log = logging.getLogger("quotable.ocr")
 
-INSTALL = 'pip install "quotable[ocr]"'
 README_GPU = "for an NVIDIA GPU see 'OCR on an NVIDIA GPU' in the README"
 OCR_YOURSELF = "OCR the PDF yourself (for example `ocrmypdf --force-ocr`) and try again"
+PLATFORMS = "macOS (Apple silicon), Linux (x86_64) and Windows (x86_64) with Python 3.11 to 3.13"
 
 
 def _no_wheel_note() -> str:
-    """Say so if PaddlePaddle publishes no wheel for this platform (so the extra cannot install)."""
+    """Say so if PaddlePaddle publishes no wheel for this platform (so quotable installs none)."""
     system, machine = platform.system(), platform.machine().lower()
     supported = (
         (system == "Darwin" and machine == "arm64")
@@ -44,20 +44,21 @@ def _no_wheel_note() -> str:
     if sys.version_info >= (3, 14):
         return (
             f" PaddlePaddle publishes no wheel for Python {sys.version_info[0]}."
-            f"{sys.version_info[1]}, so the extra cannot be installed here; {OCR_YOURSELF}."
+            f"{sys.version_info[1]}, so quotable cannot install it here; {OCR_YOURSELF}."
         )
     if not supported:
         return (
-            f" PaddlePaddle publishes no wheel for {system} {machine}, so the extra cannot be "
-            f"installed here; {OCR_YOURSELF}."
+            f" PaddlePaddle publishes no wheel for {system} {machine}, so quotable cannot "
+            f"install it here; {OCR_YOURSELF}."
         )
     return ""
 
 
 def _not_installed() -> OcrUnavailableError:
     msg = (
-        "This document needs OCR, but PaddleOCR is not installed. Install it with "
-        f"`{INSTALL}` ({README_GPU}) and run again; no model request was made."
+        "This document needs OCR, but PaddleOCR is not installed. `pip install quotable` "
+        f"installs it on {PLATFORMS}; reinstall quotable there ({README_GPU}) and run again. "
+        "No model request was made."
         f"{_no_wheel_note()}"
     )
     return OcrUnavailableError(msg)
@@ -65,9 +66,9 @@ def _not_installed() -> OcrUnavailableError:
 
 def _no_paddlepaddle() -> OcrUnavailableError:
     msg = (
-        "This document needs OCR, but PaddlePaddle (the inference engine) is not installed: "
-        "the `quotable[ocr-core]` extra installs PaddleOCR only. Install a PaddlePaddle build "
-        f"({README_GPU}), or use `{INSTALL}` for the CPU build."
+        "This document needs OCR, but PaddlePaddle (the inference engine) is not installed. "
+        "Install a PaddlePaddle build: `pip install paddlepaddle==3.3.1` for the CPU "
+        f"({README_GPU})."
     )
     return OcrUnavailableError(msg)
 
@@ -271,7 +272,7 @@ class PaddleEngine:
 
 PADDLE_ENGINES = (None, "paddle", "paddle_static", "paddle_dynamic")  # run on PaddlePaddle
 GPU_INSTALL = (
-    "To use the GPU, install `quotable[ocr-core]` and a GPU build of PaddlePaddle "
+    "To use the GPU, replace the CPU PaddlePaddle that comes with quotable with a GPU build "
     "(see 'OCR on an NVIDIA GPU' in the README)."
 )
 

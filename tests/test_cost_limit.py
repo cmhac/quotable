@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from quotable.errors import BudgetExceededError, CostLimitExceededError, ExtractionError
+from quotable.errors import BudgetExceededError, CostLimitExceededError
 from quotable.estimate import estimate_discovery
 from quotable.llm.answers import CellRecheck, Omissions, PageRecheck
 from quotable.llm.client import CachedClient
@@ -180,11 +180,11 @@ def test_another_failure_gets_a_closing_message_and_is_raised_unchanged(tmp_path
 
     def handler(request):
         if request.stage == "extract":
-            raise ExtractionError("boom")
+            raise RuntimeError("boom")
         return base(request)
 
     run.handler = handler
-    with pytest.raises(ExtractionError, match="boom"):
+    with pytest.raises(RuntimeError, match="boom"):
         run.go()
     closings = [text for kind, text in run.sink.events if text.startswith("quotable: stopped")]
     assert len(closings) == 1

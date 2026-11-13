@@ -1,7 +1,10 @@
 import pymupdf
+import pytest
 
-from quotable.steps.layout import find_header, page_layouts
+from quotable.errors import ExtractionError
+from quotable.steps.layout import BandError, find_header, page_layouts, shared_bands
 from quotable.text.layer import load_layer
+from tests.test_tables import STACKED_A, STACKED_B
 
 COLUMNS = ["Account", "Location", "Project", "Amount"]
 
@@ -109,3 +112,34 @@ def test_every_page_of_the_samples_prints_every_column(sample):
         layers = [load_layer(page) for page in document]
     for layout in page_layouts(sample["columns"], layers):
         assert layout.columns == tuple(sample["columns"])
+
+
+# --- which table a band problem belongs to (spec 019) -------------------------------------------
+def _stacked(make_pdf):
+    (layer,) = _layers(make_pdf([STACKED_A + STACKED_B]))
+    return layer
+
+
+def test_a_row_that_is_not_found_names_its_table(make_pdf):
+    layer = _stacked(make_pdf)
+    tables = [("A", "Alpha $100", "Beta $250"), ("B", "Omega 1", "Delta $900 blue")]
+    with pytest.raises(BandError, match=r"page 1: table 'B': its first row was not found") as got:
+        shared_bands(1, layer, tables)
+    assert (got.value.page, got.value.labels, got.value.positions) == (1, ("B",), (1,))
+    assert isinstance(got.value, ExtractionError)
+
+
+def test_a_last_row_above_the_first_names_its_table(make_pdf):
+    layer = _stacked(make_pdf)
+    tables = [("A", "Beta $250", "Alpha $100"), ("B", "Gamma $100 red", "Delta $900 blue")]
+    with pytest.raises(BandError, match="its last row is above its first row") as got:
+        shared_bands(1, layer, tables)
+    assert (got.value.labels, got.value.positions) == (("A",), (0,))
+
+
+def test_an_overlap_names_both_tables(make_pdf):
+    layer = _stacked(make_pdf)
+    tables = [("A", "Alpha $100", "Delta $900 blue"), ("B", "Gamma $100 red", "Delta $900 blue")]
+    with pytest.raises(BandError, match="overlap vertically") as got:
+        shared_bands(1, layer, tables)
+    assert (got.value.labels, got.value.positions) == (("A", "B"), (0, 1))

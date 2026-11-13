@@ -29,7 +29,7 @@ from quotable.llm.answers import (
     WindowWithExtras,
     validate_schema,
 )
-from quotable.llm.client import Image, LLMClient, Request
+from quotable.llm.client import Image, LLMClient, Request, request_key
 from quotable.steps.extra_fields import ExtraFields, extras_prompt, flatten
 from quotable.text.layer import tokenize
 
@@ -68,6 +68,13 @@ class Found:
     label: str
     schema: TableSchema
     rows: dict[int, tuple[str, str]] = field(default_factory=dict)  # page -> first, last row
+    # why the columns are unusable (spec 019); such a table is returned as a failed table
+    problems: list[str] = field(default_factory=list)
+
+    @property
+    def failed(self) -> bool:
+        """Return whether the model's columns for this table are unusable."""
+        return bool(self.problems)
 
     @property
     def columns(self) -> list[str]:
@@ -115,31 +122,44 @@ def match_pages(answer: WindowTables, pages: list[int]) -> list[PageTables]:
 
 
 def merge(found: list[Found], page: int, tables: list[TableInfo]) -> None:
-    """Add the tables reported for ``page`` to the ones found so far."""
+    """
+    Add the tables reported for ``page`` to the ones found so far.
+
+    A table whose columns are unusable (none, a blank name, a repeated name) is kept as a failed
+    one, grouped by its label and never with another table (spec 019, FR-006).
+    """
     for info in tables:
-        sig = signature([c.name for c in info.columns])
-        known = next((f for f in found if signature(f.columns) == sig), None)
+        columns = [Column(name=c.name, description=c.description) for c in info.columns]
+        schema = TableSchema(columns=columns)
+        problems: list[str] = []
+        try:
+            validate_schema(schema)
+        except ExtractionError as err:
+            problems.append(str(err))
+        if problems:
+            known = next((f for f in found if f.failed and f.label == info.label), None)
+        else:
+            sig = signature([c.name for c in info.columns])
+            known = next((f for f in found if not f.failed and signature(f.columns) == sig), None)
         if known is None:
-            columns = [Column(name=c.name, description=c.description) for c in info.columns]
-            known = Found(info.label, TableSchema(columns=columns))
+            known = Found(info.label, schema, problems=problems)
             found.append(known)
+        known.problems.extend(p for p in problems if p not in known.problems)
         known.add(page, info)
 
 
 def validate_found(found: list[Found]) -> None:
-    """Raise ``ExtractionError`` if there is no table or a table's columns are unusable."""
+    """Raise ``ExtractionError`` if there is no table at all (a failed table counts as one)."""
     if not found:
         msg = "table discovery found no table in the document"
         raise ExtractionError(msg)
-    for table in found:
-        validate_schema(table.schema)
 
 
 def known_tables(found: list[Found]) -> str:
-    """Return the prompt text that lists the tables found so far."""
+    """Return the prompt text that lists the sound tables found so far (never a failed one)."""
     lines = [
         f"- table {i}: pages {f.pages}; columns: {json.dumps(f.columns, ensure_ascii=False)}"
-        for i, f in enumerate(found, 1)
+        for i, f in enumerate((f for f in found if not f.failed), 1)
     ]
     return "Known tables:\n" + "\n".join(lines)
 
@@ -153,8 +173,12 @@ def _retry_text(answer: WindowTables, problems: list[str]) -> str:
     )
 
 
-def answer_problems(answer: WindowTables, pages: list[int], names: list[str] | None) -> list[str]:
-    """Return what is wrong with a window answer: the page count, and the extra-field names."""
+def window_problems(answer: WindowTables, pages: list[int], names: list[str] | None) -> list[str]:
+    """
+    Return what is wrong with the window as a whole: the page count and the extra-field names.
+
+    These stay errors after the retry: no table is to blame, so no table can carry them.
+    """
     problems: list[str] = []
     try:
         match_pages(answer, pages)
@@ -166,6 +190,26 @@ def answer_problems(answer: WindowTables, pages: list[int], names: list[str] | N
             if sorted(got) != sorted(names):
                 problems.append(
                     f"page {page}: expected the extra fields {names}, each exactly once; got {got}"
+                )
+    return problems
+
+
+def table_problems(answer: WindowTables, pages: list[int]) -> list[str]:
+    """
+    Return the tables whose columns are unusable (none, a blank name, a repeated name).
+
+    A table that is still unusable after the retry becomes a failed table (spec 019).
+    """
+    problems: list[str] = []
+    for page, entry in zip(pages, answer.pages, strict=False):
+        for table in entry.tables:
+            try:
+                validate_schema(TableSchema(columns=table.columns))
+            except ExtractionError as err:
+                problems.append(
+                    f"page {page}, table {table.label!r}: {err}. Give the column names printed "
+                    "in the table's header row, or, if the page continues a known table "
+                    "without printing its header, that table's listed column names"
                 )
     return problems
 
@@ -183,8 +227,15 @@ async def _ask_window(
     client: LLMClient,
     extra_fields: ExtraFields | None = None,
 ) -> list[PageTables]:
-    """Ask about one window; repeat once if the answer does not cover every page."""
-    prompt = DISCOVER_PROMPT + (CARRY_PROMPT if found else "")
+    """
+    Ask about one window; repeat once if the answer is invalid.
+
+    The retry names every problem: the page count, the extra-field names and any unusable table.
+    After it, only a problem of the window itself raises; an unusable table is left in the answer
+    and ``merge`` turns it into a failed table.
+    """
+    sound = any(not f.failed for f in found)
+    prompt = DISCOVER_PROMPT + (CARRY_PROMPT if sound else "")
     output: type[WindowTables] = WindowTables
     names: list[str] | None = None
     if extra_fields is not None:
@@ -192,15 +243,26 @@ async def _ask_window(
         output = WindowWithExtras
         names = [f.name for f, _ in flatten(extra_fields)]
     parts: list[str | Image] = [Image(images[p - 1]) for p in pages]
-    if found:
+    if sound:
         parts.append(known_tables(found))
-    answer = await client.ask(Request("schema", prompt, output, parts))
-    problems = answer_problems(answer, pages, names)
+    first = Request("schema", prompt, output, parts, pages=tuple(pages))
+    answer = await client.ask(first)
+    problems = [*window_problems(answer, pages, names), *table_problems(answer, pages)]
     if not problems:
         return list(answer.pages)
     retry = [*parts, _retry_text(answer, problems)]
-    answer = await client.ask(Request("schema", prompt, output, retry))
-    problems = answer_problems(answer, pages, names)
+    why = "; ".join(problems)
+    second = Request(
+        "schema",
+        prompt,
+        output,
+        retry,
+        pages=tuple(pages),
+        retry_of=request_key(client.identity, first),
+        problem=why,
+    )
+    answer = await client.ask(second)
+    problems = window_problems(answer, pages, names)
     if problems:
         msg = (
             f"pages {pages[0]}-{pages[-1]}: discovery answer still invalid after one "

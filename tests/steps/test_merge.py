@@ -1,9 +1,11 @@
 """merge_tables: which pairs join (mutual uniqueness) and what the merged table holds."""
 
+from dataclasses import replace
+
 import pytest
 
 from quotable.steps.merge import DEFAULT_RULES, Rules, merge_tables, mergeable_pairs
-from quotable.table import MergedPart
+from quotable.table import MergedPart, Problem
 from tests.fixture_tables import discovered, doc_ids, load_doc
 from tests.steps.test_merge_checks import A_COLUMNS, B_COLUMNS, table
 
@@ -181,3 +183,23 @@ def test_every_settled_fixture_relation_comes_out_as_expected(doc_id, rel):
         t.merged and _pages(a) <= _pages(t) and _pages(b) <= _pages(t) for t in output
     )
     assert together is rel["expect_merge"], rel["note"]
+
+
+# --- a failed table is never part of a merge (spec 019) -------------------------------------
+def failed(table):
+    return replace(table, problems=[Problem("extraction", (7,), "page 7: rows invalid")])
+
+
+def test_a_failed_table_is_not_merged_into_another_or_another_into_it(tmp_path):
+    a, b = pair(tmp_path)
+    assert mergeable_pairs([a, b], DEFAULT_RULES) == [(0, 1)]  # these two would merge
+    for tables in ([a, failed(b)], [failed(a), b]):
+        assert mergeable_pairs(tables, DEFAULT_RULES) == []
+        assert merge_tables(tables) == tables
+
+
+def test_a_failed_table_is_not_a_second_partner_that_blocks_a_pair(tmp_path):
+    a, b = pair(tmp_path)
+    c = failed(table(tmp_path, B_COLUMNS, first_page=12, name="c", start=12))
+    merged = merge_tables([a, b, c])
+    assert len(merged) == 2 and merged[0].merged and merged[1] is c

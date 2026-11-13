@@ -14,12 +14,13 @@ from quotable.ocr.config import OcrConfig
 from quotable.runs import RunInfo, list_runs, load_run, write_run
 from quotable.steps.extra_fields import ExtraField, ExtraFields, FieldGroup
 from quotable.steps.layout import find_header
-from quotable.table import Table
+from quotable.table import Problem, Table
 from quotable.text.layer import load_layer
 from tests.conftest import extract_tables
 from tests.extra_fields_model import request_for, truth_model
 from tests.fixture_tables import DATA as FIXTURE
 from tests.fixture_tables import load_doc
+from tests.table_builder import failed_table
 from tests.test_extra_fields_pipeline import run as run_extra_fields
 from tests.test_extra_fields_pipeline import truth_of
 from tests.test_merge_pipeline import run as run_merge
@@ -527,3 +528,50 @@ def test_load_run_refuses_an_id_whose_folder_is_a_file(tmp_path):
     (project / "runs" / run_id).write_text("")
     with pytest.raises(KeyError):
         load_run(project, run_id)
+
+
+# --- failed tables (spec 019) -------------------------------------------------------------------
+def test_a_failed_table_is_saved_with_its_problems_and_read_back(tmp_path, senate_tables):
+    lost = failed_table("Lost", [Problem("discovery", (2, 3), "no columns")])
+    partly = replace(
+        senate_tables[0], problems=[Problem("extraction", (5,), "page 5: rows invalid")]
+    )
+    tables = [*senate_tables[1:], partly, lost]
+    project = tmp_path / "p"
+    _, info, _, _ = save(project, tables, SENATE_PDF)  # saving must not warn: the filter errors
+
+    run = load_run(project, info.id)
+
+    assert run.summary.failed == 2
+    sound = len(senate_tables) - 1
+    assert [t.failed for t in run.summary.tables] == [False] * sound + [True, True]
+    last = run.tables[-1]
+    assert (last.label, last.failed, last.columns, last.pages, last.rows) == (
+        "Lost",
+        True,
+        [],
+        [],
+        [],
+    )
+    assert last.problems == [{"stage": "discovery", "pages": [2, 3], "message": "no columns"}]
+    middle = run.tables[-2]
+    assert middle.failed and middle.pages and middle.rows  # what extracted is kept
+    assert middle.problems[0]["stage"] == "extraction"
+    assert not any(t.failed or t.problems for t in run.tables[:sound])
+
+
+def test_a_run_saved_before_spec_019_loads_as_not_failed(tmp_path, senate_tables):
+    project = tmp_path / "p"
+    where, info, _, _ = save(project, senate_tables, SENATE_PDF)
+    for name in ("run.json", "tables.json"):
+        data = json.loads((where / name).read_text())
+        data.get("summary", {}).pop("failed", None)
+        for entry in data["tables"]:
+            entry.pop("failed", None)
+            entry.pop("problems", None)
+        (where / name).write_text(json.dumps(data))
+    run = load_run(project, info.id)
+    assert run.summary.failed == 0
+    assert not any(t.failed for t in run.summary.tables)
+    assert not any(t.failed or t.problems for t in run.tables)
+    assert list_runs(project)[0][0].id == info.id

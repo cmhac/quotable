@@ -14,7 +14,9 @@ faults put in on purpose so every status shows). It holds:
 * ``large-table.pdf``: one table of several thousand rows;
 * ``fy22_milcon_house_original.pdf``: run twice, the second time with one answer changed, so the
   verdict given to the first run is stale in the second;
-* ``dropped-column.pdf``: a column the second page does not print (``not_on_page``).
+* ``dropped-column.pdf``: a column the second page does not print (``not_on_page``);
+* ``failed-table.pdf``: two tables, the second of which the model gave no columns for (spec 019):
+  a sound table and a failed one.
 
 A gold check (spec 016) too: a sample of every page of the Senate report and the extras report,
 typed as a careful person would, except that one page has a wrong word, one is typed as having no
@@ -29,6 +31,7 @@ import argparse
 import contextlib
 import json
 import shutil
+import warnings
 from collections.abc import Generator
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
@@ -38,16 +41,17 @@ from unittest import mock
 
 import pymupdf
 
-from quotable import extract_tables, pipeline
+from quotable import TableFailedWarning, extract_tables, pipeline
 from quotable.gold.sample import make_sample
 from quotable.gold.store import GoldPage, GoldStore, GoldTable, SampleStore
-from quotable.llm.answers import PageRecheck
+from quotable.llm.answers import Column, PageRecheck, PageRows, PageTables, TableInfo
+from quotable.llm.client import Request
 from quotable.ocr.config import OcrConfig
 from quotable.review.queue import FLAGGED
 from quotable.review.verdicts import CellKey, Verdict, VerdictStore, now
 from quotable.runs import Run, RunRow, load_run
 from quotable.storage import CostLog, ensure_gold_trackable, runs_dir
-from tests.conftest import FakeClient, load_sample, replay
+from tests.conftest import FakeClient, load_sample, replay, window_of
 from tests.extra_fields_model import request_for, truth_model
 from tests.fake_ocr import ExplodingEngine, FakeEngine, native_as_ocr
 from tests.fixture_tables import DATA as FIXTURE
@@ -71,6 +75,7 @@ MERGED_PDF = "reworded-headers.pdf"
 LARGE_PDF = "large-table.pdf"
 STALE_PDF = "fy22_milcon_house_original.pdf"
 DROPPED_PDF = "dropped-column.pdf"
+FAILED_PDF = "failed-table.pdf"
 # the document of every run, in the order the demo makes them
 RUNS = (
     TWO_TABLES_PDF,
@@ -81,6 +86,7 @@ RUNS = (
     STALE_PDF,
     STALE_PDF,
     DROPPED_PDF,
+    FAILED_PDF,
 )
 
 OCR_DPI = OcrConfig().dpi
@@ -266,6 +272,43 @@ def _dropped_pdf(path: Path) -> dict[int, list[dict[str, str]]]:
     return pages
 
 
+FAILED_ROWS = [("Harbor Dredging", "$125,000"), ("Water Main Repair", "$410,000")]
+
+
+def _failed_pdf(path: Path) -> None:
+    """Two pages, each with a table; the model will describe the first and not the second."""
+    with pymupdf.open() as document:
+        page = document.new_page(width=612, height=792)
+        for x, name in ((50, "Project"), (300, "Amount")):
+            page.insert_text((x, 110), name, fontsize=9, fontname="hebo")
+        for i, (project, amount) in enumerate(FAILED_ROWS):
+            page.insert_text((50, 130 + i * 16), project, fontsize=9)
+            page.insert_text((300, 130 + i * 16), amount, fontsize=9)
+        page = document.new_page(width=612, height=792)
+        page.insert_text((50, 110), "Staff note", fontsize=9, fontname="hebo")
+        page.insert_text((50, 130), "Reviewed in committee", fontsize=9)
+        document.save(path)
+
+
+def _failed_client() -> FakeClient:
+    """A model that gives the second table no columns, however often it is asked."""
+    sound = TableInfo(
+        label="Funding",
+        columns=[Column(name="Project", description=""), Column(name="Amount", description="")],
+        first_row="",
+        last_row="",
+    )
+    unusable = TableInfo(label="Notes", columns=[], first_row="", last_row="")
+    answer = [PageTables(tables=[sound]), PageTables(tables=[unusable])]
+
+    def handler(request: Request) -> object:
+        if request.stage == "schema":
+            return window_of(request, answer)
+        return PageRows(rows=[{"Project": p, "Amount": a} for p, a in FAILED_ROWS])
+
+    return FakeClient(handler)
+
+
 def build(root: Path, *, large_pages: int = LARGE_PAGES) -> Path:  # noqa: PLR0915
     """Build the demo project in ``root`` and return its ``.quotable`` folder."""
     root = root.resolve()
@@ -338,6 +381,13 @@ def build(root: Path, *, large_pages: int = LARGE_PAGES) -> Path:  # noqa: PLR09
             age=timedelta(hours=20),
             recheck=False,
         )
+
+        # a table the model could not give columns for: returned as a failed table
+        failed = demo.pdfs / FAILED_PDF
+        _failed_pdf(failed)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", TableFailedWarning)
+            demo.run("failed", failed, _failed_client(), age=timedelta(hours=10), recheck=False)
 
         _judge(demo, column)
         _gold(demo)
