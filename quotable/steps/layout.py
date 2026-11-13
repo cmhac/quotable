@@ -137,6 +137,24 @@ def page_layouts(columns: list[str], layers: list[Layer]) -> list[PageLayout]:
     return [lay or lead for lay in out]
 
 
+class BandError(ExtractionError):
+    """
+    A table's band on a shared page cannot be found (spec 019).
+
+    ``labels`` are the tables at fault and ``positions`` their places in the list given to
+    ``shared_bands``: one table for a row not found, both for an overlap.
+    """
+
+    def __init__(
+        self, message: str, *, page: int, labels: tuple[str, ...], positions: tuple[int, ...]
+    ) -> None:
+        """Keep where the problem is, besides the message."""
+        super().__init__(message)
+        self.page = page
+        self.labels = labels
+        self.positions = positions
+
+
 BAND_MARGIN = 4.0  # pt added above the first row and below the last row
 WHOLE_WIDTH = 1e9
 
@@ -168,7 +186,7 @@ def shared_bands(
     if a row is not found or two bands overlap.
     """
     bands: list[tuple[float, float]] = []
-    for label, first, last in tables:
+    for position, (label, first, last) in enumerate(tables):
         top = locate(layer, first, "first")
         bottom = locate(layer, last, "last")
         for which, found in (("first", top), ("last", bottom)):
@@ -176,12 +194,12 @@ def shared_bands(
                 msg = (
                     f"page {page}: table {label!r}: its {which} row was not found in the text layer"
                 )
-                raise ExtractionError(msg)
+                raise BandError(msg, page=page, labels=(label,), positions=(position,))
         assert top is not None
         assert bottom is not None
         if bottom[1] < top[0]:
             msg = f"page {page}: table {label!r}: its last row is above its first row"
-            raise ExtractionError(msg)
+            raise BandError(msg, page=page, labels=(label,), positions=(position,))
         bands.append((top[0] - BAND_MARGIN, bottom[1] + BAND_MARGIN))
     for i, (a_top, a_bottom) in enumerate(bands):
         for j in range(i + 1, len(bands)):
@@ -191,7 +209,12 @@ def shared_bands(
                     f"page {page}: tables {tables[i][0]!r} and {tables[j][0]!r} overlap "
                     "vertically (side-by-side tables are not supported)"
                 )
-                raise ExtractionError(msg)
+                raise BandError(
+                    msg,
+                    page=page,
+                    labels=(tables[i][0], tables[j][0]),
+                    positions=(i, j),
+                )
     return bands
 
 

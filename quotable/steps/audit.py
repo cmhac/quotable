@@ -398,8 +398,11 @@ async def audit_table(
 
     Needs the table grounded (the row windows and column ranges name the empty cells). Returns
     ``table`` itself when no page needed a request; a table whose proposals were all rejected
-    keeps its rows and grounding and gains the items in ``audit``.
+    keeps its rows and grounding and gains the items in ``audit``. A failed table is returned as
+    it is (spec 019).
     """
+    if table.failed:
+        return table
     names = {r.page: [c for c in table.columns if c not in r.absent] for r in table.pages}
     layer = table.layers
     skip = furniture(

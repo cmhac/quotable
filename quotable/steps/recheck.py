@@ -137,7 +137,10 @@ async def recheck_table(
 
     The page image is rendered at ``images.dpi`` and sent with ``images.detail`` (spec 014).
     ``gate`` is the run's limit on requests in flight (spec 015), shared with the other stages.
+    A failed table is returned as it is (spec 019).
     """
+    if table.failed:
+        return table
     pages = sorted(
         {f.page for f in table.flagged() if f.status in RECHECK_STATUSES and not f.extra}
     )
