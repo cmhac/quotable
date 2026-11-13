@@ -77,8 +77,10 @@ Rationale: every extra line is read, tested and maintained later.
 - Lint, format and type checks are `ruff` and `ty`, run through the pre-commit hooks and `just`.
 - No secrets, credentials or private keys in code, prompts, logs or specs. The cost log MUST NOT store
   prompts, answers or file paths.
-- Optional features that need heavy dependencies (OCR) MUST stay optional extras and MUST be imported
-  only when used.
+- Optional features that need heavy dependencies MUST stay optional extras and MUST be imported
+  only when used. The exception is OCR (PaddleOCR and the CPU build of PaddlePaddle): it is a default
+  dependency, on the platforms that have a wheel for it, and MUST still be imported only when a page
+  needs it.
 - Global agent security policy (`~/.kiro/steering/security.md`) and the repo hooks MUST be followed.
   A hook that blocks an action MUST NOT be retried or worked around, and hooks MUST NOT be bypassed
   (no `--no-verify`).
@@ -110,4 +112,4 @@ by semantic rules: MAJOR for removing or redefining a principle, MINOR for addin
 materially expanding guidance, PATCH for wording fixes. Compliance is checked in spec and plan
 review and by `speckit-analyze`.
 
-**Version**: 1.0.0 | **Ratified**: 2026-11-10 | **Last Amended**: 2026-11-10
+**Version**: 1.1.0 | **Ratified**: 2026-11-10 | **Last Amended**: 2026-11-13

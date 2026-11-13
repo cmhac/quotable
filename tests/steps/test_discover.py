@@ -114,14 +114,20 @@ def test_a_table_listed_twice_on_a_page_covers_both_pieces():
     assert found[0].rows == {1: ("top", "bottom")}
 
 
-def test_unusable_discovery_results_raise():
+def test_no_table_in_the_document_raises():
     with pytest.raises(ExtractionError, match="no table"):
         validate_found([])
+
+
+def test_an_unusable_table_is_kept_as_a_failed_one_with_the_problem():
     for columns, problem in [([], "no columns"), (["A", " "], "blank"), (["A", "A"], "duplicate")]:
         found = []
-        merge(found, 1, [info(columns)])
-        with pytest.raises(ExtractionError, match=problem):
-            validate_found(found)
+        merge(found, 1, [info(columns, "bad")])
+        merge(found, 2, [info(columns, "bad")])
+        (table,) = found
+        assert table.failed and table.pages == [1, 2] and table.label == "bad"
+        assert problem in " ".join(table.problems)
+        validate_found(found)  # a failed table is not a reason to raise
 
 
 def test_a_page_with_no_table_is_fine():
@@ -206,10 +212,74 @@ def test_a_recorded_answer_with_no_columns_is_retried_with_the_problem_named(win
     assert "page 1" in retry and "no columns" in retry and "header" in retry
 
 
-def test_an_answer_with_no_columns_that_persists_raises():
-    client = Recorder([window([info([])])] * 2)
-    with pytest.raises(ExtractionError, match="still invalid.*no columns"):
-        run(client, 1)
+def window_answers(first, last):
+    return WindowTables.model_validate_json((RECORDED / f"answer_{first}_{last}.json").read_text())
+
+
+def test_an_answer_with_no_columns_that_persists_fails_that_table_only():
+    both = window([info(["A", "B"], "good"), info([], "bad")])
+    client = Recorder([both, both])
+    good, bad = run(client, 1)
+    assert len(client.requests) == 2
+    assert not good.failed and good.columns == ["A", "B"]
+    assert bad.failed and bad.label == "bad" and bad.pages == [1]
+    assert "no columns" in " ".join(bad.problems)
+
+
+def test_a_window_level_problem_still_raises_when_it_persists():
+    client = Recorder([window([info(["A"])])] * 2)  # one entry for two pages
+    with pytest.raises(ExtractionError, match="still invalid"):
+        run(client, 2)
+    bad_table_too = Recorder([window([info([], "bad")])] * 2)  # and the table is unusable as well
+    with pytest.raises(ExtractionError, match="expected one entry per page image"):
+        run(bad_table_too, 2)
+
+
+def test_failed_entries_are_grouped_by_label_and_never_with_a_sound_table():
+    answer = window([info([], "one"), info(["A"], "sound")], [info([], "one"), info([], "two")])
+    client = Recorder([answer, answer])
+    one, sound, two = run(client, 2)
+    assert (one.label, one.pages, one.failed) == ("one", [1, 2], True)
+    assert (sound.label, sound.pages, sound.failed) == ("sound", [1], False)
+    assert (two.label, two.pages, two.failed) == ("two", [2], True)
+    assert signature(one.columns) != signature(sound.columns)
+
+
+def test_a_failed_table_is_not_shown_to_the_next_window():
+    bad = window([info([], "bad")])
+    client = Recorder([bad, bad, window([info(["A"], "good")]), window([info(["A"], "good")])])
+    run(client, 3, discovery_pages=1)
+    # nothing sound is known after the failed first window: no known-tables part, no carry prompt
+    assert client.requests[2].instructions == DISCOVER_PROMPT
+    assert "Known tables" not in texts(client.requests[2])
+    # once a sound table is known, the failed one is still left out of the list
+    known = texts(client.requests[3])
+    assert "Known tables" in known and '"A"' in known
+    assert "columns: []" not in known and "pages [1]" not in known
+    assert client.requests[3].instructions == DISCOVER_PROMPT + CARRY_PROMPT
+
+
+def test_the_four_recorded_windows_of_the_failed_run_end_as_four_failed_tables():
+    # The model's own answers to pages 357-360, 421-424, 545-548 and 889-892 of the Trump annual
+    # report (copied from the request cache of the failed run): tables with no columns. Each is
+    # given twice, as the answer and as the answer to the retry. No model is called.
+    recorded = [window_answers(a, b) for a, b in [(357, 360), (421, 424), (545, 548), (889, 892)]]
+    client = Recorder([answer for each in recorded for answer in (each, each)])
+    tables = run(client, 16)
+    assert len(client.requests) == 8
+    assert all(t.failed for t in tables) and len(tables) == 4
+    assert [t.pages for t in tables] == [
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 10, 11, 12],
+        [13, 14, 15, 16],
+    ]
+    assert [t.label for t in tables] == [
+        "Investment Account #6 transactions",
+        "Investment Account #7 transactions",
+        "Investment Account #7 Transactions",
+        "Trademark registrations",
+    ]
 
 
 def test_a_window_smaller_than_one_page_is_rejected():

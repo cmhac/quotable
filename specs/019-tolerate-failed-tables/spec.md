@@ -15,6 +15,14 @@ Terms used in this spec:
 - **Document-level failure**: a problem that is not about one table, so no table can carry it. These keep raising and are listed under "Not changed".
 - **Window**: the group of consecutive pages (4 by default) shown to the model in one discovery request.
 
+## Clarifications
+
+### Session 2026-11-13
+
+- Q: Should the OCR story (Story 5) stay in spec 019 or move to its own spec? -> A: It stays; all six stories remain in spec 019.
+- Q: When discovery fails a table, should later windows still be shown it in the "Known tables" list? -> A: No; failed tables are left out of that list (FR-006, Story 3 scenario 6).
+- Approved by the user the same day: OCR as a default dependency. The constitution is amended to 1.1.0 (Technology and Security Constraints). The other proposed amendment, the wording of Principle II about warnings and errors, is not approved and not made.
+
 ## What the investigation found
 
 The failed call was `extract_tables` on `President-Donald-J.-Trump-2025-Annual-Report.pdf` (927 pages, `openai:gpt-5.6-luna`), run from a notebook in the `2026-11-12-senate-expenditures` project. The cache and the cost log of that run were read; no model request was made for this investigation.
@@ -79,6 +87,7 @@ When the model says a table has no columns, that answer is not taken as a table.
 3. **Given** failed entries of different labels, **When** they are collected, **Then** they are separate failed tables, never one table of unrelated pages.
 4. **Given** the cache from the failed Trump run, **When** the call is repeated, **Then** it neither raises the old error nor repeats the bad answers: the cached bad answers are read, the unusable one is seen, and the retry is made (new request, or cached if it was made before).
 5. **Given** a page that really has no table, **When** the model gives an empty list of tables for it, **Then** nothing is reported or warned: that answer is valid.
+6. **Given** a table that failed in discovery, **When** later windows are asked, **Then** the "Known tables" list they are shown does not include it, so the model cannot copy its unusable columns.
 
 ---
 
@@ -102,7 +111,7 @@ The same applies to the other checks that can fail a table: rows still invalid f
 
 Every page whose text layer has no words is sent to OCR, whatever share of the document it is, and the run continues with the OCR text as that page's text layer. OCR needs no extra install: PaddleOCR and the CPU build of PaddlePaddle are installed with quotable on the platforms that have a wheel for them.
 
-**Why this priority**: it was found in the same run. It does not cause the error, but a run that got past it would have spent for 901 pages that cannot be verified, and the user's own fix is to read those pages instead of refusing them. It is independent of Stories 1-4, so it can be split into its own spec if you prefer.
+**Why this priority**: it was found in the same run. It does not cause the error, but a run that got past it would have spent for 901 pages that cannot be verified, and the user's own fix is to read those pages instead of refusing them. It is independent of Stories 1-4 in behavior, but it ships in this spec.
 
 **Independent Test**: with the OCR engine replaced by a fake that returns known words, build a 20-page PDF with text on 2 pages and nothing on 18. The call OCRs exactly the 18 pages and carries on, and `Table.ocr_pages` lists them. A 20-page PDF whose only empty page is blank OCRs that one page and finds nothing on it, without an error. With the real engine, one scanned page of the Trump report is OCR'd and its table rows are found in the text (opt-in, no model cost).
 
@@ -155,7 +164,7 @@ Someone debugging a long run opens the cache and can tell, for any entry, which 
 - **FR-003**: At the moment a table fails, the library MUST emit one warning of a dedicated category (exported from `quotable`) that gives the table's label, its pages and the problems. It MUST NOT emit the warning again for the same failure.
 - **FR-004**: Every way to read a failed table's data (`rows()`, `page_rows()`, `records()`, `to_pandas()`, `to_polars()`, `flagged()`) MUST return what the table holds without raising, and MUST emit one warning of the same category per call that says the table failed and why. Reading descriptive fields and the failure record MUST NOT warn. A sound table MUST never warn.
 - **FR-005**: A discovery answer in which a table has no columns, a blank column name or a repeated column name MUST be treated as invalid: the window is sent once more with the problem named, in the way an answer with a wrong page count already is. Only the tables that are still unusable after that become failed tables.
-- **FR-006**: Failed discovery entries MUST be grouped by their label and never with entries of a different label, and MUST NOT be grouped with a sound table or matched to one by their (empty) column names.
+- **FR-006**: Failed discovery entries MUST be grouped by their label and never with entries of a different label, and MUST NOT be grouped with a sound table or matched to one by their (empty) column names. A table that failed in discovery MUST NOT appear in the "Known tables" list shown to later windows.
 - **FR-007**: A page of a table whose rows are still invalid after the existing retry MUST fail that table only; the table MUST keep the pages that extracted and list the pages that did not.
 - **FR-008**: A table whose first or last row cannot be found on a shared page, or whose band overlaps another table's, MUST fail only the tables concerned (both, for an overlap).
 - **FR-009**: Merge, recheck, audit and the extra-field stages MUST skip a failed table, send no request for it, and MUST NOT raise because of it. A failed table MUST NOT take part in a merge in either direction.
@@ -188,7 +197,7 @@ Someone debugging a long run opens the cache and can tell, for any entry, which 
 
 ### Measurable Outcomes
 
-- **SC-001**: Replaying the cached discovery answers of the failed run offline, the call returns instead of raising, with no model request, and every table the model described validly is returned.
+- **SC-001**: Replaying the cached discovery answers of the failed run offline, with a scripted model answering the retries (no network, no real model), the call returns instead of raising, and every table the model described validly is returned.
 - **SC-002**: In a generated document of 3 tables where one fails, the 2 sound tables are identical (rows, grounding statuses, positions, flags) to the result of the same document with the failing table removed.
 - **SC-003**: Each failure produces exactly 1 warning when it happens, and each data-reading call on a failed table produces exactly 1 warning; across the whole offline suite, a sound table produces 0.
 - **SC-004**: With the real model on the four windows that failed (pages 357-360, 421-424, 545-548, 889-892), each ends as a table or a failed table, never as an error. This is a live check, run only with your go-ahead; its cost is about $0.02 for 16 pages plus retries.
@@ -206,7 +215,7 @@ Someone debugging a long run opens the cache and can tell, for any entry, which 
 - Details are written only for new entries. The failed run's 234 entries stay without them; for those, the cost log and the file times remain the only clues, which is why the investigation rebuilt them by hand.
 - Principle II of the constitution ("failures MUST be loud and typed", "MUST NOT swallow errors that change results") is met by the typed warning at the failure, the flag and the problems on the table, the warning on each read and the closing message: nothing is hidden. It does say failures are typed in `quotable.errors`, so the plan proposes a wording amendment (per-table failures as warnings, document-level failures as errors) for you to approve with `speckit-constitution`; this spec does not make it.
 - The 10% limit applies only when OCR is off. It is the share the check already uses for garbled pages and is not tuned on data. The Trump report is 97% scanned, far from any sensible limit.
-- Making OCR a default dependency changes the constitution's rule that OCR "MUST stay optional extras" (Technology and Security Constraints). The plan proposes an amendment (OCR is a default dependency, still imported only when used) for you to approve with `speckit-constitution`; this spec does not make it. The README and AGENTS.md change with it.
+- Making OCR a default dependency changed the constitution's rule that OCR "MUST stay optional extras"; the user approved the amendment on 2026-11-13 and the constitution is now 1.1.0 (OCR is a default dependency, still imported only when used). The README and AGENTS.md change with the implementation.
 - The CPU build of PaddlePaddle is the default. NVIDIA users must replace it with their GPU build, as `ocr-core` users did, so the README's GPU section changes to say so. Which platforms get the dependency is a plan decision (environment markers); the README lists today Apple Silicon Macs, Linux x86_64 and Windows x86_64 on Python 3.11 to 3.13.
 - Installing quotable gets larger by about 100 to 200 MB plus OpenCV (README's figure for the CPU build), for everyone, including users whose PDFs never need OCR. This is the cost of the request and is accepted here.
 - OCR of 901 pages on a CPU is slow. Nobody has measured it for this report, so the spec sets no time target; Story 5 asks for progress messages instead.

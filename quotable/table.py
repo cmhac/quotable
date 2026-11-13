@@ -1,9 +1,11 @@
 """The extracted table with the grounding verdict of every cell."""
 
+import warnings
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Literal, NamedTuple
 
+from quotable.errors import TableFailedWarning
 from quotable.steps.extra_fields import ExtraResult
 from quotable.steps.grounding import SEVERITY, UNFLAGGED, FieldGrounding, ground_rows
 from quotable.steps.layout import PageLayout
@@ -222,6 +224,42 @@ class MergedPart:
     evidence: MergeEvidence
 
 
+@dataclass(frozen=True)
+class Problem:
+    """
+    Why a table failed (spec 019): the stage that found it, the pages it concerns, what it is.
+
+    ``stage`` is ``discovery`` (unusable columns), ``location`` (a row not found in the text
+    layer, or overlapping bands) or ``extraction`` (rows still invalid after the retry).
+    ``message`` holds no prompt, extracted value or path.
+    """
+
+    stage: Literal["discovery", "extraction", "location"]
+    pages: tuple[int, ...]
+    message: str
+
+    def __post_init__(self) -> None:
+        """Reject a problem that concerns no page."""
+        if not self.pages:
+            msg = "a Problem must name at least one page"
+            raise ValueError(msg)
+
+
+def page_ranges(pages: Iterable[int]) -> str:
+    """Return pages as ranges: ``3, 5-6, 9`` (for messages)."""
+    ordered = sorted(set(pages))
+    parts: list[str] = []
+    start = previous = ordered[0] if ordered else 0
+    for page in [*ordered[1:], None]:
+        if page is not None and page == previous + 1:
+            previous = page
+            continue
+        parts.append(str(start) if start == previous else f"{start}-{previous}")
+        if page is not None:
+            start = previous = page
+    return ", ".join(parts) if ordered else ""
+
+
 @dataclass
 class Table:
     """Everything the pipeline produced for one table of a PDF (``pages`` are its pages only)."""
@@ -245,18 +283,65 @@ class Table:
     extra_fields: dict[int, dict[str, ExtraResult]] = field(default_factory=dict)
     extra_names: tuple[str, ...] = ()
     extra_changes: dict[tuple[int, str], tuple[str, str]] = field(default_factory=dict)
+    # spec 019: what failed; empty for a sound table. A failed table keeps whatever the run
+    # produced for it, and reading its data warns (TableFailedWarning)
+    problems: list[Problem] = field(default_factory=list)
 
-    def page_rows(self, page: int) -> list[Row]:
-        """Return the rows of one page (1-based)."""
+    @property
+    def failed(self) -> bool:
+        """Return whether a check failed for this table (``problems`` is not empty)."""
+        return bool(self.problems)
+
+    def first_page(self) -> int:
+        """Return the first page the table is on, or on which it failed (0 if it has none)."""
+        pages = [r.page for r in self.pages] or [p for x in self.problems for p in x.pages]
+        return min(pages, default=0)
+
+    def problem_pages(self) -> str:
+        """Return the pages of every problem as ranges (``3, 5-6``), for messages."""
+        return page_ranges(p for x in self.problems for p in x.pages)
+
+    def warn_failure(self) -> None:
+        """Warn that this table failed, once, at the moment its stage finds out (spec 019)."""
+        problems = "; ".join(p.message for p in self.problems)
+        warnings.warn(
+            f"table '{self.label or 'unnamed'}' failed (pages {self.problem_pages()}): {problems}. "
+            "The table is returned with the problem recorded; read it with table.problems.",
+            TableFailedWarning,
+            stacklevel=2,
+        )
+
+    def _warn_if_failed(self, accessor: str) -> None:
+        """Warn that this table failed; the caller is the library's public accessor (spec 019)."""
+        if not self.failed:
+            return
+        problems = "; ".join(p.message for p in self.problems)
+        warnings.warn(
+            f"table '{self.label or 'unnamed'}' failed: {problems}. "
+            f"The data returned by {accessor} may be incomplete or wrong.",
+            TableFailedWarning,
+            stacklevel=3,
+        )
+
+    def _page_rows(self, page: int) -> list[Row]:
         grounding = self.grounded[page]
         return [
             Row(page, i + 1, values, cells, dict(self.extra_fields.get(page, {})))
             for i, (values, cells) in enumerate(zip(grounding.rows, grounding.cells, strict=True))
         ]
 
+    def _rows(self) -> list[Row]:
+        return [row for result in self.pages for row in self._page_rows(result.page)]
+
+    def page_rows(self, page: int) -> list[Row]:
+        """Return the rows of one page (1-based). On a failed table this warns."""
+        self._warn_if_failed("page_rows()")
+        return self._page_rows(page)
+
     def rows(self) -> list[Row]:
-        """Return every row of the document in page order."""
-        return [row for result in self.pages for row in self.page_rows(result.page)]
+        """Return every row of the document in page order. On a failed table this warns."""
+        self._warn_if_failed("rows()")
+        return self._rows()
 
     def records(self) -> list[dict[str, object]]:
         """
@@ -266,8 +351,12 @@ class Table:
         and coverage, each extra field's grounding, coverage and source page, the row's status,
         the accepted rechecks and ``audit_added`` (``row`` for a row the omission audit added,
         ``cells: <columns>`` for cells it filled, else empty). A library column whose name is
-        taken gets a trailing ``_``.
+        taken gets a trailing ``_``. On a failed table this warns.
         """
+        self._warn_if_failed("records()")
+        return self._records()
+
+    def _records(self) -> list[dict[str, object]]:
         names = output_names(self.columns, self.extra_names)
         out: list[dict[str, object]] = []
         changes: dict[tuple[int, int], list[str]] = {}
@@ -283,7 +372,7 @@ class Table:
                 if i.outcome == "accepted" and i.row is not None
             ),
         )
-        for row in self.rows():
+        for row in self._rows():
             record: dict[str, object] = {names.page: row.page, names.row: row.row, **row.values}
             for name in self.extra_names:
                 record[names.fields[name]] = row.extra[name].value if name in row.extra else ""
@@ -324,6 +413,7 @@ class Table:
 
     def to_pandas(self) -> "pandas.DataFrame":
         """Return `records()` as a pandas DataFrame (ints, strings and a float coverage)."""
+        self._warn_if_failed("to_pandas()")
         try:
             import pandas as pd  # noqa: PLC0415
         except ImportError as err:
@@ -331,11 +421,12 @@ class Table:
 
         columns = self._frame_columns()
         dtypes = {"int": "int64", "str": "str", "float": "float64", "nullable_int": "Int64"}
-        frame = pd.DataFrame(self.records(), columns=[name for name, _ in columns])
+        frame = pd.DataFrame(self._records(), columns=[name for name, _ in columns])
         return frame.astype({name: dtypes[kind] for name, kind in columns})
 
     def to_polars(self) -> "polars.DataFrame":
         """Return `records()` as a polars DataFrame (ints, strings and a float coverage)."""
+        self._warn_if_failed("to_polars()")
         try:
             import polars as pl  # noqa: PLC0415
         except ImportError as err:
@@ -348,7 +439,7 @@ class Table:
             "nullable_int": pl.Int64,
         }
         schema = {name: dtypes[kind] for name, kind in self._frame_columns()}
-        return pl.DataFrame(self.records(), schema=schema)
+        return pl.DataFrame(self._records(), schema=schema)
 
     def flagged(self) -> list[Flag]:
         """
@@ -356,9 +447,14 @@ class Table:
 
         A flag for an extra field has ``extra=True`` and the field's name in ``column``; it is
         listed on every row that carries the value, so filtering rows by flag works as for cells.
+        On a failed table this warns.
         """
+        self._warn_if_failed("flagged()")
+        return self._flagged()
+
+    def _flagged(self) -> list[Flag]:
         flags: list[Flag] = []
-        for row in self.rows():
+        for row in self._rows():
             flags += [
                 Flag(row.page, row.row, column, cell.status, cell.coverage)
                 for column, cell in row.cells.items()

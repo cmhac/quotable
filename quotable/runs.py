@@ -126,7 +126,7 @@ def _extra(result: ExtraResult, page_layers: Mapping[int, Layer]) -> dict[str, A
 def _flagged(table: Table) -> dict[str, int]:
     """Count the flagged cells by status, and each extra field once per page that prints it."""
     counts: dict[str, int] = {}
-    for row in table.rows():
+    for row in table._rows():  # noqa: SLF001 (reading a failed table here must not warn)
         for cell in row.cells.values():
             if cell.status not in UNFLAGGED:
                 counts[cell.status] = counts.get(cell.status, 0) + 1
@@ -162,6 +162,12 @@ def _header(header: Header | None) -> dict[str, Any] | None:
     }
 
 
+def _problems(table: Table) -> list[dict[str, Any]]:
+    return [
+        {"stage": p.stage, "pages": list(p.pages), "message": p.message} for p in table.problems
+    ]
+
+
 def _table_data(  # noqa: PLR0913, PLR0917
     index: int,
     table: Table,
@@ -178,7 +184,7 @@ def _table_data(  # noqa: PLR0913, PLR0917
             "values": row.values,
             "cells": {c: _cell(g, table.layers[row.page]) for c, g in row.cells.items()},
         }
-        for row in table.rows()
+        for row in table._rows()  # noqa: SLF001
     ]
     layouts = [
         {
@@ -209,6 +215,8 @@ def _table_data(  # noqa: PLR0913, PLR0917
         "columns": table.columns,
         "pages": pages,
         "ocr_pages": list(table.ocr_pages),
+        "failed": table.failed,
+        "problems": _problems(table),
         "position": table.position,
         "layouts": layouts,
         "bands": {str(p): _box(b) for p, b in bands.items()},
@@ -296,6 +304,8 @@ def write_run(  # noqa: PLR0913, PLR0917
             "flagged": counts,
             "merged": len(t.merged),
             "ocr_pages": list(t.ocr_pages),
+            "failed": t.failed,
+            "problems": _problems(t),
         }
         for i, (t, counts) in enumerate(zip(tables, flagged, strict=True))
     ]
@@ -305,6 +315,7 @@ def write_run(  # noqa: PLR0913, PLR0917
         "cells": sum(len(r.rows) * len(t.columns) for t in tables for r in t.pages),
         "flagged": totals,
         "ocr_pages": sorted({p for t in tables for p in t.ocr_pages}),
+        "failed": sum(t.failed for t in tables),
     }
     run = {
         "v": FORMAT_VERSION,
@@ -367,6 +378,8 @@ class TableSummary:
     flagged: dict[str, int]
     merged: int
     ocr_pages: list[int]
+    failed: bool = False  # spec 019; older runs have none
+    problems: list[dict[str, Any]] = field(default_factory=list)
 
 
 @dataclass
@@ -389,6 +402,7 @@ class RunSummary:
     flagged: dict[str, int]
     ocr_pages: list[int]
     tables: list[TableSummary]
+    failed: int = 0  # how many tables failed (spec 019); older runs have none
 
 
 @dataclass
@@ -459,6 +473,8 @@ class RunTable:
     extra_changes: list[list[Any]]
     rows: list[RunRow]
     audit: list[dict[str, Any]] = field(default_factory=list)  # spec 014; older runs have none
+    failed: bool = False  # spec 019; older runs have none
+    problems: list[dict[str, Any]] = field(default_factory=list)
 
 
 @dataclass
@@ -501,6 +517,7 @@ def _summary(data: dict[str, Any], folder: str) -> RunSummary:
         flagged=summary["flagged"],
         ocr_pages=summary["ocr_pages"],
         tables=[TableSummary(**entry) for entry in data["tables"]],
+        failed=summary.get("failed", 0),
     )
 
 
@@ -544,6 +561,8 @@ def _run_table(data: dict[str, Any]) -> RunTable:
         merged=data["merged"],
         proposals=data["proposals"],
         audit=data.get("audit", []),  # runs saved before spec 014 have none
+        failed=data.get("failed", False),  # runs saved before spec 019 have none
+        problems=data.get("problems", []),
         extra_names=data["extra_names"],
         extra_fields=extras,
         extra_changes=data["extra_changes"],

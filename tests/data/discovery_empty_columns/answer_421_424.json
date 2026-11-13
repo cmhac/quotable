@@ -1,0 +1,44 @@
+{
+ "pages": [
+  {
+   "tables": [
+    {
+     "label": "Investment Account #7 transactions",
+     "columns": [],
+     "first_row": "4954 MR COOPER GROUP INC sale 5/29/2025 $1,001 - $15,000",
+     "last_row": "4984 GETTY RLTY CORP NEW sale 5/29/2025 $1,001 - $15,000"
+    }
+   ]
+  },
+  {
+   "tables": [
+    {
+     "label": "Investment Account #7 transactions",
+     "columns": [],
+     "first_row": "4985 APOGEE ENTERPRISES INC sale 3/27/2025 $1,001 - $15,000",
+     "last_row": "5015 BRINKER INTL INC sale 6/30/2025 $1,001 - $15,000"
+    }
+   ]
+  },
+  {
+   "tables": [
+    {
+     "label": "Investment Account #7 transactions",
+     "columns": [],
+     "first_row": "5016 CENTRAL GARDEN & PET CO sale 10/16/2025 $1,001 - $15,000",
+     "last_row": "5046 ARTISAN PARTNERS ASSET M sale 6/30/2025 $1,001 - $15,000"
+    }
+   ]
+  },
+  {
+   "tables": [
+    {
+     "label": "Investment Account #7 transactions",
+     "columns": [],
+     "first_row": "5047 GREEN PLAINS INC sale 3/11/2025 $1,001 - $15,000",
+     "last_row": "5077 TWO HARBORS INVESTME sale 10/16/2025 $1,001 - $15,000"
+    }
+   ]
+  }
+ ]
+}

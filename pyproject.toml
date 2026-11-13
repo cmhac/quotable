@@ -55,7 +55,11 @@ markers = [
     "live: calls a real LLM API (costs money, needs an API key)",
     "ocr: runs the real PaddleOCR models (slow, downloads models on first use, no API cost)",
 ]
-filterwarnings = ["ignore:builtin type .* has no __module__ attribute:DeprecationWarning"]
+filterwarnings = [
+    "ignore:builtin type .* has no __module__ attribute:DeprecationWarning",
+    # a table that failed warns when it is read (spec 019); a test that does not expect it fails
+    "error::quotable.errors.TableFailedWarning",
+]
 
 [tool.ruff]
 line-length = 100

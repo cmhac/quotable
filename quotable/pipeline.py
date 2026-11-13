@@ -45,7 +45,7 @@ from typing import Any
 import pymupdf
 from pydantic_ai.models import Model
 
-from quotable.errors import CostLimitExceededError, TextLayerError
+from quotable.errors import CostLimitExceededError, ExtractionError, TextLayerError
 from quotable.estimate import cached_discovery_requests, estimate_discovery, estimate_rest
 from quotable.llm.client import (
     CachedClient,
@@ -86,7 +86,7 @@ from quotable.storage import (
     resolve_cache_dir,
     resolve_project_dir,
 )
-from quotable.table import PageResult, Table, ground_document
+from quotable.table import PageResult, Problem, Table, ground_document
 from quotable.text.layer import Layer, load_layer
 from quotable.text.quality import (
     REMEDY_OCR_OFF,
@@ -128,25 +128,62 @@ class CostContext:
 
 
 def table_page_layers(
-    found: list[Found], layers: dict[int, Layer], trace: RunTrace | None = None
+    found: list[Found],
+    layers: dict[int, Layer],
+    trace: RunTrace | None = None,
+    helpers: Sequence[Found] = (),
 ) -> list[dict[int, Layer]]:
     """
     Return, per table, the text layer of each page it is on.
 
     A page with one table keeps the whole layer; on a page with several, each table gets
     its own band (``ExtractionError`` if one cannot be isolated), which ``trace`` also records.
+    ``helpers`` are tables that failed in discovery: where one shares a page and the model gave
+    its first and last row, it still takes its band, so a sound table keeps its own band instead
+    of the whole page; if that band cannot be found the page is handled without it.
     """
     out: list[dict[int, Layer]] = [{} for _ in found]
     for page in sorted({p for f in found for p in f.rows}):
         on_page = [i for i, f in enumerate(found) if page in f.rows]
         specs = [(found[i].label, *found[i].rows[page]) for i in on_page]
-        cropped = table_layers(page, layers[page], specs)
+        extra = [(h.label, *h.rows[page]) for h in helpers if page in h.rows and all(h.rows[page])]
+        try:
+            cropped, bands = _page_bands(page, layers[page], specs, extra)
+        except ExtractionError:
+            if not extra:
+                raise
+            extra = []
+            cropped, bands = _page_bands(page, layers[page], specs, extra)
+        shared = len(specs) + len(extra) > 1
         for i, layer in zip(on_page, cropped, strict=True):
             out[i][page] = layer
-        if trace is not None and len(on_page) > 1:
-            trace.bands[page] = list(
-                zip(cropped, shared_bands(page, layers[page], specs), strict=True)
-            )
+        if trace is not None and shared:
+            trace.bands[page] = list(zip(cropped, bands, strict=True))
+    return out
+
+
+def _page_bands(
+    page: int, layer: Layer, specs: list[tuple[str, str, str]], extra: list[tuple[str, str, str]]
+) -> tuple[list[Layer], list[tuple[float, float]]]:
+    """Return the layers and bands of ``specs`` on a page that ``extra`` tables also use."""
+    every = [*specs, *extra]
+    cropped = table_layers(page, layer, every)[: len(specs)]
+    bands = shared_bands(page, layer, every)[: len(specs)] if len(every) > 1 else []
+    return cropped, bands
+
+
+def failed_discovery_table(found: Found) -> Table:
+    """Return the failed ``Table`` for a table whose columns discovery could not use."""
+    problem = Problem("discovery", tuple(found.pages), "; ".join(found.problems))
+    return Table(found.columns, [], {}, {}, {}, label=found.label, problems=[problem])
+
+
+def with_failed(tables: list[Table], failed: list[Table]) -> list[Table]:
+    """Put each failed table where its first page puts it; the sound tables keep their order."""
+    out = list(tables)
+    for table in failed:
+        at = next((i for i, t in enumerate(out) if t.first_page() > table.first_page()), len(out))
+        out.insert(at, table)
     return out
 
 
@@ -455,9 +492,13 @@ async def run_pipeline(  # noqa: PLR0913, PLR0915
     )
     if costs is not None:
         costs.reporter.end_stage()
-    found = discovery.tables
+    found = [f for f in discovery.tables if not f.failed]
+    failed_found = [f for f in discovery.tables if f.failed]
+    failed_tables = [failed_discovery_table(f) for f in failed_found]
+    for table in failed_tables:
+        table.warn_failure()
     # may reject a page before extracting
-    table_layers_by_page = table_page_layers(found, layers, trace)
+    table_layers_by_page = table_page_layers(found, layers, trace, failed_found)
     layouts = [
         page_layouts(f.columns, [layers[p] for p in f.pages]) for f in found
     ]  # from the whole pages: the header sits above a table's band
@@ -556,7 +597,7 @@ async def run_pipeline(  # noqa: PLR0913, PLR0915
         tables: list[Table], only: frozenset[tuple[int, int]] | None, table_pages: int
     ) -> list[Table]:
         assert extra_fields is not None
-        scope = discovery
+        scope = Discovery(found, discovery.extras)  # sound tables only
         if only is not None:  # the sample: only its pages, with every table that is on them
             pages = {page for _, page in only}
             scope = Discovery(
@@ -591,7 +632,7 @@ async def run_pipeline(  # noqa: PLR0913, PLR0915
 
     if costs is not None:
         await _sample(costs, [(i, page) for i, page, _ in all_jobs], len(found), process)
-    return await process()
+    return with_failed(await process(), failed_tables)
 
 
 def _ocr_config(ocr: OcrConfig | bool) -> OcrConfig | None:  # noqa: FBT001

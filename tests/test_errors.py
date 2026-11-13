@@ -3,7 +3,7 @@
 from decimal import Decimal
 
 import quotable
-from quotable.errors import BudgetExceededError, CostLimitExceededError
+from quotable.errors import BudgetExceededError, CostLimitExceededError, TableFailedWarning
 
 
 def test_the_cost_limit_error_is_a_budget_error_and_keeps_its_fields():
@@ -34,3 +34,9 @@ def test_the_cost_limit_error_is_a_budget_error_and_keeps_its_fields():
 def test_it_is_exported():
     assert quotable.CostLimitExceededError is CostLimitExceededError
     assert "CostLimitExceededError" in quotable.__all__
+
+
+def test_the_failed_table_warning_is_a_user_warning_and_is_exported():
+    assert issubclass(TableFailedWarning, UserWarning)
+    assert quotable.TableFailedWarning is TableFailedWarning
+    assert "TableFailedWarning" in quotable.__all__

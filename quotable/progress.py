@@ -352,6 +352,13 @@ class Reporter:
         if lost:
             summary += f"; {dollars(lost)} of the sample could not be reused"
         lines.append(summary)
+        failed = [t for t in tables if t.failed]
+        if failed:
+            named = ", ".join(
+                f"'{t.label or 'unnamed'}' (pages {t.problem_pages()})" for t in failed
+            )
+            noun = "table" if len(failed) == 1 else "tables"
+            lines.append(f"  {len(failed)} {noun} failed: {named}")
         self.phase("final")
         self.fixed("\n".join(lines))
 

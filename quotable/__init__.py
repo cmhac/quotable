@@ -5,12 +5,13 @@ from quotable.errors import (
     CostLimitExceededError,
     ExtractionError,
     OcrUnavailableError,
+    TableFailedWarning,
     TextLayerError,
 )
 from quotable.ocr.config import OcrConfig
 from quotable.pipeline import extract_tables, extract_tables_async
 from quotable.steps.extra_fields import ExtraField, ExtraFields, FieldGroup
-from quotable.table import Flag, MergedPart, MergeEvidence, Row, Table
+from quotable.table import Flag, MergedPart, MergeEvidence, Problem, Row, Table
 
 __all__ = [
     "BudgetExceededError",
@@ -24,8 +25,10 @@ __all__ = [
     "MergeEvidence",
     "MergedPart",
     "OcrUnavailableError",
+    "Problem",
     "Row",
     "Table",
+    "TableFailedWarning",
     "TextLayerError",
     "extract_tables",
     "extract_tables_async",
